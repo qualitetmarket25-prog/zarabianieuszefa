@@ -1,49 +1,110 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Zarabianie u Szefa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarabianie u Szefa</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <div class="wrap">
-    <div class="card">
-      <span class="badge">Platforma</span>
-      <h1 style="margin-top:10px;">Zarabianie u Szefa</h1>
-      <p class="muted">
-        System do budowy dochodu online + dostęp do QualitetMarket.
-      </p>
-      <div class="hr"></div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">ZS</div>
+      <div>Zarabianie u Szefa</div>
+    </div>
+    <div class="nav">
+      <a href="cennik.html">Cennik</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="login.html">Zaloguj</a>
+      <a href="dashboard.html">Panel</a>
+    </div>
+  </div>
+</div>
 
-      <a href="login.html" class="btn btn-secondary">Zaloguj</a>
-      <a href="cennik.html" class="btn btn-primary">Zobacz plany</a>
+<div class="hero">
+  <span class="pill">All-in-one • System zarabiania • Sklepy • Hurtownie</span>
+  <h1>Wszystko do zarabiania online w jednym miejscu</h1>
+  <p class="sub">
+    Dostajesz plan działania krok po kroku + podgląd QualitetMarket. Żeby zacząć sprzedawać,
+    aktywujesz PRO i odblokowujesz sprzedaż.
+  </p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+    <button class="btn gold" onclick="location.href='cennik.html'">Odblokuj dostęp</button>
+    <button class="btn ghost" onclick="location.href='login.html'">Zaloguj się</button>
+    <button class="btn ghost" onclick="location.href='qualitetmarket.html'">Zobacz QualitetMarket</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="grid-3">
+    <div class="card">
+      <h3>1) Zakładasz konto</h3>
+      <p class="muted">Wchodzisz do panelu i wybierasz ścieżkę zarabiania.</p>
+    </div>
+    <div class="card">
+      <h3>2) Dostajesz system</h3>
+      <p class="muted">Checklisty, materiały i instrukcje prowadzą Cię za rękę.</p>
+    </div>
+    <div class="card">
+      <h3>3) Aktywujesz sprzedaż</h3>
+      <p class="muted">Odblokowujesz QualitetMarket i zaczynasz sprzedawać.</p>
     </div>
   </div>
 
-  <!-- SEKCJA GOOGLE FORMS -->
-  <div class="wrap">
-    <div class="card">
-      <span class="badge">Lista startowa</span>
-      <h2 style="margin-top:10px;">Dołącz do platformy</h2>
-      <p class="muted">
-        Zostaw email — dostaniesz dostęp jako pierwszy + bonus na start PRO.
-      </p>
-      <div class="hr"></div>
+  <div class="hr"></div>
 
-      <a href="https://forms.gle/j5H4vZMCLnCEfKaj7"
-         target="_blank"
-         class="btn btn-primary"
-         style="display:inline-block; margin-top:15px;">
-         Dołącz teraz
-      </a>
+  <div class="grid-2">
+    <div class="card soft">
+      <span class="badge">QualitetMarket — podgląd</span>
+      <h2 style="margin-top:10px;">Produkty + marże w panelu</h2>
+      <p class="muted">Widzisz: cena zakupu (z marżą platformy) → sugerowana sprzedaż → Twój zysk. Bez szukania gdzie indziej.</p>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" onclick="location.href='qualitetmarket.html'">Wejdź do QualitetMarket</button>
+        <button class="btn ghost" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+      </div>
+    </div>
+
+    <div class="card soft">
+      <span class="badge">Dlaczego to działa</span>
+      <h2 style="margin-top:10px;">System zamiast chaosu</h2>
+      <p class="muted">Nie uczysz się miesiącami. Masz kroki do wykonania i narzędzia w jednym miejscu.</p>
+      <div class="hr"></div>
+      <div class="muted">✅ plan dzienny • ✅ materiały • ✅ marketplace • ✅ aktywacja sprzedaży</div>
     </div>
   </div>
+</div>
 
-  <div class="footer">
-    © 2026 Zarabianie u Szefa | QualitetMarket
+<!-- ✅ SEKCJA DODANA: LISTA STARTOWA (WŁAŚNIE TU, PRZED FOOTEREM) -->
+<div class="wrap">
+  <div class="card">
+    <span class="badge">Lista startowa</span>
+    <h2 style="margin-top:10px;">Dołącz do platformy</h2>
+    <p class="muted">Zostaw email — dostaniesz dostęp jako pierwszy + bonus na start.</p>
+    <div class="hr"></div>
+
+    <div class="grid-2">
+      <div class="card soft">
+        <h3>Co dostaniesz?</h3>
+        <div class="muted">✅ dostęp do systemu krok po kroku</div>
+        <div class="muted">✅ wejście do QualitetMarket</div>
+        <div class="muted">✅ bonus na start (PRO)</div>
+        <div class="muted">✅ info o starcie i nowych sklepach</div>
+      </div>
+
+      <div class="card soft">
+        <h3>Zapis</h3>
+        <a class="btn gold block" href="https://forms.gle/j5H4vZMCLnCEfKaj7" target="_blank" rel="noopener">
+          Zapisz się na listę
+        </a>
+        <div class="small" style="margin-top:10px;">Klik otwiera formularz Google (0 zł, działa od razu).</div>
+      </div>
+    </div>
   </div>
+</div>
+
+<div class="footer">Zarabianie u Szefa © 2026 • Demo na GitHub Pages</div>
 
 </body>
 </html>
