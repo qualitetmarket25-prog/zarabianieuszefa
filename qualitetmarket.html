@@ -4,106 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QualitetMarket</title>
-<style>
-  body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
-  nav{background:#020617;padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
-  nav a{color:#fff;text-decoration:none;margin-left:12px;font-size:14px}
-  nav a:hover{text-decoration:underline}
-  .container{padding:34px 18px;max-width:980px;margin:auto}
-  .badge{display:inline-block;background:#111827;border:1px solid #334155;border-radius:999px;padding:6px 10px;color:#94a3b8;font-size:12px}
-  .product{background:#1f2937;padding:20px;border-radius:12px;margin:14px 0}
-  .price{margin:6px 0;color:#cbd5e1}
-  .profit{color:gold;font-weight:800}
-  .btn{background:gold;border:none;padding:12px 18px;cursor:pointer;border-radius:10px;margin-top:10px;font-weight:800}
-  .btn.lock{background:transparent;border:1px solid #334155;color:#fff}
-  .hint{color:#94a3b8;font-size:13px;margin-top:8px}
-  .toprow{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-  .note{background:#111827;border:1px solid #334155;border-radius:12px;padding:12px;color:#cbd5e1}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<nav>
-  <div><b>QualitetMarket</b></div>
-  <div>
-    <a href="index.html">Start</a>
-    <a href="dashboard.html">Panel</a>
-    <a href="cennik.html">Cennik</a>
-    <a href="aktywuj-pro.html">Aktywuj PRO</a>
-  </div>
-</nav>
-
-<div class="container">
-  <div class="toprow">
-    <div>
-      <h1 style="margin:0 0 6px;">Marketplace produktów</h1>
-      <div class="badge" id="proBadge">Sprawdzam status…</div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="logo">QM</div><div>QualitetMarket</div></div>
+    <div class="nav">
+      <a href="index.html">Start</a>
+      <a href="dashboard.html">Panel</a>
+      <a href="cennik.html">Cennik</a>
+      <a href="aktywuj-pro.html">Aktywuj PRO</a>
     </div>
-    <button class="btn lock" id="resetBtn">Reset PRO</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;">
+    <div>
+      <h2 style="margin:0 0 8px;">Marketplace produktów</h2>
+      <span class="badge" id="proBadge">Sprawdzam status…</span>
+      <div class="small">Ceny zakupu zawierają już marżę platformy. Ty widzisz tylko: zakup → sprzedaż → Twój zysk.</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn ghost" id="resetBtn">Reset PRO</button>
+      <button class="btn gold" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+    </div>
   </div>
 
-  <div class="note" id="noteBox" style="display:none;"></div>
+  <div class="hr"></div>
 
-  <p class="hint">Ceny zakupu zawierają już marżę platformy. Ty widzisz tylko: zakup → sprzedaż → Twój zysk.</p>
+  <div class="card soft" id="noteBox" style="display:none;"></div>
 
-  <div class="product">
-    <h3 style="margin:0 0 6px;">Masażer karku PRO</h3>
-    <div class="price">Cena zakupu: 120 zł</div>
-    <div class="price">Sugerowana sprzedaż: 199 zł</div>
-    <div class="profit">Twój zysk: 79 zł</div>
-    <button class="btn" data-action="sell">Sprzedawaj</button>
-    <div class="hint" data-hint></div>
-  </div>
+  <div class="grid-3" style="margin-top:14px;">
+    <div class="card">
+      <h3>Masażer karku PRO</h3>
+      <div class="muted">Cena zakupu: 120 zł</div>
+      <div class="muted">Sugerowana sprzedaż: 199 zł</div>
+      <div class="kpi" style="font-size:28px;">Zysk: 79 zł</div>
+      <button class="btn block" data-sell>Sprzedawaj</button>
+      <div class="small" data-hint></div>
+    </div>
 
-  <div class="product">
-    <h3 style="margin:0 0 6px;">Inteligentna lampka LED</h3>
-    <div class="price">Cena zakupu: 80 zł</div>
-    <div class="price">Sugerowana sprzedaż: 149 zł</div>
-    <div class="profit">Twój zysk: 69 zł</div>
-    <button class="btn" data-action="sell">Sprzedawaj</button>
-    <div class="hint" data-hint></div>
-  </div>
+    <div class="card">
+      <h3>Inteligentna lampka LED</h3>
+      <div class="muted">Cena zakupu: 80 zł</div>
+      <div class="muted">Sugerowana sprzedaż: 149 zł</div>
+      <div class="kpi" style="font-size:28px;">Zysk: 69 zł</div>
+      <button class="btn block" data-sell>Sprzedawaj</button>
+      <div class="small" data-hint></div>
+    </div>
 
-  <div class="product">
-    <h3 style="margin:0 0 6px;">Poduszka ortopedyczna premium</h3>
-    <div class="price">Cena zakupu: 95 zł</div>
-    <div class="price">Sugerowana sprzedaż: 179 zł</div>
-    <div class="profit">Twój zysk: 84 zł</div>
-    <button class="btn" data-action="sell">Sprzedawaj</button>
-    <div class="hint" data-hint></div>
+    <div class="card">
+      <h3>Poduszka ortopedyczna premium</h3>
+      <div class="muted">Cena zakupu: 95 zł</div>
+      <div class="muted">Sugerowana sprzedaż: 179 zł</div>
+      <div class="kpi" style="font-size:28px;">Zysk: 84 zł</div>
+      <button class="btn block" data-sell>Sprzedawaj</button>
+      <div class="small" data-hint></div>
+    </div>
   </div>
 </div>
 
 <script>
   const isPro = () => localStorage.getItem('zs_pro') === '1';
 
-  function render() {
+  function render(){
     const pro = isPro();
     const badge = document.getElementById('proBadge');
     const note = document.getElementById('noteBox');
-    badge.textContent = pro ? 'Status: PRO ✅ (sprzedaż odblokowana)' : 'Status: START (podgląd) 🔒';
-    badge.style.color = pro ? '#c7f9cc' : '#fca5a5';
 
-    const buttons = document.querySelectorAll('button[data-action="sell"]');
+    badge.textContent = pro ? 'Status: PRO ✅ (sprzedaż odblokowana)' : 'Status: START 🔒 (podgląd)';
+    badge.className = pro ? 'badge good' : 'badge bad';
+
+    const sellBtns = document.querySelectorAll('[data-sell]');
     const hints = document.querySelectorAll('[data-hint]');
-    buttons.forEach((btn, idx) => {
-      if (pro) {
+
+    sellBtns.forEach((btn, i) => {
+      if(pro){
         btn.textContent = 'Sprzedawaj';
-        btn.className = 'btn';
-        btn.onclick = () => alert('✅ Sprzedaż demo: tutaj w realnej wersji dodasz produkt do oferty.');
-        hints[idx].textContent = '';
-      } else {
+        btn.className = 'btn block';
+        btn.onclick = () => alert('✅ Demo: tutaj w realnej wersji dodasz produkt do oferty.');
+        hints[i].textContent = '';
+      }else{
         btn.textContent = 'Odblokuj PRO, żeby sprzedawać';
-        btn.className = 'btn lock';
+        btn.className = 'btn ghost block';
         btn.onclick = () => location.href = 'aktywuj-pro.html';
-        hints[idx].textContent = 'Podgląd działa. Sprzedaż odblokujesz w PRO.';
+        hints[i].textContent = 'Podgląd działa. Sprzedaż odblokujesz w PRO.';
       }
     });
 
-    if (!pro) {
+    if(!pro){
       note.style.display = 'block';
-      note.innerHTML = '🔒 Jesteś w trybie PODGLĄDU. Aby zacząć sprzedawać, <a href="aktywuj-pro.html" style="color:#93c5fd">aktywuj PRO</a>.';
-    } else {
+      note.innerHTML = '🔒 Jesteś w trybie PODGLĄDU. Aby zacząć sprzedawać, <a href="aktywuj-pro.html">aktywuj PRO</a>.';
+    }else{
       note.style.display = 'none';
       note.innerHTML = '';
     }
@@ -111,12 +106,13 @@
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     localStorage.removeItem('zs_pro');
-    render();
     alert('Status PRO zresetowany (demo).');
+    render();
   });
 
   render();
 </script>
 
+<div class="footer">QualitetMarket • Demo marketplace</div>
 </body>
 </html>
