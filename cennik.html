@@ -2,89 +2,58 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cennik — Zarabianie u Szefa</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-text-align:center;
-}
-
-header{
-background:#020617;
-padding:25px;
-}
-
-.container{
-padding:50px 20px;
-max-width:1100px;
-margin:auto;
-}
-
-.pricing{
-display:flex;
-gap:20px;
-justify-content:center;
-flex-wrap:wrap;
-margin-top:30px;
-}
-
-.plan{
-background:#1f2937;
-padding:30px;
-border-radius:12px;
-width:320px;
-text-align:left;
-border:2px solid transparent;
-}
-
-.plan.pro{
-border:2px solid gold;
-}
-
-.price{
-font-size:36px;
-color:gold;
-font-weight:bold;
-margin:10px 0 20px;
-}
-
-ul{
-line-height:1.9;
-padding-left:18px;
-}
-
-button{
-background:gold;
-border:none;
-padding:14px 22px;
-font-size:16px;
-cursor:pointer;
-border-radius:8px;
-width:100%;
-margin-top:15px;
-}
-
-.small{
-color:#94a3b8;
-font-size:13px;
-margin-top:10px;
-}
-
-a{color:white;}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<header>
-<h2>Zarabianie u Szefa — Cennik</h2>
-</header>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="logo">ZS</div><div>Zarabianie u Szefa</div></div>
+    <div class="nav">
+      <a href="index.html">Start</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Panel</a>
+      <a href="login.html">Zaloguj</a>
+    </div>
+  </div>
+</div>
 
-<div class="container">
+<div class="wrap">
+  <h2>Cennik</h2>
+  <p class="muted">Wersja START daje podgląd. Sprzedaż i hurtownie odblokowujesz w PRO.</p>
 
-<h1>Wybierz plan i odblokuj zarabianie</h1>
-<p>Wersja darmowa daje podgląd. Sprzeda
+  <div class="grid-3" style="margin-top:14px;">
+    <div class="card">
+      <span class="badge">START</span>
+      <h3 style="margin-top:10px;">0 zł</h3>
+      <div class="muted">Podgląd + system krok po kroku</div>
+      <div class="hr"></div>
+      <div class="muted">✅ panel<br>✅ instrukcje<br>✅ podgląd QualitetMarket<br>❌ sprzedaż</div>
+      <button class="btn ghost block" style="margin-top:14px" onclick="location.href='dashboard.html'">Zacznij</button>
+    </div>
+
+    <div class="card">
+      <span class="badge good">PRO • Najpopularniejszy</span>
+      <h3 style="margin-top:10px;">49 zł / mies.</h3>
+      <div class="muted">Odblokowanie sprzedaży w QualitetMarket</div>
+      <div class="hr"></div>
+      <div class="muted">✅ sprzedaż<br>✅ hurtownie/sklepy<br>✅ lepsze oferty<br>✅ aktualizacje</div>
+      <button class="btn gold block" style="margin-top:14px" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+    </div>
+
+    <div class="card">
+      <span class="badge">ELITE</span>
+      <h3 style="margin-top:10px;">129 zł / mies.</h3>
+      <div class="muted">Priorytet + wsparcie + bonusy</div>
+      <div class="hr"></div>
+      <div class="muted">✅ wszystko z PRO<br>✅ priorytet<br>✅ pomoc wdrożenia<br>✅ bonusy</div>
+      <button class="btn block" style="margin-top:14px" onclick="location.href='aktywuj-pro.html'">Wybieram ELITE</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Cennik • Demo</div>
+</body>
+</html>
