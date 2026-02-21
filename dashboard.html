@@ -2,65 +2,73 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel użytkownika</title>
-
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-}
-
-nav{
-background:#020617;
-padding:20px;
-display:flex;
-justify-content:space-between;
-}
-
-.container{
-padding:40px;
-}
-
-.card{
-background:#1f2937;
-padding:25px;
-margin:20px 0;
-border-radius:10px;
-}
-
-button{
-background:gold;
-border:none;
-padding:15px 25px;
-font-size:16px;
-cursor:pointer;
-border-radius:6px;
-}
-
-.stat{
-font-size:28px;
-font-weight:bold;
-}
+  body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
+  nav{background:#020617;padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+  nav a{color:#fff;text-decoration:none;margin-left:12px;font-size:14px}
+  nav a:hover{text-decoration:underline}
+  .container{padding:34px 18px;max-width:980px;margin:auto}
+  .card{background:#1f2937;padding:18px;border-radius:12px;margin:12px 0}
+  .stat{font-size:30px;font-weight:900;color:gold}
+  .btn{background:gold;border:none;padding:12px 18px;cursor:pointer;border-radius:10px;font-weight:800}
+  .btn.secondary{background:transparent;border:1px solid #334155;color:#fff}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .badge{display:inline-block;background:#111827;border:1px solid #334155;border-radius:999px;padding:6px 10px;color:#94a3b8;font-size:12px}
 </style>
 </head>
-
 <body>
 
 <nav>
-<div>Zarabianie u Szefa</div>
-<div><a href="index.html" style="color:white;">Wyloguj</a></div>
+  <div><b>Zarabianie u Szefa</b></div>
+  <div>
+    <a href="index.html">Start</a>
+    <a href="cennik.html">Cennik</a>
+    <a href="qualitetmarket.html">QualitetMarket</a>
+    <a href="login.html">Wyloguj</a>
+  </div>
 </nav>
 
 <div class="container">
+  <h1 style="margin:0 0 10px;">Panel użytkownika</h1>
+  <div class="badge" id="statusBadge">Sprawdzam status…</div>
 
-<h1>Panel użytkownika</h1>
+  <div class="card">
+    <h3 style="margin:0 0 8px;">Twoje zarobki (demo)</h3>
+    <div class="stat" id="earn">1240 zł</div>
+    <div style="color:#94a3b8;font-size:13px;margin-top:6px;">W realnej wersji tu będą prawdziwe statystyki.</div>
+  </div>
 
-<div class="card">
-<h3>Twój status</h3>
-<p>Konto aktywne</p>
+  <div class="card">
+    <h3 style="margin:0 0 8px;">Dzisiejsze 3 kroki</h3>
+    <div>✅ Wybierz produkt</div>
+    <div>✅ Dodaj do oferty</div>
+    <div>✅ Opublikuj promocję</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px;">QualitetMarket</h3>
+    <div style="color:#94a3b8;margin-bottom:10px;">Sklepy, hurtownie i produkty gotowe do sprzedaży.</div>
+    <div class="row">
+      <button class="btn" onclick="location.href='qualitetmarket.html'">Wejdź do QualitetMarket</button>
+      <button class="btn secondary" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+      <button class="btn secondary" id="resetBtn">Reset PRO</button>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h3>Two
+<script>
+  const pro = localStorage.getItem('zs_pro') === '1';
+  const badge = document.getElementById('statusBadge');
+  badge.textContent = pro ? 'Status: PRO ✅ (sprzedaż odblokowana)' : 'Status: START 🔒 (podgląd)';
+  badge.style.color = pro ? '#c7f9cc' : '#fca5a5';
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    localStorage.removeItem('zs_pro');
+    alert('Status PRO zresetowany (demo). Odśwież stronę.');
+  });
+</script>
+
+</body>
+</html>
