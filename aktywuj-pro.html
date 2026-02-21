@@ -54,4 +54,12 @@
 </div>
 
 <script>
-  document.getElement
+  document.getElementById('activateBtn').addEventListener('click', () => {
+    localStorage.setItem('zs_pro', '1');
+    document.getElementById('okBox').style.display = 'block';
+    setTimeout(() => location.href = 'qualitetmarket.html', 900);
+  });
+</script>
+
+</body>
+</html>
