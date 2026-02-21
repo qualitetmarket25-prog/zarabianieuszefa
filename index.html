@@ -4,121 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zarabianie u Szefa</title>
-<style>
-  :root{--bg:#0f172a;--top:#020617;--card:#1f2937;--muted:#94a3b8;--gold:#f5c542;}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff}
-  .top{
-    background:var(--top);
-    padding:16px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;top:0;
-  }
-  .brand{font-weight:800;letter-spacing:.2px}
-  .nav a{color:#fff;text-decoration:none;margin-left:14px;font-size:14px}
-  .nav a:hover{text-decoration:underline}
-  .hero{padding:70px 18px;text-align:center;max-width:980px;margin:auto}
-  h1{font-size:44px;margin:0 0 10px}
-  .sub{color:var(--muted);font-size:16px;line-height:1.5;max-width:720px;margin:0 auto 18px}
-  .btn{
-    background:var(--gold);border:none;padding:14px 22px;border-radius:10px;
-    font-weight:800;cursor:pointer;font-size:16px;
-  }
-  .btn.secondary{background:transparent;color:#fff;border:1px solid #334155;margin-left:10px}
-  .grid{display:grid;gap:14px;grid-template-columns:repeat(3,1fr);max-width:980px;margin:26px auto 0;padding:0 18px}
-  .card{background:var(--card);border-radius:14px;padding:18px}
-  .card h3{margin:0 0 6px}
-  .card p{margin:0;color:var(--muted);line-height:1.5}
-  .section{max-width:980px;margin:0 auto;padding:55px 18px}
-  .section h2{margin:0 0 10px}
-  .section p{margin:0 0 18px;color:var(--muted)}
-  .kafel{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:14px
-  }
-  .pill{display:inline-block;background:#111827;border:1px solid #334155;border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted);margin-bottom:10px}
-  .footer{background:#000;padding:24px 18px;text-align:center;color:var(--muted);margin-top:20px}
-  @media (max-width:900px){
-    h1{font-size:34px}
-    .grid{grid-template-columns:1fr}
-    .kafel{grid-template-columns:1fr}
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="top">
-  <div class="brand">Zarabianie u Szefa</div>
-  <div class="nav">
-    <a href="cennik.html">Cennik</a>
-    <a href="qualitetmarket.html">QualitetMarket</a>
-    <a href="login.html">Zaloguj</a>
-    <a href="dashboard.html">Panel</a>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">ZS</div>
+      <div>Zarabianie u Szefa</div>
+    </div>
+    <div class="nav">
+      <a href="cennik.html">Cennik</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="login.html">Zaloguj</a>
+      <a href="dashboard.html">Panel</a>
+    </div>
   </div>
 </div>
 
 <div class="hero">
-  <div class="pill">Wszystko w jednym miejscu • System + Sklepy + Hurtownie</div>
+  <span class="pill">All-in-one • System zarabiania • Sklepy • Hurtownie</span>
   <h1>Wszystko do zarabiania online w jednym miejscu</h1>
   <p class="sub">
-    Dostajesz plan działania krok po kroku i podgląd QualitetMarket.  
-    Żeby zacząć sprzedawać, aktywujesz konto sprzedawcy (PRO).
+    Dostajesz plan działania krok po kroku + podgląd QualitetMarket. Żeby zacząć sprzedawać, aktywujesz PRO i odblokowujesz sprzedaż.
   </p>
-  <button class="btn" onclick="location.href='cennik.html'">Odblokuj dostęp</button>
-  <button class="btn secondary" onclick="location.href='login.html'">Zaloguj się</button>
-
-  <div class="grid">
-    <div class="card">
-      <h3>1. Zakładasz konto</h3>
-      <p>Wchodzisz do panelu i wybierasz ścieżkę zarabiania.</p>
-    </div>
-    <div class="card">
-      <h3>2. Dostajesz system</h3>
-      <p>Checklisty, materiały i instrukcje prowadzą Cię za rękę.</p>
-    </div>
-    <div class="card">
-      <h3>3. Aktywujesz sprzedaż</h3>
-      <p>Odblokowujesz QualitetMarket i zaczynasz sprzedawać.</p>
-    </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+    <button class="btn gold" onclick="location.href='cennik.html'">Odblokuj dostęp</button>
+    <button class="btn ghost" onclick="location.href='login.html'">Zaloguj się</button>
+    <button class="btn ghost" onclick="location.href='qualitetmarket.html'">Zobacz QualitetMarket</button>
   </div>
 </div>
 
-<div class="section">
-  <h2>QualitetMarket — podgląd</h2>
-  <p>Możesz przeglądać produkty i widzieć potencjalny zysk. Sprzedaż odblokujesz w PRO.</p>
-
-  <div class="kafel">
+<div class="wrap">
+  <div class="grid-3">
     <div class="card">
-      <h3>Produkty z marżą</h3>
-      <p>Cena zakupu + sugerowana sprzedaż + Twój zysk. Prosto.</p>
-      <div style="margin-top:12px;">
+      <h3>1) Zakładasz konto</h3>
+      <p class="muted">Wchodzisz do panelu i wybierasz ścieżkę zarabiania.</p>
+    </div>
+    <div class="card">
+      <h3>2) Dostajesz system</h3>
+      <p class="muted">Checklisty, materiały i instrukcje prowadzą Cię za rękę.</p>
+    </div>
+    <div class="card">
+      <h3>3) Aktywujesz sprzedaż</h3>
+      <p class="muted">Odblokowujesz QualitetMarket i zaczynasz sprzedawać.</p>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="grid-2">
+    <div class="card soft">
+      <span class="badge">QualitetMarket — podgląd</span>
+      <h2 style="margin-top:10px;">Produkty + marże w panelu</h2>
+      <p class="muted">Widzisz: cena zakupu (z marżą platformy) → sugerowana sprzedaż → Twój zysk. Bez szukania gdzie indziej.</p>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn" onclick="location.href='qualitetmarket.html'">Wejdź do QualitetMarket</button>
+        <button class="btn ghost" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
       </div>
     </div>
 
-    <div class="card">
-      <h3>Aktywacja PRO</h3>
-      <p>Odblokowuje sprzedaż, dostęp do hurtowni i lepsze oferty.</p>
-      <div style="margin-top:12px;">
-        <button class="btn" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
-      </div>
+    <div class="card soft">
+      <span class="badge">Dlaczego to działa</span>
+      <h2 style="margin-top:10px;">System zamiast chaosu</h2>
+      <p class="muted">Nie uczysz się miesiącami. Masz kroki do wykonania i narzędzia w jednym miejscu.</p>
+      <div class="hr"></div>
+      <div class="muted">✅ plan dzienny • ✅ materiały • ✅ marketplace • ✅ aktywacja sprzedaży</div>
     </div>
   </div>
 </div>
 
-<div class="section">
-  <h2>Dlaczego ludzie zostają?</h2>
-  <div class="grid" style="margin-top:14px;">
-    <div class="card"><h3>Brak szukania</h3><p>Wszystko masz w jednym panelu.</p></div>
-    <div class="card"><h3>Gotowe działania</h3><p>Nie myślisz — wykonujesz kroki.</p></div>
-    <div class="card"><h3>Prosty start</h3><p>Najpierw podgląd, potem aktywacja.</p></div>
-  </div>
-</div>
-
-<div class="footer">
-  Zarabianie u Szefa © 2026 • Demo na GitHub Pages
-</div>
-
+<div class="footer">Zarabianie u Szefa © 2026 • Demo na GitHub Pages</div>
 </body>
 </html>
