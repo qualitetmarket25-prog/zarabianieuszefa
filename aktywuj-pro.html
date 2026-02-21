@@ -2,35 +2,56 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aktywuj PRO</title>
-
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-text-align:center;
-}
+  body{margin:0;font-family:Arial;background:#0f172a;color:#fff;text-align:center}
+  header{background:#020617;padding:22px}
+  .container{padding:50px 18px;max-width:860px;margin:auto}
+  .card{background:#1f2937;padding:28px;border-radius:12px;margin-top:18px}
+  .price{font-size:44px;color:gold;font-weight:800;margin:10px 0}
+  ul{text-align:left;max-width:560px;margin:16px auto;line-height:1.9}
+  button{background:gold;border:none;padding:16px 26px;font-size:16px;cursor:pointer;border-radius:10px;margin-top:10px;font-weight:800}
+  .small{color:#94a3b8;font-size:13px;margin-top:12px}
+  a{color:#fff}
+  .ok{display:none;margin-top:14px;background:#111827;border:1px solid #334155;border-radius:12px;padding:12px;color:#c7f9cc}
+</style>
+</head>
+<body>
 
-header{
-background:#020617;
-padding:25px;
-}
+<header>
+  <h2>Aktywuj sprzedaż w QualitetMarket</h2>
+</header>
 
-.container{
-padding:60px 20px;
-max-width:800px;
-margin:auto;
-}
+<div class="container">
+  <h1>Odblokuj PRO i zacznij sprzedawać</h1>
+  <p>To demo (GitHub Pages). Kliknięcie zapisze status PRO w Twojej przeglądarce.</p>
 
-.card{
-background:#1f2937;
-padding:35px;
-border-radius:12px;
-margin-top:25px;
-}
+  <div class="card">
+    <h2>PLAN PRO</h2>
+    <div class="price">49 zł / mies.</div>
 
-.price{
-font-size:44px;
-color
+    <ul>
+      <li>✅ Pełny dostęp do QualitetMarket</li>
+      <li>✅ Odblokowanie przycisku „Sprzedawaj”</li>
+      <li>✅ Lepsze oferty i marże</li>
+      <li>✅ Dostęp do sklepów i hurtowni</li>
+      <li>✅ Aktualizacje produktów</li>
+    </ul>
+
+    <button id="activateBtn">Aktywuję PRO</button>
+    <div id="okBox" class="ok">✅ PRO aktywowane! Przenoszę do QualitetMarket…</div>
+
+    <div class="small">
+      Prawdziwe płatności (Stripe/Przelewy24) wdrożymy po przeniesieniu na serwer z backendem.
+    </div>
+  </div>
+
+  <p style="margin-top:18px;">
+    <a href="qualitetmarket.html">← Wróć do QualitetMarket</a> &nbsp;|&nbsp;
+    <a href="dashboard.html">Panel</a>
+  </p>
+</div>
+
+<script>
+  document.getElement
