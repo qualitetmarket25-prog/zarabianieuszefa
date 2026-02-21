@@ -3,70 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel — Zarabianie u Szefa</title>
+<title>Zarabianie u Szefa</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="brand"><div class="logo">ZS</div><div>Zarabianie u Szefa</div></div>
-    <div class="nav">
-      <a href="index.html">Start</a>
-      <a href="qualitetmarket.html">QualitetMarket</a>
-      <a href="cennik.html">Cennik</a>
-      <a href="login.html">Wyloguj</a>
+    <div class="brand">
+      <div class="logo">ZS</div>
+      <div>Zarabianie u Szefa</div>
     </div>
+    <div class="nav">
+      <a href="cennik.html">Cennik</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="login.html">Zaloguj</a>
+      <a href="dashboard.html">Panel</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <span class="pill">All-in-one • System zarabiania • Sklepy • Hurtownie</span>
+  <h1>Wszystko do zarabiania online w jednym miejscu</h1>
+  <p class="sub">
+    Dostajesz plan działania krok po kroku + podgląd QualitetMarket. Żeby zacząć sprzedawać,
+    aktywujesz PRO i odblokowujesz sprzedaż.
+  </p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+    <button class="btn gold" onclick="location.href='cennik.html'">Odblokuj dostęp</button>
+    <button class="btn ghost" onclick="location.href='login.html'">Zaloguj się</button>
+    <button class="btn ghost" onclick="location.href='qualitetmarket.html'">Zobacz QualitetMarket</button>
   </div>
 </div>
 
 <div class="wrap">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-    <div>
-      <h2 style="margin:0 0 8px;">Panel użytkownika</h2>
-      <span id="statusBadge" class="badge">Sprawdzam status…</span>
+  <div class="grid-3">
+    <div class="card">
+      <h3>1) Zakładasz konto</h3>
+      <p class="muted">Wchodzisz do panelu i wybierasz ścieżkę zarabiania.</p>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn ghost" id="resetBtn">Reset PRO</button>
-      <button class="btn gold" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+    <div class="card">
+      <h3>2) Dostajesz system</h3>
+      <p class="muted">Checklisty, materiały i instrukcje prowadzą Cię za rękę.</p>
+    </div>
+    <div class="card">
+      <h3>3) Aktywujesz sprzedaż</h3>
+      <p class="muted">Odblokowujesz QualitetMarket i zaczynasz sprzedawać.</p>
     </div>
   </div>
 
-  <div class="grid-3" style="margin-top:14px;">
-    <div class="card">
-      <h3>Zysk (demo)</h3>
-      <div class="kpi">1240 zł</div>
-      <div class="small">W realnej wersji tu będą prawdziwe statystyki.</div>
-    </div>
-    <div class="card">
-      <h3>Dzisiejsze kroki</h3>
-      <div class="muted">✅ wybierz produkt</div>
-      <div class="muted">✅ dodaj do oferty</div>
-      <div class="muted">✅ opublikuj promocję</div>
-    </div>
-    <div class="card">
-      <h3>QualitetMarket</h3>
-      <div class="muted">Sklepy, hurtownie i produkty gotowe do sprzedaży.</div>
-      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn" onclick="location.href='qualitetmarket.html'">Wejdź</button>
-        <button class="btn ghost" onclick="location.href='cennik.html'">Cennik</button>
+  <div class="hr"></div>
+
+  <div class="grid-2">
+    <div class="card soft">
+      <span class="badge">QualitetMarket — podgląd</span>
+      <h2 style="margin-top:10px;">Produkty + marże w panelu</h2>
+      <p class="muted">Widzisz: cena zakupu (z marżą platformy) → sugerowana sprzedaż → Twój zysk. Bez szukania gdzie indziej.</p>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" onclick="location.href='qualitetmarket.html'">Wejdź do QualitetMarket</button>
+        <button class="btn ghost" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
       </div>
+    </div>
+
+    <div class="card soft">
+      <span class="badge">Dlaczego to działa</span>
+      <h2 style="margin-top:10px;">System zamiast chaosu</h2>
+      <p class="muted">Nie uczysz się miesiącami. Masz kroki do wykonania i narzędzia w jednym miejscu.</p>
+      <div class="hr"></div>
+      <div class="muted">✅ plan dzienny • ✅ materiały • ✅ marketplace • ✅ aktywacja sprzedaży</div>
     </div>
   </div>
 </div>
 
-<script>
-  const pro = localStorage.getItem('zs_pro') === '1';
-  const badge = document.getElementById('statusBadge');
-  badge.textContent = pro ? 'Status: PRO ✅ (sprzedaż odblokowana)' : 'Status: START 🔒 (podgląd)';
-  badge.className = pro ? 'badge good' : 'badge bad';
-
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    localStorage.removeItem('zs_pro');
-    alert('Status PRO zresetowany (demo). Odśwież stronę.');
-  });
-</script>
-
-<div class="footer">Zarabianie u Szefa • Panel</div>
+<div class="footer">Zarabianie u Szefa © 2026 • Demo na GitHub Pages</div>
 </body>
 </html>
