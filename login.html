@@ -1,70 +1,52 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zarabianie u Szefa — Logowanie</title>
-  <style>
-    :root{--bg:#0f172a;--card:#111827;--line:#1f2937;--txt:#e5e7eb;--muted:#94a3b8;--gold:#f5c542;--blue:#2563eb;}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(1200px 600px at 20% 10%, #1d4ed8 0%, rgba(29,78,216,0) 60%), var(--bg);color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .wrap{width:100%;max-width:980px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px}
-    .left{padding:28px;border:1px solid var(--line);border-radius:16px;background:rgba(17,24,39,.6);backdrop-filter: blur(8px)}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-    .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#fff);display:flex;align-items:center;justify-content:center;color:#111}
-    h1{margin:18px 0 8px;font-size:34px}
-    .muted{color:var(--muted);line-height:1.5}
-    .points{margin-top:18px;display:grid;gap:10px}
-    .point{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(15,23,42,.55)}
-    .right{border:1px solid var(--line);border-radius:16px;background:rgba(17,24,39,.85);padding:22px}
-    label{display:block;margin:12px 0 6px;color:var(--muted);font-size:13px}
-    input{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);background:#0b1220;color:var(--txt);outline:none}
-    input:focus{border-color:#3b82f6}
-    .btn{margin-top:14px;width:100%;padding:12px 14px;border:none;border-radius:12px;background:var(--blue);color:white;font-weight:700;cursor:pointer}
-    .btn:hover{filter:brightness(1.05)}
-    .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    a{color:#93c5fd;text-decoration:none}
-    a:hover{text-decoration:underline}
-    .small{font-size:12px;color:var(--muted)}
-    @media (max-width:900px){.wrap{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logowanie — Zarabianie u Szefa</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="wrap">
-    <div class="left">
-      <div class="brand">
-        <div class="logo">ZS</div>
-        <div>Zarabianie u Szefa</div>
-      </div>
-      <h1>Zaloguj się do panelu</h1>
-      <p class="muted">Wszystko do zarabiania online w jednym miejscu. Po zalogowaniu zobaczysz swój dashboard oraz podgląd QualitetMarket.</p>
 
-      <div class="points">
-        <div class="point">✅ Plan działania krok po kroku</div>
-        <div class="point">✅ Podgląd sklepów i hurtowni w QualitetMarket</div>
-        <div class="point">✅ Aktywacja sprzedaży (PRO) jednym kliknięciem</div>
-      </div>
-
-      <p class="small" style="margin-top:18px;">To demo (GitHub Pages). Logowanie jest poglądowe.</p>
-    </div>
-
-    <div class="right">
-      <h3 style="margin:0 0 6px;">Logowanie</h3>
-      <div class="small">Wpisz dowolny e-mail i hasło — przejdziesz do demo panelu.</div>
-
-      <label>E-mail</label>
-      <input type="email" placeholder="np. twoj@gmail.com" />
-
-      <label>Hasło</label>
-      <input type="password" placeholder="••••••••" />
-
-      <button class="btn" onclick="location.href='dashboard.html'">Zaloguj</button>
-
-      <div class="row">
-        <a href="index.html">← Wróć</a>
-        <a href="aktywuj-pro.html">Aktywuj PRO</a>
-      </div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="logo">ZS</div><div>Zarabianie u Szefa</div></div>
+    <div class="nav">
+      <a href="index.html">Start</a>
+      <a href="cennik.html">Cennik</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
     </div>
   </div>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start;">
+  <div class="card soft">
+    <span class="pill">Wersja demo</span>
+    <h2 style="margin-top:12px;">Zaloguj się do panelu</h2>
+    <p class="muted">Po zalogowaniu zobaczysz dashboard, podgląd QualitetMarket i aktywację PRO.</p>
+    <div class="hr"></div>
+    <div class="muted">✅ Krok po kroku • ✅ Produkty • ✅ Zysk • ✅ Aktywacja sprzedaży</div>
+  </div>
+
+  <div class="card">
+    <h3>Logowanie</h3>
+    <p class="small">W demo wpisz dowolny email i hasło — przejdziesz do panelu.</p>
+    <div class="hr"></div>
+
+    <label class="small">E-mail</label>
+    <input style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1220;color:var(--text);outline:none"
+           placeholder="np. twoj@gmail.com">
+
+    <label class="small">Hasło</label>
+    <input type="password"
+           style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1220;color:var(--text);outline:none"
+           placeholder="••••••••">
+
+    <button class="btn block" style="margin-top:12px" onclick="location.href='dashboard.html'">Zaloguj</button>
+    <button class="btn ghost block" style="margin-top:10px" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+  </div>
+</div>
+
+<div class="footer">Demo UI • Logowanie poglądowe</div>
 </body>
 </html>
