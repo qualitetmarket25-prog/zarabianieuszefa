@@ -1,157 +1,45 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0f172a;color:#fff;line-height:1.6}
+.container{width:90%;max-width:1100px;margin:auto}
 
-body {
-  background: #0f172a;
-  color: #ffffff;
-  line-height: 1.6;
-}
+.nav{background:#0b1220;padding:18px 0;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:10}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-weight:900;font-size:20px;letter-spacing:.2px}
+.logo span{color:#3b82f6}
 
-.container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
-}
+.nav-link{margin-right:16px;color:#cbd5e1;text-decoration:none}
+.nav-link:hover{color:#fff}
+.nav-btn{background:#3b82f6;padding:8px 14px;border-radius:8px;text-decoration:none;color:#fff;display:inline-block}
 
-.nav {
-  background: #0b1220;
-  padding: 20px 0;
-  border-bottom: 1px solid #1e293b;
-}
+.hero{padding:92px 0;text-align:left}
+.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}
+.hero h1{font-size:44px;line-height:1.05}
+.hero p{color:#94a3b8;margin:16px 0 26px;max-width:560px}
 
-.nav-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.btn-primary{background:#3b82f6;padding:12px 18px;border-radius:10px;text-decoration:none;color:#fff;display:inline-block;border:none;cursor:pointer}
+.btn-primary:hover{filter:brightness(1.05)}
 
-.logo {
-  font-weight: bold;
-  font-size: 20px;
-}
+.section{padding:64px 0}
+.section h2{margin-bottom:16px}
+.dark{background:#111827}
 
-.logo span {
-  color: #3b82f6;
-}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:#1e293b;padding:22px;border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.15)}
+.highlight{border:1px solid #3b82f6}
+.muted{color:#94a3b8}
 
-.nav-link {
-  margin-right: 20px;
-  color: #cbd5e1;
-  text-decoration: none;
+input, select{
+  padding:12px;border-radius:10px;border:none;width:100%;
+  background:#0b1220;color:#fff;outline:1px solid #1e293b
 }
+input::placeholder{color:#94a3b8}
+select{outline:1px solid #1e293b}
 
-.nav-link:hover {
-  color: white;
-}
+.footer{background:#0b1220;padding:26px 0;text-align:center;border-top:1px solid #1e293b}
+.footer-inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-.nav-btn {
-  background: #3b82f6;
-  padding: 8px 16px;
-  border-radius: 6px;
-  text-decoration: none;
-  color: white;
-}
-
-.hero {
-  padding: 100px 0;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 42px;
-  margin-bottom: 20px;
-}
-
-.hero p {
-  color: #94a3b8;
-  margin-bottom: 30px;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  padding: 12px 25px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: white;
-  display: inline-block;
-}
-
-.section {
-  padding: 80px 0;
-}
-
-.section h2 {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 12px;
-}
-
-.dark {
-  background: #111827;
-}
-
-.highlight {
-  text-align: center;
-  border: 1px solid #3b82f6;
-}
-
-.highlight ul {
-  list-style: none;
-  margin: 20px 0;
-}
-
-.highlight li {
-  margin-bottom: 10px;
-}
-
-.form-card {
-  text-align: center;
-}
-
-input {
-  padding: 12px;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 8px;
-  border: none;
-  margin: 20px 0;
-}
-
-button {
-  border: none;
-  cursor: pointer;
-}
-
-.footer {
-  background: #0b1220;
-  padding: 30px 0;
-  text-align: center;
-  border-top: 1px solid #1e293b;
-}
 .badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#0b1220;
-  border:1px solid #1e293b;
-  color:#cbd5e1;
-  font-size:12px;
-  letter-spacing:.2px;
+  display:inline-block;padding:6px 10px;border-radius:999px;
+  background:#0b1220;border:1px solid #1e293b;color:#cbd5e1;font-size:12px
 }
-.hr{border-top:1px solid #1e293b;}
-select{background:#1e293b;color:#fff;}
+.hr{border-top:1px solid #1e293b;margin:14px 0}
