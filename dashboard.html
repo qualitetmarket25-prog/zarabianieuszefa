@@ -2,182 +2,76 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — Zarabianie u Szefa</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body onload="checkPro()">
 
-<header class="nav">
-  <div class="container nav-inner">
-    <div class="logo">Zarabianie<span>uSzefa</span></div>
-    <div>
-      <a href="index.html" class="nav-link">Strona</a>
-      <a href="qualitetmarket.html" class="nav-link">QualitetMarket</a>
-      <a href="cennik.html" class="nav-link">Cennik</a>
-      <a href="#" class="nav-btn" id="logoutBtn">Wyloguj</a>
+<div class="nav">
+  <div class="nav-inner" data-nav>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>Zarabianie u Szefa</div>
+      <span data-pro-badge style="margin-left:10px"></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Start</a>
+      <a href="cennik.html">Plany</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-sm btn-danger" onclick="logout()">Wyloguj</button>
     </div>
   </div>
-</header>
+</div>
 
-<section class="section">
-  <div class="container">
+<div class="wrap">
+  <div class="hero-card reveal">
+    <span class="badge"><span class="dot"></span> Panel PRO</span>
+    <div class="h1" style="font-size:34px">Dashboard</div>
+    <div class="p">Tu jest centrum sterowania. Wersja demo – ale UI i flow są docelowe.</div>
 
-    <div class="card highlight" id="gateBox" style="display:none;">
-      <h2>🔒 Dostęp tylko dla PRO / ELITE</h2>
-      <p style="margin-top:10px; color:#cbd5e1;">
-        BASIC nie ma dostępu do panelu sprzedaży (Webkul).
-      </p>
-      <div style="margin-top:18px;">
-        <a class="btn-primary" href="cennik.html">Kup PRO/ELITE</a>
-        <a class="nav-link" href="index.html#pro" style="margin-left:14px;">Wróć</a>
-      </div>
+    <div class="grid-3">
+      <div class="kpi reveal d2"><div><strong>Tryb</strong><div style="color:var(--muted);font-size:12px">Dostęp</div></div><span>PRO</span></div>
+      <div class="kpi reveal d3"><div><strong>Produkty</strong><div style="color:var(--muted);font-size:12px">Do startu</div></div><span>1–3</span></div>
+      <div class="kpi reveal d4"><div><strong>Status</strong><div style="color:var(--muted);font-size:12px">Plan działania</div></div><span>Aktywny</span></div>
     </div>
 
-    <div id="proApp" style="display:none;">
-      <span class="badge" id="planBadge">PLAN</span>
-      <h2 style="margin-top:10px;">Dashboard</h2>
-      <p style="color:#94a3b8; margin-top:6px;">
-        Dostęp aktywny ✅
-      </p>
+    <div class="hr"></div>
 
-      <div class="grid-3" style="margin-top:22px;">
-        <div class="card">
-          <h3>QualitetMarket</h3>
-          <p style="color:#cbd5e1; margin-top:8px;">
-            Katalog produktów + shortlista + gotowe ogłoszenia.
-          </p>
-          <div style="margin-top:14px;">
-            <a class="btn-primary" href="qualitetmarket.html">Wejdź</a>
-          </div>
-        </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="qualitetmarket.html">Wejdź do QualitetMarket</a>
+      <a class="btn" href="cennik.html">Zobacz plany</a>
+      <button class="btn btn-danger" onclick="logout()">Wyloguj</button>
+    </div>
+  </div>
 
-        <div class="card">
-          <h3>Panel sprzedaży (Webkul)</h3>
-          <p style="color:#cbd5e1; margin-top:8px;">
-            Dostępny tylko dla PRO/ELITE — tu będzie link do panelu.
-          </p>
-          <div style="margin-top:14px;">
-            <a class="btn-primary" href="#" onclick="alert('Tu wstawimy link do Webkul / panelu sprzedawcy.'); return false;">Otwórz panel</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Materiały PRO</h3>
-          <p style="color:#cbd5e1; margin-top:8px;">
-            Teksty + CTA do szybkiej sprzedaży.
-          </p>
-          <div style="margin-top:14px;">
-            <button class="btn-primary" id="copyPackBtn">Kopiuj paczkę</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:20px;">
-        <h3>Checklista dzisiaj</h3>
-        <div style="margin-top:10px; color:#cbd5e1;">
-          <label style="display:block; margin:8px 0;">
-            <input type="checkbox" class="cb" /> Wybrałem 1 produkt
-          </label>
-          <label style="display:block; margin:8px 0;">
-            <input type="checkbox" class="cb" /> Ustawiłem cenę + marżę
-          </label>
-          <label style="display:block; margin:8px 0;">
-            <input type="checkbox" class="cb" /> Wrzuciłem 3 ogłoszenia/posty
-          </label>
-          <label style="display:block; margin:8px 0;">
-            <input type="checkbox" class="cb" /> Odpisałem na wiadomości
-          </label>
-        </div>
-
-        <div style="margin-top:14px;">
-          <button class="btn-primary" id="saveBtn">Zapisz postęp</button>
-          <span id="saved" style="margin-left:12px; color:#94a3b8;"></span>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:20px;">
-        <h3>Paczka tekstów (copy/paste)</h3>
-        <div class="card" style="margin-top:14px; background:#0b1220; border:1px solid #1e293b;">
-          <div style="color:#cbd5e1; white-space:pre-wrap;" id="textPack">
-🔥 OFERTA (krótko)
-Sprzedaję [PRODUKT]. Nowe, szybka wysyłka. Cena: [CENA]. Ilość ograniczona.
-
-✅ Dlaczego warto:
-— [1 korzyść]
-— [2 korzyść]
-— [3 korzyść]
-
-📦 Wysyłka 24h / odbiór możliwy
-✉️ Napisz: “biorę” — podeślę szczegóły.
-          </div>
-        </div>
-      </div>
-
+  <div class="section">
+    <div class="section-title reveal">
+      <h2>Twoje następne kroki</h2>
+      <p>Najprostsza ścieżka: wybór produktów → wystawka → ruch → pierwsza sprzedaż.</p>
     </div>
 
+    <div class="cards">
+      <div class="card reveal d2">
+        <h3>1) Wybierz 1–3 produkty</h3>
+        <p>Nie rozpraszaj się. Minimalny zestaw i jedziesz.</p>
+      </div>
+      <div class="card reveal d3">
+        <h3>2) Zrób ofertę</h3>
+        <p>Opis + zdjęcia + gwarancje + proste CTA.</p>
+      </div>
+      <div class="card reveal d4">
+        <h3>3) Dociśnij sprzedaż</h3>
+        <p>Jedno źródło ruchu → test → poprawka → skalowanie.</p>
+      </div>
+    </div>
   </div>
-</section>
+</div>
 
-<footer class="footer">
-  <div class="container footer-inner">
-    <div>© 2026 Zarabianie u Szefa</div>
-    <div>Dashboard</div>
-  </div>
-</footer>
-
-<script>
-  // gate: wpuszcza PRO/ELITE
-  const plan = (localStorage.getItem("status") || "BASIC").toUpperCase();
-  const allowed = (plan === "PRO" || plan === "ELITE");
-
-  const gateBox = document.getElementById("gateBox");
-  const proApp = document.getElementById("proApp");
-
-  if (!allowed) gateBox.style.display = "block";
-  else proApp.style.display = "block";
-
-  // badge
-  const planBadge = document.getElementById("planBadge");
-  if (planBadge) planBadge.textContent = plan;
-
-  // logout
-  document.getElementById("logoutBtn").addEventListener("click", (e) => {
-    e.preventDefault();
-    localStorage.removeItem("status");
-    localStorage.removeItem("paid_at");
-    window.location.href = "index.html";
-  });
-
-  // copy pack
-  document.getElementById("copyPackBtn")?.addEventListener("click", async () => {
-    const txt = document.getElementById("textPack").innerText.trim();
-    try {
-      await navigator.clipboard.writeText(txt);
-      alert("✅ Skopiowane. Wklej w ogłoszeniu/postach.");
-    } catch {
-      alert("Nie mogę skopiować automatycznie — zaznacz tekst ręcznie i skopiuj.");
-    }
-  });
-
-  // checklist save/load
-  const KEY = "checklist_v2";
-  const cbs = Array.from(document.querySelectorAll(".cb"));
-  const saved = document.getElementById("saved");
-
-  function loadChecklist(){
-    const data = JSON.parse(localStorage.getItem(KEY) || "[]");
-    cbs.forEach((cb, i) => cb.checked = !!data[i]);
-  }
-  function saveChecklist(){
-    const data = cbs.map(cb => cb.checked);
-    localStorage.setItem(KEY, JSON.stringify(data));
-    saved.textContent = "✅ Zapisano";
-    setTimeout(()=> saved.textContent = "", 1500);
-  }
-  document.getElementById("saveBtn")?.addEventListener("click", saveChecklist);
-  loadChecklist();
-</script>
-
+<div class="footer">© 2026 Zarabianie u Szefa</div>
+<script src="app.js"></script>
 </body>
 </html>
