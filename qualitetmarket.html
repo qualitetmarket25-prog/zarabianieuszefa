@@ -23,14 +23,14 @@
 <section class="section">
   <div class="container">
 
-    <!-- GATE -->
+    <!-- GATE: BASIC blokada, PRO/ELITE wpuszcza -->
     <div class="card highlight" id="gateBox" style="display:none;">
-      <h2>🔒 Dostęp tylko dla PRO</h2>
+      <h2>🔒 Dostęp tylko dla PRO / ELITE</h2>
       <p style="margin-top:10px; color:#cbd5e1;">
-        QualitetMarket jest dostępny wyłącznie po aktywacji PRO.
+        QualitetMarket jest dostępny wyłącznie po aktywacji PRO lub ELITE.
       </p>
       <div style="margin-top:18px;">
-        <a class="btn-primary" href="aktywuj-pro.html">Aktywuj PRO</a>
+        <a class="btn-primary" href="cennik.html">Kup PRO/ELITE</a>
         <a class="nav-link" href="index.html#pro" style="margin-left:14px;">Wróć</a>
       </div>
     </div>
@@ -40,7 +40,7 @@
 
       <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap;">
         <div>
-          <span class="badge">PRO • Katalog</span>
+          <span class="badge" id="planBadge">PLAN</span>
           <h2 style="margin-top:10px;">QualitetMarket — Produkty do sprzedaży</h2>
           <p style="color:#94a3b8; margin-top:6px;">
             Dodaj produkt do shortlisty, policz zysk i skopiuj gotowe ogłoszenie.
@@ -72,14 +72,14 @@
               Zapisuje się automatycznie.
             </p>
 
-            <div class="hr" style="margin:14px 0; border-top:1px solid #1e293b;"></div>
+            <div class="hr" style="margin:14px 0;"></div>
 
             <div id="shortlistEmpty" style="color:#cbd5e1;">
               Dodaj 1–3 produkty z listy.
             </div>
             <div id="shortlistList" style="display:none;"></div>
 
-            <div class="hr" style="margin:14px 0; border-top:1px solid #1e293b;"></div>
+            <div class="hr" style="margin:14px 0;"></div>
 
             <h4 style="margin-bottom:8px;">Kalkulator zysku</h4>
             <div style="display:grid; gap:10px;">
@@ -89,7 +89,7 @@
               <div id="calcOut" style="color:#cbd5e1;"></div>
             </div>
 
-            <div class="hr" style="margin:14px 0; border-top:1px solid #1e293b;"></div>
+            <div class="hr" style="margin:14px 0;"></div>
 
             <button class="btn-primary" id="copyAllBtn">Kopiuj ogłoszenie z shortlisty</button>
             <p style="color:#94a3b8; margin-top:8px; font-size:13px;">
@@ -107,82 +107,43 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div>© 2026 Zarabianie u Szefa</div>
-    <div>QualitetMarket PRO</div>
+    <div>QualitetMarket</div>
   </div>
 </footer>
 
 <script>
 /* =========================
-   GATE + LOGOUT
+   GATE + LOGOUT + PLAN
 ========================= */
-const isPro = localStorage.getItem("status") === "PRO";
+const plan = (localStorage.getItem("status") || "BASIC").toUpperCase();
+const allowed = (plan === "PRO" || plan === "ELITE");
+
 const gateBox = document.getElementById("gateBox");
 const app = document.getElementById("app");
 
-if (!isPro) {
-  gateBox.style.display = "block";
-} else {
-  app.style.display = "block";
-}
+if (!allowed) gateBox.style.display = "block";
+else app.style.display = "block";
+
+const planBadge = document.getElementById("planBadge");
+if (planBadge) planBadge.textContent = plan;
 
 document.getElementById("logoutBtn").addEventListener("click", (e) => {
   e.preventDefault();
   localStorage.removeItem("status");
-  window.location.href = "index.html#pro";
+  localStorage.removeItem("paid_at");
+  window.location.href = "index.html";
 });
 
 /* =========================
    DATA
 ========================= */
 const PRODUCTS = [
-  {
-    id: "p1",
-    name: "Organizer do auta (premium)",
-    margin: 55,
-    demand: "Wysoki",
-    angle: "Porządek + wygoda",
-    desc: "Premium organizer do auta. Szybka wysyłka, idealny prezent i do codziennego użytku."
-  },
-  {
-    id: "p2",
-    name: "Lampa LED biurkowa (USB)",
-    margin: 60,
-    demand: "Wysoki",
-    angle: "Home office",
-    desc: "Nowoczesna lampa LED z regulacją, idealna do nauki i pracy. Minimalistyczny design."
-  },
-  {
-    id: "p3",
-    name: "Zestaw do czyszczenia sneakersów",
-    margin: 48,
-    demand: "Średni/Wysoki",
-    angle: "Moda + pielęgnacja",
-    desc: "Zestaw do czyszczenia butów — efekt jak nowe. Dobre do ogłoszeń i krótkich reels."
-  },
-  {
-    id: "p4",
-    name: "Mata antypoślizgowa (uniwersalna)",
-    margin: 42,
-    demand: "Wysoki",
-    angle: "Bezpieczeństwo",
-    desc: "Uniwersalna mata do domu/łazienki. Prosty produkt, łatwo sprzedaje się ceną."
-  },
-  {
-    id: "p5",
-    name: "Akcesoria kuchenne 3w1",
-    margin: 50,
-    demand: "Wysoki",
-    angle: "Szybciej w kuchni",
-    desc: "Proste akcesorium 3w1, które ułatwia codzienne gotowanie. Dobry zakup impulsowy."
-  },
-  {
-    id: "p6",
-    name: "Zestaw treningowy (gumy oporowe)",
-    margin: 57,
-    demand: "Wysoki",
-    angle: "Fitness w domu",
-    desc: "Zestaw gum oporowych do treningu w domu. Idealne pod posty/OLX/FB Marketplace."
-  }
+  { id:"p1", name:"Organizer do auta (premium)", margin:55, demand:"Wysoki", angle:"Porządek + wygoda", desc:"Premium organizer do auta. Szybka wysyłka, idealny prezent i do codziennego użytku." },
+  { id:"p2", name:"Lampa LED biurkowa (USB)", margin:60, demand:"Wysoki", angle:"Home office", desc:"Nowoczesna lampa LED z regulacją, idealna do nauki i pracy. Minimalistyczny design." },
+  { id:"p3", name:"Zestaw do czyszczenia sneakersów", margin:48, demand:"Średni/Wysoki", angle:"Moda + pielęgnacja", desc:"Zestaw do czyszczenia butów — efekt jak nowe. Dobre do ogłoszeń i krótkich reels." },
+  { id:"p4", name:"Mata antypoślizgowa (uniwersalna)", margin:42, demand:"Wysoki", angle:"Bezpieczeństwo", desc:"Uniwersalna mata do domu/łazienki. Prosty produkt, łatwo sprzedaje się ceną." },
+  { id:"p5", name:"Akcesoria kuchenne 3w1", margin:50, demand:"Wysoki", angle:"Szybciej w kuchni", desc:"Proste akcesorium 3w1, które ułatwia codzienne gotowanie. Dobry zakup impulsowy." },
+  { id:"p6", name:"Zestaw treningowy (gumy oporowe)", margin:57, demand:"Wysoki", angle:"Fitness w domu", desc:"Zestaw gum oporowych do treningu w domu. Idealne pod posty/OLX/FB Marketplace." }
 ];
 
 /* =========================
@@ -207,7 +168,7 @@ const shortlistEmpty = document.getElementById("shortlistEmpty");
 const shortlistList = document.getElementById("shortlistList");
 
 /* =========================
-   RENDER HELPERS
+   RENDER
 ========================= */
 function render(){
   const q = (searchEl.value || "").trim().toLowerCase();
@@ -223,16 +184,16 @@ function render(){
   if (sort === "margin_asc") items.sort((a,b)=> a.margin - b.margin);
   if (sort === "name_asc") items.sort((a,b)=> a.name.localeCompare(b.name));
   if (sort === "hot") {
-    // prosta heurystyka: wysoki popyt + marża
-    const score = (p) => (p.margin) + (p.demand.includes("Wysoki") ? 20 : 0);
+    const score = (p) => (p.margin) + (String(p.demand).includes("Wysoki") ? 20 : 0);
     items.sort((a,b)=> score(b)-score(a));
   }
 
   const shortlist = new Set(getShortlist());
-
   gridEl.innerHTML = "";
+
   items.forEach(p => {
     const inList = shortlist.has(p.id);
+
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -245,12 +206,8 @@ function render(){
         <button class="btn-primary" data-add="${p.id}">
           ${inList ? "✅ W shortlist" : "➕ Dodaj do shortlisty"}
         </button>
-        <button class="btn-primary" data-copy="${p.id}">
-          Kopiuj opis
-        </button>
-        <button class="btn-primary" data-ad="${p.id}">
-          Kopiuj ogłoszenie
-        </button>
+        <button class="btn-primary" data-copy="${p.id}">Kopiuj opis</button>
+        <button class="btn-primary" data-ad="${p.id}">Kopiuj ogłoszenie</button>
       </div>
     `;
     gridEl.appendChild(card);
@@ -287,7 +244,6 @@ function renderShortlist(){
 }
 
 function bindButtons(){
-  // add/remove
   document.querySelectorAll("[data-add]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-add");
@@ -313,7 +269,6 @@ function bindButtons(){
     }, { once:true });
   });
 
-  // copy desc
   document.querySelectorAll("[data-copy]").forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-copy");
@@ -324,12 +279,11 @@ function bindButtons(){
     }, { once:true });
   });
 
-  // copy ad
   document.querySelectorAll("[data-ad]").forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-ad");
       const p = PRODUCTS.find(x=>x.id===id);
-      const txt = makeAd([p]);
+      const txt = makeAd(p);
       await safeCopy(txt);
       alert("✅ Skopiowano ogłoszenie.");
     }, { once:true });
@@ -340,7 +294,6 @@ async function safeCopy(text){
   try{
     await navigator.clipboard.writeText(text);
   }catch{
-    // fallback
     const ta = document.createElement("textarea");
     ta.value = text;
     document.body.appendChild(ta);
@@ -350,8 +303,7 @@ async function safeCopy(text){
   }
 }
 
-function makeAd(prods){
-  const p = prods[0];
+function makeAd(p){
   return `🔥 OFERTA: ${p.name}
 
 ${p.desc}
@@ -398,13 +350,14 @@ document.getElementById("copyAllBtn").addEventListener("click", async ()=>{
     return;
   }
   const prods = ids.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+
   const txt = `✅ SHORTLISTA (1–3 produkty)
 ${prods.map((p,i)=>`${i+1}. ${p.name} — marża ${p.margin}% — ${p.angle}`).join("\n")}
 
 ========================
 OGŁOSZENIE (WERSJA 1)
 ========================
-${makeAd([prods[0]])}
+${makeAd(prods[0])}
 
 ========================
 OGŁOSZENIE (WERSJA 2)
