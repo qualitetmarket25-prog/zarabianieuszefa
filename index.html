@@ -14,7 +14,7 @@
     <div class="brand">
       <div class="logo"></div>
       <div>Zarabianie u Szefa</div>
-      <span data-pro-badge style="margin-left:10px"></span>
+      <span data-qm-plan style="margin-left:10px"></span>
     </div>
 
     <div class="nav-links">
@@ -152,7 +152,7 @@
     </div>
   </div>
 
-  <!-- PRODUKTY (obrazy: produkt_1..produkt_5.png) -->
+  <!-- PRODUKTY -->
   <section class="qm-products" id="produkty">
     <div class="qm-head reveal">
       <h2>Top produkty</h2>
@@ -251,6 +251,16 @@
   © 2026 Zarabianie u Szefa • QualitetMarket
 </div>
 
-<script src="app.js"></script>
+<script>
+  function leadSubmit(e){
+    e.preventDefault();
+    const email = document.getElementById("leadEmail")?.value?.trim();
+    if(!email){ alert("Wpisz email"); return; }
+    alert("Zapisano! (demo) — podepniemy pod Google Forms.");
+    document.getElementById("leadEmail").value = "";
+  }
+</script>
+
+<script src="assets/app.js"></script>
 </body>
 </html>
