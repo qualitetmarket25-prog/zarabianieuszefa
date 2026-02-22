@@ -1,29 +1,55 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Aktywacja PRO</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Aktywuj PRO</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<section class="section">
-  <div class="container">
-    <div class="card highlight">
-      <h2>Aktywuj Status PRO</h2>
-      <p>Po aktywacji otrzymasz dostęp do funkcji premium.</p>
-      <button class="btn-primary" onclick="activatePro()">Aktywuj PRO</button>
-      <p id="status" style="margin-top:20px;"></p>
+<div class="nav">
+  <div class="nav-inner" data-nav>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>Zarabianie u Szefa</div>
+      <span data-pro-badge style="margin-left:10px"></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Start</a>
+      <a href="cennik.html">Plany</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-ghost" href="cennik.html">Wróć</a>
     </div>
   </div>
-</section>
+</div>
 
-<script>
-function activatePro() {
-  localStorage.setItem("status", "PRO");
-  document.getElementById("status").innerHTML = "✅ Status PRO aktywowany!";
-}
-</script>
+<div class="wrap">
+  <div class="hero-card reveal">
+    <span class="badge"><span class="dot"></span> Aktywacja (demo)</span>
+    <div class="h1" style="font-size:34px">Aktywuj dostęp PRO</div>
+    <div class="p">
+      W demo kliknięcie nadaje PRO (localStorage). Docelowo w tym miejscu będzie weryfikacja płatności
+      i automatyczne role.
+    </div>
 
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="activatePro()">Aktywuj PRO</button>
+      <a class="btn" href="login.html">Logowanie</a>
+      <a class="btn btn-success" href="dashboard.html">Mam już PRO</a>
+    </div>
+
+    <div class="hr"></div>
+    <div class="note">
+      Jeśli chcesz — w kolejnym kroku robimy PWA (instalacja jak apka: ikona, fullscreen, “Add to Home Screen”).
+    </div>
+  </div>
+</div>
+
+<div class="footer">© 2026 Zarabianie u Szefa</div>
+<script src="app.js"></script>
 </body>
 </html>
