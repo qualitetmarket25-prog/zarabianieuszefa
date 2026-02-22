@@ -6,7 +6,8 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body onload="checkPro()">
+
+<body data-require="login">
 
 <div class="nav">
   <div class="nav-inner" data-nav>
@@ -34,9 +35,29 @@
     <div class="p">Tu jest centrum sterowania. Wersja demo – ale UI i flow są docelowe.</div>
 
     <div class="grid-3">
-      <div class="kpi reveal d2"><div><strong>Tryb</strong><div style="color:var(--muted);font-size:12px">Dostęp</div></div><span>PRO</span></div>
-      <div class="kpi reveal d3"><div><strong>Produkty</strong><div style="color:var(--muted);font-size:12px">Do startu</div></div><span>1–3</span></div>
-      <div class="kpi reveal d4"><div><strong>Status</strong><div style="color:var(--muted);font-size:12px">Plan działania</div></div><span>Aktywny</span></div>
+      <div class="kpi reveal d2">
+        <div>
+          <strong>Tryb</strong>
+          <div style="color:var(--muted);font-size:12px">Dostęp</div>
+        </div>
+        <span>PRO</span>
+      </div>
+
+      <div class="kpi reveal d3">
+        <div>
+          <strong>Produkty</strong>
+          <div style="color:var(--muted);font-size:12px">Do startu</div>
+        </div>
+        <span>1–3</span>
+      </div>
+
+      <div class="kpi reveal d4">
+        <div>
+          <strong>Status</strong>
+          <div style="color:var(--muted);font-size:12px">Plan działania</div>
+        </div>
+        <span>Aktywny</span>
+      </div>
     </div>
 
     <div class="hr"></div>
@@ -59,10 +80,12 @@
         <h3>1) Wybierz 1–3 produkty</h3>
         <p>Nie rozpraszaj się. Minimalny zestaw i jedziesz.</p>
       </div>
+
       <div class="card reveal d3">
         <h3>2) Zrób ofertę</h3>
         <p>Opis + zdjęcia + gwarancje + proste CTA.</p>
       </div>
+
       <div class="card reveal d4">
         <h3>3) Dociśnij sprzedaż</h3>
         <p>Jedno źródło ruchu → test → poprawka → skalowanie.</p>
@@ -72,7 +95,7 @@
 </div>
 
 <div class="footer">© 2026 Zarabianie u Szefa</div>
-<script src="app.js"></script>
+
+<script src="assets/app.js"></script>
 </body>
 </html>
-<body data-require="login">
