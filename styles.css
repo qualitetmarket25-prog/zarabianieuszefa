@@ -105,6 +105,18 @@ img{max-width:100%}
 }
 .badge .dot{width:7px;height:7px;border-radius:99px;background:var(--ok); box-shadow:0 0 0 4px rgba(49,210,122,.12)}
 
+/* ✅ statusy badge dla JS (QM) */
+.badge.ok{
+  border-color: rgba(49,210,122,.28);
+  background: rgba(49,210,122,.10);
+  color: rgba(234,240,255,.92);
+}
+.badge.warn{
+  border-color: rgba(255,209,102,.30);
+  background: rgba(255,209,102,.10);
+  color: rgba(234,240,255,.90);
+}
+
 /* ===== HERO (stary layout) ===== */
 .hero{
   padding:54px 0 10px;
@@ -293,7 +305,7 @@ img{max-width:100%}
   opacity:.9;
 }
 
-/* ===== HERO PREMIUM (u Ciebie używane) ===== */
+/* ===== HERO PREMIUM ===== */
 .hero-premium{
   position:relative;
   height:85vh;
@@ -357,7 +369,7 @@ img{max-width:100%}
   margin-bottom:24px;
 }
 
-/* ✅ POPRAWKA: scope tylko do HERO PREMIUM (nie rozwala NAV i globalnych .btn-*) */
+/* scope tylko do HERO PREMIUM */
 .hero-premium .btn-primary{
   background:linear-gradient(135deg,#4f7cff,#8a5bff);
   padding:14px 26px;
@@ -405,14 +417,9 @@ img{max-width:100%}
   color:rgba(255,255,255,0.75);
 }
 
-/* ===== PRODUCTS (NOWE - qm-products, pod Twoją sekcję w index.html) ===== */
-.qm-products{
-  padding: 4px 0 0;
-}
-
-.qm-products .qm-head{
-  margin: 0 0 18px;
-}
+/* ===== PRODUCTS (NOWE - qm-products) ===== */
+.qm-products{ padding: 4px 0 0; }
+.qm-products .qm-head{ margin: 0 0 18px; }
 
 .qm-products-grid{
   display:grid;
@@ -435,7 +442,7 @@ img{max-width:100%}
   box-shadow: 0 14px 34px rgba(0,0,0,.30);
 }
 
-/* ===== FIX: idealny kadr (nie ucina twarzy) ===== */
+/* ✅ IDEALNY KADR: domyślnie 18%, per-karta przez --focus-y */
 .qm-product-media{
   aspect-ratio: 16 / 10;
   height: auto;
@@ -444,36 +451,23 @@ img{max-width:100%}
   overflow:hidden;
   position: relative;
 }
-
 .qm-product-media img{
   width:100%;
   height:100%;
   object-fit: cover;
-  object-position: 50% 18%;
+  object-position: 50% var(--focus-y, 18%);
   display:block;
   transform: scale(1.02);
   transition: transform .25s ease, object-position .25s ease;
 }
-
 .qm-product-card:hover .qm-product-media img{
   transform: scale(1.06);
-  object-position: 50% 14%;
+  object-position: 50% var(--focus-y-hover, 14%);
 }
 
-.qm-product-body{
-  padding: 14px 14px 16px;
-}
-
-.qm-product-body h3{
-  margin: 0 0 6px;
-  font-size: 16px;
-  letter-spacing: -.1px;
-}
-
-.qm-product-body .muted{
-  margin: 0 0 12px;
-  opacity: .82;
-}
+.qm-product-body{ padding: 14px 14px 16px; }
+.qm-product-body h3{ margin: 0 0 6px; font-size: 16px; letter-spacing: -.1px; }
+.qm-product-body .muted{ margin: 0 0 12px; opacity: .82; }
 
 .qm-product-meta{
   display:flex;
@@ -481,7 +475,6 @@ img{max-width:100%}
   gap: 8px;
   margin-bottom: 12px;
 }
-
 .qm-chip{
   padding:6px 9px;
   border-radius:999px;
@@ -492,7 +485,7 @@ img{max-width:100%}
   font-weight:800;
 }
 
-/* ===== LEGACY product-grid (jeśli jeszcze gdzieś użyjesz) ===== */
+/* ===== LEGACY product-grid ===== */
 .product-grid{
   display:grid;
   grid-template-columns: repeat(3, 1fr);
@@ -508,8 +501,15 @@ img{max-width:100%}
 }
 .product-card:hover{transform: translateY(-2px); background: rgba(255,255,255,.07);}
 .product-img-wrapper{ height:180px; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.10); }
-.product-img-real{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .25s ease; }
-.product-card:hover .product-img-real{ transform: scale(1.05); }
+.product-img-real{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position: 50% 18%;
+  display:block;
+  transition: transform .25s ease, object-position .25s ease;
+}
+.product-card:hover .product-img-real{ transform: scale(1.05); object-position: 50% 14%; }
 .product-body{ padding:14px; }
 .product-title{ margin:0 0 6px; font-size:15px; }
 .product-meta{ color:var(--muted); font-size:12.5px; line-height:1.4; }
