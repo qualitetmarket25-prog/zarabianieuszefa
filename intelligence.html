@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QualitetMarket • Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <span class="logo"></span>
+        <span>Zarabianie u Szefa</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="dashboard.html">Panel</a>
+        <a href="blueprints.html">Gotowce</a>
+        <a href="intelligence.html" style="color:var(--text); background:rgba(255,255,255,.06);">Intelligence</a>
+      </div>
+
+      <div class="nav-cta">
+        <button class="btn btn-sm btn-ghost" id="planBtn">Plan: <span id="planLabel">BASIC</span></button>
+        <button class="btn btn-sm btn-danger" id="logoutBtn">Wyloguj</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="section-title">
+      <div>
+        <span class="badge"><span class="dot"></span> QualitetMarket Intelligence</span>
+        <h2 style="margin:10px 0 6px;">Analityka produktów (scoring + ceny)</h2>
+        <p>System wylicza cenę sugerowaną wg rynku, marżę, zysk i score. Produkty zbyt słabe są automatycznie filtrowane.</p>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input class="input" id="searchInput" placeholder="Szukaj produktu / dostawcy…" style="min-width:260px; max-width:320px;" />
+        <select class="input" id="supplierFilter" style="min-width:220px; max-width:260px;">
+          <option value="">Wszyscy dostawcy</option>
+        </select>
+        <select class="input" id="statusFilter" style="min-width:200px; max-width:240px;">
+          <option value="">Wszystkie statusy</option>
+          <option value="ELITE">🔥 ELITE</option>
+          <option value="HIGH">⭐ WYSOKI</option>
+          <option value="MEDIUM">⚖ ŚREDNI</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="kpi">
+        <div>
+          <strong id="kpiTopScore">—</strong>
+          <span>TOP SCORE</span>
+        </div>
+        <span class="badge ok" id="kpiTopBadge">—</span>
+      </div>
+      <div class="kpi">
+        <div>
+          <strong id="kpiAvgMargin">—</strong>
+          <span>Średnia marża</span>
+        </div>
+        <span class="badge" id="kpiCount">—</span>
+      </div>
+      <div class="kpi">
+        <div>
+          <strong id="kpiEliteCount">—</strong>
+          <span>Produkty ELITE</span>
+        </div>
+        <span class="badge warn" id="kpiRisk">—</span>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+          <h3>Lista produktów</h3>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-sm" id="exportCsvBtn">Pobierz CSV (produkty)</button>
+            <button class="btn btn-sm btn-primary" id="exportPackBtn">Pobierz PACZKĘ (CSV+copy)</button>
+          </div>
+        </div>
+
+        <div class="note" style="margin:10px 0 14px;">
+          <b>Autentyczność:</b> cena sugerowana = <span class="badge">średnia rynkowa × 0.92</span>.  
+          Produkty z marżą &lt; <b>30%</b> są ukrywane (filtr jakości).
+        </div>
+
+        <div class="qm-table-wrap">
+          <table class="qm-table">
+            <thead>
+              <tr>
+                <th>Produkt</th>
+                <th>Dostawca</th>
+                <th class="right">Hurt</th>
+                <th class="right">Rynek</th>
+                <th class="right">Sugerowana</th>
+                <th class="right">Zysk</th>
+                <th class="right">Marża</th>
+                <th class="right">Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="productsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="detailPanel">
+        <h3>Szczegóły produktu</h3>
+        <div class="note">Kliknij produkt po lewej, żeby zobaczyć rozbicie scoringu i rekomendację.</div>
+
+        <div class="hr"></div>
+
+        <div id="detailContent" class="qm-detail">
+          <div class="qm-detail-title">—</div>
+
+          <div class="grid-2" style="margin-top:12px;">
+            <div class="kpi">
+              <div>
+                <strong id="dPrice">—</strong>
+                <span>Sugerowana cena</span>
+              </div>
+              <span class="badge ok" id="dStatus">—</span>
+            </div>
+            <div class="kpi">
+              <div>
+                <strong id="dProfit">—</strong>
+                <span>Zysk / szt.</span>
+              </div>
+              <span class="badge" id="dMargin">—</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="qm-bars">
+            <div class="qm-bar">
+              <div class="qm-bar-head"><b>Marża</b><span id="bMargin">—</span></div>
+              <div class="qm-bar-track"><div class="qm-bar-fill" id="fMargin" style="width:0%"></div></div>
+            </div>
+
+            <div class="qm-bar">
+              <div class="qm-bar-head"><b>Trend</b><span id="bTrend">—</span></div>
+              <div class="qm-bar-track"><div class="qm-bar-fill" id="fTrend" style="width:0%"></div></div>
+            </div>
+
+            <div class="qm-bar">
+              <div class="qm-bar-head"><b>Problem-solving</b><span id="bProblem">—</span></div>
+              <div class="qm-bar-track"><div class="qm-bar-fill" id="fProblem" style="width:0%"></div></div>
+            </div>
+
+            <div class="qm-bar">
+              <div class="qm-bar-head"><b>Impuls</b><span id="bImpulse">—</span></div>
+              <div class="qm-bar-track"><div class="qm-bar-fill" id="fImpulse" style="width:0%"></div></div>
+            </div>
+
+            <div class="qm-bar">
+              <div class="qm-bar-head"><b>Konkurencja</b><span id="bCompetition">—</span></div>
+              <div class="qm-bar-track"><div class="qm-bar-fill" id="fCompetition" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="note" id="recommendationBox">—</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+            <a class="btn btn-sm btn-primary" id="openSourceBtn" target="_blank" rel="noopener">Źródło / rynek</a>
+            <button class="btn btn-sm" id="copyOfferBtn">Kopiuj ofertę (tytuł+opis)</button>
+            <button class="btn btn-sm btn-success" id="addToBlueprintBtn">Dodaj do gotowca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">© QualitetMarket • Intelligence Engine</div>
+  </div>
+
+  <script src="js/intelligence.js"></script>
+</body>
+</html>
