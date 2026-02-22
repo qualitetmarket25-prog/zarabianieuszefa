@@ -6,14 +6,15 @@
   <title>QualitetMarket</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body onload="checkPro()">
+
+<body data-require="pro">
 
 <div class="nav">
   <div class="nav-inner" data-nav>
     <div class="brand">
       <div class="logo"></div>
       <div>QualitetMarket</div>
-      <span data-pro-badge style="margin-left:10px"></span>
+      <span data-qm-plan style="margin-left:10px"></span>
     </div>
     <div class="nav-links">
       <a href="index.html">Start</a>
@@ -22,7 +23,7 @@
       <a href="dashboard.html">Dashboard</a>
     </div>
     <div class="nav-cta">
-      <button class="btn btn-sm btn-danger" onclick="logout()">Wyloguj</button>
+      <button class="btn btn-sm btn-danger" onclick="QM.logout()">Wyloguj</button>
     </div>
   </div>
 </div>
@@ -39,8 +40,11 @@
     <div class="hr"></div>
 
     <div class="product-grid">
+
       <div class="product-card reveal d2">
-        <div class="product-img" style="background-image:url('assets/img/p1.png')"></div>
+        <div class="product-img-wrapper">
+          <img class="product-img-real" src="assets/img/produkt_1.png" alt="Produkt 1" loading="lazy">
+        </div>
         <div class="product-body">
           <h3 class="product-title">Produkt #1</h3>
           <div class="product-meta">Opis • cena • marża (do wstawienia)</div>
@@ -53,7 +57,9 @@
       </div>
 
       <div class="product-card reveal d3">
-        <div class="product-img" style="background-image:url('assets/img/p2.png')"></div>
+        <div class="product-img-wrapper">
+          <img class="product-img-real" src="assets/img/produkt_2.png" alt="Produkt 2" loading="lazy">
+        </div>
         <div class="product-body">
           <h3 class="product-title">Produkt #2</h3>
           <div class="product-meta">Opis • cena • marża (do wstawienia)</div>
@@ -66,7 +72,9 @@
       </div>
 
       <div class="product-card reveal d4">
-        <div class="product-img" style="background-image:url('assets/img/p3.png')"></div>
+        <div class="product-img-wrapper">
+          <img class="product-img-real" src="assets/img/produkt_3.png" alt="Produkt 3" loading="lazy">
+        </div>
         <div class="product-body">
           <h3 class="product-title">Produkt #3</h3>
           <div class="product-meta">Opis • cena • marża (do wstawienia)</div>
@@ -79,7 +87,9 @@
       </div>
 
       <div class="product-card reveal d4">
-        <div class="product-img" style="background-image:url('assets/img/p4.png')"></div>
+        <div class="product-img-wrapper">
+          <img class="product-img-real" src="assets/img/produkt_4.png" alt="Produkt 4" loading="lazy">
+        </div>
         <div class="product-body">
           <h3 class="product-title">Produkt #4</h3>
           <div class="product-meta">Opis • cena • marża (do wstawienia)</div>
@@ -90,6 +100,7 @@
           <a class="btn btn-sm btn-primary" href="dashboard.html">Dodaj do planu</a>
         </div>
       </div>
+
     </div>
 
     <div class="hr"></div>
@@ -102,6 +113,7 @@
 </div>
 
 <div class="footer">© 2026 QualitetMarket</div>
-<script src="app.js"></script>
+
+<script src="assets/app.js"></script>
 </body>
 </html>
