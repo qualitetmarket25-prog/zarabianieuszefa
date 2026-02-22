@@ -1,25 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Zarabianie u Szefa</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="wrap">
-  <div class="card">
-    <span class="badge">Start Platformy</span>
-    <h1>Zarabianie u Szefa</h1>
-    <p>System zarabiania + dostęp do QualitetMarket.</p>
-
-    <a href="login.html" class="btn btn-primary">Zaloguj się</a>
-    <a href="cennik.html" class="btn btn-secondary">Zobacz plany</a>
+<div class="nav">
+  <div class="nav-inner" data-nav>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>Zarabianie u Szefa</div>
+      <span data-pro-badge style="margin-left:10px"></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Start</a>
+      <a href="cennik.html">Plany</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-ghost" href="login.html">Logowanie</a>
+      <a class="btn btn-sm btn-primary" href="cennik.html">Wybierz plan</a>
+    </div>
   </div>
 </div>
 
-<div class="footer">
-  © 2026 Zarabianie u Szefa
+<div class="wrap hero">
+  <div class="glow"></div>
+
+  <div class="hero-grid">
+    <div class="hero-card reveal">
+      <span class="badge"><span class="dot"></span> Program partnerski • Start bez kapitału</span>
+
+      <div class="h1">Sprzedawaj online<br/>bez magazynu.</div>
+      <div class="p">
+        Dostajesz produkty, system i plan działania. Wybierasz 1–3 produkty i startujesz.
+        Wersja demo ma PRO przez przycisk (później podpinamy płatności).
+      </div>
+
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="cennik.html">Wybierz plan</a>
+        <a class="btn" href="login.html">Wejdź do panelu</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat reveal d2"><strong>20+</strong><span>Gotowych produktów</span></div>
+        <div class="stat reveal d3"><strong>0 zł</strong><span>Magazyn na start</span></div>
+        <div class="stat reveal d4"><strong>1 dzień</strong><span>Do uruchomienia MVP</span></div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="note">
+        🔥 Cel: szybki start, potem skalowanie. Ten landing to “front” — docelowo podpinamy:
+        płatności, realne konta, i panel sprzedaży Webkul tylko dla PRO/ELITE.
+      </div>
+    </div>
+
+    <div class="panel reveal d2">
+      <h3>Co dostajesz w PRO</h3>
+      <div class="list">
+        <div class="item reveal d2">
+          <div class="icon">⚡</div>
+          <div><b>System krok po kroku</b><div>Bez chaosu: co robić dziś / jutro / tydzień.</div></div>
+        </div>
+        <div class="item reveal d3">
+          <div class="icon">🧩</div>
+          <div><b>Dostęp do QualitetMarket</b><div>Produkty + gotowe opisy + kierunek.</div></div>
+        </div>
+        <div class="item reveal d4">
+          <div class="icon">🔒</div>
+          <div><b>Panel sprzedaży (Webkul)</b><div>Tylko PRO/ELITE (BASIC bez panelu).</div></div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="card" style="margin:0">
+        <h3 style="margin:0 0 8px">Lista startowa</h3>
+        <p style="margin:0 0 12px; color:var(--muted)">Zostaw email — dostaniesz dostęp jako pierwszy + bonus na start.</p>
+
+        <!-- DEMO: bez backendu. Jeśli masz Google Forms, wstaw link w action -->
+        <form onsubmit="leadSubmit(event)">
+          <input id="leadEmail" class="input" type="email" placeholder="Twój email" />
+          <div style="height:10px"></div>
+          <button class="btn btn-primary" type="submit">Dołącz</button>
+        </form>
+
+        <div style="height:10px"></div>
+        <div class="note">Jeśli chcesz, podepnę Ci to pod Google Forms (100% automatycznie).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title reveal">
+      <h2>Jak to działa</h2>
+      <p>Masz gotową ścieżkę: wybór planu → dostęp → produkty → sprzedaż → skalowanie.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card reveal d2">
+        <h3>1) Wybierasz plan</h3>
+        <p>BASIC: start bez panelu. PRO/ELITE: dostęp + panel sprzedaży + narzędzia.</p>
+      </div>
+      <div class="card reveal d3">
+        <h3>2) Dostajesz system</h3>
+        <p>Proste kroki bez “szukania w necie”. Dostajesz konkret.</p>
+      </div>
+      <div class="card reveal d4">
+        <h3>3) Sprzedajesz</h3>
+        <p>Start od 1–3 produktów. Potem dokładamy kolejne i rośniesz.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title reveal">
+      <h2>FAQ</h2>
+      <p>Najczęstsze pytania — prosto i bez lania wody.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card reveal d2">
+        <h3>Czy to jest aplikacja?</h3>
+        <p>Tak — aplikacja webowa (SaaS) na GitHub Pages. Następny krok: PWA (instalacja jak apka).</p>
+      </div>
+      <div class="card reveal d3">
+        <h3>Czy PRO jest płatne?</h3>
+        <p>W demo aktywujesz kliknięciem. Docelowo podpinamy płatności (np. Stripe/Shopify).</p>
+      </div>
+      <div class="card reveal d4">
+        <h3>Co z Webkul?</h3>
+        <p>Panel sprzedaży Webkul ma być tylko dla PRO/ELITE — BASIC nie dostaje panelu.</p>
+      </div>
+      <div class="card reveal d4">
+        <h3>Jak chronimy dostęp?</h3>
+        <p>Teraz: localStorage (demo). Docelowo: realne logowanie + role + płatności.</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<div class="footer">
+  © 2026 Zarabianie u Szefa • QualitetMarket
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
