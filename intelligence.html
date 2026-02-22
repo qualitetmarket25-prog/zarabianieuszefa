@@ -33,7 +33,7 @@
       <div>
         <span class="badge"><span class="dot"></span> QualitetMarket Intelligence</span>
         <h2 style="margin:10px 0 6px;">Analityka produktów (scoring + ceny)</h2>
-        <p>System wylicza cenę sugerowaną wg rynku, marżę, zysk i score. Produkty zbyt słabe są automatycznie filtrowane.</p>
+        <p>To jest narzędzie analityczne. Każdy produkt możesz zweryfikować klikając „Sprawdź” (źródło/rynek).</p>
       </div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -74,6 +74,18 @@
       </div>
     </div>
 
+    <!-- 🔎 SPRAWDŹ SAM -->
+    <div class="panel" style="margin-top:18px;">
+      <h3>🔎 Sprawdź sam w 2 minuty</h3>
+      <div class="note">
+        1) Kliknij produkt w tabeli (po lewej) <br>
+        2) Kliknij <b>„Źródło / rynek”</b> lub <b>„Sprawdź”</b> w wierszu <br>
+        3) Porównaj ceny na Allegro / Google <br><br>
+        <b>Autentyczność:</b> cena sugerowana = <span class="badge">średnia rynkowa × 0.92</span> (lub wg planu).  
+        System nie pokazuje produktów poniżej <b>30% marży</b>.
+      </div>
+    </div>
+
     <div class="hr"></div>
 
     <div class="grid-2">
@@ -87,8 +99,9 @@
         </div>
 
         <div class="note" style="margin:10px 0 14px;">
-          <b>Autentyczność:</b> cena sugerowana = <span class="badge">średnia rynkowa × 0.92</span>.  
-          Produkty z marżą &lt; <b>30%</b> są ukrywane (filtr jakości).
+          <b>Jak liczymy score?</b><br>
+          Marża (40%) + Trend (20%) + Problem (20%) + Impuls (10%) + Konkurencja (10%).<br>
+          Produkty z marżą poniżej <b>30%</b> są automatycznie odrzucane.
         </div>
 
         <div class="qm-table-wrap">
@@ -104,6 +117,7 @@
                 <th class="right">Marża</th>
                 <th class="right">Score</th>
                 <th>Status</th>
+                <th>Weryfikacja</th>
               </tr>
             </thead>
             <tbody id="productsTbody"></tbody>
