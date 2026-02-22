@@ -357,8 +357,8 @@ img{max-width:100%}
   margin-bottom:24px;
 }
 
-/* Uwaga: te klasy są tylko w hero (index), nie mylić z .btn/.btn-primary */
-.btn-primary{
+/* ✅ POPRAWKA: scope tylko do HERO PREMIUM (nie rozwala NAV i globalnych .btn-*) */
+.hero-premium .btn-primary{
   background:linear-gradient(135deg,#4f7cff,#8a5bff);
   padding:14px 26px;
   border-radius:12px;
@@ -367,9 +367,9 @@ img{max-width:100%}
   color:#fff;
   box-shadow: 0 14px 40px rgba(0,0,0,.30);
 }
-.btn-primary:hover{ filter: brightness(1.05); }
+.hero-premium .btn-primary:hover{ filter: brightness(1.05); }
 
-.btn-ghost{
+.hero-premium .btn-ghost{
   border:1px solid rgba(255,255,255,0.22);
   padding:14px 26px;
   border-radius:12px;
@@ -379,7 +379,7 @@ img{max-width:100%}
   background: rgba(255,255,255,0.04);
   backdrop-filter: blur(6px);
 }
-.btn-ghost:hover{ background: rgba(255,255,255,0.06); }
+.hero-premium .btn-ghost:hover{ background: rgba(255,255,255,0.06); }
 
 .hero-stats{
   display:flex;
