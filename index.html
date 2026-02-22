@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zarabianie u Szefa</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js"></script>
 </head>
 <body>
 
@@ -13,8 +14,8 @@
     <div class="logo">Zarabianie<span>uSzefa</span></div>
     <div>
       <a href="#oferta" class="nav-link">Oferta</a>
-      <a href="#pro" class="nav-link">PRO</a>
-      <a href="#kontakt" class="nav-btn">Dołącz</a>
+      <a href="cennik.html" class="nav-link">Cennik</a>
+      <a href="login.html" class="nav-btn">Wejdź</a>
     </div>
   </div>
 </header>
@@ -22,9 +23,11 @@
 <section class="hero">
   <div class="container hero-inner">
     <div>
-      <h1>Buduj dochód online bez kapitału.</h1>
-      <p>System krok po kroku. Gotowe produkty. Marketplace. Start nawet dziś.</p>
-      <a href="#kontakt" class="btn-primary">Zacznij teraz</a>
+      <span class="badge">Platforma • PRO/ELITE = panel</span>
+      <h1 style="margin-top:12px;">Buduj dochód online<br>bez kapitału.</h1>
+      <p>System krok po kroku + QualitetMarket. PRO/ELITE odblokowuje dashboard i panel sprzedaży.</p>
+      <a href="cennik.html" class="btn-primary">Zobacz plany</a>
+      <a href="#kontakt" class="nav-link" style="margin-left:14px;">Dołącz do listy</a>
     </div>
   </div>
 </section>
@@ -33,48 +36,23 @@
   <div class="container">
     <h2>Co dostajesz?</h2>
     <div class="grid-3">
-      <div class="card">
-        <h3>Gotowe Produkty</h3>
-        <p>Wybierasz i sprzedajesz bez magazynu.</p>
-      </div>
-      <div class="card">
-        <h3>System Krok po Kroku</h3>
-        <p>Instrukcje + gotowe materiały sprzedażowe.</p>
-      </div>
-      <div class="card">
-        <h3>QualitetMarket</h3>
-        <p>Dostęp dla partnerów PRO.</p>
-      </div>
+      <div class="card"><h3>System</h3><p class="muted" style="margin-top:8px;">Krok po kroku, bez chaosu.</p></div>
+      <div class="card"><h3>QualitetMarket</h3><p class="muted" style="margin-top:8px;">Katalog produktów + ogłoszenia.</p></div>
+      <div class="card"><h3>PRO/ELITE</h3><p class="muted" style="margin-top:8px;">Dashboard + panel sprzedaży (Webkul).</p></div>
     </div>
   </div>
 </section>
 
-<section id="pro" class="section dark">
+<section id="kontakt" class="section dark">
   <div class="container">
-    <h2>Plan PRO</h2>
-    <div class="card highlight" id="proBox">
-      <h3>Status PRO</h3>
-      <ul>
-        <li>✔ Panel sprzedaży</li>
-        <li>✔ Produkty premium</li>
-        <li>✔ Wyższa marża</li>
-        <li>✔ Priorytetowe wsparcie</li>
-      </ul>
-      <a href="aktywuj-pro.html" class="btn-primary">Aktywuj PRO</a>
-    </div>
-  </div>
-</section>
-
-<section id="kontakt" class="section">
-  <div class="container">
-    <div class="card form-card">
-      <span class="badge">Lista Startowa</span>
-      <h2>Dołącz do platformy</h2>
-      <p>Zostaw email — dostaniesz dostęp jako pierwszy + bonus PRO.</p>
-
-      <form>
-        <input type="email" placeholder="Twój email" required>
-        <button type="submit" class="btn-primary">Dołącz teraz</button>
+    <div class="card highlight">
+      <span class="badge">Lista startowa</span>
+      <h2 style="margin-top:10px;">Dołącz do platformy</h2>
+      <p class="muted" style="margin-top:6px;">Zostaw email — dostaniesz dostęp jako pierwszy + bonus.</p>
+      <div class="hr"></div>
+      <form onsubmit="event.preventDefault(); alert('✅ Zapisane (demo). Podłączysz formularz później.');">
+        <input type="email" placeholder="Twój email" required />
+        <button class="btn-primary" type="submit">Dołącz</button>
       </form>
     </div>
   </div>
@@ -83,20 +61,9 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div>© 2026 Zarabianie u Szefa</div>
-    <div>Status PRO • QualitetMarket</div>
+    <div>QualitetMarket</div>
   </div>
 </footer>
-
-<script>
-if (localStorage.getItem("status") === "PRO") {
-  const box = document.getElementById("proBox");
-  box.innerHTML = `
-    <h3>🔥 Masz aktywny status PRO</h3>
-    <p>Dostęp do panelu sprzedaży i produktów premium jest odblokowany.</p>
-    <a href="dashboard.html" class="btn-primary">Przejdź do panelu</a>
-  `;
-}
-</script>
 
 </body>
 </html>
