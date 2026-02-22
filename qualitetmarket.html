@@ -1,118 +1,98 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QualitetMarket</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand"><div class="logo">QM</div><div>QualitetMarket</div></div>
-    <div class="nav">
-      <a href="index.html">Start</a>
-      <a href="dashboard.html">Panel</a>
-      <a href="cennik.html">Cennik</a>
-      <a href="aktywuj-pro.html">Aktywuj PRO</a>
-    </div>
-  </div>
-</div>
-
-<div class="wrap">
-  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;">
+<header class="nav">
+  <div class="container nav-inner">
+    <div class="logo">Zarabianie<span>uSzefa</span></div>
     <div>
-      <h2 style="margin:0 0 8px;">Marketplace produktów</h2>
-      <span class="badge" id="proBadge">Sprawdzam status…</span>
-      <div class="small">Ceny zakupu zawierają już marżę platformy. Ty widzisz tylko: zakup → sprzedaż → Twój zysk.</div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn ghost" id="resetBtn">Reset PRO</button>
-      <button class="btn gold" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+      <a href="index.html" class="nav-link">Strona</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="#" class="nav-btn" onclick="logout()">Wyloguj</a>
     </div>
   </div>
+</header>
 
-  <div class="hr"></div>
+<section class="section">
+  <div class="container">
 
-  <div class="card soft" id="noteBox" style="display:none;"></div>
+    <h2>Katalog Produktów PRO</h2>
 
-  <div class="grid-3" style="margin-top:14px;">
-    <div class="card">
-      <h3>Masażer karku PRO</h3>
-      <div class="muted">Cena zakupu: 120 zł</div>
-      <div class="muted">Sugerowana sprzedaż: 199 zł</div>
-      <div class="kpi" style="font-size:28px;">Zysk: 79 zł</div>
-      <button class="btn block" data-sell>Sprzedawaj</button>
-      <div class="small" data-hint></div>
-    </div>
+    <div id="productGrid" class="grid-3" style="margin-top:30px;"></div>
 
-    <div class="card">
-      <h3>Inteligentna lampka LED</h3>
-      <div class="muted">Cena zakupu: 80 zł</div>
-      <div class="muted">Sugerowana sprzedaż: 149 zł</div>
-      <div class="kpi" style="font-size:28px;">Zysk: 69 zł</div>
-      <button class="btn block" data-sell>Sprzedawaj</button>
-      <div class="small" data-hint></div>
-    </div>
-
-    <div class="card">
-      <h3>Poduszka ortopedyczna premium</h3>
-      <div class="muted">Cena zakupu: 95 zł</div>
-      <div class="muted">Sugerowana sprzedaż: 179 zł</div>
-      <div class="kpi" style="font-size:28px;">Zysk: 84 zł</div>
-      <button class="btn block" data-sell>Sprzedawaj</button>
-      <div class="small" data-hint></div>
-    </div>
   </div>
-</div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>© 2026 Zarabianie u Szefa</div>
+    <div>QualitetMarket PRO</div>
+  </div>
+</footer>
 
 <script>
-  const isPro = () => localStorage.getItem('zs_pro') === '1';
+if (localStorage.getItem("status") !== "PRO") {
+  document.body.innerHTML = `
+    <section class="section">
+      <div class="container">
+        <div class="card highlight">
+          <h2>🔒 Dostęp tylko dla PRO</h2>
+          <a href="aktywuj-pro.html" class="btn-primary">Aktywuj PRO</a>
+        </div>
+      </div>
+    </section>
+  `;
+}
 
-  function render(){
-    const pro = isPro();
-    const badge = document.getElementById('proBadge');
-    const note = document.getElementById('noteBox');
-
-    badge.textContent = pro ? 'Status: PRO ✅ (sprzedaż odblokowana)' : 'Status: START 🔒 (podgląd)';
-    badge.className = pro ? 'badge good' : 'badge bad';
-
-    const sellBtns = document.querySelectorAll('[data-sell]');
-    const hints = document.querySelectorAll('[data-hint]');
-
-    sellBtns.forEach((btn, i) => {
-      if(pro){
-        btn.textContent = 'Sprzedawaj';
-        btn.className = 'btn block';
-        btn.onclick = () => alert('✅ Demo: tutaj w realnej wersji dodasz produkt do oferty.');
-        hints[i].textContent = '';
-      }else{
-        btn.textContent = 'Odblokuj PRO, żeby sprzedawać';
-        btn.className = 'btn ghost block';
-        btn.onclick = () => location.href = 'aktywuj-pro.html';
-        hints[i].textContent = 'Podgląd działa. Sprzedaż odblokujesz w PRO.';
-      }
-    });
-
-    if(!pro){
-      note.style.display = 'block';
-      note.innerHTML = '🔒 Jesteś w trybie PODGLĄDU. Aby zacząć sprzedawać, <a href="aktywuj-pro.html">aktywuj PRO</a>.';
-    }else{
-      note.style.display = 'none';
-      note.innerHTML = '';
-    }
+const products = [
+  {
+    name: "Produkt 1",
+    margin: "40%",
+    desc: "Produkt z wysoką marżą, szybka sprzedaż."
+  },
+  {
+    name: "Produkt 2",
+    margin: "55%",
+    desc: "Idealny pod marketplace i ogłoszenia."
+  },
+  {
+    name: "Produkt 3",
+    margin: "60%",
+    desc: "Produkt premium dla klientów detalicznych."
   }
+];
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    localStorage.removeItem('zs_pro');
-    alert('Status PRO zresetowany (demo).');
-    render();
-  });
+const grid = document.getElementById("productGrid");
 
-  render();
+products.forEach((p, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <h3>${p.name}</h3>
+    <p style="margin:10px 0;">Marża: <strong>${p.margin}</strong></p>
+    <p style="color:#94a3b8;">${p.desc}</p>
+    <button class="btn-primary" style="margin-top:15px;" onclick="copyDesc(${index})">Kopiuj opis</button>
+  `;
+  grid.appendChild(card);
+});
+
+function copyDesc(i) {
+  const text = products[i].name + " - " + products[i].desc;
+  navigator.clipboard.writeText(text);
+  alert("Skopiowano opis produktu.");
+}
+
+function logout() {
+  localStorage.removeItem("status");
+  window.location.href = "index.html";
+}
 </script>
 
-<div class="footer">QualitetMarket • Demo marketplace</div>
 </body>
 </html>
