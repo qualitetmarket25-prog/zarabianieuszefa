@@ -1,59 +1,153 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cennik — Zarabianie u Szefa</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cennik — Zarabianie u Szefa</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand"><div class="logo">ZS</div><div>Zarabianie u Szefa</div></div>
-    <div class="nav">
-      <a href="index.html">Start</a>
-      <a href="qualitetmarket.html">QualitetMarket</a>
-      <a href="dashboard.html">Panel</a>
-      <a href="login.html">Zaloguj</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <div class="logo">Zarabianie<span>uSzefa</span></div>
+    <div>
+      <a href="index.html" class="nav-link">Strona</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="qualitetmarket.html" class="nav-link">QualitetMarket</a>
+      <a href="#" class="nav-btn" id="logoutBtn">Wyloguj</a>
     </div>
   </div>
-</div>
+</header>
 
-<div class="wrap">
-  <h2>Cennik</h2>
-  <p class="muted">Wersja START daje podgląd. Sprzedaż i hurtownie odblokowujesz w PRO.</p>
+<section class="section">
+  <div class="container">
 
-  <div class="grid-3" style="margin-top:14px;">
-    <div class="card">
-      <span class="badge">START</span>
-      <h3 style="margin-top:10px;">0 zł</h3>
-      <div class="muted">Podgląd + system krok po kroku</div>
-      <div class="hr"></div>
-      <div class="muted">✅ panel<br>✅ instrukcje<br>✅ podgląd QualitetMarket<br>❌ sprzedaż</div>
-      <button class="btn ghost block" style="margin-top:14px" onclick="location.href='dashboard.html'">Zacznij</button>
+    <span class="badge">Plany • subskrypcja</span>
+    <h2 style="margin-top:10px;">Cennik</h2>
+    <p style="color:#94a3b8; margin-top:6px;">
+      BASIC = start. PRO/ELITE = dostęp do panelu sprzedaży (Webkul) + materiały.
+    </p>
+
+    <div class="grid-3" style="margin-top:22px; align-items:stretch;">
+
+      <!-- BASIC -->
+      <div class="card">
+        <h3>BASIC</h3>
+        <p style="color:#94a3b8; margin-top:6px;">Dla startu i testów.</p>
+        <div style="font-size:34px; font-weight:800; margin-top:14px;">0 zł</div>
+        <div style="color:#94a3b8;">/ start</div>
+
+        <div class="hr" style="margin:14px 0;"></div>
+
+        <div style="color:#cbd5e1;">
+          <div style="margin:8px 0;">✅ Landing + zapis email</div>
+          <div style="margin:8px 0;">✅ Podstawowe info</div>
+          <div style="margin:8px 0;">❌ Panel sprzedaży (Webkul)</div>
+          <div style="margin:8px 0;">❌ QualitetMarket PRO</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" onclick="setPlan('BASIC')">Ustaw BASIC</button>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div class="card highlight">
+        <h3>PRO</h3>
+        <p style="color:#cbd5e1; margin-top:6px;">Najlepszy na start sprzedaży.</p>
+        <div style="font-size:34px; font-weight:800; margin-top:14px;">99 zł</div>
+        <div style="color:#94a3b8;">/ miesiąc</div>
+
+        <div class="hr" style="margin:14px 0;"></div>
+
+        <div style="color:#cbd5e1;">
+          <div style="margin:8px 0;">✅ Dashboard PRO</div>
+          <div style="margin:8px 0;">✅ QualitetMarket (katalog + shortlista)</div>
+          <div style="margin:8px 0;">✅ Panel sprzedaży (Webkul)</div>
+          <div style="margin:8px 0;">✅ Materiały copy/CTA</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" onclick="buy('PRO')">Kup PRO (symulacja)</button>
+        </div>
+      </div>
+
+      <!-- ELITE -->
+      <div class="card">
+        <h3>ELITE</h3>
+        <p style="color:#94a3b8; margin-top:6px;">Dla skali i priorytetu.</p>
+        <div style="font-size:34px; font-weight:800; margin-top:14px;">199 zł</div>
+        <div style="color:#94a3b8;">/ miesiąc</div>
+
+        <div class="hr" style="margin:14px 0;"></div>
+
+        <div style="color:#cbd5e1;">
+          <div style="margin:8px 0;">✅ Wszystko z PRO</div>
+          <div style="margin:8px 0;">✅ Priorytetowe wsparcie</div>
+          <div style="margin:8px 0;">✅ Dodatkowe materiały</div>
+          <div style="margin:8px 0;">✅ Panel sprzedaży (Webkul)</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" onclick="buy('ELITE')">Kup ELITE (symulacja)</button>
+        </div>
+      </div>
+
     </div>
 
-    <div class="card">
-      <span class="badge good">PRO • Najpopularniejszy</span>
-      <h3 style="margin-top:10px;">49 zł / mies.</h3>
-      <div class="muted">Odblokowanie sprzedaży w QualitetMarket</div>
-      <div class="hr"></div>
-      <div class="muted">✅ sprzedaż<br>✅ hurtownie/sklepy<br>✅ lepsze oferty<br>✅ aktualizacje</div>
-      <button class="btn gold block" style="margin-top:14px" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+    <div class="card" style="margin-top:22px;">
+      <h3>Twój aktualny plan</h3>
+      <p id="planInfo" style="color:#cbd5e1; margin-top:8px;"></p>
+      <div style="margin-top:12px;">
+        <a class="btn-primary" href="dashboard.html">Przejdź do dashboardu</a>
+      </div>
     </div>
 
-    <div class="card">
-      <span class="badge">ELITE</span>
-      <h3 style="margin-top:10px;">129 zł / mies.</h3>
-      <div class="muted">Priorytet + wsparcie + bonusy</div>
-      <div class="hr"></div>
-      <div class="muted">✅ wszystko z PRO<br>✅ priorytet<br>✅ pomoc wdrożenia<br>✅ bonusy</div>
-      <button class="btn block" style="margin-top:14px" onclick="location.href='aktywuj-pro.html'">Wybieram ELITE</button>
-    </div>
   </div>
-</div>
+</section>
 
-<div class="footer">Cennik • Demo</div>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>© 2026 Zarabianie u Szefa</div>
+    <div>Cennik</div>
+  </div>
+</footer>
+
+<script>
+  function currentPlan(){
+    return localStorage.getItem("status") || "BASIC";
+  }
+
+  function refreshPlan(){
+    const p = currentPlan();
+    document.getElementById("planInfo").innerHTML =
+      `Masz ustawione: <strong style="color:#fff;">${p}</strong> ✅`;
+  }
+
+  function setPlan(plan){
+    localStorage.setItem("status", plan);
+    refreshPlan();
+    alert("✅ Ustawiono plan: " + plan);
+  }
+
+  function buy(plan){
+    // SYMULACJA PŁATNOŚCI: od razu aktywujemy plan
+    localStorage.setItem("status", plan);
+    localStorage.setItem("paid_at", new Date().toISOString());
+    alert("✅ Płatność zaakceptowana (symulacja). Aktywowano: " + plan);
+    window.location.href = "dashboard.html";
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", (e)=>{
+    e.preventDefault();
+    localStorage.removeItem("status");
+    localStorage.removeItem("paid_at");
+    window.location.href = "index.html";
+  });
+
+  refreshPlan();
+</script>
+
 </body>
 </html>
