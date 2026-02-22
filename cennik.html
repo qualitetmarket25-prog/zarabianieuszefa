@@ -13,7 +13,7 @@
     <div class="brand">
       <div class="logo"></div>
       <div>Zarabianie u Szefa</div>
-      <span data-pro-badge style="margin-left:10px"></span>
+      <span data-qm-plan style="margin-left:10px"></span>
     </div>
     <div class="nav-links">
       <a href="index.html">Start</a>
@@ -39,13 +39,14 @@
     <div class="hr"></div>
 
     <div class="grid-3">
+
       <div class="card reveal d2">
         <h3>BASIC</h3>
         <p>Start i system, ale bez panelu sprzedaży.</p>
         <div class="hr"></div>
         <div class="kpi"><strong>49 zł</strong><span>/ mies.</span></div>
         <div style="height:12px"></div>
-        <a class="btn" href="login.html">Demo login</a>
+        <button class="btn" type="button" onclick="pickPlan('BASIC')">Wybieram BASIC</button>
       </div>
 
       <div class="card reveal d3" style="border-color:rgba(79,124,255,.35); background:rgba(79,124,255,.08)">
@@ -54,7 +55,7 @@
         <div class="hr"></div>
         <div class="kpi"><strong>149 zł</strong><span>/ mies.</span></div>
         <div style="height:12px"></div>
-        <a class="btn btn-primary" href="aktywuj-pro.html">Aktywuj PRO (demo)</a>
+        <button class="btn btn-primary" type="button" onclick="pickPlan('PRO')">Wybieram PRO</button>
       </div>
 
       <div class="card reveal d4">
@@ -63,18 +64,44 @@
         <div class="hr"></div>
         <div class="kpi"><strong>299 zł</strong><span>/ mies.</span></div>
         <div style="height:12px"></div>
-        <a class="btn btn-primary" href="aktywuj-pro.html">Aktywuj ELITE (demo)</a>
+        <button class="btn btn-primary" type="button" onclick="pickPlan('ELITE')">Wybieram ELITE</button>
       </div>
+
     </div>
 
     <div class="hr"></div>
+
     <div class="note">
-      Następny etap: podpinamy realne płatności (Stripe/Shopify) i wtedy PRO/ELITE wchodzą automatycznie po zakupie.
+      Demo: wybór planu zapisuje się lokalnie. Docelowo podepniemy płatność (Shopify/Stripe) i automatyczne role.
     </div>
+
   </div>
 </div>
 
 <div class="footer">© 2026 Zarabianie u Szefa</div>
-<script src="app.js"></script>
+
+<script src="assets/app.js"></script>
+<script>
+  // wybór planu + flow:
+  // - jeśli nie zalogowany -> login.html?back=dashboard.html
+  // - jeśli zalogowany -> dashboard.html
+  function pickPlan(plan){
+    if (window.QM && typeof QM.setPlan === "function") {
+      QM.setPlan(plan);
+    } else {
+      localStorage.setItem("qm_plan", plan);
+    }
+
+    // back param jeśli ktoś został przekierowany tu z PRO strony
+    const back = new URLSearchParams(location.search).get("back");
+    const target = back ? decodeURIComponent(back) : "dashboard.html";
+
+    if (!(window.QM && QM.isLogged && QM.isLogged())) {
+      location.href = "login.html?back=" + encodeURIComponent(target);
+      return;
+    }
+    location.href = target;
+  }
+</script>
 </body>
 </html>
