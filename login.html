@@ -1,52 +1,77 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Logowanie — Zarabianie u Szefa</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Logowanie</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand"><div class="logo">ZS</div><div>Zarabianie u Szefa</div></div>
-    <div class="nav">
+<div class="nav">
+  <div class="nav-inner" data-nav>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>Zarabianie u Szefa</div>
+      <span data-pro-badge style="margin-left:10px"></span>
+    </div>
+    <div class="nav-links">
       <a href="index.html">Start</a>
-      <a href="cennik.html">Cennik</a>
+      <a href="cennik.html">Plany</a>
       <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-primary" href="cennik.html">Wybierz plan</a>
     </div>
   </div>
 </div>
 
-<div class="wrap" style="display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start;">
-  <div class="card soft">
-    <span class="pill">Wersja demo</span>
-    <h2 style="margin-top:12px;">Zaloguj się do panelu</h2>
-    <p class="muted">Po zalogowaniu zobaczysz dashboard, podgląd QualitetMarket i aktywację PRO.</p>
-    <div class="hr"></div>
-    <div class="muted">✅ Krok po kroku • ✅ Produkty • ✅ Zysk • ✅ Aktywacja sprzedaży</div>
-  </div>
+<div class="wrap">
+  <div class="grid-2">
+    <div class="hero-card reveal">
+      <span class="badge"><span class="dot"></span> Dostęp do panelu</span>
+      <div class="h1" style="font-size:34px">Logowanie (demo)</div>
+      <div class="p">
+        Na tym etapie robimy wersję demonstracyjną.
+        Kliknij, żeby aktywować PRO i wejść do dashboardu.
+      </div>
 
-  <div class="card">
-    <h3>Logowanie</h3>
-    <p class="small">W demo wpisz dowolny email i hasło — przejdziesz do panelu.</p>
-    <div class="hr"></div>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="activatePro()">Wejdź jako PRO</button>
+        <a class="btn" href="cennik.html">Zobacz plany</a>
+      </div>
 
-    <label class="small">E-mail</label>
-    <input style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1220;color:var(--text);outline:none"
-           placeholder="np. twoj@gmail.com">
+      <div class="hr"></div>
+      <div class="note">
+        Docelowo tu będzie: konto, hasło, reset, oraz weryfikacja płatności.
+      </div>
+    </div>
 
-    <label class="small">Hasło</label>
-    <input type="password"
-           style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1220;color:var(--text);outline:none"
-           placeholder="••••••••">
+    <div class="panel reveal d2">
+      <h3>Dlaczego demo?</h3>
+      <div class="list">
+        <div class="item reveal d2">
+          <div class="icon">🧱</div>
+          <div><b>Najpierw stabilny front</b><div>UI, flow, CTA, strony, blokady.</div></div>
+        </div>
+        <div class="item reveal d3">
+          <div class="icon">💳</div>
+          <div><b>Potem płatności</b><div>Stripe/Shopify – i dopiero realne role.</div></div>
+        </div>
+        <div class="item reveal d4">
+          <div class="icon">🔐</div>
+          <div><b>Potem backend</b><div>Firebase/Supabase – realne konta i dane.</div></div>
+        </div>
+      </div>
 
-    <button class="btn block" style="margin-top:12px" onclick="location.href='dashboard.html'">Zaloguj</button>
-    <button class="btn ghost block" style="margin-top:10px" onclick="location.href='aktywuj-pro.html'">Aktywuj PRO</button>
+      <div class="hr"></div>
+      <button class="btn btn-danger" onclick="logout()">Wyloguj / wyczyść dostęp</button>
+    </div>
   </div>
 </div>
 
-<div class="footer">Demo UI • Logowanie poglądowe</div>
+<div class="footer">© 2026 Zarabianie u Szefa</div>
+<script src="app.js"></script>
 </body>
 </html>
