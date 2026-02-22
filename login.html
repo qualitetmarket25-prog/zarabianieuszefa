@@ -13,7 +13,7 @@
     <div class="brand">
       <div class="logo"></div>
       <div>Zarabianie u Szefa</div>
-      <span data-pro-badge style="margin-left:10px"></span>
+      <span data-qm-plan style="margin-left:10px"></span>
     </div>
     <div class="nav-links">
       <a href="index.html">Start</a>
@@ -29,16 +29,28 @@
 
 <div class="wrap">
   <div class="grid-2">
+
     <div class="hero-card reveal">
       <span class="badge"><span class="dot"></span> Dostęp do panelu</span>
       <div class="h1" style="font-size:34px">Logowanie (demo)</div>
       <div class="p">
         Na tym etapie robimy wersję demonstracyjną.
-        Kliknij, żeby aktywować PRO i wejść do dashboardu.
+        Zaloguj się emailem (demo) i wejdź do dashboardu.
       </div>
 
+      <div class="hr"></div>
+
+      <!-- ✅ LOGOWANIE (demo) -->
+      <form data-login-form>
+        <input class="input" type="email" name="email" placeholder="Twój email" required />
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Zaloguj się</button>
+      </form>
+
+      <div class="hr"></div>
+
       <div class="hero-cta">
-        <button class="btn btn-primary" onclick="activatePro()">Wejdź jako PRO</button>
+        <button class="btn btn-primary" type="button" onclick="activateProDemo()">Wejdź jako PRO</button>
         <a class="btn" href="cennik.html">Zobacz plany</a>
       </div>
 
@@ -66,12 +78,28 @@
       </div>
 
       <div class="hr"></div>
-      <button class="btn btn-danger" onclick="logout()">Wyloguj / wyczyść dostęp</button>
+      <button class="btn btn-danger" type="button" onclick="QM.logout()">Wyloguj / wyczyść dostęp</button>
     </div>
+
   </div>
 </div>
 
 <div class="footer">© 2026 Zarabianie u Szefa</div>
-<script src="app.js"></script>
+
+<script>
+  // Demo: ustawia PRO + loguje i przerzuca do dashboard
+  function activateProDemo(){
+    localStorage.setItem("qm_user", "demo@pro.local");
+    if (window.QM && typeof window.QM.setPlan === "function") {
+      window.QM.setPlan("PRO");
+    } else {
+      localStorage.setItem("qm_plan", "PRO");
+    }
+    window.location.href = "dashboard.html";
+  }
+</script>
+
+<script src="assets/app.js"></script>
+<script src="assets/auth.js"></script>
 </body>
 </html>
