@@ -2,390 +2,58 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QualitetMarket PRO</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>QualitetMarket</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body onload="checkPro()">
 
-<header class="nav">
-  <div class="container nav-inner">
-    <div class="logo">Zarabianie<span>uSzefa</span></div>
-    <div>
-      <a href="index.html" class="nav-link">Strona</a>
-      <a href="dashboard.html" class="nav-link">Dashboard</a>
-      <a href="cennik.html" class="nav-link">Cennik</a>
-      <a href="#" class="nav-btn" id="logoutBtn">Wyloguj</a>
+<div class="nav">
+  <div class="nav-inner" data-nav>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>QualitetMarket</div>
+      <span data-pro-badge style="margin-left:10px"></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Start</a>
+      <a href="cennik.html">Plany</a>
+      <a href="qualitetmarket.html">QualitetMarket</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-sm btn-danger" onclick="logout()">Wyloguj</button>
     </div>
   </div>
-</header>
+</div>
 
-<section class="section">
-  <div class="container">
-
-    <!-- GATE: BASIC blokada, PRO/ELITE wpuszcza -->
-    <div class="card highlight" id="gateBox" style="display:none;">
-      <h2>🔒 Dostęp tylko dla PRO / ELITE</h2>
-      <p style="margin-top:10px; color:#cbd5e1;">
-        QualitetMarket jest dostępny wyłącznie po aktywacji PRO lub ELITE.
-      </p>
-      <div style="margin-top:18px;">
-        <a class="btn-primary" href="cennik.html">Kup PRO/ELITE</a>
-        <a class="nav-link" href="index.html#pro" style="margin-left:14px;">Wróć</a>
-      </div>
+<div class="wrap">
+  <div class="hero-card reveal">
+    <span class="badge"><span class="dot"></span> Dostęp PRO</span>
+    <div class="h1" style="font-size:34px">QualitetMarket</div>
+    <div class="p">
+      Tu docelowo będzie: produkty, marże, gotowe opisy, zdjęcia i panel sprzedaży (Webkul).
+      W tej chwili to stylowany “shell” gotowy pod integracje.
     </div>
 
-    <!-- APP -->
-    <div id="app" style="display:none;">
+    <div class="hr"></div>
 
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap;">
-        <div>
-          <span class="badge" id="planBadge">PLAN</span>
-          <h2 style="margin-top:10px;">QualitetMarket — Produkty do sprzedaży</h2>
-          <p style="color:#94a3b8; margin-top:6px;">
-            Dodaj produkt do shortlisty, policz zysk i skopiuj gotowe ogłoszenie.
-          </p>
-        </div>
-
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          <input id="search" type="text" placeholder="Szukaj produktu..." style="max-width:260px;">
-          <select id="sort" style="padding:12px; border-radius:8px; border:none; max-width:220px;">
-            <option value="hot">Sortuj: Najlepsze na start</option>
-            <option value="margin_desc">Marża: malejąco</option>
-            <option value="margin_asc">Marża: rosnąco</option>
-            <option value="name_asc">Nazwa: A-Z</option>
-          </select>
-        </div>
+    <div class="grid-2">
+      <div class="card reveal d2">
+        <h3>Produkty (demo)</h3>
+        <p>Wstawimy listę produktów + filtry + kategorie.</p>
+        <a class="btn btn-sm btn-primary" href="dashboard.html">Wróć do dashboard</a>
       </div>
-
-      <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-top:22px;">
-        <!-- LEFT: GRID -->
-        <div>
-          <div id="grid" class="grid-3"></div>
-        </div>
-
-        <!-- RIGHT: SHORTLIST + CALC -->
-        <div>
-          <div class="card" style="position:sticky; top:18px;">
-            <h3>Twoja shortlista</h3>
-            <p style="color:#94a3b8; margin-top:6px;">
-              Zapisuje się automatycznie.
-            </p>
-
-            <div class="hr" style="margin:14px 0;"></div>
-
-            <div id="shortlistEmpty" style="color:#cbd5e1;">
-              Dodaj 1–3 produkty z listy.
-            </div>
-            <div id="shortlistList" style="display:none;"></div>
-
-            <div class="hr" style="margin:14px 0;"></div>
-
-            <h4 style="margin-bottom:8px;">Kalkulator zysku</h4>
-            <div style="display:grid; gap:10px;">
-              <input id="buyPrice" type="number" inputmode="decimal" placeholder="Cena zakupu (zł) np. 49">
-              <input id="sellPrice" type="number" inputmode="decimal" placeholder="Twoja cena (zł) np. 99">
-              <button class="btn-primary" id="calcBtn">Policz</button>
-              <div id="calcOut" style="color:#cbd5e1;"></div>
-            </div>
-
-            <div class="hr" style="margin:14px 0;"></div>
-
-            <button class="btn-primary" id="copyAllBtn">Kopiuj ogłoszenie z shortlisty</button>
-            <p style="color:#94a3b8; margin-top:8px; font-size:13px;">
-              Skopiuje 1 post/ogłoszenie z 3 wariantami CTA.
-            </p>
-          </div>
-        </div>
+      <div class="card reveal d3">
+        <h3>Panel sprzedaży Webkul</h3>
+        <p>Tylko PRO/ELITE. BASIC bez panelu.</p>
+        <span class="badge">Status: do podpięcia</span>
       </div>
-
     </div>
-
   </div>
-</section>
+</div>
 
-<footer class="footer">
-  <div class="container footer-inner">
-    <div>© 2026 Zarabianie u Szefa</div>
-    <div>QualitetMarket</div>
-  </div>
-</footer>
-
-<script>
-/* =========================
-   GATE + LOGOUT + PLAN
-========================= */
-const plan = (localStorage.getItem("status") || "BASIC").toUpperCase();
-const allowed = (plan === "PRO" || plan === "ELITE");
-
-const gateBox = document.getElementById("gateBox");
-const app = document.getElementById("app");
-
-if (!allowed) gateBox.style.display = "block";
-else app.style.display = "block";
-
-const planBadge = document.getElementById("planBadge");
-if (planBadge) planBadge.textContent = plan;
-
-document.getElementById("logoutBtn").addEventListener("click", (e) => {
-  e.preventDefault();
-  localStorage.removeItem("status");
-  localStorage.removeItem("paid_at");
-  window.location.href = "index.html";
-});
-
-/* =========================
-   DATA
-========================= */
-const PRODUCTS = [
-  { id:"p1", name:"Organizer do auta (premium)", margin:55, demand:"Wysoki", angle:"Porządek + wygoda", desc:"Premium organizer do auta. Szybka wysyłka, idealny prezent i do codziennego użytku." },
-  { id:"p2", name:"Lampa LED biurkowa (USB)", margin:60, demand:"Wysoki", angle:"Home office", desc:"Nowoczesna lampa LED z regulacją, idealna do nauki i pracy. Minimalistyczny design." },
-  { id:"p3", name:"Zestaw do czyszczenia sneakersów", margin:48, demand:"Średni/Wysoki", angle:"Moda + pielęgnacja", desc:"Zestaw do czyszczenia butów — efekt jak nowe. Dobre do ogłoszeń i krótkich reels." },
-  { id:"p4", name:"Mata antypoślizgowa (uniwersalna)", margin:42, demand:"Wysoki", angle:"Bezpieczeństwo", desc:"Uniwersalna mata do domu/łazienki. Prosty produkt, łatwo sprzedaje się ceną." },
-  { id:"p5", name:"Akcesoria kuchenne 3w1", margin:50, demand:"Wysoki", angle:"Szybciej w kuchni", desc:"Proste akcesorium 3w1, które ułatwia codzienne gotowanie. Dobry zakup impulsowy." },
-  { id:"p6", name:"Zestaw treningowy (gumy oporowe)", margin:57, demand:"Wysoki", angle:"Fitness w domu", desc:"Zestaw gum oporowych do treningu w domu. Idealne pod posty/OLX/FB Marketplace." }
-];
-
-/* =========================
-   SHORTLIST STORAGE
-========================= */
-const STORAGE_KEY = "qm_shortlist_v2";
-function getShortlist(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-  catch { return []; }
-}
-function setShortlist(arr){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
-
-/* =========================
-   UI ELEMENTS
-========================= */
-const gridEl = document.getElementById("grid");
-const searchEl = document.getElementById("search");
-const sortEl = document.getElementById("sort");
-const shortlistEmpty = document.getElementById("shortlistEmpty");
-const shortlistList = document.getElementById("shortlistList");
-
-/* =========================
-   RENDER
-========================= */
-function render(){
-  const q = (searchEl.value || "").trim().toLowerCase();
-  const sort = sortEl.value;
-
-  let items = PRODUCTS.filter(p =>
-    p.name.toLowerCase().includes(q) ||
-    p.desc.toLowerCase().includes(q) ||
-    p.angle.toLowerCase().includes(q)
-  );
-
-  if (sort === "margin_desc") items.sort((a,b)=> b.margin - a.margin);
-  if (sort === "margin_asc") items.sort((a,b)=> a.margin - b.margin);
-  if (sort === "name_asc") items.sort((a,b)=> a.name.localeCompare(b.name));
-  if (sort === "hot") {
-    const score = (p) => (p.margin) + (String(p.demand).includes("Wysoki") ? 20 : 0);
-    items.sort((a,b)=> score(b)-score(a));
-  }
-
-  const shortlist = new Set(getShortlist());
-  gridEl.innerHTML = "";
-
-  items.forEach(p => {
-    const inList = shortlist.has(p.id);
-
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <span class="badge">${p.demand} • Marża ${p.margin}%</span>
-      <h3 style="margin-top:10px;">${p.name}</h3>
-      <p style="color:#94a3b8; margin-top:6px;">Kąt sprzedaży: <strong style="color:#fff;">${p.angle}</strong></p>
-      <p style="color:#cbd5e1; margin-top:10px;">${p.desc}</p>
-
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-        <button class="btn-primary" data-add="${p.id}">
-          ${inList ? "✅ W shortlist" : "➕ Dodaj do shortlisty"}
-        </button>
-        <button class="btn-primary" data-copy="${p.id}">Kopiuj opis</button>
-        <button class="btn-primary" data-ad="${p.id}">Kopiuj ogłoszenie</button>
-      </div>
-    `;
-    gridEl.appendChild(card);
-  });
-
-  renderShortlist();
-  bindButtons();
-}
-
-function renderShortlist(){
-  const ids = getShortlist();
-  if (!ids.length){
-    shortlistEmpty.style.display = "block";
-    shortlistList.style.display = "none";
-    shortlistList.innerHTML = "";
-    return;
-  }
-
-  shortlistEmpty.style.display = "none";
-  shortlistList.style.display = "block";
-
-  const prods = ids.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
-  shortlistList.innerHTML = prods.map(p => `
-    <div style="padding:10px 0; border-bottom:1px solid #1e293b;">
-      <div style="display:flex; justify-content:space-between; gap:10px;">
-        <div>
-          <div style="font-weight:700;">${p.name}</div>
-          <div style="color:#94a3b8; font-size:13px;">Marża ${p.margin}% • ${p.angle}</div>
-        </div>
-        <a href="#" data-remove="${p.id}" class="nav-link" style="white-space:nowrap;">Usuń</a>
-      </div>
-    </div>
-  `).join("");
-}
-
-function bindButtons(){
-  document.querySelectorAll("[data-add]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-add");
-      const list = getShortlist();
-      if (list.includes(id)) return;
-      if (list.length >= 3){
-        alert("Max 3 produkty na shortlistę. Usuń jeden i dodaj kolejny.");
-        return;
-      }
-      list.push(id);
-      setShortlist(list);
-      render();
-    }, { once:true });
-  });
-
-  document.querySelectorAll("[data-remove]").forEach(a=>{
-    a.addEventListener("click", (e)=>{
-      e.preventDefault();
-      const id = a.getAttribute("data-remove");
-      const list = getShortlist().filter(x=>x!==id);
-      setShortlist(list);
-      render();
-    }, { once:true });
-  });
-
-  document.querySelectorAll("[data-copy]").forEach(btn=>{
-    btn.addEventListener("click", async ()=>{
-      const id = btn.getAttribute("data-copy");
-      const p = PRODUCTS.find(x=>x.id===id);
-      const txt = `${p.name}\n\n${p.desc}\n\nKąt: ${p.angle}\nPopyt: ${p.demand}\nMarża: ${p.margin}%`;
-      await safeCopy(txt);
-      alert("✅ Skopiowano opis.");
-    }, { once:true });
-  });
-
-  document.querySelectorAll("[data-ad]").forEach(btn=>{
-    btn.addEventListener("click", async ()=>{
-      const id = btn.getAttribute("data-ad");
-      const p = PRODUCTS.find(x=>x.id===id);
-      const txt = makeAd(p);
-      await safeCopy(txt);
-      alert("✅ Skopiowano ogłoszenie.");
-    }, { once:true });
-  });
-}
-
-async function safeCopy(text){
-  try{
-    await navigator.clipboard.writeText(text);
-  }catch{
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-  }
-}
-
-function makeAd(p){
-  return `🔥 OFERTA: ${p.name}
-
-${p.desc}
-
-✅ Dlaczego warto:
-— ${p.angle}
-— szybka wysyłka 24h
-— ilość ograniczona
-
-📦 Wysyłka / odbiór możliwy
-✉️ Napisz: "BIORĘ" — podeślę szczegóły.
-
-CTA (wybierz 1):
-1) "BIORĘ"
-2) "DOSTAWA?"
-3) "JAKA CENA?"`;
-}
-
-/* =========================
-   CALC
-========================= */
-document.getElementById("calcBtn").addEventListener("click", ()=>{
-  const buy = Number(document.getElementById("buyPrice").value || 0);
-  const sell = Number(document.getElementById("sellPrice").value || 0);
-  const out = document.getElementById("calcOut");
-
-  if (!buy || !sell || buy <= 0 || sell <= 0){
-    out.textContent = "Wpisz obie ceny (zł).";
-    return;
-  }
-  const profit = sell - buy;
-  const margin = (profit / sell) * 100;
-
-  out.innerHTML = `
-    Zysk: <strong style="color:#fff;">${profit.toFixed(2)} zł</strong><br>
-    Marża od ceny sprzedaży: <strong style="color:#fff;">${margin.toFixed(1)}%</strong>
-  `;
-});
-
-document.getElementById("copyAllBtn").addEventListener("click", async ()=>{
-  const ids = getShortlist();
-  if (!ids.length){
-    alert("Dodaj przynajmniej 1 produkt do shortlisty.");
-    return;
-  }
-  const prods = ids.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
-
-  const txt = `✅ SHORTLISTA (1–3 produkty)
-${prods.map((p,i)=>`${i+1}. ${p.name} — marża ${p.margin}% — ${p.angle}`).join("\n")}
-
-========================
-OGŁOSZENIE (WERSJA 1)
-========================
-${makeAd(prods[0])}
-
-========================
-OGŁOSZENIE (WERSJA 2)
-========================
-🔥 ${prods[0].name} — szybka wysyłka
-${prods[0].desc}
-Napisz: "BIORĘ" / "DOSTAWA?" / "JAKA CENA?"
-
-========================
-OGŁOSZENIE (WERSJA 3)
-========================
-Nowe: ${prods[0].name}
-✅ ${prods[0].angle}
-📦 24h wysyłka
-✉️ DM: "BIORĘ"`;
-
-  await safeCopy(txt);
-  alert("✅ Skopiowano pakiet ogłoszeń.");
-});
-
-/* =========================
-   EVENTS
-========================= */
-searchEl.addEventListener("input", render);
-sortEl.addEventListener("change", render);
-
-render();
-</script>
-
+<div class="footer">© 2026 QualitetMarket</div>
+<script src="app.js"></script>
 </body>
 </html>
