@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<!-- NAV -->
 <div class="nav">
   <div class="nav-inner" data-nav>
     <div class="brand">
@@ -15,12 +16,14 @@
       <div>Zarabianie u Szefa</div>
       <span data-pro-badge style="margin-left:10px"></span>
     </div>
+
     <div class="nav-links">
       <a href="index.html">Start</a>
       <a href="cennik.html">Plany</a>
       <a href="qualitetmarket.html">QualitetMarket</a>
       <a href="dashboard.html">Dashboard</a>
     </div>
+
     <div class="nav-cta">
       <a class="btn btn-sm btn-ghost" href="login.html">Logowanie</a>
       <a class="btn btn-sm btn-primary" href="cennik.html">Wybierz plan</a>
@@ -28,10 +31,12 @@
   </div>
 </div>
 
+<!-- HERO -->
 <div class="wrap hero">
   <div class="glow"></div>
 
   <div class="hero-grid">
+
     <!-- LEFT -->
     <div class="hero-card reveal">
       <span class="badge"><span class="dot"></span> Program partnerski • Start bez kapitału</span>
@@ -63,8 +68,17 @@
 
     <!-- RIGHT -->
     <div class="panel reveal d2">
-      <!-- HERO IMAGE -->
-      <div class="hero-visual reveal d2"></div>
+
+      <!-- HERO IMAGE (TWOJE ZDJĘCIE) -->
+      <div class="hero-visual-wrapper">
+        <img src="assets/img/hero.png" alt="Zarabianie u Szefa × QualitetMarket" class="hero-img">
+        <div class="hero-caption">
+          Zarabianie u Szefa × QualitetMarket<br>
+          <span style="font-weight:400; font-size:14px;">
+            Społeczność, system i realne możliwości skalowania.
+          </span>
+        </div>
+      </div>
 
       <div style="height:14px"></div>
 
@@ -86,12 +100,13 @@
 
       <div class="hr"></div>
 
+      <!-- LEAD -->
       <div class="card" style="margin:0">
         <h3 style="margin:0 0 8px">Lista startowa</h3>
         <p style="margin:0 0 12px; color:var(--muted)">Zostaw email — dostaniesz dostęp jako pierwszy + bonus.</p>
 
         <form onsubmit="leadSubmit(event)">
-          <input id="leadEmail" class="input" type="email" placeholder="Twój email" />
+          <input id="leadEmail" class="input" type="email" placeholder="Twój email" required />
           <div style="height:10px"></div>
           <button class="btn btn-primary" type="submit">Dołącz</button>
         </form>
@@ -100,64 +115,97 @@
         <div class="note">Podłączymy to pod Google Forms automatycznie.</div>
       </div>
     </div>
+
   </div>
 
-  <!-- PRODUCTS WITH IMAGES -->
+  <!-- MOMENTUM SECTION (opcjonalnie – może zostać) -->
+  <div class="section reveal">
+    <div class="section-title">
+      <h2>Społeczność rośnie</h2>
+      <p>To nie teoria – to realny ruch i realny potencjał skalowania.</p>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
   <div class="section">
     <div class="section-title reveal">
       <h2>Top produkty (gotowe do sprzedaży)</h2>
-      <p>Tu masz przykładową półkę produktów. Obrazy lecą z folderu /assets/img/.</p>
+      <p>Tu wstawiamy Twoje obrazy produktów. Wgraj je do <b>assets/img/</b> i wszystko zacznie świecić.</p>
     </div>
 
     <div class="product-grid">
+
       <div class="product-card reveal d2">
-        <div class="product-img" style="background-image:url('assets/img/p1.png')"></div>
+        <div class="product-img-wrapper">
+          <img src="assets/img/produkt-1-paleta.png" alt="Pakiet Hurtowy Start" class="product-img-real">
+        </div>
         <div class="product-body">
-          <h3 class="product-title">Produkt #1</h3>
-          <div class="product-meta">Szybki start • wysoka rotacja • opis + zdjęcia</div>
+          <h3 class="product-title">Pakiet Hurtowy Start</h3>
+          <div class="product-meta">Gotowe zestawy do odsprzedaży • wysoka rotacja • szybki start</div>
           <div class="product-tags">
-            <span class="tag">TOP</span><span class="tag">PROFIT</span><span class="tag">SZYBKO</span>
+            <span class="tag">TOP</span><span class="tag">HURT</span><span class="tag">SZYBKO</span>
           </div>
         </div>
       </div>
 
       <div class="product-card reveal d3">
-        <div class="product-img" style="background-image:url('assets/img/p2.png')"></div>
+        <div class="product-img-wrapper">
+          <img src="assets/img/produkt-2-krem.png" alt="Premium Krem Regeneracyjny" class="product-img-real">
+        </div>
         <div class="product-body">
-          <h3 class="product-title">Produkt #2</h3>
-          <div class="product-meta">Tani w reklamie • prosty landing • dobry upsell</div>
+          <h3 class="product-title">Premium Krem Regeneracyjny</h3>
+          <div class="product-meta">Wysoka marża • niski koszt reklamy • produkt powtarzalny</div>
           <div class="product-tags">
-            <span class="tag">ADS</span><span class="tag">UPSELL</span><span class="tag">HIT</span>
+            <span class="tag">MARŻA</span><span class="tag">BEAUTY</span><span class="tag">HIT</span>
           </div>
         </div>
       </div>
 
       <div class="product-card reveal d4">
-        <div class="product-img" style="background-image:url('assets/img/p3.png')"></div>
+        <div class="product-img-wrapper">
+          <img src="assets/img/produkt-3-noz.png" alt="Multitool Survival PRO" class="product-img-real">
+        </div>
         <div class="product-body">
-          <h3 class="product-title">Produkt #3</h3>
-          <div class="product-meta">Wysoka marża • łatwa prezentacja • mało zwrotów</div>
+          <h3 class="product-title">Multitool Survival PRO</h3>
+          <div class="product-meta">Bestseller outdoor • wysoka konwersja • niski zwrot</div>
           <div class="product-tags">
-            <span class="tag">MARŻA</span><span class="tag">PROSTE</span><span class="tag">OK</span>
+            <span class="tag">OUTDOOR</span><span class="tag">PRO</span><span class="tag">BEST</span>
           </div>
         </div>
       </div>
 
       <div class="product-card reveal d4">
-        <div class="product-img" style="background-image:url('assets/img/p4.png')"></div>
+        <div class="product-img-wrapper">
+          <img src="assets/img/produkt-4-led.png" alt="Opaska LED NightRun" class="product-img-real">
+        </div>
         <div class="product-body">
-          <h3 class="product-title">Produkt #4</h3>
-          <div class="product-meta">Skalowalny • dobry do katalogu • działa na ilości</div>
+          <h3 class="product-title">Opaska LED NightRun</h3>
+          <div class="product-meta">Trend fitness • lekki produkt • idealny do reklamy video</div>
           <div class="product-tags">
-            <span class="tag">SKALA</span><span class="tag">KATALOG</span><span class="tag">ROTACJA</span>
+            <span class="tag">FIT</span><span class="tag">VIDEO</span><span class="tag">TREND</span>
           </div>
         </div>
       </div>
+
+      <div class="product-card reveal d4">
+        <div class="product-img-wrapper">
+          <img src="assets/img/produkt-5-torba.png" alt="Torba QualitetMarket PRO" class="product-img-real">
+        </div>
+        <div class="product-body">
+          <h3 class="product-title">Torba QualitetMarket PRO</h3>
+          <div class="product-meta">Produkt wizerunkowy • buduje markę • premium jakość</div>
+          <div class="product-tags">
+            <span class="tag">BRAND</span><span class="tag">PREMIUM</span><span class="tag">PRO</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
 </div>
 
+<!-- FOOTER -->
 <div class="footer">
   © 2026 Zarabianie u Szefa • QualitetMarket
 </div>
