@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <header class="nav">
   <div class="container nav-inner">
     <div class="logo">Zarabianie<span>uSzefa</span></div>
@@ -20,25 +19,23 @@
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <div class="container hero-inner">
     <div>
-      <h1>Buduj dochód online<br>bez kapitału.</h1>
-      <p>System krok po kroku. Gotowe produkty. Gotowa platforma. Start nawet dziś.</p>
+      <h1>Buduj dochód online bez kapitału.</h1>
+      <p>System krok po kroku. Gotowe produkty. Marketplace. Start nawet dziś.</p>
       <a href="#kontakt" class="btn-primary">Zacznij teraz</a>
     </div>
   </div>
 </section>
 
-<!-- OFERTA -->
 <section id="oferta" class="section">
   <div class="container">
     <h2>Co dostajesz?</h2>
     <div class="grid-3">
       <div class="card">
         <h3>Gotowe Produkty</h3>
-        <p>Wybierasz 1–3 produkty i startujesz bez magazynu.</p>
+        <p>Wybierasz i sprzedajesz bez magazynu.</p>
       </div>
       <div class="card">
         <h3>System Krok po Kroku</h3>
@@ -46,20 +43,19 @@
       </div>
       <div class="card">
         <h3>QualitetMarket</h3>
-        <p>Dostęp do marketplace dla partnerów PRO.</p>
+        <p>Dostęp dla partnerów PRO.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRO -->
 <section id="pro" class="section dark">
   <div class="container">
     <h2>Plan PRO</h2>
-    <div class="card highlight">
+    <div class="card highlight" id="proBox">
       <h3>Status PRO</h3>
       <ul>
-        <li>✔ Dostęp do panelu sprzedaży</li>
+        <li>✔ Panel sprzedaży</li>
         <li>✔ Produkty premium</li>
         <li>✔ Wyższa marża</li>
         <li>✔ Priorytetowe wsparcie</li>
@@ -69,7 +65,6 @@
   </div>
 </section>
 
-<!-- FORMULARZ LEAD -->
 <section id="kontakt" class="section">
   <div class="container">
     <div class="card form-card">
@@ -77,21 +72,31 @@
       <h2>Dołącz do platformy</h2>
       <p>Zostaw email — dostaniesz dostęp jako pierwszy + bonus PRO.</p>
 
-      <form action="https://docs.google.com/forms/d/e/TWÓJ_FORMULARZ_ID/formResponse" method="POST" target="_blank">
-        <input type="email" name="entry.1234567890" placeholder="Twój email" required>
+      <form>
+        <input type="email" placeholder="Twój email" required>
         <button type="submit" class="btn-primary">Dołącz teraz</button>
       </form>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container footer-inner">
     <div>© 2026 Zarabianie u Szefa</div>
-    <div>QualitetMarket • Status PRO</div>
+    <div>Status PRO • QualitetMarket</div>
   </div>
 </footer>
+
+<script>
+if (localStorage.getItem("status") === "PRO") {
+  const box = document.getElementById("proBox");
+  box.innerHTML = `
+    <h3>🔥 Masz aktywny status PRO</h3>
+    <p>Dostęp do panelu sprzedaży i produktów premium jest odblokowany.</p>
+    <a href="dashboard.html" class="btn-primary">Przejdź do panelu</a>
+  `;
+}
+</script>
 
 </body>
 </html>
