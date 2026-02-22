@@ -435,23 +435,29 @@ img{max-width:100%}
   box-shadow: 0 14px 34px rgba(0,0,0,.30);
 }
 
+/* ===== FIX: idealny kadr (nie ucina twarzy) ===== */
 .qm-product-media{
   aspect-ratio: 16 / 10;
   height: auto;
   background: rgba(0,0,0,.20);
   border-bottom:1px solid rgba(255,255,255,.10);
   overflow:hidden;
+  position: relative;
 }
+
 .qm-product-media img{
   width:100%;
   height:100%;
   object-fit: cover;
+  object-position: 50% 18%;
   display:block;
   transform: scale(1.02);
-  transition: transform .25s ease;
+  transition: transform .25s ease, object-position .25s ease;
 }
+
 .qm-product-card:hover .qm-product-media img{
   transform: scale(1.06);
+  object-position: 50% 14%;
 }
 
 .qm-product-body{
