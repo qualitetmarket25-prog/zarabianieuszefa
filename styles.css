@@ -545,3 +545,48 @@ img{max-width:100%}
 @media (max-width: 640px){
   .qm-products-grid{grid-template-columns: 1fr;}
 }
+/* ===== QM TABLE + DETAIL (dopinka) ===== */
+.qm-table-wrap{ overflow:auto; border-radius:16px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); }
+.qm-table{ width:100%; border-collapse: collapse; min-width: 920px; }
+.qm-table thead th{
+  text-align:left;
+  font-size:12px;
+  color:rgba(234,240,255,.70);
+  letter-spacing:.4px;
+  padding:12px 12px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.03);
+}
+.qm-table td{
+  padding:12px 12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  vertical-align:middle;
+}
+.qm-table .right{ text-align:right; }
+.qm-row{ cursor:pointer; transition: background .15s ease; }
+.qm-row:hover{ background:rgba(255,255,255,.04); }
+.qm-row.active{ background:rgba(79,124,255,.10); outline:1px solid rgba(79,124,255,.20); }
+.qm-cell-title b{ font-size:14px; }
+.qm-sub{ color:rgba(234,240,255,.62); font-size:12px; margin-top:2px; }
+
+.qm-detail-title{ font-weight:900; font-size:16px; letter-spacing:-.2px; }
+.qm-bars{ display:grid; gap:12px; }
+.qm-bar-head{ display:flex; justify-content:space-between; gap:10px; color:rgba(234,240,255,.78); font-size:12px; }
+.qm-bar-track{
+  height:10px;
+  border-radius:999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+}
+.qm-bar-fill{
+  height:100%;
+  border-radius:999px;
+  background: linear-gradient(135deg, var(--brand), var(--brand2));
+  box-shadow: 0 10px 30px rgba(79,124,255,.18);
+}
+
+.qm-bp-card{ position:relative; }
+.qm-bp-top{ display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
+.qm-bp-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.qm-bp-btn{ width:100%; }
