@@ -2,6 +2,7 @@
    - pricing: suggested = market_avg * multiplier (default 0.92)
    - filters out products with margin < 30%
    - scoring 0..100 (weighted)
+   - adds "Sprawdź" verification button per row + proof box
 */
 
 const QM = {
@@ -19,19 +20,15 @@ const QM = {
 function getPlan() {
   return (localStorage.getItem("plan") || "BASIC").toUpperCase();
 }
-
 function setPlan(plan) {
   localStorage.setItem("plan", plan.toUpperCase());
   location.reload();
 }
-
 function planMultiplier(plan) {
-  // Plan wpływa na agresywność: ELITE może zejść niżej dla szybkiej sprzedaży (większy wolumen).
   if (plan === "ELITE") return 0.90;
   if (plan === "PRO") return 0.92;
-  return 0.93; // BASIC trochę bardziej zachowawczo
+  return 0.93;
 }
-
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 function money(n) { return `${Number(n).toFixed(2)} zł`; }
 
@@ -39,19 +36,16 @@ function calcSuggested(p, plan) {
   const mult = p.market_multiplier ?? planMultiplier(plan) ?? QM.marketMultiplierDefault;
   return Number(p.market_avg_price) * mult;
 }
-
 function calcTotalCost(p) {
   const w = Number(p.wholesale_price);
   const s = Number(p.shipping_cost || 0);
   return w + s;
 }
-
 function calcProfit(p, plan) {
   const suggested = calcSuggested(p, plan);
   const cost = calcTotalCost(p);
   return suggested - cost;
 }
-
 function calcMarginPercent(p, plan) {
   const suggested = calcSuggested(p, plan);
   const profit = calcProfit(p, plan);
@@ -60,20 +54,17 @@ function calcMarginPercent(p, plan) {
 }
 
 function competitionScore(level) {
-  // wysoką konkurencję karzemy
   if (level === "low") return 10;
   if (level === "medium") return 6;
-  return 2; // high
+  return 2;
 }
-
 function calcScore(p, plan) {
-  const margin = clamp(calcMarginPercent(p, plan), 0, 70); // limit dla stabilności
+  const margin = clamp(calcMarginPercent(p, plan), 0, 70);
   const trend = clamp(Number(p.trend_score || 0), 0, 10);
   const problem = clamp(Number(p.problem_solving_score || 0), 0, 10);
   const impulse = clamp(Number(p.impulse_score || 0), 0, 10);
   const comp = competitionScore((p.competition_level || "medium").toLowerCase());
 
-  // Składamy 0..100
   const score =
     margin * 1.0 * QM.weights.margin +
     trend * 10 * QM.weights.trend +
@@ -83,7 +74,6 @@ function calcScore(p, plan) {
 
   return clamp(score, 0, 100);
 }
-
 function classify(score) {
   if (score >= 80) return { key: "ELITE", label: "🔥 ELITE", badge: "ok" };
   if (score >= 65) return { key: "HIGH", label: "⭐ WYSOKI", badge: "ok" };
@@ -116,7 +106,6 @@ async function loadJSON(path) {
   if (!res.ok) throw new Error(`Nie mogę wczytać ${path}`);
   return res.json();
 }
-
 function downloadText(filename, text) {
   const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -127,7 +116,6 @@ function downloadText(filename, text) {
   a.remove();
   URL.revokeObjectURL(url);
 }
-
 function toCSV(rows) {
   const esc = (v) => {
     const s = String(v ?? "");
@@ -147,7 +135,6 @@ function ensurePlanUI() {
 
   if (planBtn) {
     planBtn.addEventListener("click", () => {
-      // szybki toggle: BASIC -> PRO -> ELITE -> BASIC
       const next = plan === "BASIC" ? "PRO" : plan === "PRO" ? "ELITE" : "BASIC";
       setPlan(next);
     });
@@ -232,18 +219,21 @@ function renderKPIs() {
   const eliteCount = FILTERED.filter(p => p._class.key === "ELITE").length;
   if (kEliteCount) kEliteCount.textContent = `${eliteCount}`;
 
-  // ryzyko = ile ma wysoką konkurencję
   const highComp = FILTERED.filter(p => (p.competition_level || "").toLowerCase() === "high").length;
   if (kRisk) kRisk.textContent = `Konkurencja HIGH: ${highComp}`;
 }
 
 function rowHTML(p) {
   const badgeClass = p._class.badge === "ok" ? "ok" : "warn";
+  const verified = (p.verification || "").toLowerCase() === "verified";
+  const vBadge = verified ? ` <span class="badge ok" style="margin-left:6px;">Zweryfikowane</span>` : "";
+  const src = p.source_url || "https://allegro.pl/";
+
   return `
     <tr class="qm-row" data-id="${p.id}">
       <td>
         <div class="qm-cell-title">
-          <b>${p.name}</b>
+          <b>${p.name}</b>${vBadge}
           <div class="qm-sub">${p.category || "—"} • weryf: ${p.last_checked || "—"}</div>
         </div>
       </td>
@@ -255,6 +245,9 @@ function rowHTML(p) {
       <td class="right">${p._margin.toFixed(1)}%</td>
       <td class="right"><b>${p._score.toFixed(1)}</b></td>
       <td><span class="badge ${badgeClass}">${p._class.label}</span></td>
+      <td>
+        <a class="btn btn-sm btn-ghost qm-verify-btn" href="${src}" target="_blank" rel="noopener">Sprawdź</a>
+      </td>
     </tr>
   `;
 }
@@ -264,8 +257,11 @@ function renderTable() {
   if (!tbody) return;
   tbody.innerHTML = FILTERED.map(rowHTML).join("");
 
+  // klik w wiersz -> szczegóły
   tbody.querySelectorAll(".qm-row").forEach(tr => {
-    tr.addEventListener("click", () => {
+    tr.addEventListener("click", (e) => {
+      // jeśli klik w link Sprawdź, nie przejmuj selection
+      if (e.target && e.target.classList && e.target.classList.contains("qm-verify-btn")) return;
       const id = tr.getAttribute("data-id");
       const p = FILTERED.find(x => x.id === id);
       if (p) selectProduct(p);
@@ -319,17 +315,11 @@ function selectProduct(p) {
   setBar("fImpulse","bImpulse",impulse,10);
   setBar("fCompetition","bCompetition",comp,10);
 
-  // recommendation
   const rec = document.getElementById("recommendationBox");
-  if (rec) {
-    const recText = makeRecommendation(p, plan);
-    rec.innerHTML = recText;
-  }
+  if (rec) rec.innerHTML = makeRecommendation(p);
 
   const openSourceBtn = document.getElementById("openSourceBtn");
-  if (openSourceBtn) {
-    openSourceBtn.href = p.source_url || "https://allegro.pl/";
-  }
+  if (openSourceBtn) openSourceBtn.href = p.source_url || "https://allegro.pl/";
 
   const copyOfferBtn = document.getElementById("copyOfferBtn");
   if (copyOfferBtn) {
@@ -353,7 +343,7 @@ function selectProduct(p) {
   }
 }
 
-function makeRecommendation(p, plan) {
+function makeRecommendation(p) {
   const cls = p._class.key;
   const comp = (p.competition_level || "medium").toLowerCase();
 
@@ -361,17 +351,16 @@ function makeRecommendation(p, plan) {
   lines.push(`<b>Rekomendacja:</b> ${cls === "ELITE" ? "AGRESYWNA SPRZEDAŻ" : cls === "HIGH" ? "STANDARD PRO" : "TEST / MAŁY BUDŻET"}.`);
   lines.push(`• Konkurencja: <b>${comp.toUpperCase()}</b>`);
   lines.push(`• Strategia: <b>${strategyFor(p)}</b>`);
-  lines.push(`• Cena: ustaw <b>poniżej średniej</b> (system już to robi) i dobij jakością opisu + zdjęć.`);
+  lines.push(`• Ten wynik możesz zweryfikować: kliknij <b>Źródło / rynek</b> i porównaj ceny.`);
 
   if (cls === "ELITE" && comp !== "high") {
-    lines.push(`<br><span class="badge ok">🔥 Ten produkt ma układ pod 40–60% marży bez podejrzeń.</span>`);
+    lines.push(`<br><span class="badge ok">🔥 Układ pod 40–60% marży bez podejrzeń (bo cena jest poniżej średniej rynkowej).</span>`);
   } else if (comp === "high") {
     lines.push(`<br><span class="badge warn">⚠ Wysoka konkurencja — wygrywasz opisem, mini-bundle, gratisem.</span>`);
   }
 
   return lines.join("<br>");
 }
-
 function strategyFor(p) {
   const trend = Number(p.trend_score||0);
   const problem = Number(p.problem_solving_score||0);
@@ -381,9 +370,8 @@ function strategyFor(p) {
 }
 
 function exportCSV() {
-  const plan = getPlan();
   const rows = [
-    ["id","name","supplier","category","wholesale_price","shipping_cost","market_avg_price","suggested_price","profit","margin_percent","score","status","source_url","last_checked"]
+    ["id","name","supplier","category","wholesale_price","shipping_cost","market_avg_price","suggested_price","profit","margin_percent","score","status","source_url","last_checked","verification"]
   ];
   FILTERED.forEach(p => {
     rows.push([
@@ -400,30 +388,20 @@ function exportCSV() {
       p._score.toFixed(1),
       p._class.key,
       p.source_url || "",
-      p.last_checked || ""
+      p.last_checked || "",
+      p.verification || ""
     ]);
   });
   downloadText("qualitetmarket_products.csv", toCSV(rows));
 }
-
 function exportPack() {
   const plan = getPlan();
-  const rows = [
-    ["name","price","supplier","category","title","description"]
-  ];
+  const rows = [["name","price","supplier","category","title","description","source_url"]];
   FILTERED.slice(0, 25).forEach(p => {
     const offer = buildOfferCopy(p, plan);
-    rows.push([
-      p.name,
-      p._suggested.toFixed(2),
-      p.supplier,
-      p.category || "",
-      offer.title,
-      offer.desc
-    ]);
+    rows.push([p.name, p._suggested.toFixed(2), p.supplier, p.category || "", offer.title, offer.desc, p.source_url || ""]);
   });
-  const csv = toCSV(rows);
-  downloadText("qualitetmarket_pack.csv", csv);
+  downloadText("qualitetmarket_pack.csv", toCSV(rows));
 }
 
 async function init() {
