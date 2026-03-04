@@ -1,137 +1,137 @@
-// js/catalog.js — QualitetMarket
-// Buduje katalog sklepu z marżą detal + hurt (B2B)
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sklep gastronomiczny</title>
+  <link rel="stylesheet" href="styles.css">
 
-(() => {
-  "use strict";
+  <style>
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:260px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
+    .card{border:1px solid rgba(0,0,0,.12);border-radius:14px;background:#fff;padding:12px}
+    .name{font-weight:800;margin:0 0 6px}
+    .meta{opacity:.75;font-size:12px;margin:0 0 8px}
+    .price{font-size:18px;font-weight:900;margin:0 0 10px}
+    button{padding:10px 12px;border-radius:12px;border:0;background:#0b0f14;color:#fff;cursor:pointer}
+    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:6px 10px;font-size:12px}
+    .right{margin-left:auto;display:flex;gap:10px;align-items:center}
+    select{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2)}
+    .qty{display:flex;gap:8px;align-items:center;margin:10px 0}
+    .qty input{min-width:0;width:80px}
+    .sum{opacity:.8;font-size:12px;margin-top:8px}
+  </style>
+</head>
 
-  const suppliers = JSON.parse(localStorage.getItem("qm_products_by_supplier_v1") || "{}");
+<body>
+  <div class="wrap">
+    <h1>Sklep gastronomiczny</h1>
 
-  // ==== Twoje marże (zmieniasz tylko tu) ====
-  const DEFAULT_MARGIN_RETAIL_PCT = 120;    // detal: +120% (x2.20)
-  const DEFAULT_MARGIN_WHOLESALE_PCT = 60;  // hurt: +60% (x1.60)
+    <div class="top">
+      <input id="search" placeholder="Szukaj produktu…">
+      <span class="pill" id="count">0 produktów</span>
 
-  const MIN_ADD_RETAIL = 3.00;      // minimalny narzut detal +3 zł
-  const MIN_ADD_WHOLESALE = 1.50;   // minimalny narzut hurt +1.5 zł
+      <div class="right">
+        <label class="pill">
+          Tryb ceny:
+          <select id="mode">
+            <option value="retail" selected>Detal</option>
+            <option value="wholesale">Hurt (B2B)</option>
+          </select>
+        </label>
 
-  const PSYCHO_PRICING = true;      // 19.99 itp.
-  // =========================================
+        <a class="pill" href="koszyk.html">Koszyk</a>
+      </div>
+    </div>
 
-  const catalog = [];
+    <div class="grid" id="products"></div>
+  </div>
 
-  Object.keys(suppliers).forEach((supplier) => {
-    const arr = Array.isArray(suppliers[supplier]) ? suppliers[supplier] : [];
-    arr.forEach((p) => {
-      const name = String(p?.name || p?.title || "produkt").trim();
+  <script src="js/catalog.js"></script>
 
-      // Cena bazowa (najczęściej NETTO z hurtowni)
-      const base = toNumber(
-        p?.price_net ?? p?.price_wholesale ?? p?.price_buy ?? p?.price ?? p?.amount ?? p?.price_sell
-      );
+  <script>
+    const container = document.getElementById("products");
+    const countEl = document.getElementById("count");
+    const modeEl = document.getElementById("mode");
+    const searchEl = document.getElementById("search");
 
-      // Marża per produkt (opcjonalnie w CSV):
-      // margin (detal), margin_retail_pct, margin_wholesale_pct
-      const marginRetailPct = pickPct(
-        p?.margin_retail_pct ?? p?.margin ?? DEFAULT_MARGIN_RETAIL_PCT,
-        DEFAULT_MARGIN_RETAIL_PCT
-      );
-      const marginWholesalePct = pickPct(
-        p?.margin_wholesale_pct ?? DEFAULT_MARGIN_WHOLESALE_PCT,
-        DEFAULT_MARGIN_WHOLESALE_PCT
-      );
-
-      const retail = calcSellPrice(base, marginRetailPct, MIN_ADD_RETAIL, PSYCHO_PRICING);
-      const wholesale = calcSellPrice(base, marginWholesalePct, MIN_ADD_WHOLESALE, PSYCHO_PRICING);
-
-      catalog.push({
-        id: stableId(supplier, name, p?.ean || p?.sku || p?.id),
-        name,
-        supplier,
-        category: autoCategory(name),
-
-        // ceny
-        price_base: round2(base),
-        price_retail: retail,
-        price_wholesale: wholesale,
-
-        // meta
-        ean: String(p?.ean || "").trim(),
-        sku: String(p?.sku || "").trim(),
-        stock: toInt(p?.stock ?? p?.qty ?? 0),
-        moq: toInt(p?.moq ?? 1),
-        unit: String(p?.unit || "").trim(),
-        pack: toInt(p?.pack ?? p?.pack_qty ?? 1),
-
-        // marże
-        margin_retail_pct: marginRetailPct,
-        margin_wholesale_pct: marginWholesalePct
-      });
-    });
-  });
-
-  localStorage.setItem("qm_catalog_v1", JSON.stringify(catalog));
-
-  // ===== helpers =====
-  function toNumber(v) {
-    if (v === null || v === undefined) return 0;
-    if (typeof v === "number") return isFinite(v) ? v : 0;
-    const s = String(v).replace(",", ".").replace(/[^\d.]/g, "");
-    const n = parseFloat(s);
-    return isFinite(n) ? n : 0;
-  }
-
-  function toInt(v) {
-    const n = Math.floor(toNumber(v));
-    return isFinite(n) ? n : 0;
-  }
-
-  function round2(n) {
-    return Math.round((toNumber(n) + Number.EPSILON) * 100) / 100;
-  }
-
-  function pickPct(v, fallback) {
-    const n = toNumber(v);
-    if (!isFinite(n) || n < 0) return fallback;
-    // jeśli ktoś poda 2.2 zamiast 120 — traktujemy jako mnożnik
-    if (n > 0 && n < 10) return Math.round((n - 1) * 100);
-    return n;
-  }
-
-  function calcSellPrice(base, marginPct, minAdd, psycho) {
-    base = toNumber(base);
-    if (base <= 0) return 0;
-
-    let price = base * (1 + (marginPct / 100)); // base + %
-    const minPrice = base + toNumber(minAdd);   // base + min kwota
-
-    if (price < minPrice) price = minPrice;
-    price = round2(price);
-
-    if (!psycho) return price;
-
-    if (price >= 10) {
-      const whole = Math.floor(price);
-      return round2(whole + 0.99);
+    function getProducts(){
+      return JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
     }
-    return price;
-  }
 
-  function stableId(supplier, name, extra) {
-    const raw = `${supplier}__${name}__${extra || ""}`.toLowerCase();
-    let h = 0;
-    for (let i = 0; i < raw.length; i++) h = (h * 31 + raw.charCodeAt(i)) >>> 0;
-    return "p_" + h.toString(36);
-  }
+    function cartKey(mode){
+      return mode === "wholesale" ? "qm_cart_b2b_v1" : "qm_cart_v1";
+    }
 
-  function autoCategory(name) {
-    const n = String(name || "").toLowerCase();
+    function addToCart(id, qty, mode){
+      qty = Number(qty || 1);
+      if (!isFinite(qty) || qty <= 0) qty = 1;
 
-    if (n.includes("work") || n.includes("folia") || n.includes("próżni") || n.includes("zgrzew")) return "pakowanie";
-    if (n.includes("kubek") || n.includes("tack") || n.includes("pojemn") || n.includes("papier") || n.includes("torb")) return "opakowania";
-    if (n.includes("nóż") || n.includes("tasak") || n.includes("stal") || n.includes("ostr")) return "noże i narzędzia";
-    if (n.includes("maszyn") || n.includes("młynek") || n.includes("nadziew") || n.includes("wilki")) return "maszyny";
-    if (n.includes("rękaw") || n.includes("bhp") || n.includes("fartuch") || n.includes("czepek")) return "bhp";
-    if (n.includes("przypraw") || n.includes("pekl") || n.includes("jelit") || n.includes("osłonk")) return "masarnia";
+      const key = cartKey(mode);
+      const cart = JSON.parse(localStorage.getItem(key) || "[]");
 
-    return "inne";
-  }
-})();
+      cart.push({ id, qty, mode, ts: Date.now() });
+
+      localStorage.setItem(key, JSON.stringify(cart));
+      alert("Dodano do koszyka");
+    }
+
+    function fmt(n){
+      const v = Number(n || 0);
+      return v.toFixed(2);
+    }
+
+    function render(){
+      const mode = modeEl.value;
+      const q = (searchEl.value || "").toLowerCase().trim();
+
+      const products = getProducts()
+        .filter(p => !q || String(p.name||"").toLowerCase().includes(q));
+
+      countEl.textContent = `${products.length} produktów`;
+      container.innerHTML = "";
+
+      products.forEach(p => {
+        const price = mode === "wholesale" ? p.price_wholesale : p.price_retail;
+
+        const moq = Number(p.moq || 1);
+        const pack = Number(p.pack || 1);
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+          <p class="name">${p.name}</p>
+          <p class="meta">${p.category || "inne"} • ${p.supplier || ""}</p>
+          <p class="price">${fmt(price)} zł</p>
+
+          <div class="qty">
+            <label class="pill">Ilość</label>
+            <input type="number" min="${moq}" step="${pack}" value="${moq}" id="q_${p.id}">
+          </div>
+
+          <button data-add="${p.id}">Dodaj do koszyka</button>
+
+          <div class="sum">
+            MOQ: ${moq} • Paczka: ${pack} • Tryb: ${mode === "wholesale" ? "Hurt" : "Detal"}
+          </div>
+        `;
+
+        container.appendChild(div);
+
+        div.querySelector("[data-add]").addEventListener("click", () => {
+          const qty = div.querySelector(`#q_${p.id}`).value;
+          addToCart(p.id, qty, mode);
+        });
+      });
+    }
+
+    modeEl.addEventListener("change", render);
+    searchEl.addEventListener("input", render);
+
+    render();
+  </script>
+</body>
+</html>
