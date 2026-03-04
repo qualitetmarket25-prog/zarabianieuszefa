@@ -1,50 +1,103 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>Sklep gastronomiczny</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sklep gastronomiczny</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:260px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
+    .card{border:1px solid rgba(0,0,0,.12);border-radius:14px;background:#fff;padding:12px}
+    .name{font-weight:800;margin:0 0 6px}
+    .meta{opacity:.75;font-size:12px;margin:0 0 8px}
+    .price{font-size:18px;font-weight:900;margin:0 0 10px}
+    button{padding:10px 12px;border-radius:12px;border:0;background:#0b0f14;color:#fff;cursor:pointer}
+    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:6px 10px;font-size:12px}
+    .right{margin-left:auto;display:flex;gap:10px;align-items:center}
+    select{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2)}
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <h1>Sklep gastronomiczny</h1>
 
-<h1>Sklep gastronomiczny</h1>
+    <div class="top">
+      <input id="search" placeholder="Szukaj produktu…">
+      <span class="pill" id="count">0 produktów</span>
 
-<input id="search" placeholder="szukaj produktu">
+      <div class="right">
+        <label class="pill">
+          Tryb ceny:
+          <select id="mode">
+            <option value="retail" selected>Detal</option>
+            <option value="wholesale">Hurt (B2B)</option>
+          </select>
+        </label>
+      </div>
+    </div>
 
-<div id="products"></div>
+    <div class="grid" id="products"></div>
+  </div>
 
-<script src="js/catalog.js"></script>
+  <script src="js/catalog.js"></script>
 
-<script>
+  <script>
+    const container = document.getElementById("products");
+    const countEl = document.getElementById("count");
+    const modeEl = document.getElementById("mode");
+    const searchEl = document.getElementById("search");
 
-const products = JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
+    function getProducts(){
+      return JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
+    }
 
-const container = document.getElementById("products");
+    function addCart(id, mode){
+      const key = mode === "wholesale" ? "qm_cart_b2b" : "qm_cart";
+      const cart = JSON.parse(localStorage.getItem(key) || "[]");
+      cart.push(id);
+      localStorage.setItem(key, JSON.stringify(cart));
+      alert("Dodano do koszyka");
+    }
 
-function render(list){
+    function fmt(n){
+      const v = Number(n || 0);
+      return v.toFixed(2);
+    }
 
-container.innerHTML="";
+    function render(){
+      const mode = modeEl.value;
+      const q = (searchEl.value || "").toLowerCase().trim();
 
-list.forEach(p=>{
+      const products = getProducts()
+        .filter(p => !q || String(p.name||"").toLowerCase().includes(q));
 
-let div=document.createElement("div");
+      countEl.textContent = `${products.length} produktów`;
+      container.innerHTML = "";
 
-div.innerHTML=`
-<h3>${p.name}</h3>
-<p>${p.price} zł</p>
-<button>Kup</button>
-`;
+      products.forEach(p => {
+        const price = mode === "wholesale" ? p.price_wholesale : p.price_retail;
 
-container.appendChild(div);
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <p class="name">${p.name}</p>
+          <p class="meta">${p.category || "inne"} • ${p.supplier || ""}</p>
+          <p class="price">${fmt(price)} zł</p>
+          <button onclick="(${addCart.toString()})('${p.id}','${mode}')">Dodaj do koszyka</button>
+        `;
+        container.appendChild(div);
+      });
+    }
 
-});
+    modeEl.addEventListener("change", render);
+    searchEl.addEventListener("input", render);
 
-}
-
-render(products);
-
-</script>
-
+    render();
+  </script>
 </body>
 </html>
