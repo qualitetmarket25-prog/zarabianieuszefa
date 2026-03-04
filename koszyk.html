@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="./shop.css" />
 
-  <script defer src="./shopCart.js"></script>
-  <script defer src="./shop.js"></script>
+  <script defer src="./js/shopCart.js"></script>
+  <script defer src="./js/shop.js"></script>
 </head>
 
 <body data-noShell="1">
@@ -57,7 +57,6 @@
 
     <div class="section">
       <div id="cartList" class="cart-list"></div>
-
       <div id="cartEmpty" class="card soft" style="display:none; margin-top:14px;">
         <strong>Pusto</strong>
         <p class="p" style="margin-top:6px;">Wracaj do sklepu i dodaj produkty.</p>
@@ -90,10 +89,6 @@
 
           <div class="hr"></div>
 
-          <div class="muted-xs">
-            MVP: „złóż zamówienie” generuje gotowy tekst do wysłania do hurtowni / na maila.
-          </div>
-
           <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
             <button class="btn btn-primary" id="generateOrder" type="button">Generuj zamówienie</button>
             <button class="btn" id="copyOrder" type="button">Kopiuj</button>
@@ -119,9 +114,7 @@
       </div>
     </div>
 
-    <div class="footer">
-      QualitetMarket • koszyk B2B (MVP)
-    </div>
+    <div class="footer">QualitetMarket • koszyk B2B (MVP)</div>
   </div>
 </body>
 </html>
