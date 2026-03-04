@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Sklep gastronomiczny</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<h1>Sklep gastronomiczny</h1>
+
+<input id="search" placeholder="szukaj produktu">
+
+<div id="products"></div>
+
+<script src="js/catalog.js"></script>
+
+<script>
+
+const products = JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
+
+const container = document.getElementById("products");
+
+function render(list){
+
+container.innerHTML="";
+
+list.forEach(p=>{
+
+let div=document.createElement("div");
+
+div.innerHTML=`
+<h3>${p.name}</h3>
+<p>${p.price} zł</p>
+<button>Kup</button>
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+render(products);
+
+</script>
+
+</body>
+</html>
