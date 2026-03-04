@@ -4,21 +4,17 @@
 (() => {
   "use strict";
 
-  // źródło: produkty z hurtowni (z Twojego modułu CSV)
   const suppliers = JSON.parse(localStorage.getItem("qm_products_by_supplier_v1") || "{}");
 
-  // ==== USTAWIENIA MARŻY (zmienisz później jednym miejscem) ====
-  const DEFAULT_MARGIN_RETAIL_PCT = 120; // detal: +120% (czyli x2.20)
-  const DEFAULT_MARGIN_WHOLESALE_PCT = 60; // hurt: +60% (czyli x1.60)
+  // ==== Twoje marże (zmieniasz tylko tu) ====
+  const DEFAULT_MARGIN_RETAIL_PCT = 120;    // detal: +120% (x2.20)
+  const DEFAULT_MARGIN_WHOLESALE_PCT = 60;  // hurt: +60% (x1.60)
 
-  // Minimalne narzuty kwotowe (żeby nie było groszy/0)
-  const MIN_ADD_RETAIL = 3.00;   // min +3 zł detal
-  const MIN_ADD_WHOLESALE = 1.50; // min +1.5 zł hurt
+  const MIN_ADD_RETAIL = 3.00;     // minimalny narzut detal +3 zł
+  const MIN_ADD_WHOLESALE = 1.50;  // minimalny narzut hurt +1.5 zł
 
-  // Zaokrąglenie do "psychologicznych" cen (np. 19.99)
-  const PSYCHO_PRICING = true;
-
-  // ============================================================
+  const PSYCHO_PRICING = true;     // 19.99 itp.
+  // =========================================
 
   const catalog = [];
 
@@ -27,17 +23,21 @@
     arr.forEach((p) => {
       const name = String(p?.name || p?.title || "produkt").trim();
 
-      // cena bazowa: bierzemy net, a jak nie ma to gross/sell. Jak nie ma nic -> 0
-      // Jeśli hurtownia daje NETTO, a Ty chcesz brutto — dopisz VAT w tym miejscu (opcjonalne).
+      // Cena bazowa (najczęściej NETTO z hurtowni)
       const base = toNumber(
         p?.price_net ?? p?.price_wholesale ?? p?.price_buy ?? p?.price ?? p?.amount ?? p?.price_sell
       );
 
-      // Możesz mieć w CSV własną marżę per produkt:
-      // - p.margin_retail_pct / p.margin_wholesale_pct
-      // - albo p.margin (traktujemy jako detal)
-      const marginRetailPct = pickPct(p?.margin_retail_pct ?? p?.margin ?? DEFAULT_MARGIN_RETAIL_PCT, DEFAULT_MARGIN_RETAIL_PCT);
-      const marginWholesalePct = pickPct(p?.margin_wholesale_pct ?? DEFAULT_MARGIN_WHOLESALE_PCT, DEFAULT_MARGIN_WHOLESALE_PCT);
+      // Marża per produkt (opcjonalnie w CSV):
+      // margin (detal), margin_retail_pct, margin_wholesale_pct
+      const marginRetailPct = pickPct(
+        p?.margin_retail_pct ?? p?.margin ?? DEFAULT_MARGIN_RETAIL_PCT,
+        DEFAULT_MARGIN_RETAIL_PCT
+      );
+      const marginWholesalePct = pickPct(
+        p?.margin_wholesale_pct ?? DEFAULT_MARGIN_WHOLESALE_PCT,
+        DEFAULT_MARGIN_WHOLESALE_PCT
+      );
 
       const retail = calcSellPrice(base, marginRetailPct, MIN_ADD_RETAIL, PSYCHO_PRICING);
       const wholesale = calcSellPrice(base, marginWholesalePct, MIN_ADD_WHOLESALE, PSYCHO_PRICING);
@@ -50,8 +50,8 @@
 
         // ceny
         price_base: round2(base),
-        price_retail: retail,     // sklep
-        price_wholesale: wholesale, // hurt/B2B
+        price_retail: retail,
+        price_wholesale: wholesale,
 
         // meta
         ean: String(p?.ean || "").trim(),
@@ -61,7 +61,7 @@
         unit: String(p?.unit || "").trim(),
         pack: toInt(p?.pack ?? p?.pack_qty ?? 1),
 
-        // marże zapisujemy też do podglądu
+        // marże
         margin_retail_pct: marginRetailPct,
         margin_wholesale_pct: marginWholesalePct
       });
@@ -71,7 +71,6 @@
   localStorage.setItem("qm_catalog_v1", JSON.stringify(catalog));
 
   // ===== helpers =====
-
   function toNumber(v) {
     if (v === null || v === undefined) return 0;
     if (typeof v === "number") return isFinite(v) ? v : 0;
@@ -92,8 +91,8 @@
   function pickPct(v, fallback) {
     const n = toNumber(v);
     if (!isFinite(n) || n < 0) return fallback;
-    // jeśli ktoś wpisze 2.2 zamiast 120, traktujemy jako mnożnik -> pct
-    if (n > 0 && n < 10) return Math.round((n - 1) * 100); // np. 2.2 -> 120
+    // jeśli ktoś poda 2.2 zamiast 120 — traktujemy jako mnożnik
+    if (n > 0 && n < 10) return Math.round((n - 1) * 100);
     return n;
   }
 
@@ -101,18 +100,14 @@
     base = toNumber(base);
     if (base <= 0) return 0;
 
-    // cena = base * (1 + margin%)
-    let price = base * (1 + (marginPct / 100));
+    let price = base * (1 + (marginPct / 100)); // base + %
+    const minPrice = base + toNumber(minAdd);   // base + min kwota
 
-    // minimalny narzut kwotowy
-    const minPrice = base + toNumber(minAdd);
     if (price < minPrice) price = minPrice;
-
     price = round2(price);
 
     if (!psycho) return price;
 
-    // psycho: 19.99, 49.99 itd (dla > 10 zł)
     if (price >= 10) {
       const whole = Math.floor(price);
       return round2(whole + 0.99);
@@ -139,5 +134,4 @@
 
     return "inne";
   }
-
 })();
