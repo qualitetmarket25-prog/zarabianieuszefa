@@ -5,14 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sklep B2B – QualitetMarket</title>
 
+  <!-- global -->
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="./shop.css" />
+
+  <!-- shop (UWAGA: jest w /zarabianieuszefa/js/) -->
+  <link rel="stylesheet" href="./js/shop.css" />
 
   <!-- (opcjonalnie) planGuard, jeśli chcesz blokować sklep planami -->
   <!-- <script defer src="/js/planGuard.js"></script> -->
 
-  <script defer src="./shopCart.js"></script>
-  <script defer src="./shop.js"></script>
+  <!-- shop scripts (UWAGA: są w /zarabianieuszefa/js/) -->
+  <script defer src="./js/shopCart.js"></script>
+  <script defer src="./js/shop.js"></script>
 </head>
 
 <body data-noShell="1">
@@ -39,7 +43,7 @@
       <div class="shop-toolbar">
         <div class="field">
           <label class="muted-xs">Szukaj</label>
-          <input id="q" class="input" placeholder="np. folie, pojemniki, rękawice, masarnia..." />
+          <input id="q" class="input" placeholder="np. folie, pojemniki, rękawice, masarnie..." />
         </div>
 
         <div class="field">
