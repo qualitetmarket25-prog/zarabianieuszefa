@@ -1,89 +1,173 @@
-// IMPORT CSV HURTOWNI
+// js/hurtownie.js — PANCERNY IMPORT CSV + obsługa przycisku "Analizuj hurtownię"
+(() => {
+  "use strict";
 
-(function(){
+  const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
 
-const STORAGE = "qm_products_by_supplier_v1";
+  // ---------- UTIL ----------
+  const $ = (sel, root = document) => root.querySelector(sel);
 
-function parseCSV(text){
+  function toast(msg) {
+    alert(msg);
+  }
 
-const lines = text.split("\n");
+  function toNumber(v) {
+    if (v === null || v === undefined) return 0;
+    if (typeof v === "number") return isFinite(v) ? v : 0;
+    return parseFloat(String(v).replace(",", ".").replace(/[^\d.]/g, "")) || 0;
+  }
 
-const headers = lines[0].split(",").map(h=>h.trim().toLowerCase());
+  // Prosty CSV parser: obsługuje przecinki i średniki + cudzysłowy
+  function parseCSV(text) {
+    const lines = text.replace(/\r/g, "").split("\n").filter(Boolean);
+    if (!lines.length) return { headers: [], rows: [] };
 
-let products = [];
+    const delim = detectDelimiter(lines[0]);
+    const headers = splitLine(lines[0], delim).map(h => norm(h));
 
-for(let i=1;i<lines.length;i++){
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = splitLine(lines[i], delim);
+      if (!cols.length) continue;
 
-let row = lines[i].split(",");
+      const obj = {};
+      headers.forEach((h, idx) => (obj[h] = (cols[idx] ?? "").trim()));
+      rows.push(obj);
+    }
+    return { headers, rows };
+  }
 
-let p={};
+  function detectDelimiter(headerLine) {
+    const comma = (headerLine.match(/,/g) || []).length;
+    const semi = (headerLine.match(/;/g) || []).length;
+    return semi > comma ? ";" : ",";
+  }
 
-headers.forEach((h,index)=>{
-p[h]=row[index];
-});
+  function splitLine(line, delim) {
+    const out = [];
+    let cur = "";
+    let inQ = false;
 
-products.push({
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
 
-name:
-p.name ||
-p.nazwa ||
-p.product ||
-"produkt",
+      if (ch === '"') {
+        inQ = !inQ;
+        continue;
+      }
 
-price_net: getPrice(p),
+      if (!inQ && ch === delim) {
+        out.push(cur);
+        cur = "";
+      } else {
+        cur += ch;
+      }
+    }
+    out.push(cur);
+    return out.map(s => s.trim());
+  }
 
-stock:
-parseFloat(
-p.stock ||
-p.stan ||
-p.qty ||
-p.ilosc ||
-0
-),
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/[ąćęłńóśźż]/g, (m) => ({
+        "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"
+      }[m] || m));
+  }
 
-ean: p.ean || "",
-sku: p.sku || ""
+  function pick(obj, keys) {
+    for (const k of keys) {
+      if (obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== "") return obj[k];
+    }
+    return "";
+  }
 
-});
+  function mapProduct(row) {
+    // Najczęstsze nazwy kolumn w PL/EN
+    const name = pick(row, ["name","nazwa","product","produkt","title","opis"]) || "produkt";
 
-}
+    // cena: łapiemy różne warianty
+    const priceNetRaw = pick(row, [
+      "price_net","cena_netto","netto","net_price","cena",
+      "price","unit_price","cena_zakupu","buy_price"
+    ]);
+    const price_net = toNumber(priceNetRaw);
 
-return products;
+    const stockRaw = pick(row, ["stock","stan","qty","ilosc","ilosc_szt","quantity"]);
+    const stock = Math.max(0, Math.floor(toNumber(stockRaw)));
 
-}
+    const ean = pick(row, ["ean","gtin","barcode","kod_ean"]);
+    const sku = pick(row, ["sku","symbol","kod","index"]);
 
-function getPrice(p){
+    return { name: String(name).trim(), price_net, stock, ean: String(ean||"").trim(), sku: String(sku||"").trim() };
+  }
 
-return parseFloat(
+  function saveSupplierProducts(supplierName, products) {
+    const db = JSON.parse(localStorage.getItem(LS_PRODUCTS_BY_SUPPLIER) || "{}");
+    db[supplierName] = products;
+    localStorage.setItem(LS_PRODUCTS_BY_SUPPLIER, JSON.stringify(db));
+  }
 
-String(
-p.price ||
-p.cena ||
-p.netto ||
-p.price_net ||
-p.net_price ||
-0
-)
+  // ---------- GŁÓWNY HANDLER ----------
+  async function analyzeFromUI() {
+    const fileInput = $("#csvFile") || $('input[type="file"]');
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+      toast("Wybierz plik CSV.");
+      return;
+    }
 
-.replace(",",".")
-.replace(/[^\d.]/g,"")
+    const supplierNameInput = $("#supplierName");
+    const supplier = (supplierNameInput?.value || "GastroPRO").trim() || "GastroPRO";
 
-);
+    const file = fileInput.files[0];
+    const text = await file.text();
 
-}
+    const { rows } = parseCSV(text);
+    const products = rows.map(mapProduct).filter(p => p.name && p.name !== "produkt");
 
-window.importCSV = function(text,supplier){
+    // JEŚLI CENY SĄ 0 — to znaczy, że CSV ma inną kolumnę z ceną.
+    const nonZero = products.filter(p => p.price_net > 0).length;
 
-let products=parseCSV(text);
+    saveSupplierProducts(supplier, products);
 
-let db=JSON.parse(localStorage.getItem(STORAGE)||"{}");
+    toast(`Zaimportowano ${products.length} produktów (${nonZero} z ceną > 0).`);
 
-db[supplier]=products;
+    // od razu budujemy katalog sklepu, jeśli istnieje
+    try {
+      // odpalenie catalog.js przez przejście na sklep nie jest konieczne,
+      // ale zostawiamy hint
+      console.log("Import OK. Otwórz sklep i zrób CTRL+F5.");
+    } catch {}
+  }
 
-localStorage.setItem(STORAGE,JSON.stringify(db));
+  // ---------- PODPINANIE PRZYCISKU (NAPRAWA) ----------
+  function bindAnalyzeButton() {
+    // 1) preferowany ID
+    const btn = $("#qmAnalyzeBtn");
+    if (btn) {
+      btn.addEventListener("click", (e) => { e.preventDefault(); analyzeFromUI(); });
+      return true;
+    }
 
-alert("Zaimportowano "+products.length+" produktów");
+    // 2) fallback: szukamy przycisku po tekście
+    const buttons = Array.from(document.querySelectorAll("button, a"));
+    const match = buttons.find(b => (b.textContent || "").toLowerCase().includes("analizuj hurtown"));
+    if (match) {
+      match.addEventListener("click", (e) => { e.preventDefault(); analyzeFromUI(); });
+      return true;
+    }
 
-};
+    return false;
+  }
+
+  // Start
+  document.addEventListener("DOMContentLoaded", () => {
+    const ok = bindAnalyzeButton();
+    if (!ok) {
+      console.warn("Nie znaleziono przycisku 'Analizuj hurtownię' — sprawdź ID na stronie hurtownie.html");
+    }
+  });
 
 })();
