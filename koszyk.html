@@ -1,121 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koszyk</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .wrap{max-width:900px;margin:24px auto;padding:0 16px}
-    .row{display:flex;justify-content:space-between;gap:10px;padding:12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;margin:10px 0}
-    .muted{opacity:.7;font-size:12px}
-    button{padding:10px 12px;border-radius:12px;border:0;background:#0b0f14;color:#fff;cursor:pointer}
-    .danger{background:#b00020}
-    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:6px 10px;font-size:12px}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Koszyk</h1>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Koszyk – QualitetMarket</title>
 
-    <div class="top">
-      <a class="pill" href="sklep.html">← Wróć do sklepu</a>
-      <span class="pill" id="sum">Suma: 0.00 zł</span>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./shop.css" />
+
+  <script defer src="./shopCart.js"></script>
+  <script defer src="./shop.js"></script>
+</head>
+
+<body data-noShell="1">
+  <div class="wrap">
+    <div class="hero-card">
+      <div class="shop-top">
+        <div>
+          <h1 class="h1">Koszyk</h1>
+          <p class="p">Zamówienia B2B: MOQ, dane firmy, NIP, notatki do hurtowni.</p>
+        </div>
+
+        <div class="shop-actions">
+          <a class="btn btn-sm" href="./sklep.html">← Sklep</a>
+          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+          <button class="btn btn-danger btn-sm" id="clearCart" type="button">Wyczyść</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="shop-toolbar">
+        <div class="field">
+          <label class="muted-xs">Tryb</label>
+          <div class="seg">
+            <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
+            <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
+          </div>
+          <div class="muted-xs" style="margin-top:6px">
+            Tryb dotyczy wyliczenia sumy i wymagań MOQ.
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Rabat B2B (opcjonalnie)</label>
+          <input id="b2bDiscount" class="input" placeholder="np. 5 (%)" inputmode="decimal" />
+          <div class="muted-xs" style="margin-top:6px">To jest rabat globalny na koszyk (MVP).</div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Notatka</label>
+          <input id="orderNote" class="input" placeholder="np. dostawa rano, kontakt..." />
+        </div>
+      </div>
     </div>
 
-    <h3>Detal</h3>
-    <div id="listRetail"></div>
+    <div class="section">
+      <div id="cartList" class="cart-list"></div>
 
-    <h3>Hurt (B2B)</h3>
-    <div id="listB2B"></div>
+      <div id="cartEmpty" class="card soft" style="display:none; margin-top:14px;">
+        <strong>Pusto</strong>
+        <p class="p" style="margin-top:6px;">Wracaj do sklepu i dodaj produkty.</p>
+      </div>
+    </div>
 
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <button id="clearRetail" class="danger">Wyczyść detal</button>
-      <button id="clearB2B" class="danger">Wyczyść hurt</button>
+    <div class="section">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Dane B2B (faktura)</h2>
+
+          <div class="form-grid">
+            <div class="field">
+              <label class="muted-xs">Nazwa firmy</label>
+              <input id="companyName" class="input" placeholder="np. Bar u Szefa" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">NIP</label>
+              <input id="companyNip" class="input" placeholder="np. 1234567890" inputmode="numeric" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Adres</label>
+              <input id="companyAddr" class="input" placeholder="ul., miasto, kod" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Email / telefon</label>
+              <input id="companyContact" class="input" placeholder="kontakt do zamówienia" />
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="muted-xs">
+            MVP: „złóż zamówienie” generuje gotowy tekst do wysłania do hurtowni / na maila.
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="generateOrder" type="button">Generuj zamówienie</button>
+            <button class="btn" id="copyOrder" type="button">Kopiuj</button>
+          </div>
+
+          <textarea id="orderOut" class="input" style="margin-top:12px; min-height:180px; resize:vertical;" placeholder="Tu pojawi się gotowe zamówienie..."></textarea>
+        </div>
+
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Podsumowanie</h2>
+
+          <div class="sum-row"><span class="muted">Pozycje</span><strong id="sumItems">0</strong></div>
+          <div class="sum-row"><span class="muted">Suma netto</span><strong id="sumNet">0,00 zł</strong></div>
+          <div class="sum-row"><span class="muted">VAT (23% – orientacyjnie)</span><strong id="sumVat">0,00 zł</strong></div>
+          <div class="sum-row"><span class="muted">Suma brutto</span><strong id="sumGross">0,00 zł</strong></div>
+
+          <div class="hr"></div>
+
+          <div class="muted-xs" id="moqWarn" style="display:none;">
+            Uwaga: w trybie B2B masz pozycje poniżej MOQ (minimum). Popraw ilości.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      QualitetMarket • koszyk B2B (MVP)
     </div>
   </div>
-
-  <script>
-    function getCatalog(){
-      return JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
-    }
-    function getCart(key){
-      return JSON.parse(localStorage.getItem(key) || "[]");
-    }
-    function setCart(key, val){
-      localStorage.setItem(key, JSON.stringify(val));
-    }
-    function fmt(n){ return Number(n||0).toFixed(2); }
-
-    const catalog = getCatalog();
-    const byId = new Map(catalog.map(p => [p.id, p]));
-
-    const retailKey = "qm_cart_v1";
-    const b2bKey = "qm_cart_b2b_v1";
-
-    const retail = getCart(retailKey);
-    const b2b = getCart(b2bKey);
-
-    function renderList(list, elId, mode, key){
-      const el = document.getElementById(elId);
-      el.innerHTML = "";
-
-      if(!list.length){
-        el.innerHTML = `<p class="muted">Pusto</p>`;
-        return 0;
-      }
-
-      let sum = 0;
-
-      list.forEach((item, idx) => {
-        const p = byId.get(item.id);
-        if(!p) return;
-
-        const price = mode === "wholesale" ? p.price_wholesale : p.price_retail;
-        const qty = Number(item.qty || 1);
-        const line = price * qty;
-        sum += line;
-
-        const row = document.createElement("div");
-        row.className = "row";
-        row.innerHTML = `
-          <div>
-            <div><b>${p.name}</b></div>
-            <div class="muted">${p.category || "inne"} • ${p.supplier || ""}</div>
-            <div class="muted">Cena: ${fmt(price)} zł • Ilość: ${qty}</div>
-          </div>
-          <div style="text-align:right">
-            <div><b>${fmt(line)} zł</b></div>
-            <button data-del="${idx}" class="danger" style="margin-top:8px">Usuń</button>
-          </div>
-        `;
-        el.appendChild(row);
-
-        row.querySelector("[data-del]").addEventListener("click", () => {
-          const fresh = getCart(key);
-          fresh.splice(idx, 1);
-          setCart(key, fresh);
-          location.reload();
-        });
-      });
-
-      return sum;
-    }
-
-    const sumRetail = renderList(retail, "listRetail", "retail", retailKey);
-    const sumB2B = renderList(b2b, "listB2B", "wholesale", b2bKey);
-
-    document.getElementById("sum").textContent = `Suma: ${fmt(sumRetail + sumB2B)} zł`;
-
-    document.getElementById("clearRetail").addEventListener("click", () => {
-      setCart(retailKey, []);
-      location.reload();
-    });
-    document.getElementById("clearB2B").addEventListener("click", () => {
-      setCart(b2bKey, []);
-      location.reload();
-    });
-  </script>
 </body>
 </html>
