@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>System hurtowni – QualitetMarket</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./shop.css" />
+
+  <script defer src="./suppliers.js"></script>
+</head>
+
+<body data-noShell="1">
+  <div class="wrap">
+    <div class="hero-card">
+      <div class="shop-top">
+        <div>
+          <h1 class="h1">System dodawania hurtowni</h1>
+          <p class="p">MVP: rejestr hurtowni (nazwa, kontakt, format CSV) w LocalStorage. Potem podepniemy mapowanie kolumn.</p>
+        </div>
+        <div class="shop-actions">
+          <a class="btn btn-sm" href="./sklep.html">Sklep</a>
+          <a class="btn btn-sm" href="/hurtownie.html">Import CSV</a>
+          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Dodaj hurtownię</h2>
+
+          <div class="form-grid">
+            <div class="field">
+              <label class="muted-xs">Nazwa</label>
+              <input id="sName" class="input" placeholder="np. Hurtownia Opakowań XYZ" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Email / telefon</label>
+              <input id="sContact" class="input" placeholder="kontakt" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Format CSV (separator)</label>
+              <select id="sSep" class="input">
+                <option value=",">Przecinek (,)</option>
+                <option value=";">Średnik (;)</option>
+                <option value="\t">Tabulator</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="muted-xs">Uwagi</label>
+              <input id="sNotes" class="input" placeholder="np. netto, dostępność, terminy" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="addSupplier" type="button">Dodaj</button>
+            <button class="btn btn-danger" id="resetSuppliers" type="button">Reset listy</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Lista hurtowni</h2>
+          <div id="supList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">QualitetMarket • suppliers registry (MVP)</div>
+  </div>
+</body>
+</html>
