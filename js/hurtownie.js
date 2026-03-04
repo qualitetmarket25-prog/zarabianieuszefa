@@ -1,87 +1,90 @@
-let supplierScores = [];
+// hurtownie.js — import CSV hurtowni
 
-function processCSV() {
-    const fileInput = document.getElementById("csvFile");
-    const file = fileInput.files[0];
+(function(){
 
-    if (!file) {
-        alert("Wybierz plik CSV.");
-        return;
-    }
+const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
 
-    const reader = new FileReader();
+function parseCSV(text){
 
-    reader.onload = function (e) {
-        const text = e.target.result;
-        const rows = text.split("\n").map(r => r.split(","));
+const rows = text.split("\n").map(r => r.split(","));
 
-        // Zakładamy strukturę:
-        // Nazwa, CenaHurtowa, CenaRynkowa
+const headers = rows[0].map(h => h.trim().toLowerCase());
 
-        const results = [];
-        let totalScore = 0;
-        let productCount = 0;
+let products = [];
 
-        for (let i = 1; i < rows.length; i++) {
-            const name = rows[i][0];
-            const wholesale = parseFloat(rows[i][1]);
-            const retail = parseFloat(rows[i][2]);
+for(let i=1;i<rows.length;i++){
 
-            if (!name || isNaN(wholesale) || isNaN(retail)) continue;
+let row = rows[i];
 
-            const margin = ((retail - wholesale) / wholesale) * 100;
-            const score = margin > 50 ? 100 :
-                          margin > 30 ? 70 :
-                          margin > 15 ? 40 : 10;
+let p = {};
 
-            totalScore += score;
-            productCount++;
+headers.forEach((h,index)=>{
 
-            results.push({
-                name,
-                wholesale,
-                retail,
-                margin: margin.toFixed(2),
-                score
-            });
-        }
+p[h] = row[index];
 
-        displayResults(results);
+});
 
-        const avgScore = productCount ? (totalScore / productCount).toFixed(2) : 0;
+products.push(mapProduct(p));
 
-        supplierScores.push(avgScore);
-        displaySupplierRanking(avgScore);
-    };
-
-    reader.readAsText(file);
 }
 
-function displayResults(results) {
-    const tbody = document.querySelector("#resultsTable tbody");
-    tbody.innerHTML = "";
+return products;
 
-    results.sort((a, b) => b.score - a.score);
-
-    results.forEach(product => {
-        const row = `
-            <tr>
-                <td>${product.name}</td>
-                <td>${product.wholesale} zł</td>
-                <td>${product.retail} zł</td>
-                <td>${product.margin}%</td>
-                <td>${product.score}</td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
 }
 
-function displaySupplierRanking(avgScore) {
-    const ranking = document.getElementById("supplierRanking");
-    ranking.innerHTML = `
-        <div class="card soft">
-            <strong>Średni Score Hurtowni:</strong> ${avgScore}/100
-        </div>
-    `;
+function mapProduct(p){
+
+return {
+
+name: p.name || p.nazwa || p.product || "produkt",
+
+price_net: toNumber(
+p.price ||
+p.cena ||
+p.netto ||
+p.price_net ||
+p.cenanetto ||
+p.net_price
+),
+
+stock: toNumber(
+p.stock ||
+p.stan ||
+p.qty ||
+p.ilosc
+),
+
+ean: p.ean || "",
+sku: p.sku || ""
+
+};
+
 }
+
+function toNumber(v){
+
+if(!v) return 0;
+
+return parseFloat(
+String(v)
+.replace(",",".")
+.replace(/[^\d.]/g,"")
+);
+
+}
+
+window.importCSV = function(text,supplier){
+
+let products = parseCSV(text);
+
+let db = JSON.parse(localStorage.getItem(LS_PRODUCTS_BY_SUPPLIER) || "{}");
+
+db[supplier] = products;
+
+localStorage.setItem(LS_PRODUCTS_BY_SUPPLIER, JSON.stringify(db));
+
+alert("Zaimportowano "+products.length+" produktów");
+
+};
+
+})();
