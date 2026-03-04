@@ -1,137 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sklep gastronomiczny</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sklep B2B – QualitetMarket</title>
 
-  <style>
-    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
-    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    input{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:260px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
-    .card{border:1px solid rgba(0,0,0,.12);border-radius:14px;background:#fff;padding:12px}
-    .name{font-weight:800;margin:0 0 6px}
-    .meta{opacity:.75;font-size:12px;margin:0 0 8px}
-    .price{font-size:18px;font-weight:900;margin:0 0 10px}
-    button{padding:10px 12px;border-radius:12px;border:0;background:#0b0f14;color:#fff;cursor:pointer}
-    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:6px 10px;font-size:12px}
-    .right{margin-left:auto;display:flex;gap:10px;align-items:center}
-    select{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,.2)}
-    .qty{display:flex;gap:8px;align-items:center;margin:10px 0}
-    .qty input{min-width:0;width:80px}
-    .sum{opacity:.8;font-size:12px;margin-top:8px}
-  </style>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./shop.css" />
+
+  <!-- (opcjonalnie) planGuard, jeśli chcesz blokować sklep planami -->
+  <!-- <script defer src="/js/planGuard.js"></script> -->
+
+  <script defer src="./shopCart.js"></script>
+  <script defer src="./shop.js"></script>
 </head>
 
-<body>
+<body data-noShell="1">
   <div class="wrap">
-    <h1>Sklep gastronomiczny</h1>
+    <div class="hero-card">
+      <div class="shop-top">
+        <div>
+          <h1 class="h1">Sklep dropshipping – Gastronomia / Masarnie</h1>
+          <p class="p">Źródło: Twoje produkty z importu CSV (hurtownie) + fallback z <code>/products.json</code>.</p>
+        </div>
 
-    <div class="top">
-      <input id="search" placeholder="Szukaj produktu…">
-      <span class="pill" id="count">0 produktów</span>
+        <div class="shop-actions">
+          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+          <a class="btn btn-sm" href="/hurtownie.html">Import CSV</a>
+          <a class="btn btn-sm" href="./suppliers.html">Hurtownie (system)</a>
+          <a class="btn btn-primary btn-sm" href="./koszyk.html">
+            Koszyk <span class="pill" id="cartCount">0</span>
+          </a>
+        </div>
+      </div>
 
-      <div class="right">
-        <label class="pill">
-          Tryb ceny:
-          <select id="mode">
-            <option value="retail" selected>Detal</option>
-            <option value="wholesale">Hurt (B2B)</option>
+      <div class="hr"></div>
+
+      <div class="shop-toolbar">
+        <div class="field">
+          <label class="muted-xs">Szukaj</label>
+          <input id="q" class="input" placeholder="np. folie, pojemniki, rękawice, masarnia..." />
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Kategoria</label>
+          <select id="cat" class="input">
+            <option value="">Wszystkie</option>
           </select>
-        </label>
+        </div>
 
-        <a class="pill" href="koszyk.html">Koszyk</a>
+        <div class="field">
+          <label class="muted-xs">Tryb ceny</label>
+          <div class="seg">
+            <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
+            <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
+          </div>
+          <div class="muted-xs" style="margin-top:6px">
+            B2B pokazuje ceny hurtowe i MOQ (minimum).
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Sortowanie</label>
+          <select id="sort" class="input">
+            <option value="rank_desc">Ranking ↓</option>
+            <option value="price_asc">Cena ↑</option>
+            <option value="price_desc">Cena ↓</option>
+            <option value="name_asc">Nazwa A→Z</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <div class="grid" id="products"></div>
+    <div class="section">
+      <div class="kpi-row">
+        <div class="kpi"><strong>Produkty</strong><span id="kpiProducts">0</span></div>
+        <div class="kpi"><strong>Kategorie</strong><span id="kpiCats">0</span></div>
+        <div class="kpi"><strong>Tryb</strong><span id="kpiMode">DETAL</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div id="grid" class="shop-grid"></div>
+      <div id="empty" class="card soft" style="display:none; margin-top:14px;">
+        <strong>Brak produktów</strong>
+        <p class="p" style="margin-top:6px;">Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>/products.json</code>.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      QualitetMarket • sklep B2B (MVP) • koszyk i ofertowanie
+    </div>
   </div>
-
-  <script src="js/catalog.js"></script>
-
-  <script>
-    const container = document.getElementById("products");
-    const countEl = document.getElementById("count");
-    const modeEl = document.getElementById("mode");
-    const searchEl = document.getElementById("search");
-
-    function getProducts(){
-      return JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
-    }
-
-    function cartKey(mode){
-      return mode === "wholesale" ? "qm_cart_b2b_v1" : "qm_cart_v1";
-    }
-
-    function addToCart(id, qty, mode){
-      qty = Number(qty || 1);
-      if (!isFinite(qty) || qty <= 0) qty = 1;
-
-      const key = cartKey(mode);
-      const cart = JSON.parse(localStorage.getItem(key) || "[]");
-
-      cart.push({ id, qty, mode, ts: Date.now() });
-
-      localStorage.setItem(key, JSON.stringify(cart));
-      alert("Dodano do koszyka");
-    }
-
-    function fmt(n){
-      const v = Number(n || 0);
-      return v.toFixed(2);
-    }
-
-    function render(){
-      const mode = modeEl.value;
-      const q = (searchEl.value || "").toLowerCase().trim();
-
-      const products = getProducts()
-        .filter(p => !q || String(p.name||"").toLowerCase().includes(q));
-
-      countEl.textContent = `${products.length} produktów`;
-      container.innerHTML = "";
-
-      products.forEach(p => {
-        const price = mode === "wholesale" ? p.price_wholesale : p.price_retail;
-
-        const moq = Number(p.moq || 1);
-        const pack = Number(p.pack || 1);
-
-        const div = document.createElement("div");
-        div.className = "card";
-
-        div.innerHTML = `
-          <p class="name">${p.name}</p>
-          <p class="meta">${p.category || "inne"} • ${p.supplier || ""}</p>
-          <p class="price">${fmt(price)} zł</p>
-
-          <div class="qty">
-            <label class="pill">Ilość</label>
-            <input type="number" min="${moq}" step="${pack}" value="${moq}" id="q_${p.id}">
-          </div>
-
-          <button data-add="${p.id}">Dodaj do koszyka</button>
-
-          <div class="sum">
-            MOQ: ${moq} • Paczka: ${pack} • Tryb: ${mode === "wholesale" ? "Hurt" : "Detal"}
-          </div>
-        `;
-
-        container.appendChild(div);
-
-        div.querySelector("[data-add]").addEventListener("click", () => {
-          const qty = div.querySelector(`#q_${p.id}`).value;
-          addToCart(p.id, qty, mode);
-        });
-      });
-    }
-
-    modeEl.addEventListener("change", render);
-    searchEl.addEventListener("input", render);
-
-    render();
-  </script>
 </body>
 </html>
