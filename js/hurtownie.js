@@ -1,30 +1,50 @@
-// hurtownie.js — import CSV hurtowni
+// IMPORT CSV HURTOWNI
 
 (function(){
 
-const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
+const STORAGE = "qm_products_by_supplier_v1";
 
 function parseCSV(text){
 
-const rows = text.split("\n").map(r => r.split(","));
+const lines = text.split("\n");
 
-const headers = rows[0].map(h => h.trim().toLowerCase());
+const headers = lines[0].split(",").map(h=>h.trim().toLowerCase());
 
 let products = [];
 
-for(let i=1;i<rows.length;i++){
+for(let i=1;i<lines.length;i++){
 
-let row = rows[i];
+let row = lines[i].split(",");
 
-let p = {};
+let p={};
 
 headers.forEach((h,index)=>{
-
-p[h] = row[index];
-
+p[h]=row[index];
 });
 
-products.push(mapProduct(p));
+products.push({
+
+name:
+p.name ||
+p.nazwa ||
+p.product ||
+"produkt",
+
+price_net: getPrice(p),
+
+stock:
+parseFloat(
+p.stock ||
+p.stan ||
+p.qty ||
+p.ilosc ||
+0
+),
+
+ean: p.ean || "",
+sku: p.sku || ""
+
+});
 
 }
 
@@ -32,56 +52,35 @@ return products;
 
 }
 
-function mapProduct(p){
+function getPrice(p){
 
-return {
+return parseFloat(
 
-name: p.name || p.nazwa || p.product || "produkt",
-
-price_net: toNumber(
+String(
 p.price ||
 p.cena ||
 p.netto ||
 p.price_net ||
-p.cenanetto ||
-p.net_price
-),
+p.net_price ||
+0
+)
 
-stock: toNumber(
-p.stock ||
-p.stan ||
-p.qty ||
-p.ilosc
-),
-
-ean: p.ean || "",
-sku: p.sku || ""
-
-};
-
-}
-
-function toNumber(v){
-
-if(!v) return 0;
-
-return parseFloat(
-String(v)
 .replace(",",".")
 .replace(/[^\d.]/g,"")
+
 );
 
 }
 
 window.importCSV = function(text,supplier){
 
-let products = parseCSV(text);
+let products=parseCSV(text);
 
-let db = JSON.parse(localStorage.getItem(LS_PRODUCTS_BY_SUPPLIER) || "{}");
+let db=JSON.parse(localStorage.getItem(STORAGE)||"{}");
 
-db[supplier] = products;
+db[supplier]=products;
 
-localStorage.setItem(LS_PRODUCTS_BY_SUPPLIER, JSON.stringify(db));
+localStorage.setItem(STORAGE,JSON.stringify(db));
 
 alert("Zaimportowano "+products.length+" produktów");
 
