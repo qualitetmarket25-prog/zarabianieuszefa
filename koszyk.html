@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koszyk</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wrap{max-width:900px;margin:24px auto;padding:0 16px}
+    .row{display:flex;justify-content:space-between;gap:10px;padding:12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;margin:10px 0}
+    .muted{opacity:.7;font-size:12px}
+    button{padding:10px 12px;border-radius:12px;border:0;background:#0b0f14;color:#fff;cursor:pointer}
+    .danger{background:#b00020}
+    .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:6px 10px;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Koszyk</h1>
+
+    <div class="top">
+      <a class="pill" href="sklep.html">← Wróć do sklepu</a>
+      <span class="pill" id="sum">Suma: 0.00 zł</span>
+    </div>
+
+    <h3>Detal</h3>
+    <div id="listRetail"></div>
+
+    <h3>Hurt (B2B)</h3>
+    <div id="listB2B"></div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button id="clearRetail" class="danger">Wyczyść detal</button>
+      <button id="clearB2B" class="danger">Wyczyść hurt</button>
+    </div>
+  </div>
+
+  <script>
+    function getCatalog(){
+      return JSON.parse(localStorage.getItem("qm_catalog_v1") || "[]");
+    }
+    function getCart(key){
+      return JSON.parse(localStorage.getItem(key) || "[]");
+    }
+    function setCart(key, val){
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+    function fmt(n){ return Number(n||0).toFixed(2); }
+
+    const catalog = getCatalog();
+    const byId = new Map(catalog.map(p => [p.id, p]));
+
+    const retailKey = "qm_cart_v1";
+    const b2bKey = "qm_cart_b2b_v1";
+
+    const retail = getCart(retailKey);
+    const b2b = getCart(b2bKey);
+
+    function renderList(list, elId, mode, key){
+      const el = document.getElementById(elId);
+      el.innerHTML = "";
+
+      if(!list.length){
+        el.innerHTML = `<p class="muted">Pusto</p>`;
+        return 0;
+      }
+
+      let sum = 0;
+
+      list.forEach((item, idx) => {
+        const p = byId.get(item.id);
+        if(!p) return;
+
+        const price = mode === "wholesale" ? p.price_wholesale : p.price_retail;
+        const qty = Number(item.qty || 1);
+        const line = price * qty;
+        sum += line;
+
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `
+          <div>
+            <div><b>${p.name}</b></div>
+            <div class="muted">${p.category || "inne"} • ${p.supplier || ""}</div>
+            <div class="muted">Cena: ${fmt(price)} zł • Ilość: ${qty}</div>
+          </div>
+          <div style="text-align:right">
+            <div><b>${fmt(line)} zł</b></div>
+            <button data-del="${idx}" class="danger" style="margin-top:8px">Usuń</button>
+          </div>
+        `;
+        el.appendChild(row);
+
+        row.querySelector("[data-del]").addEventListener("click", () => {
+          const fresh = getCart(key);
+          fresh.splice(idx, 1);
+          setCart(key, fresh);
+          location.reload();
+        });
+      });
+
+      return sum;
+    }
+
+    const sumRetail = renderList(retail, "listRetail", "retail", retailKey);
+    const sumB2B = renderList(b2b, "listB2B", "wholesale", b2bKey);
+
+    document.getElementById("sum").textContent = `Suma: ${fmt(sumRetail + sumB2B)} zł`;
+
+    document.getElementById("clearRetail").addEventListener("click", () => {
+      setCart(retailKey, []);
+      location.reload();
+    });
+    document.getElementById("clearB2B").addEventListener("click", () => {
+      setCart(b2bKey, []);
+      location.reload();
+    });
+  </script>
+</body>
+</html>
