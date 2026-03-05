@@ -1,68 +1,67 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stwórz swój sklep – QualitetMarket</title>
-<link rel="stylesheet" href="styles.css">
-<style>
-  .wrap{max-width:860px;margin:42px auto;padding:0 16px}
-  .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:860px){.grid{grid-template-columns:1fr}}
-  .h{font-size:26px;font-weight:900;margin:0 0 8px}
-  .muted{opacity:.7}
-  label{display:block;font-weight:800;margin:12px 0 6px}
-  input{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12)}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
-  .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
-  .btn-primary{background:#22c55e;color:#06110a}
-  .btn-ghost{background:rgba(0,0,0,.06)}
-  .out{margin-top:14px;padding:12px;border-radius:12px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);word-break:break-all}
-  .warn{margin-top:14px;padding:12px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25)}
-  code{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:8px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Generator sklepu – QualitetMarket</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wrap{max-width:880px;margin:42px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
+    .h{font-size:26px;font-weight:900;margin:0 0 8px}
+    .muted{opacity:.7}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+    label{display:block;font-weight:900;margin:12px 0 6px}
+    input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,.12)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+    .btn-primary{background:#22c55e;color:#06110a}
+    .btn-ghost{background:rgba(0,0,0,.06)}
+    .out{margin-top:14px;padding:12px;border-radius:12px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);word-break:break-all}
+    .warn{margin-top:14px;padding:12px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25)}
+    code{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:8px}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="card">
+      <div class="h">Stwórz swój sklep</div>
+      <div class="muted">MVP marketplace: tworzysz sklep → dostajesz link → sklep działa przez <code>?store=slug</code>.</div>
 
-<div class="wrap">
-  <div class="card">
-    <div class="h">Stwórz swój sklep</div>
-    <div class="muted">1 klik = sklep + link. Ustawienia zapisują się w rejestrze sklepów (MVP).</div>
+      <div class="grid">
+        <div>
+          <label>Nazwa sklepu</label>
+          <input id="title" placeholder="np. Sklep Szefa" maxlength="48">
+        </div>
 
-    <div class="grid">
-      <div>
-        <label>Nazwa sklepu</label>
-        <input id="title" placeholder="np. Sklep Szefa" maxlength="48">
+        <div>
+          <label>Slug (link) – możesz zostawić puste</label>
+          <input id="slug" placeholder="np. szef, masarnia24" maxlength="32">
+          <div class="muted" style="margin-top:6px">Link będzie: <code>sklep.html?store=slug</code></div>
+        </div>
+
+        <div>
+          <label>Marża sprzedawcy (%)</label>
+          <input id="margin" type="number" min="0" max="80" step="0.1" value="8">
+        </div>
+
+        <div>
+          <label>Email do zamówień (opcjonalnie)</label>
+          <input id="email" type="email" placeholder="np. kontakt@twojsklep.pl" maxlength="80">
+        </div>
       </div>
 
-      <div>
-        <label>Slug (link) – zostaw puste, wygeneruję</label>
-        <input id="slug" placeholder="np. szef, masarnia24" maxlength="32">
-        <div class="muted" style="margin-top:6px">Do URL trafi: <code>sklep.html?store=slug</code></div>
+      <div class="row">
+        <button class="btn btn-primary" id="createBtn">Utwórz / Zapisz sklep</button>
+        <button class="btn btn-ghost" id="panelBtn">Panel sklepu</button>
+        <a class="btn btn-ghost" href="sklep.html" style="text-decoration:none;display:inline-block">Sklep główny</a>
       </div>
 
-      <div>
-        <label>Marża sprzedawcy (%)</label>
-        <input id="margin" type="number" min="0" max="80" step="0.1" value="8">
-        <div class="muted" style="margin-top:6px">Np. 8 = +8% do ceny bazowej (Twoje pricing rules mogą dodać jeszcze platform fee).</div>
-      </div>
-
-      <div>
-        <label>Email do zamówień</label>
-        <input id="email" type="email" placeholder="np. kontakt@twojsklep.pl" maxlength="80">
-      </div>
+      <div id="warn" class="warn" style="display:none"></div>
+      <div id="out" class="out" style="display:none"></div>
     </div>
-
-    <div class="row">
-      <button class="btn btn-primary" id="createBtn">Utwórz / Zapisz sklep</button>
-      <button class="btn btn-ghost" id="goPanelBtn">Przejdź do panelu</button>
-    </div>
-
-    <div id="out" class="out" style="display:none"></div>
-    <div id="warn" class="warn" style="display:none"></div>
   </div>
-</div>
 
 <script>
 (() => {
@@ -70,84 +69,70 @@
 
   const LS_STORES = "qm_stores_v1";
   const LS_ACTIVE = "qm_active_store_v1";
-  const LS_MARGIN = "qm_store_margin_pct";
+  const LS_MARGIN01 = "qm_store_margin_pct";
 
   const $ = (id) => document.getElementById(id);
 
-  const slugify = (s) => (s || "")
-    .toLowerCase()
+  const slugify = (s) => String(s || "")
     .trim()
-    .replace(/ą/g,"a").replace(/ć/g,"c").replace(/ę/g,"e").replace(/ł/g,"l")
-    .replace(/ń/g,"n").replace(/ó/g,"o").replace(/ś/g,"s").replace(/ż/g,"z").replace(/ź/g,"z")
-    .replace(/[^a-z0-9]+/g,"-")
-    .replace(/(^-|-$)/g,"")
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
     .slice(0, 32);
 
-  const loadStores = () => {
-    try { return JSON.parse(localStorage.getItem(LS_STORES) || "[]"); }
-    catch { return []; }
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
   };
+  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  const saveStores = (arr) => localStorage.setItem(LS_STORES, JSON.stringify(arr));
-
-  const setActive = (slug, marginPct01) => {
-    localStorage.setItem(LS_ACTIVE, slug);
-    localStorage.setItem(LS_MARGIN, String(marginPct01));
-  };
-
-  const makeStoreUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
-
+  const warn = (msg) => { $("warn").style.display="block"; $("warn").innerHTML = msg; };
   const out = (html) => { $("out").style.display="block"; $("out").innerHTML = html; };
-  const warn = (html) => { $("warn").style.display="block"; $("warn").innerHTML = html; };
+
+  const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
+
+  const upsertStoreMap = (slug, patch) => {
+    const reg = readJSON(LS_STORES, {});
+    const map = (reg && typeof reg === "object" && !Array.isArray(reg)) ? reg : {};
+    map[slug] = { ...(map[slug] || {}), ...patch };
+    writeJSON(LS_STORES, map);
+  };
 
   $("createBtn").addEventListener("click", () => {
     $("warn").style.display="none";
+    $("out").style.display="none";
 
-    const title = ($("title").value || "").trim();
-    let slug = ($("slug").value || "").trim();
-    const email = ($("email").value || "").trim();
-    const marginPct = Number($("margin").value || 0);
+    const title = String($("title").value || "").trim();
+    let slug = String($("slug").value || "").trim();
+    const email = String($("email").value || "").trim();
+    const marginPct = Number(String($("margin").value || "0").replace(",", "."));
 
     if (!title) return warn("Podaj nazwę sklepu.");
-    if (!slug) slug = slugify(title);
+    if (!slug) slug = title;
     slug = slugify(slug);
 
-    if (!slug || slug.length < 2) return warn("Slug jest za krótki (min 2 znaki).");
-    if (marginPct < 0 || marginPct > 80) return warn("Marża musi być 0–80%.");
+    if (!slug || slug.length < 2) return warn("Slug za krótki (min 2 znaki).");
+    if (!isFinite(marginPct) || marginPct < 0 || marginPct > 80) return warn("Marża musi być 0–80%.");
 
-    const stores = loadStores();
-    const existing = stores.find(s => s.slug === slug);
+    const margin01 = Math.max(0, Math.min(1, marginPct / 100));
 
-    const store = {
-      slug,
-      title,
-      email,
-      marginPct,        // w %
-      theme: "default",
-      createdAt: existing?.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    // zapis mapą (kompatybilnie z Twoim shop.js)
+    upsertStoreMap(slug, { title, theme:"default", email, marginPct: margin01 });
 
-    const next = existing
-      ? stores.map(s => s.slug === slug ? store : s)
-      : [store, ...stores].slice(0, 200);
+    // aktywny sklep
+    localStorage.setItem(LS_ACTIVE, slug);
+    localStorage.setItem(LS_MARGIN01, String(margin01));
 
-    saveStores(next);
-    setActive(slug, marginPct / 100);
+    // kompatybilność: jeśli kiedyś coś czyta qm_store_slug
+    localStorage.setItem("qm_store_slug", slug);
 
-    const url = makeStoreUrl(slug);
-    out(`
-      ✅ Zapisano sklep: <b>${title}</b><br/>
-      Link sklepu: <a href="${url}" target="_blank" rel="noopener">${url}</a><br/>
-      <div style="margin-top:8px" class="muted">Teraz sklep.html sam wczyta nazwę + marżę dla tego sluga.</div>
-    `);
+    const url = makeUrl(slug);
+    out(`✅ Zapisano sklep: <b>${title}</b><br>Link: <a href="${url}" target="_blank" rel="noopener">${url}</a>`);
   });
 
-  $("goPanelBtn").addEventListener("click", () => {
-    location.href = "panel-sklepu.html";
-  });
+  $("panelBtn").addEventListener("click", () => location.href = "panel-sklepu.html");
 })();
 </script>
-
 </body>
 </html>
