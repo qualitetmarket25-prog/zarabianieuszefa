@@ -1,390 +1,301 @@
 (() => {
   "use strict";
 
-  const VAT_RATE = 0.23;
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const { Cart, money } = window.QM_SHOP;
 
-  const LS_ORDERS = "qm_orders_v1";
-  const LS_STORES = "qm_stores_v1";
-  const LS_ACTIVE = "qm_active_store_v1";
-  const LS_STORE_MARGIN = "qm_store_margin_pct";
-  const LS_PLATFORM_PCT = "qm_platform_fee_pct";
-  const LS_CHECKOUT_DRAFT = "qm_checkout_draft_v1";
+  // ===== store slug =====
+  const slugify = (s) => String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({
+      "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"
+    }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 
-  const DEFAULT_PLATFORM_FEE_PCT = 0.02;
-  const DEFAULT_MIN_FEE = 2.0; // ✅ minimalna prowizja (MVP)
+  const getStoreSlug = () => {
+    const active = slugify(localStorage.getItem("qm_active_store_v1") || "");
+    if (active) return active;
 
-  const $ = (id) => document.getElementById(id);
+    try {
+      const u = new URL(window.location.href);
+      const s = slugify(u.searchParams.get("store") || "");
+      if (s) return s;
+    } catch {}
 
-  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
+    const panel = slugify(localStorage.getItem("qm_store_slug") || "");
+    if (panel) return panel;
+
+    return "default";
+  };
+
+  const STORE = getStoreSlug();
+
+  const withStore = (href) => {
+    if (!href) return href;
+    if (String(href).includes("store=")) return href;
+    const sep = String(href).includes("?") ? "&" : "?";
+    return `${href}${sep}store=${encodeURIComponent(STORE)}`;
+  };
+
+  const syncLinks = () => {
+    document.querySelectorAll("a[href]").forEach(a => {
+      const href = a.getAttribute("href") || "";
+      if (
+        href.includes("koszyk.html") ||
+        href.includes("zamowienia.html") ||
+        href.includes("panel-sklepu.html") ||
+        href.includes("sklep.html") ||
+        href.includes("checkout.html")
+      ) {
+        a.setAttribute("href", withStore(href));
+      }
+    });
+  };
+
+  // ===== draft per store =====
+  const LS_DRAFT = `qm_checkout_draft_v1__${STORE}`;
+
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
+  };
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  const money = (n) => {
-    const v = Number(n || 0);
-    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+  const setMsg = (txt) => {
+    const el = $("#msg");
+    if (el) el.textContent = String(txt || "");
   };
 
-  const getQueryStore = () => {
-    const u = new URL(location.href);
-    return (u.searchParams.get("store") || "").trim();
+  const escapeHtml = (s) =>
+    String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+
+  const getCustomerFromForm = () => {
+    const name = $("#shipName")?.value || "";
+    const phone = $("#shipPhone")?.value || "";
+    const email = $("#shipEmail")?.value || "";
+
+    const street = $("#shipStreet")?.value || "";
+    const city = $("#shipCity")?.value || "";
+    const zip = $("#shipZip")?.value || "";
+    const msg = $("#shipMsg")?.value || "";
+
+    const address = [street, zip && city ? `${zip} ${city}` : (city || zip), msg]
+      .filter(Boolean)
+      .join(" • ");
+
+    return { name, phone, email, address, city, zip, country: "PL" };
   };
 
-  const resolveActiveStoreSlug = () => {
-    const fromUrl = getQueryStore();
-    if (fromUrl) {
-      localStorage.setItem(LS_ACTIVE, fromUrl);
-      return fromUrl;
-    }
-    const active = String(localStorage.getItem(LS_ACTIVE) || "").trim();
-    return active || "default";
+  const fillB2BFromCart = () => {
+    const mode = Cart.getMode();
+    const prof = Cart.getB2BProfile();
+
+    $("#b2bCompany") && ($("#b2bCompany").value = prof.companyName || "");
+    $("#b2bNip") && ($("#b2bNip").value = prof.nip || "");
+    $("#b2bAddr") && ($("#b2bAddr").value = prof.addr || "");
+    $("#b2bContact") && ($("#b2bContact").value = prof.contact || "");
+
+    const modeLabel = $("#modeLabel");
+    if (modeLabel) modeLabel.textContent = (mode === "b2b") ? "HURT (B2B)" : "DETAL";
+
+    const storeLabel = $("#storeLabel");
+    if (storeLabel) storeLabel.textContent = `Sklep: ${STORE}`;
   };
 
-  const syncStoreMarginFromStoresMap = (storeSlug) => {
-    const stores = readJSON(LS_STORES, {});
-    const st = stores?.[storeSlug];
-    const marginPct = st?.marginPct;
-    if (marginPct === undefined || marginPct === null) return;
-
-    let n = Number(String(marginPct).replace("%","").replace(",", "."));
-    if (!isFinite(n) || n < 0) return;
-    if (n > 1) n = n / 100;
-    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(0.8, n))));
+  const fillNote = () => {
+    $("#note") && ($("#note").value = Cart.getNote() || "");
+    $("#note")?.addEventListener("input", () => {
+      Cart.setNote($("#note").value || "");
+    });
   };
 
-  const getPlatformPct = () => {
-    const raw = String(localStorage.getItem(LS_PLATFORM_PCT) || "").trim().replace(",", ".");
-    let n = Number(raw);
-    if (!isFinite(n) || n < 0) n = DEFAULT_PLATFORM_FEE_PCT;
-    if (n > 1) n = n / 100;
-    return Math.max(0, Math.min(0.25, n));
-  };
-
-  const getStoreMarginPct = () => {
-    const raw = String(localStorage.getItem(LS_STORE_MARGIN) || "").trim().replace(",", ".");
-    let n = Number(raw);
-    if (!isFinite(n) || n < 0) n = 0;
-    if (n > 1) n = n / 100;
-    return Math.max(0, Math.min(0.8, n));
-  };
-
-  const groupBySupplier = (items) => {
-    const map = new Map();
-    for (const it of items) {
-      const sup = String(it.supplier || "BRAK_HURTOWNI").trim() || "BRAK_HURTOWNI";
-      if (!map.has(sup)) map.set(sup, []);
-      map.get(sup).push(it);
-    }
-    return map;
-  };
-
-  const priceForMode = (it, mode) => (
-    mode === "b2b"
-      ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
-      : (Number(it.priceRetail||0) || 0)
-  );
-
-  const computeSupplierBreakdown = (items, mode) => {
-    const out = [];
-    const bySupplier = groupBySupplier(items);
-    for (const [supplier, arr] of bySupplier.entries()) {
-      let net = 0;
-      let qty = 0;
-      for (const it of arr) {
-        const q = Number(it.qty||0) || 0;
-        const p = priceForMode(it, mode);
-        qty += q;
-        net += q * p;
-      }
-      const gross = (mode === "b2b") ? net * (1 + VAT_RATE) : net;
-      out.push({ supplier, items: qty, net, gross });
-    }
-    out.sort((a,b)=>String(a.supplier).localeCompare(String(b.supplier),"pl"));
-    return out;
-  };
-
-  const renderSummary = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
-
+  const fillTotals = () => {
     const t = Cart.totals();
+    $("#sumItems") && ($("#sumItems").textContent = String(t.items));
+    $("#sumNet") && ($("#sumNet").textContent = money(t.net));
+    $("#sumVat") && ($("#sumVat").textContent = money(t.vat));
+    $("#sumGross") && ($("#sumGross").textContent = money(t.gross));
+  };
 
-    $("sumItems").textContent = String(t.items || 0);
-    $("sumNet").textContent = money(t.net || 0);
-    $("sumVat").textContent = money(t.vat || 0);
-    $("sumGross").textContent = money(t.gross || 0);
-
-    const storeSlug = resolveActiveStoreSlug();
-    $("storeLabel").textContent = `Sklep: ${storeSlug}`;
-    $("modeLabel").textContent = (t.mode === "b2b") ? "HURT (B2B)" : "DETAL";
-
+  // ===== split per hurtownia =====
+  const buildSplit = () => {
     const cart = Cart.read();
-    const split = computeSupplierBreakdown(cart.items || [], t.mode);
+    const items = cart.items || [];
+    const mode = Cart.getMode();
 
-    $("splitMeta").textContent = split.length ? `Hurtownie: ${split.map(x=>x.supplier).join(", ")}` : "Brak hurtowni w koszyku.";
+    const bySup = new Map(); // supplier -> agg
 
-    $("splitTableWrap").innerHTML = split.length ? `
+    for (const it of items) {
+      const sup = String(it.supplier || "brak").trim() || "brak";
+      const qty = Number(it.qty || 0) || 0;
+      const price = (mode === "b2b" ? (Number(it.priceB2B || 0) || 0) : (Number(it.priceRetail || 0) || 0));
+      const line = qty * price;
+      const buy = (Number(it.buyNet || 0) || 0) * qty;
+
+      if (!bySup.has(sup)) bySup.set(sup, { supplier: sup, lines: 0, net: 0, buyNet: 0, count: 0 });
+      const row = bySup.get(sup);
+      row.lines += 1;
+      row.net += line;
+      row.buyNet += buy;
+      row.count += qty;
+    }
+
+    const arr = Array.from(bySup.values()).sort((a,b)=> b.net - a.net);
+
+    const meta = $("#splitMeta");
+    if (meta) meta.textContent = arr.length
+      ? `Hurtownie: ${arr.length} • podział zamówienia wg dostawców`
+      : "Brak pozycji w koszyku.";
+
+    const wrap = $("#splitTableWrap");
+    if (!wrap) return;
+
+    if (!arr.length) { wrap.innerHTML = ""; return; }
+
+    wrap.innerHTML = `
       <table class="miniTable">
         <thead>
-          <tr><th>Hurtownia</th><th>Ilość</th><th>Netto</th><th>Brutto</th></tr>
+          <tr>
+            <th>Hurtownia</th>
+            <th>Pozycje</th>
+            <th>Szt.</th>
+            <th>Wartość (net)</th>
+            <th>Zakup (net)</th>
+          </tr>
         </thead>
         <tbody>
-          ${split.map(x => `
+          ${arr.map(r => `
             <tr>
-              <td><strong>${x.supplier}</strong></td>
-              <td>${x.items}</td>
-              <td>${money(x.net)}</td>
-              <td>${money(x.gross)}</td>
+              <td>${escapeHtml(r.supplier)}</td>
+              <td>${r.lines}</td>
+              <td>${r.count}</td>
+              <td><strong>${money(r.net)}</strong></td>
+              <td>${money(r.buyNet)}</td>
             </tr>
           `).join("")}
         </tbody>
       </table>
-    ` : "";
+    `;
   };
 
-  const hydrateFromDraft = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
-
-    const draft = readJSON(LS_CHECKOUT_DRAFT, null) || {};
-    if (draft.note !== undefined) $("note").value = String(draft.note || "");
-
-    const t = Cart.totals();
-    const p = (draft.b2bProfile && typeof draft.b2bProfile === "object") ? draft.b2bProfile : (Cart.getB2BProfile ? Cart.getB2BProfile() : {});
-
-    // B2B pola (można poprawić)
-    $("b2bCompany").value = String(p.companyName || "");
-    $("b2bNip").value = String(p.nip || "");
-    $("b2bAddr").value = String(p.addr || "");
-    $("b2bContact").value = String(p.contact || "");
-
-    // jeśli detal — zostaw, ale nie przeszkadza
-    if (t.mode !== "b2b") {
-      // nic nie blokujemy, ale użytkownik widzi, że B2B jest opcjonalne
-    }
-  };
-
-  const readShip = () => ({
-    name: String($("shipName").value || "").trim(),
-    phone: String($("shipPhone").value || "").trim(),
-    email: String($("shipEmail").value || "").trim(),
-    street: String($("shipStreet").value || "").trim(),
-    city: String($("shipCity").value || "").trim(),
-    zip: String($("shipZip").value || "").trim(),
-    msg: String($("shipMsg").value || "").trim(),
-  });
-
-  const readB2B = () => ({
-    companyName: String($("b2bCompany").value || "").trim(),
-    nip: String($("b2bNip").value || "").trim(),
-    addr: String($("b2bAddr").value || "").trim(),
-    contact: String($("b2bContact").value || "").trim(),
-  });
-
-  const validateShip = (ship) => {
-    if (!ship.name || !ship.phone || !ship.street || !ship.city || !ship.zip) return false;
-    return true;
-  };
-
-  const genOrderId = () => {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2,"0");
-    const y = d.getFullYear();
-    const m = pad(d.getMonth()+1);
-    const day = pad(d.getDate());
-    const hh = pad(d.getHours());
-    const mm = pad(d.getMinutes());
-    const ss = pad(d.getSeconds());
-    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
-    return `QM-${y}${m}${day}-${hh}${mm}${ss}-${rnd}`;
-  };
-
-  const calcFees = (grossTotal, mode) => {
-    const platformPct = getPlatformPct();
-    const storePct = getStoreMarginPct();
-
-    // ✅ prowizja platformy: max(% * suma, minFee)
-    const pctFee = (Number(grossTotal)||0) * platformPct;
-    const platformFee = Math.max(DEFAULT_MIN_FEE, pctFee);
-
-    const sellerMargin = (Number(grossTotal)||0) * storePct;
-
-    return {
-      platformPct,
-      storeMarginPct: storePct,
-      platformFee,
-      platformFeeMin: DEFAULT_MIN_FEE,
-      sellerMargin
-    };
-  };
-
+  // ===== draft =====
   const saveDraft = () => {
-    const storeSlug = resolveActiveStoreSlug();
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
-
-    const t = Cart.totals();
     const draft = {
-      ts: Date.now(),
-      storeSlug,
-      mode: t.mode,
-      note: String($("note").value || ""),
-      ship: readShip(),
-      b2bProfile: readB2B()
+      storeSlug: STORE,
+      savedAt: new Date().toISOString(),
+      ship: {
+        name: $("#shipName")?.value || "",
+        phone: $("#shipPhone")?.value || "",
+        email: $("#shipEmail")?.value || "",
+        street: $("#shipStreet")?.value || "",
+        city: $("#shipCity")?.value || "",
+        zip: $("#shipZip")?.value || "",
+        msg: $("#shipMsg")?.value || ""
+      },
+      note: $("#note")?.value || "",
+      b2b: {
+        company: $("#b2bCompany")?.value || "",
+        nip: $("#b2bNip")?.value || "",
+        addr: $("#b2bAddr")?.value || "",
+        contact: $("#b2bContact")?.value || ""
+      }
     };
-    writeJSON(LS_CHECKOUT_DRAFT, draft);
-
-    $("msg").textContent = "✅ Szkic zapisany.";
-    $("msg").style.color = "rgba(34,197,94,.95)";
+    writeJSON(LS_DRAFT, draft);
+    setMsg("Szkic zapisany.");
   };
 
-  const placeOrderFinal = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
+  const loadDraft = () => {
+    const d = readJSON(LS_DRAFT, null);
+    if (!d || d.storeSlug !== STORE) return;
+
+    $("#shipName") && ($("#shipName").value = d.ship?.name || "");
+    $("#shipPhone") && ($("#shipPhone").value = d.ship?.phone || "");
+    $("#shipEmail") && ($("#shipEmail").value = d.ship?.email || "");
+    $("#shipStreet") && ($("#shipStreet").value = d.ship?.street || "");
+    $("#shipCity") && ($("#shipCity").value = d.ship?.city || "");
+    $("#shipZip") && ($("#shipZip").value = d.ship?.zip || "");
+    $("#shipMsg") && ($("#shipMsg").value = d.ship?.msg || "");
+
+    $("#note") && ($("#note").value = d.note || "");
+
+    $("#b2bCompany") && ($("#b2bCompany").value = d.b2b?.company || "");
+    $("#b2bNip") && ($("#b2bNip").value = d.b2b?.nip || "");
+    $("#b2bAddr") && ($("#b2bAddr").value = d.b2b?.addr || "");
+    $("#b2bContact") && ($("#b2bContact").value = d.b2b?.contact || "");
+  };
+
+  // ===== place order =====
+  const placeOrder = () => {
+    setMsg("");
 
     const cart = Cart.read();
-    const t = Cart.totals();
-
-    if (!cart.items?.length) {
-      $("msg").textContent = "Koszyk pusty.";
-      $("msg").style.color = "rgba(245,158,11,.95)";
-      return;
-    }
-    if (t.mode === "b2b" && !t.moqOk) {
-      $("msg").textContent = "B2B: są pozycje poniżej MOQ — popraw ilości w koszyku.";
-      $("msg").style.color = "rgba(245,158,11,.95)";
+    if (!cart.items || !cart.items.length) {
+      setMsg("Koszyk jest pusty. Wróć do koszyka i dodaj produkty.");
       return;
     }
 
-    const storeSlug = resolveActiveStoreSlug();
-    syncStoreMarginFromStoresMap(storeSlug);
-
-    const ship = readShip();
-    if (!validateShip(ship)) {
-      $("msg").textContent = "Uzupełnij dane dostawy: imię, telefon, ulica, miasto, kod.";
-      $("msg").style.color = "rgba(245,158,11,.95)";
-      return;
-    }
-
-    const note = String($("note").value || "").trim();
-    const b2bProfile = readB2B();
-
-    const order_id = genOrderId();
-    const created_at = new Date().toISOString();
-
-    const supplierSplit = computeSupplierBreakdown(cart.items || [], t.mode);
-
-    // suborders (split per hurtownia) — MVP
-    const bySup = groupBySupplier(cart.items || []);
-    const suborders = [];
-    for (const [supplier, items] of bySup.entries()) {
-      suborders.push({
-        supplier,
-        status: "NEW",
-        items: items.map(it => ({
-          id: it.id,
-          sku: it.sku,
-          name: it.name,
-          supplier: it.supplier,
-          qty: Number(it.qty||0)||0,
-          unit: it.unit,
-          moq: it.moq,
-          priceRetail: Number(it.priceRetail||0)||0,
-          priceB2B: Number(it.priceB2B||0)||0,
-          image: it.image
-        }))
+    // aktualizuj B2B profil jeśli user poprawił
+    if (Cart.getMode() === "b2b") {
+      Cart.setB2BProfile({
+        companyName: $("#b2bCompany")?.value || "",
+        nip: $("#b2bNip")?.value || "",
+        addr: $("#b2bAddr")?.value || "",
+        contact: $("#b2bContact")?.value || ""
       });
     }
 
-    const fees = calcFees(Number(t.gross||0)||0, t.mode);
+    // notatka
+    Cart.setNote($("#note")?.value || "");
 
-    const order = {
-      // v2 fields
-      order_id,
-      created_at,
-      store_slug: storeSlug,
-      status: "NEW",
+    const customer = getCustomerFromForm();
 
-      mode: t.mode,
+    // ✅ tworzymy zamówienie i zapisujemy do qm_orders_v1 (z storeSlug)
+    const order = Cart.checkoutCreateOrder(customer);
 
-      customer: {
-        shipping: ship,
-        email: ship.email || "",
-        phone: ship.phone || ""
-      },
+    if (!order) {
+      setMsg("Nie udało się utworzyć zamówienia.");
+      return;
+    }
 
-      note,
-      b2bProfile,
+    // zapisz "ostatnie zamówienie"
+    try {
+      localStorage.setItem("qm_last_order_id", String(order.id));
+      localStorage.setItem("qm_last_order_no", String(order.orderNo));
+      localStorage.setItem("qm_last_order_store", String(order.storeSlug));
+    } catch {}
 
-      items: cart.items.map(it => ({
-        id: it.id,
-        sku: it.sku,
-        name: it.name,
-        supplier: it.supplier,
-        qty: Number(it.qty||0)||0,
-        unit: it.unit,
-        moq: it.moq,
-        priceRetail: Number(it.priceRetail||0)||0,
-        priceB2B: Number(it.priceB2B||0)||0,
-        image: it.image
-      })),
+    // draft już niepotrzebny
+    try { localStorage.removeItem(LS_DRAFT); } catch {}
 
-      totals: {
-        items: Number(t.items||0)||0,
-        net: Number(t.net||0)||0,
-        vat: Number(t.vat||0)||0,
-        gross: Number(t.gross||0)||0,
-        moqOk: !!t.moqOk
-      },
-
-      fees,
-      supplierBreakdown: supplierSplit,
-      suborders
-    };
-
-    const arr = readJSON(LS_ORDERS, []);
-    const list = Array.isArray(arr) ? arr : [];
-    list.push(order);
-    writeJSON(LS_ORDERS, list);
-
-    // zapis draftu (dla pewności)
-    writeJSON(LS_CHECKOUT_DRAFT, { ts: Date.now(), storeSlug, mode: t.mode, note, ship, b2bProfile });
-
-    $("msg").textContent = `✅ Zamówienie zapisane: ${order_id}. Przenoszę do panelu zamówień…`;
-    $("msg").style.color = "rgba(34,197,94,.95)";
-
-    try { Cart.clear(); } catch {}
-
-    setTimeout(() => {
-      window.location.href = `./zamowienia.html?order=${encodeURIComponent(order_id)}`;
-    }, 450);
+    // redirect do panelu zamówień
+    const url = withStore(`./zamowienia.html?order=${encodeURIComponent(order.id)}`);
+    window.location.href = url;
   };
 
-  const wireAutoDraft = () => {
-    const ids = [
-      "note","shipName","shipPhone","shipEmail","shipStreet","shipCity","shipZip","shipMsg",
-      "b2bCompany","b2bNip","b2bAddr","b2bContact"
-    ];
-    ids.forEach(id => {
-      const el = $(id);
-      if (!el) return;
-      el.addEventListener("change", saveDraft);
-      el.addEventListener("blur", saveDraft);
+  const boot = () => {
+    syncLinks();
+
+    fillB2BFromCart();
+    fillNote();
+    loadDraft();
+    fillTotals();
+    buildSplit();
+
+    $("#saveDraft")?.addEventListener("click", saveDraft);
+    $("#placeOrderFinal")?.addEventListener("click", placeOrder);
+
+    // update split/totals gdy koszyk się zmieni
+    window.addEventListener("qm:cart", () => {
+      fillB2BFromCart();
+      fillTotals();
+      buildSplit();
     });
+
+    setMsg("");
   };
 
-  const init = () => {
-    const storeSlug = resolveActiveStoreSlug();
-    syncStoreMarginFromStoresMap(storeSlug);
-
-    renderSummary();
-    hydrateFromDraft();
-    wireAutoDraft();
-
-    $("saveDraft")?.addEventListener("click", saveDraft);
-    $("placeOrderFinal")?.addEventListener("click", placeOrderFinal);
-
-    // aktualizacja podsumowania przy zmianie koszyka
-    window.addEventListener("qm:cart", renderSummary);
-  };
-
-  init();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();
