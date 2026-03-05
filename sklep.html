@@ -6,7 +6,6 @@
   <title>Sklep B2B – QualitetMarket</title>
 
   <link rel="stylesheet" href="/styles.css" />
-  <!-- CSS jest w tym samym folderze co sklep.html -->
   <link rel="stylesheet" href="./shop.css" />
 
   <!-- ✅ Marża / config (ESM) -> wystawiamy jako global do window dla shop.js -->
@@ -19,11 +18,9 @@
 
       const { priceFromBuy, formatPLN, round2 } = pricing;
 
-      // Globalne udostępnienie dla istniejących skryptów (niemodułowych)
       window.QM_CONFIG = QM_CONFIG;
       window.QM_PRICE = { priceFromBuy, formatPLN, round2 };
 
-      // domyślny tryb ceny: synchronizacja z koszykiem jeśli już istnieje
       try {
         const mode = (localStorage.getItem("qm_shop_mode_v1") || "retail").toLowerCase();
         window.QM_MODE = (mode === "b2b") ? "hurt" : "detal";
@@ -39,13 +36,81 @@
     }
   </script>
 
-  <!-- JS jest w /zarabianieuszefa/js/ -->
   <script defer src="./js/shopCart.js"></script>
   <script defer src="./js/shop.js"></script>
+
+  <style>
+    /* ✅ layout 3-kolumny: lewy opis / sklep / prawy opis */
+    .layout-3col{
+      display:grid;
+      grid-template-columns: 280px minmax(0,1fr) 280px;
+      gap:16px;
+      align-items:start;
+      margin-top:16px;
+    }
+    @media (max-width: 1100px){
+      .layout-3col{ grid-template-columns: 1fr; }
+    }
+    .sidecard{
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:16px;
+      background:#fff;
+      padding:14px;
+      position:sticky;
+      top:14px;
+    }
+    @media (max-width:1100px){
+      .sidecard{ position:static; }
+    }
+    .sidecard h3{
+      margin:0 0 10px;
+      font-size:14px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .sidecard .p{
+      margin:0 0 10px;
+      font-size:13px;
+      opacity:.85;
+      line-height:1.35;
+    }
+    .sidecard ul{
+      margin:0;
+      padding-left:16px;
+      font-size:13px;
+      opacity:.9;
+      line-height:1.35;
+    }
+    .sidecard li{ margin:6px 0; }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:12px;
+      opacity:.9;
+      gap:6px;
+      margin-right:6px;
+      margin-top:6px;
+      white-space:nowrap;
+    }
+    .smallmuted{ font-size:12px; opacity:.75; }
+    .callout{
+      border-radius:14px;
+      border:1px dashed rgba(0,0,0,.16);
+      padding:10px;
+      background:rgba(0,0,0,.02);
+      margin-top:10px;
+    }
+    .sidebtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  </style>
 </head>
 
 <body data-noShell="1">
   <div class="wrap">
+
+    <!-- ✅ główny header sklepu zostaje -->
     <div class="hero-card">
       <div class="shop-top">
         <div>
@@ -64,6 +129,7 @@
           <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
           <a class="btn btn-sm" href="/hurtownie.html">Import CSV</a>
           <a class="btn btn-sm" href="./suppliers.html">Hurtownie (system)</a>
+          <a class="btn btn-sm" href="./zamowienia.html">Moje zamówienia</a>
           <a class="btn btn-primary btn-sm" href="./koszyk.html">
             Koszyk <span class="pill" id="cartCount">0</span>
           </a>
@@ -108,29 +174,105 @@
       </div>
     </div>
 
-    <div class="section">
-      <div class="kpi-row">
-        <div class="kpi"><strong>Produkty</strong><span id="kpiProducts">0</span></div>
-        <div class="kpi"><strong>Kategorie</strong><span id="kpiCats">0</span></div>
-        <div class="kpi"><strong>Tryb</strong><span id="kpiMode">DETAL</span></div>
-      </div>
+    <!-- ✅ 3 kolumny -->
+    <div class="layout-3col">
+
+      <!-- LEWA: jak to działa -->
+      <aside class="sidecard">
+        <h3>Jak działa ten marketplace?</h3>
+        <p class="p">
+          To jest marketplace dropshipping: Ty kupujesz w hurtowni, a klient dostaje towar bez Twojego magazynu.
+          System rozbija koszyk na hurtownie i zapisuje zamówienia w platformie.
+        </p>
+
+        <div class="tag">✅ Split per hurtownia</div>
+        <div class="tag">✅ Statusy zamówień</div>
+        <div class="tag">✅ B2B + B2C</div>
+
+        <div class="callout">
+          <div class="smallmuted"><b>Flow (prosto):</b></div>
+          <ul>
+            <li>Klient wybiera produkty</li>
+            <li>Koszyk rozbija na hurtownie</li>
+            <li>Checkout zbiera dane dostawy</li>
+            <li>Zamówienie dostaje status <b>NEW</b></li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <div class="smallmuted"><b>Statusy:</b></div>
+          <ul>
+            <li><b>NEW</b> – nowe, do potwierdzenia</li>
+            <li><b>CONFIRMED</b> – potwierdzone</li>
+            <li><b>SENT</b> – wysłane</li>
+            <li><b>DONE</b> – zakończone</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ŚRODEK: sklep (Twoje KPI + grid) -->
+      <main>
+        <div class="section">
+          <div class="kpi-row">
+            <div class="kpi"><strong>Produkty</strong><span id="kpiProducts">0</span></div>
+            <div class="kpi"><strong>Kategorie</strong><span id="kpiCats">0</span></div>
+            <div class="kpi"><strong>Tryb</strong><span id="kpiMode">DETAL</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div id="grid" class="shop-grid"></div>
+          <div id="empty" class="card soft" style="display:none; margin-top:14px;">
+            <strong>Brak produktów</strong>
+            <p class="p" style="margin-top:6px;">Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>/products.json</code>.</p>
+          </div>
+        </div>
+
+        <div class="footer">
+          QualitetMarket • sklep B2B (MVP) • koszyk i ofertowanie
+        </div>
+      </main>
+
+      <!-- PRAWA: B2B / MOQ / tipy -->
+      <aside class="sidecard">
+        <h3>Detal vs Hurt (B2B)</h3>
+        <p class="p">
+          W DETAL klient widzi cenę detaliczną.
+          W B2B pokazujemy cenę hurtową i <b>MOQ</b> (minimalne zamówienie).
+        </p>
+
+        <div class="callout">
+          <div class="smallmuted"><b>MOQ</b> = minimum sztuk</div>
+          <div class="smallmuted" style="margin-top:6px">
+            Jeśli w B2B dasz mniej niż MOQ, koszyk pokaże ostrzeżenie i nie puści do checkout.
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="smallmuted"><b>Co robić, żeby sprzedawać więcej:</b></div>
+          <ul>
+            <li>Ustaw niską marżę na start (test popytu)</li>
+            <li>Dodaj produkty “core” (folie, pojemniki, rękawice)</li>
+            <li>Użyj B2B do większych koszyków</li>
+          </ul>
+        </div>
+
+        <div class="sidebtns">
+          <a class="btn btn-sm" href="./panel-sklepu.html">Panel sklepu</a>
+          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
+          <a class="btn btn-sm btn-primary" href="./koszyk.html">Koszyk</a>
+        </div>
+
+        <div class="smallmuted" style="margin-top:10px;">
+          Tip: Import CSV → produkty pojawią się od razu (localStorage).
+        </div>
+      </aside>
+
     </div>
 
-    <div class="section">
-      <div id="grid" class="shop-grid"></div>
-      <div id="empty" class="card soft" style="display:none; margin-top:14px;">
-        <strong>Brak produktów</strong>
-        <p class="p" style="margin-top:6px;">Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>/products.json</code>.</p>
-      </div>
-    </div>
-
-    <div class="footer">
-      QualitetMarket • sklep B2B (MVP) • koszyk i ofertowanie
-    </div>
   </div>
 
   <script>
-    // pokaż ostrzeżenie jeśli marża się nie załadowała
     (function(){
       const box = document.getElementById("pricingWarn");
       const show = () => { if (box) box.style.display = ""; };
