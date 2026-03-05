@@ -8,9 +8,6 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="./shop.css" />
 
-  <script defer src="./js/shopCart.js"></script>
-  <script defer src="./js/orders.js"></script>
-
   <style>
     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     @media (max-width:980px){.kpi-grid{grid-template-columns:1fr 1fr}}
@@ -33,14 +30,14 @@
       <div class="shop-top">
         <div>
           <h1 class="h1">Zamówienia (MVP)</h1>
-          <p class="p">KPI: obrót, prowizja platformy (2%), marża sprzedawcy, rozbicie per hurtownia.</p>
+          <p class="p">Panel KPI + rozbicie per hurtownia. Źródło: localStorage <span class="mono">qm_orders_v1</span>.</p>
         </div>
         <div class="shop-actions">
           <a class="btn btn-sm" href="./platforma.html">Platforma</a>
           <a class="btn btn-sm" href="./panel-sklepu.html">Panel sklepu</a>
           <a class="btn btn-sm" id="goShop" href="./sklep.html">Sklep</a>
           <a class="btn btn-sm" id="goCart" href="./koszyk.html">Koszyk</a>
-          <button class="btn btn-danger btn-sm" id="clearOrders" type="button">Wyczyść zamówienia</button>
+          <button class="btn btn-danger btn-sm" id="clearOrders" type="button">Wyczyść</button>
         </div>
       </div>
 
@@ -78,7 +75,7 @@
           <div class="val" id="kpiGross">0 zł</div>
         </div>
         <div class="kpi">
-          <div class="label">Prowizja platformy (2%)</div>
+          <div class="label">Prowizja platformy</div>
           <div class="val" id="kpiFee">0 zł</div>
         </div>
         <div class="kpi">
@@ -127,9 +124,22 @@
 (() => {
   "use strict";
 
+  const LS_ORDERS = "qm_orders_v1";
   const $ = (s, r=document) => r.querySelector(s);
 
-  const Orders = window.QM_ORDERS;
+  const readOrders = () => {
+    try {
+      const arr = JSON.parse(localStorage.getItem(LS_ORDERS) || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const money = (n) => {
+    const v = Number(n || 0);
+    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+  };
 
   const storeFromUrlOrActive = () => {
     try {
@@ -137,84 +147,136 @@
       const s = (u.searchParams.get("store") || "").trim();
       if (s) return s;
     } catch {}
-    try {
-      return window.QM_SHOP?.Cart?.getStore?.() || (localStorage.getItem("qm_active_store_v1") || "default");
-    } catch {
-      return "default";
-    }
+    return String(localStorage.getItem("qm_active_store_v1") || "default").trim() || "default";
   };
 
-  const setShopLinks = () => {
+  const setLinks = () => {
     const store = storeFromUrlOrActive();
     $("#activeStoreBadge").textContent = `store: ${store}`;
     $("#goShop").href = `./sklep.html?store=${encodeURIComponent(store)}`;
     $("#goCart").href = `./koszyk.html?store=${encodeURIComponent(store)}`;
-    // prefill filter
     const f = $("#storeFilter");
     if (f && !f.value) f.value = store;
   };
 
-  const fmt = (n) => Orders.fmtMoney(n);
+  const normalizeSuppliers = (supplierBreakdown) => {
+    // u Ciebie to jest obiekt: { SUP: {items, net, gross}, ... }
+    if (!supplierBreakdown) return [];
+    if (Array.isArray(supplierBreakdown)) return supplierBreakdown;
+
+    const out = [];
+    for (const [supplier, v] of Object.entries(supplierBreakdown)) {
+      out.push({
+        supplier,
+        items: Number(v?.items||0),
+        net: Number(v?.net||0),
+        gross: Number(v?.gross||0)
+      });
+    }
+    out.sort((a,b)=> (b.gross - a.gross));
+    return out;
+  };
 
   const applyFilters = (list) => {
-    const store = ($("#storeFilter").value || "").trim();
+    const store = ($("#storeFilter").value || "").trim().toLowerCase();
     const q = ($("#q").value || "").trim().toLowerCase();
 
-    return list.filter(o => {
+    return (list || []).filter(o => {
       if (!o) return false;
-      if (store && String(o.storeSlug || "").toLowerCase() !== store.toLowerCase()) return false;
+      if (store && String(o.storeSlug || "").toLowerCase() !== store) return false;
       if (q) {
-        const s = JSON.stringify({ id:o.id, store:o.storeSlug, suppliers:o.supplierBreakdown, meta:o.meta }).toLowerCase();
+        const s = JSON.stringify({
+          id:o.id, store:o.storeSlug,
+          supplierBreakdown:o.supplierBreakdown,
+          meta:o.meta
+        }).toLowerCase();
         if (!s.includes(q)) return false;
       }
       return true;
     });
   };
 
+  const exportJSON = (list) => {
+    const blob = new Blob([JSON.stringify(list, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `qm_orders_export.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const exportCSV = (list) => {
+    const head = ["createdAt","id","storeSlug","mode","items","gross","platformFee","sellerMargin","suppliers"];
+    const rows = list.map(o => {
+      const sups = normalizeSuppliers(o.supplierBreakdown)
+        .map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`).join("|");
+
+      return [
+        o.createdAt || new Date(o.ts||Date.now()).toISOString(),
+        o.id || "",
+        o.storeSlug || "",
+        o.mode || o.totals?.mode || "",
+        Number(o.totals?.items ?? o.totals?.items ?? 0),
+        Number(o.totals?.gross ?? o.totals?.gross ?? 0).toFixed(2),
+        Number(o.fees?.platformFee ?? 0).toFixed(2),
+        Number(o.fees?.sellerMargin ?? 0).toFixed(2),
+        sups
+      ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
+    });
+
+    const csv = [head.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `qm_orders_export.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
   const render = () => {
-    const all = Orders.list();
+    const all = readOrders();
     const list = applyFilters(all);
 
-    // KPI
     const sumGross = list.reduce((a,o)=>a + (Number(o?.totals?.gross)||0), 0);
-    const sumFee = list.reduce((a,o)=>a + (Number(o?.fees?.platformFeeGross)||0), 0);
-    const sumMargin = list.reduce((a,o)=>a + (Number(o?.fees?.sellerMarginGross)||0), 0);
+    const sumFee = list.reduce((a,o)=>a + (Number(o?.fees?.platformFee)||0), 0);
+    const sumMargin = list.reduce((a,o)=>a + (Number(o?.fees?.sellerMargin)||0), 0);
 
     $("#kpiOrders").textContent = String(list.length);
-    $("#kpiGross").textContent = fmt(sumGross);
-    $("#kpiFee").textContent = fmt(sumFee);
-    $("#kpiMargin").textContent = fmt(sumMargin);
+    $("#kpiGross").textContent = money(sumGross);
+    $("#kpiFee").textContent = money(sumFee);
+    $("#kpiMargin").textContent = money(sumMargin);
 
-    // rows
     const tbody = $("#rows");
     tbody.innerHTML = "";
 
     if (!list.length) {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="9" style="opacity:.7">Brak zamówień (albo filtr je ukrywa). Zapis pojawi się po wysłaniu zamówienia z koszyka.</td>`;
+      tr.innerHTML = `<td colspan="9" style="opacity:.7">Brak zamówień.</td>`;
       tbody.appendChild(tr);
       return;
     }
 
-    for (const o of list) {
-      const dt = o.createdAt ? new Date(o.createdAt) : null;
-      const dts = dt ? dt.toLocaleString("pl-PL") : "—";
-      const suppliers = (o.supplierBreakdown || [])
-        .slice(0, 3)
-        .map(x => `${x.supplier}: ${fmt(x.gross)}`)
-        .join("<br>");
-      const more = (o.supplierBreakdown || []).length > 3 ? `<br><span style="opacity:.7">+${(o.supplierBreakdown.length-3)} więcej</span>` : "";
+    // najnowsze na górze
+    const sorted = list.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0)));
+
+    for (const o of sorted) {
+      const dt = o.createdAt ? new Date(o.createdAt) : new Date(o.ts || Date.now());
+      const dts = dt.toLocaleString("pl-PL");
+
+      const sups = normalizeSuppliers(o.supplierBreakdown);
+      const supsHtml = sups.slice(0,3).map(x => `${x.supplier}: ${money(x.gross)}`).join("<br>")
+        + (sups.length>3 ? `<br><span style="opacity:.7">+${sups.length-3} więcej</span>` : "");
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${dts}</td>
         <td class="mono">${o.id || "—"}</td>
         <td>${o.storeSlug || "—"}</td>
-        <td>${(o.totals?.mode || "—").toUpperCase()}</td>
+        <td>${String(o.mode || o.totals?.mode || "—").toUpperCase()}</td>
         <td class="right">${Number(o.totals?.items || 0)}</td>
-        <td class="right"><strong>${fmt(o.totals?.gross || 0)}</strong></td>
-        <td class="right">${fmt(o.fees?.platformFeeGross || 0)}</td>
-        <td>${suppliers}${more}</td>
+        <td class="right"><strong>${money(o.totals?.gross || 0)}</strong></td>
+        <td class="right">${money(o.fees?.platformFee || 0)}</td>
+        <td>${supsHtml || "—"}</td>
         <td class="right">
           <div class="row-actions" style="justify-content:flex-end">
             <button class="btn btn-sm" data-json="${o.id}">JSON</button>
@@ -228,7 +290,8 @@
     tbody.querySelectorAll("[data-del]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-del");
-        Orders.remove(id);
+        const arr = readOrders().filter(x => x && x.id !== id);
+        localStorage.setItem(LS_ORDERS, JSON.stringify(arr));
         render();
       });
     });
@@ -236,7 +299,7 @@
     tbody.querySelectorAll("[data-json]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-json");
-        const o = Orders.list().find(x => x && x.id === id);
+        const o = readOrders().find(x => x && x.id === id);
         if (!o) return;
         const blob = new Blob([JSON.stringify(o, null, 2)], { type:"application/json" });
         const a = document.createElement("a");
@@ -246,58 +309,25 @@
         URL.revokeObjectURL(a.href);
       });
     });
+
+    $("#exportJson").onclick = () => exportJSON(list);
+    $("#exportCsv").onclick = () => exportCSV(list);
   };
 
-  const exportJSON = () => {
-    const list = applyFilters(Orders.list());
-    const blob = new Blob([JSON.stringify(list, null, 2)], { type:"application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `qm_orders_export.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-
-  const exportCSV = () => {
-    const list = applyFilters(Orders.list());
-    const head = ["createdAt","id","storeSlug","mode","items","gross","platformFeeGross","sellerMarginGross","suppliers"];
-    const rows = list.map(o => {
-      const sups = (o.supplierBreakdown || []).map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`).join("|");
-      return [
-        o.createdAt || "",
-        o.id || "",
-        o.storeSlug || "",
-        o.totals?.mode || "",
-        Number(o.totals?.items||0),
-        Number(o.totals?.gross||0).toFixed(2),
-        Number(o.fees?.platformFeeGross||0).toFixed(2),
-        Number(o.fees?.sellerMarginGross||0).toFixed(2),
-        sups
-      ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
-    });
-    const csv = [head.join(","), ...rows].join("\n");
-    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `qm_orders_export.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-
-  // wiring
   $("#refresh").addEventListener("click", render);
   $("#storeFilter").addEventListener("input", render);
   $("#q").addEventListener("input", render);
-  $("#exportJson").addEventListener("click", exportJSON);
-  $("#exportCsv").addEventListener("click", exportCSV);
-  $("#clearOrders").addEventListener("click", () => { Orders.clear(); render(); });
 
-  setShopLinks();
+  $("#clearOrders").addEventListener("click", () => {
+    localStorage.setItem(LS_ORDERS, "[]");
+    render();
+  });
+
+  setLinks();
   render();
 
   window.addEventListener("qm:orders", render);
 })();
 </script>
-
 </body>
 </html>
