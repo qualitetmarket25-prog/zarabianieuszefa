@@ -72,6 +72,7 @@
           <div class="muted">Tu użytkownik tworzy swój sklep i dostaje link do sprzedaży.</div>
           <a class="btn btn-primary" href="generator-sklepu.html">Utwórz sklep (start)</a>
           <a class="btn btn-ghost" href="panel-sklepu.html">Panel sklepu</a>
+          <a class="btn btn-ghost" href="zamowienia.html">Zamówienia</a>
         </div>
 
         <div class="card">
@@ -120,7 +121,6 @@
     location.href = `sklep.html?store=${encodeURIComponent(s)}`;
   });
 
-  // Enter = otwórz sklep
   slugEl?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") openBtn?.click();
   });
