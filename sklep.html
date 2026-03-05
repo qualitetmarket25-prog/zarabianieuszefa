@@ -11,15 +11,32 @@
 
   <!-- ✅ Marża / config (ESM) -> wystawiamy jako global do window dla shop.js -->
   <script type="module">
-    import { QM_CONFIG } from "./js/config.js";
-    import { priceFromBuy, formatPLN, round2 } from "./js/pricing.js";
+    try {
+      const [{ QM_CONFIG }, pricing] = await Promise.all([
+        import("./js/config.js"),
+        import("./js/pricing.js")
+      ]);
 
-    // Globalne udostępnienie dla istniejących skryptów (niemodułowych)
-    window.QM_CONFIG = QM_CONFIG;
-    window.QM_PRICE = { priceFromBuy, formatPLN, round2 };
+      const { priceFromBuy, formatPLN, round2 } = pricing;
 
-    // domyślny tryb ceny (zgodny z UI: Detal/Hurt)
-    window.QM_MODE = window.QM_MODE || "detal";
+      // Globalne udostępnienie dla istniejących skryptów (niemodułowych)
+      window.QM_CONFIG = QM_CONFIG;
+      window.QM_PRICE = { priceFromBuy, formatPLN, round2 };
+
+      // domyślny tryb ceny: synchronizacja z koszykiem jeśli już istnieje
+      try {
+        const mode = (localStorage.getItem("qm_shop_mode_v1") || "retail").toLowerCase();
+        window.QM_MODE = (mode === "b2b") ? "hurt" : "detal";
+      } catch {
+        window.QM_MODE = "detal";
+      }
+
+      window.dispatchEvent(new CustomEvent("qm:pricing-ready"));
+    } catch (e) {
+      console.error("QM pricing load failed:", e);
+      window.QM_PRICING_ERROR = true;
+      window.dispatchEvent(new CustomEvent("qm:pricing-error"));
+    }
   </script>
 
   <!-- JS jest w /zarabianieuszefa/js/ -->
@@ -34,6 +51,13 @@
         <div>
           <h1 class="h1">Sklep dropshipping – Gastronomia / Masarnie</h1>
           <p class="p">Źródło: Twoje produkty z importu CSV (hurtownie) + fallback z <code>/products.json</code>.</p>
+          <div id="pricingWarn" class="card soft" style="display:none; margin-top:12px;">
+            <strong>Uwaga:</strong>
+            <div class="p" style="margin-top:6px;">
+              Nie udało się załadować modułu marży (<code>config.js</code>/<code>pricing.js</code>).
+              Sprawdź, czy pliki istnieją w folderze <code>/js</code> i odśwież <strong>CTRL+F5</strong>.
+            </div>
+          </div>
         </div>
 
         <div class="shop-actions">
@@ -104,5 +128,15 @@
       QualitetMarket • sklep B2B (MVP) • koszyk i ofertowanie
     </div>
   </div>
+
+  <script>
+    // pokaż ostrzeżenie jeśli marża się nie załadowała
+    (function(){
+      const box = document.getElementById("pricingWarn");
+      const show = () => { if (box) box.style.display = ""; };
+      if (window.QM_PRICING_ERROR) show();
+      window.addEventListener("qm:pricing-error", show);
+    })();
+  </script>
 </body>
 </html>
