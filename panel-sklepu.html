@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel sklepu – QualitetMarket</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .muted-xs{opacity:.75;font-size:12px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+    .row .field{flex:1;min-width:220px}
+    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .card.soft{border:1px solid rgba(0,0,0,.08)}
+    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.12);font-size:12px}
+    .btnwide{width:100%}
+  </style>
+</head>
+
+<body data-noShell="1">
+  <div class="wrap">
+    <div class="card">
+      <span class="badge">QualitetMarket • Multi-Store</span>
+      <h1 style="margin-top:10px;">Panel sklepu użytkownika</h1>
+      <p class="muted">Ustaw marżę sklepu i wygeneruj link do udostępnienia. Ceny = hurtownia + marża platformy + marża sklepu.</p>
+      <div class="muted-xs">Działa bez backendu (MVP) na localStorage. Następny etap: konta i zapis w bazie.</div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Ustawienia sklepu</h2>
+
+      <div class="row">
+        <div class="field">
+          <label class="muted-xs">Nazwa sklepu (do linku)</label>
+          <input id="storeSlug" class="input" placeholder="np. bar-u-szefa" />
+          <div class="muted-xs" style="margin-top:6px;">Bez spacji, najlepiej myślniki. To będzie parametr <span class="mono">?store=</span>.</div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Marża sklepu (%)</label>
+          <input id="storeMargin" class="input" placeholder="np. 12" inputmode="decimal" />
+          <div class="muted-xs" style="margin-top:6px;">To jest dodatkowa marża sklepu użytkownika (ponad Twoją platformę).</div>
+        </div>
+
+        <div class="field" style="flex:0;min-width:220px;">
+          <button class="btn btn-primary btnwide" id="saveBtn" type="button">Zapisz</button>
+          <div class="muted-xs" style="margin-top:6px;"><span class="pill">qm_store_margin_pct</span> <span class="pill">qm_store_slug</span></div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row">
+        <div class="field">
+          <label class="muted-xs">Link do sklepu</label>
+          <input id="storeLink" class="input mono" readonly />
+          <div class="muted-xs" style="margin-top:6px;">To jest link, który wysyłasz użytkownikowi/klientom.</div>
+        </div>
+
+        <div class="field" style="flex:0;min-width:220px;">
+          <button class="btn btnwide" id="copyLink" type="button">Kopiuj link</button>
+          <button class="btn btnwide" id="openShop" type="button" style="margin-top:10px;">Otwórz sklep</button>
+        </div>
+      </div>
+
+      <div class="card soft" style="margin-top:12px; padding:12px;">
+        <strong>Test w 10 sekund</strong>
+        <div class="muted-xs" style="margin-top:6px;">
+          1) Ustaw marżę np. <span class="mono">12</span> → Zapisz<br/>
+          2) Otwórz sklep i porównaj cenę produktu przed/po (marża sklepu działa).<br/>
+          3) Jeśli chcesz “wrócić do zera” → wpisz <span class="mono">0</span> i zapisz.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Status</h2>
+      <div id="status" class="muted-xs">—</div>
+    </div>
+
+    <div class="footer">QualitetMarket • panel sklepu (MVP)</div>
+  </div>
+
+<script>
+(function(){
+  const slugify = (s) => String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const getBaseShopUrl = () => {
+    // działa na GH Pages (z katalogiem /zarabianieuszefa)
+    const u = new URL(window.location.href);
+    // podmieniamy ścieżkę na sklep.html w tym samym katalogu
+    u.pathname = u.pathname.replace(/\/[^\/]*$/, "/sklep.html");
+    u.search = "";
+    u.hash = "";
+    return u.toString();
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  const load = () => {
+    const slug = localStorage.getItem("qm_store_slug") || "";
+    const raw = localStorage.getItem("qm_store_margin_pct") || "";
+
+    $("storeSlug").value = slug;
+    // pokazujemy jako % (jeśli zapisane 0.12 to pokaż 12)
+    let n = Number(String(raw).replace(",", "."));
+    if (isFinite(n) && n > 0 && n <= 1) n = n * 100;
+    $("storeMargin").value = raw ? String(n) : "";
+
+    rebuildLink();
+  };
+
+  const rebuildLink = () => {
+    const slug = slugify($("storeSlug").value);
+    const base = getBaseShopUrl();
+    const link = slug ? `${base}?store=${encodeURIComponent(slug)}` : base;
+    $("storeLink").value = link;
+  };
+
+  $("storeSlug").addEventListener("input", rebuildLink);
+  $("storeMargin").addEventListener("input", rebuildLink);
+
+  $("saveBtn").addEventListener("click", () => {
+    const slug = slugify($("storeSlug").value);
+    let m = String($("storeMargin").value || "").trim();
+
+    // zapisujemy jako 0.xx (np. 12 => 0.12)
+    let n = Number(m.replace(",", "."));
+    if (!isFinite(n) || n < 0) n = 0;
+
+    const pct = n > 1 ? (n / 100) : n; // 12 => 0.12
+    const pctClamped = Math.max(0, Math.min(1, pct)); // max 100%
+
+    localStorage.setItem("qm_store_slug", slug);
+    localStorage.setItem("qm_store_margin_pct", String(pctClamped));
+
+    const status = $("status");
+    status.innerHTML = `
+      Zapisano: <span class="mono">qm_store_slug=${slug || "(pusto)"}</span>,
+      <span class="mono">qm_store_margin_pct=${pctClamped}</span>
+    `;
+
+    rebuildLink();
+    alert("Zapisano ustawienia sklepu.");
+  });
+
+  $("copyLink").addEventListener("click", async () => {
+    const v = $("storeLink").value || "";
+    if (!v) return;
+    try { await navigator.clipboard.writeText(v); } catch {}
+  });
+
+  $("openShop").addEventListener("click", () => {
+    const v = $("storeLink").value || "";
+    if (!v) return;
+    window.location.href = v;
+  });
+
+  load();
+})();
+</script>
+
+</body>
+</html>
