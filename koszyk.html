@@ -10,6 +10,16 @@
 
   <script defer src="./js/shopCart.js"></script>
   <script defer src="./js/shop.js"></script>
+
+  <style>
+    .muted-xs { opacity:.75; font-size:12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .pill { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+    .row .field { flex:1; min-width:220px; }
+    .splitBox { margin-top:10px; }
+    .splitHead { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  </style>
 </head>
 
 <body data-noShell="1">
@@ -18,7 +28,7 @@
       <div class="shop-top">
         <div>
           <h1 class="h1">Koszyk</h1>
-          <p class="p">Zamówienia B2B: MOQ, dane firmy, NIP, notatki do hurtowni.</p>
+          <p class="p">Zamówienia B2B: MOQ, dane firmy, NIP, notatki do hurtowni. Teraz: split per hurtownia (dropshipping).</p>
         </div>
 
         <div class="shop-actions">
@@ -90,11 +100,45 @@
           <div class="hr"></div>
 
           <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="generateOrder" type="button">Generuj zamówienie</button>
+            <button class="btn btn-primary" id="generateOrder" type="button">Generuj (1 tekst)</button>
             <button class="btn" id="copyOrder" type="button">Kopiuj</button>
           </div>
 
           <textarea id="orderOut" class="input" style="margin-top:12px; min-height:180px; resize:vertical;" placeholder="Tu pojawi się gotowe zamówienie..."></textarea>
+
+          <div class="hr"></div>
+
+          <!-- ✅ NOWE: split per hurtownia -->
+          <h3 style="margin:0 0 8px; font-size:16px;">Dropshipping: zamówienia per hurtownia</h3>
+          <div class="muted-xs">Generuje osobne sekcje na każdą hurtownię (po polu <span class="mono">supplier</span>).</div>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="field">
+              <label class="muted-xs">Wybierz hurtownię do kopiowania</label>
+              <select id="supplierPick" class="input">
+                <option value="">(najpierw generuj)</option>
+              </select>
+            </div>
+            <div class="field" style="flex:0; min-width:240px;">
+              <button class="btn btn-primary" id="generateSplit" type="button" style="width:100%;">Generuj per hurtownia</button>
+              <div class="muted-xs" style="margin-top:6px;">
+                <span class="pill">AUTO split</span> <span class="pill">MOQ</span> <span class="pill">B2B/DETAL</span>
+              </div>
+            </div>
+            <div class="field" style="flex:0; min-width:240px;">
+              <button class="btn" id="copySupplier" type="button" style="width:100%;">Kopiuj wybraną hurtownię</button>
+              <div class="muted-xs" style="margin-top:6px;">Kopiuje tylko jedną sekcję.</div>
+            </div>
+          </div>
+
+          <div class="splitBox">
+            <textarea id="splitOut" class="input" style="margin-top:12px; min-height:220px; resize:vertical;" placeholder="Tu pojawią się zamówienia rozbite na hurtownie..."></textarea>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn" id="copySplitAll" type="button">Kopiuj wszystko</button>
+            </div>
+            <div id="splitInfo" class="muted-xs" style="margin-top:8px;"></div>
+          </div>
+
         </div>
 
         <div class="card">
@@ -110,11 +154,180 @@
           <div class="muted-xs" id="moqWarn" style="display:none;">
             Uwaga: w trybie B2B masz pozycje poniżej MOQ (minimum). Popraw ilości.
           </div>
+
+          <div class="hr"></div>
+          <div class="muted-xs">
+            <strong>Tip:</strong> Żeby dropshipping był “1 klik”, następny etap to integracja e-mail/API hurtowni.
+            Na MVP kopiujesz sekcję i wysyłasz do hurtowni.
+          </div>
         </div>
       </div>
     </div>
 
     <div class="footer">QualitetMarket • koszyk B2B (MVP)</div>
   </div>
+
+<script>
+(function(){
+  const money = (n) => {
+    const v = Number(n || 0);
+    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+  };
+
+  const groupBySupplier = (items) => {
+    const map = new Map();
+    for (const it of items) {
+      const sup = String(it.supplier || "BRAK_HURTOWNI").trim() || "BRAK_HURTOWNI";
+      if (!map.has(sup)) map.set(sup, []);
+      map.get(sup).push(it);
+    }
+    return map;
+  };
+
+  const buildSplitText = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return { text:"", suppliers: [], bySupplier: new Map() };
+
+    const totals = Cart.totals();
+    const cart = Cart.read();
+    const profile = Cart.getB2BProfile();
+    const noteText = Cart.getNote();
+
+    const bySupplier = groupBySupplier(cart.items);
+    const suppliers = Array.from(bySupplier.keys()).sort((a,b)=>a.localeCompare(b,"pl"));
+
+    const blocks = [];
+    blocks.push(`ZAMÓWIENIA PER HURTOWNIA – QualitetMarket (${totals.mode === "b2b" ? "B2B" : "DETAL"})`);
+    blocks.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
+    blocks.push(``);
+
+    if (totals.mode === "b2b") {
+      blocks.push(`DANE FIRMY (B2B):`);
+      blocks.push(`- Firma: ${profile.companyName || "-"}`);
+      blocks.push(`- NIP: ${profile.nip || "-"}`);
+      blocks.push(`- Adres: ${profile.addr || "-"}`);
+      blocks.push(`- Kontakt: ${profile.contact || "-"}`);
+      blocks.push(``);
+    }
+
+    if (noteText) {
+      blocks.push(`NOTATKA (GLOBALNA): ${noteText}`);
+      blocks.push(``);
+    }
+
+    for (const sup of suppliers) {
+      const items = bySupplier.get(sup) || [];
+      blocks.push(`==============================`);
+      blocks.push(`HURTOWNIA: ${sup}`);
+      blocks.push(`==============================`);
+
+      let itemsCount = 0;
+      let net = 0;
+      let moqOk = true;
+
+      blocks.push(`POZYCJE:`);
+      for (const it of items) {
+        const qty = Number(it.qty || 0) || 0;
+        itemsCount += qty;
+
+        const moq = Number(it.moq || 1) || 1;
+        if (totals.mode === "b2b" && qty < moq) moqOk = false;
+
+        const price = (totals.mode === "b2b"
+          ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
+          : (Number(it.priceRetail||0) || 0)
+        );
+
+        net += qty * price;
+
+        blocks.push(
+          `- ${it.name} | SKU: ${it.sku || it.id} | Ilość: ${qty} ${it.unit || "szt"} | Cena: ${price.toFixed(2)} | MOQ: ${moq}`
+        );
+      }
+
+      blocks.push(``);
+      blocks.push(`PODSUMOWANIE (${sup}):`);
+      blocks.push(`- Pozycje: ${itemsCount}`);
+      blocks.push(`- Suma (wg trybu): ${money(net)}`);
+      if (totals.mode === "b2b" && !moqOk) {
+        blocks.push(`- UWAGA: Są pozycje poniżej MOQ — popraw ilości.`);
+      }
+      blocks.push(``);
+    }
+
+    return { text: blocks.join("\n"), suppliers, bySupplier };
+  };
+
+  const supplierTextOnly = (supplierName, state) => {
+    // wyciągamy blok pojedynczej hurtowni z pełnego tekstu
+    const full = state?.text || "";
+    if (!full) return "";
+
+    const needle = `HURTOWNIA: ${supplierName}`;
+    const idx = full.indexOf(needle);
+    if (idx < 0) return "";
+
+    // cofamy do separatora
+    const start = full.lastIndexOf("==============================", idx);
+    if (start < 0) return "";
+
+    // następny separator albo koniec
+    const next = full.indexOf("==============================", idx + needle.length);
+    const end = (next < 0) ? full.length : next;
+
+    return full.slice(start, end).trim();
+  };
+
+  const fillSupplierPick = (suppliers) => {
+    const sel = document.getElementById("supplierPick");
+    if (!sel) return;
+    sel.innerHTML = `<option value="">Wybierz...</option>` + suppliers.map(s =>
+      `<option value="${String(s).replaceAll('"',"&quot;")}">${s}</option>`
+    ).join("");
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  let splitState = { text:"", suppliers: [], bySupplier: new Map() };
+
+  const generateSplit = () => {
+    splitState = buildSplitText();
+    $("splitOut").value = splitState.text || "";
+    fillSupplierPick(splitState.suppliers || []);
+    $("splitInfo").textContent = splitState.suppliers?.length
+      ? `Wykryte hurtownie: ${splitState.suppliers.join(", ")}`
+      : `Brak hurtowni w koszyku (sprawdź pole supplier przy produktach).`;
+  };
+
+  $("generateSplit")?.addEventListener("click", generateSplit);
+
+  $("copySplitAll")?.addEventListener("click", async () => {
+    const out = $("splitOut");
+    if (!out) return;
+    if (!out.value) generateSplit();
+    try { await navigator.clipboard.writeText(out.value); } catch {}
+  });
+
+  $("copySupplier")?.addEventListener("click", async () => {
+    const sel = $("supplierPick");
+    const sup = sel?.value || "";
+    if (!sup) return;
+
+    if (!splitState.text) generateSplit();
+    const block = supplierTextOnly(sup, splitState);
+    if (!block) return;
+
+    try { await navigator.clipboard.writeText(block); } catch {}
+  });
+
+  // auto-refresh split output kiedy koszyk się zmieni
+  window.addEventListener("qm:cart", () => {
+    // nie wymuszamy generowania, tylko jeśli już jest coś w splitOut
+    const out = $("splitOut");
+    if (out && out.value) generateSplit();
+  });
+})();
+</script>
+
 </body>
 </html>
