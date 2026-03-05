@@ -9,6 +9,19 @@
   <!-- CSS jest w tym samym folderze co sklep.html -->
   <link rel="stylesheet" href="./shop.css" />
 
+  <!-- ✅ Marża / config (ESM) -> wystawiamy jako global do window dla shop.js -->
+  <script type="module">
+    import { QM_CONFIG } from "./js/config.js";
+    import { priceFromBuy, formatPLN, round2 } from "./js/pricing.js";
+
+    // Globalne udostępnienie dla istniejących skryptów (niemodułowych)
+    window.QM_CONFIG = QM_CONFIG;
+    window.QM_PRICE = { priceFromBuy, formatPLN, round2 };
+
+    // domyślny tryb ceny (zgodny z UI: Detal/Hurt)
+    window.QM_MODE = window.QM_MODE || "detal";
+  </script>
+
   <!-- JS jest w /zarabianieuszefa/js/ -->
   <script defer src="./js/shopCart.js"></script>
   <script defer src="./js/shop.js"></script>
