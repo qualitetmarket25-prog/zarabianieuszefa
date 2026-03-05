@@ -6,12 +6,101 @@
 
   const { Cart, money } = window.QM_SHOP;
 
+  // ===== multi-store (URL -> aktywny sklep -> marża) =====
+  // Przechowujemy sklepy w localStorage jako mapa:
+  // qm_stores_v1: { "bar-u-szefa": { marginPct: 0.12, title:"Bar u Szefa", theme:"default" }, ... }
+  // aktywny: qm_active_store_v1 = "bar-u-szefa"
+  // marża runtime dla pricing.js: qm_store_margin_pct = "0.12"
+  const LS_STORES = "qm_stores_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_STORE_MARGIN = "qm_store_margin_pct";
+
+  const safeStr = (v) => String(v ?? "").trim();
+
+  const slugify = (s) => String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
+  };
+  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+  const getStoreFromPanelFallback = () => {
+    // kompatybilność z panel-sklepu.html (jeśli zapisał qm_store_slug)
+    const slug = slugify(localStorage.getItem("qm_store_slug") || "");
+    let raw = String(localStorage.getItem("qm_store_margin_pct") || "").trim(); // może być "0.12"
+    let n = Number(raw.replace(",", "."));
+    if (!isFinite(n) || n < 0) n = 0;
+    if (n > 1) n = n / 100;
+    n = Math.max(0, Math.min(1, n));
+    return { slug, marginPct: n };
+  };
+
+  const ensureStoreRegistry = () => {
+    // jeśli user użył panelu i nie ma rejestru sklepów, tworzymy wpis
+    const reg = readJSON(LS_STORES, {});
+    const { slug, marginPct } = getStoreFromPanelFallback();
+    if (slug && !reg[slug]) {
+      reg[slug] = { marginPct, title: slug.replaceAll("-", " "), theme: "default" };
+      writeJSON(LS_STORES, reg);
+    }
+  };
+
+  const setActiveStore = (slug) => {
+    const s = slugify(slug);
+    if (!s) return;
+
+    ensureStoreRegistry();
+    const reg = readJSON(LS_STORES, {});
+    const entry = reg[s];
+
+    // jeśli nie znamy sklepu w rejestrze — tworzymy go “w locie” (MVP)
+    if (!entry) {
+      reg[s] = { marginPct: 0, title: s.replaceAll("-", " "), theme: "default" };
+      writeJSON(LS_STORES, reg);
+    }
+
+    localStorage.setItem(LS_ACTIVE, s);
+
+    const finalReg = readJSON(LS_STORES, {});
+    const margin = Number(finalReg[s]?.marginPct || 0) || 0;
+    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(1, margin))));
+
+    // odśwież ceny (pricing.js czyta qm_store_margin_pct)
+    window.dispatchEvent(new CustomEvent("qm:store", { detail: { slug: s, marginPct: margin } }));
+  };
+
+  const applyStoreFromUrl = () => {
+    try {
+      const u = new URL(window.location.href);
+      const store = slugify(u.searchParams.get("store") || "");
+      if (store) {
+        setActiveStore(store);
+        return;
+      }
+    } catch {}
+    // brak parametru -> jeśli jest aktywny store, zostaje
+    ensureStoreRegistry();
+    const active = slugify(localStorage.getItem(LS_ACTIVE) || "");
+    if (active) {
+      const reg = readJSON(LS_STORES, {});
+      const margin = Number(reg[active]?.marginPct || 0) || 0;
+      localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(1, margin))));
+    }
+  };
+
+  applyStoreFromUrl();
+
   // ===== marża/config z window (wstrzyknięte w sklep.html) =====
   const PR = (window.QM_PRICE && window.QM_PRICE.priceFromBuy) ? window.QM_PRICE : null;
   const CFG = (window.QM_CONFIG && window.QM_CONFIG.pricing) ? window.QM_CONFIG : null;
 
   const getPricingRules = () => {
-    // jeśli nie ma configu — fallback na sensowne wartości
     return (CFG && CFG.pricing) ? CFG.pricing : {
       retailPct: 0.08,
       wholesalePct: 0.05,
@@ -28,8 +117,6 @@
     try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
   };
 
-  const safeStr = (v) => String(v ?? "").trim();
-
   const hashPick = (s) => {
     const x = safeStr(s);
     let h = 0;
@@ -45,7 +132,6 @@
   };
 
   const pickBuyNet = (p) => {
-    // Preferuj pola typowo "zakupowe" / netto / cost
     const candidates = [
       p.buyNet, p.buy, p.costNet, p.cost, p.purchaseNet, p.purchase,
       p.netto, p.cenaNetto, p.priceNet, p.net, p.wholesaleNet
@@ -82,14 +168,12 @@
   const computePrices = (buyNet, fallbackRetail, fallbackB2B) => {
     const rules = getPricingRules();
 
-    // Jeżeli mamy buyNet i mamy silnik marży — liczymy automatycznie
     if (buyNet > 0 && PR && typeof PR.priceFromBuy === "function") {
       const retail = PR.priceFromBuy(buyNet, "detal", rules);
       const b2b = PR.priceFromBuy(buyNet, "hurt", rules);
       return { priceRetail: retail, priceB2B: b2b, buyNet };
     }
 
-    // Fallback: jeśli nie ma buyNet albo brak silnika — użyj tego co w produkcie
     const pr = fallbackRetail > 0 ? fallbackRetail : 0;
     const pb = fallbackB2B > 0 ? fallbackB2B : (pr > 0 ? pr : 0);
     return { priceRetail: pr, priceB2B: pb, buyNet: buyNet || 0 };
@@ -107,7 +191,6 @@
     const image = p.image || p.img || p.photo || hashPick(name);
     const rank = Number(p.rank ?? p.score ?? p.rating ?? 0) || 0;
 
-    // ✅ ceny: bierzemy buyNet i liczymy marżę automatycznie
     const buyNet = pickBuyNet(p);
     const fallbackRetail = pickFallbackRetail(p);
     const fallbackB2B = pickFallbackB2B(p);
@@ -123,11 +206,7 @@
       moq,
       image,
       rank,
-
-      // zapisujemy też buyNet (przyda się później do splitu zamówień do hurtowni)
       buyNet: prices.buyNet,
-
-      // ceny sprzedaży (automatyczne)
       priceRetail: prices.priceRetail,
       priceB2B: prices.priceB2B
     };
@@ -144,7 +223,6 @@
       }
     }
 
-    // fallback z /products.json
     if (!out.length) {
       try {
         const res = await fetch(FALLBACK_JSON, { cache:"no-store" });
@@ -156,7 +234,6 @@
       }
     }
 
-    // deduplikacja po id
     const map = new Map();
     for (const p of out) map.set(String(p.id), p);
     return Array.from(map.values());
@@ -281,8 +358,6 @@
         const id = btn.getAttribute("data-add");
         const p = ALL.find(x => String(x.id) === String(id));
         if (!p) return;
-
-        // ✅ ważne: do koszyka zapisujemy już policzone ceny
         Cart.upsert(p, 1);
         updateCartCount();
       });
@@ -358,7 +433,6 @@
       }));
     }
 
-    // podsumowanie
     const t = Cart.totals();
     $("#sumItems") && ($("#sumItems").textContent = String(t.items));
     $("#sumNet") && ($("#sumNet").textContent = money(t.net));
@@ -415,6 +489,7 @@
 
       const lines = [];
       lines.push(`ZAMÓWIENIE – QualitetMarket (${t.mode === "b2b" ? "B2B" : "DETAL"})`);
+      lines.push(`Sklep: ${localStorage.getItem(LS_ACTIVE) || "-"}`);
       lines.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
       lines.push(``);
       if (t.mode === "b2b") {
@@ -487,6 +562,15 @@
       updateCartCount();
       renderGrid();
       renderCart();
+    });
+
+    // gdy zmieni się sklep (multi-store) — przelicz ceny i odśwież grid
+    window.addEventListener("qm:store", async () => {
+      if ($("#grid")) {
+        ALL = await loadProducts();
+        buildCats();
+        renderGrid();
+      }
     });
 
     renderAll();
