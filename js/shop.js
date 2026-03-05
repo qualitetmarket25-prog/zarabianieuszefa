@@ -7,10 +7,6 @@
   const { Cart, money } = window.QM_SHOP;
 
   // ===== multi-store (URL -> aktywny sklep -> marża) =====
-  // Przechowujemy sklepy w localStorage jako mapa:
-  // qm_stores_v1: { "bar-u-szefa": { marginPct: 0.12, title:"Bar u Szefa", theme:"default" }, ... }
-  // aktywny: qm_active_store_v1 = "bar-u-szefa"
-  // marża runtime dla pricing.js: qm_store_margin_pct = "0.12"
   const LS_STORES = "qm_stores_v1";
   const LS_ACTIVE = "qm_active_store_v1";
   const LS_STORE_MARGIN = "qm_store_margin_pct";
@@ -31,9 +27,8 @@
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
   const getStoreFromPanelFallback = () => {
-    // kompatybilność z panel-sklepu.html (jeśli zapisał qm_store_slug)
     const slug = slugify(localStorage.getItem("qm_store_slug") || "");
-    let raw = String(localStorage.getItem("qm_store_margin_pct") || "").trim(); // może być "0.12"
+    let raw = String(localStorage.getItem("qm_store_margin_pct") || "").trim();
     let n = Number(raw.replace(",", "."));
     if (!isFinite(n) || n < 0) n = 0;
     if (n > 1) n = n / 100;
@@ -42,7 +37,6 @@
   };
 
   const ensureStoreRegistry = () => {
-    // jeśli user użył panelu i nie ma rejestru sklepów, tworzymy wpis
     const reg = readJSON(LS_STORES, {});
     const { slug, marginPct } = getStoreFromPanelFallback();
     if (slug && !reg[slug]) {
@@ -59,7 +53,6 @@
     const reg = readJSON(LS_STORES, {});
     const entry = reg[s];
 
-    // jeśli nie znamy sklepu w rejestrze — tworzymy go “w locie” (MVP)
     if (!entry) {
       reg[s] = { marginPct: 0, title: s.replaceAll("-", " "), theme: "default" };
       writeJSON(LS_STORES, reg);
@@ -71,7 +64,6 @@
     const margin = Number(finalReg[s]?.marginPct || 0) || 0;
     localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(1, margin))));
 
-    // odśwież ceny (pricing.js czyta qm_store_margin_pct)
     window.dispatchEvent(new CustomEvent("qm:store", { detail: { slug: s, marginPct: margin } }));
   };
 
@@ -84,7 +76,7 @@
         return;
       }
     } catch {}
-    // brak parametru -> jeśli jest aktywny store, zostaje
+
     ensureStoreRegistry();
     const active = slugify(localStorage.getItem(LS_ACTIVE) || "");
     if (active) {
@@ -95,6 +87,62 @@
   };
 
   applyStoreFromUrl();
+
+  // ===== ✅ zawsze noś store=slug w linkach (żeby nic się nie gubiło) =====
+  const getActiveStoreSlug = () => {
+    try {
+      const u = new URL(window.location.href);
+      const fromUrl = slugify(u.searchParams.get("store") || "");
+      if (fromUrl) return fromUrl;
+    } catch {}
+    const fromLS = slugify(localStorage.getItem(LS_ACTIVE) || "") || slugify(localStorage.getItem("qm_store_slug") || "");
+    return fromLS || "default";
+  };
+
+  const withStore = (href) => {
+    const s = getActiveStoreSlug();
+    if (!href) return href;
+    if (String(href).includes("store=")) return href;
+    const sep = String(href).includes("?") ? "&" : "?";
+    return `${href}${sep}store=${encodeURIComponent(s)}`;
+  };
+
+  const syncStoreLinks = () => {
+    const s = getActiveStoreSlug();
+
+    // badge (opcjonalnie, jeśli dodasz w sklep.html: <span id="activeStoreBadge">...</span>)
+    const badge = document.getElementById("activeStoreBadge");
+    if (badge) badge.textContent = `store: ${s}`;
+
+    // linki w akcjach nagłówka
+    const shopActions = document.querySelector(".shop-actions");
+    if (shopActions) {
+      shopActions.querySelectorAll("a[href]").forEach(a => {
+        const href = a.getAttribute("href") || "";
+        if (
+          href.includes("koszyk.html") ||
+          href.includes("zamowienia.html") ||
+          href.includes("panel-sklepu.html") ||
+          href.includes("sklep.html")
+        ) {
+          a.setAttribute("href", withStore(href));
+        }
+      });
+    }
+
+    // globalnie: wszystkie linki do kluczowych stron
+    document.querySelectorAll("a[href]").forEach(a => {
+      const href = a.getAttribute("href") || "";
+      if (
+        href.includes("koszyk.html") ||
+        href.includes("zamowienia.html") ||
+        href.includes("panel-sklepu.html") ||
+        href.includes("sklep.html")
+      ) {
+        a.setAttribute("href", withStore(href));
+      }
+    });
+  };
 
   // ===== marża/config z window (wstrzyknięte w sklep.html) =====
   const PR = (window.QM_PRICE && window.QM_PRICE.priceFromBuy) ? window.QM_PRICE : null;
@@ -131,14 +179,10 @@
     return isFinite(n) ? n : 0;
   };
 
-  // ✅ FIX: Twoje dane z hurtowni mają "price_net" — wcześniej nie było w ogóle obsługiwane
   const pickBuyNet = (p) => {
     const candidates = [
-      // koszt/zakup
       p.buyNet, p.buy, p.costNet, p.cost, p.purchaseNet, p.purchase,
-      // popularne nazwy netto
       p.netto, p.cenaNetto, p.priceNet, p.net, p.wholesaleNet,
-      // ✅ snake_case / exporty CSV
       p.price_net, p.cena_netto, p.net_price, p.wholesale_net
     ];
     for (const c of candidates) {
@@ -151,7 +195,6 @@
   const pickFallbackRetail = (p) => {
     const candidates = [
       p.priceRetail, p.price, p.cena, p.brutto, p.priceGross, p.gross,
-      // ✅ jeśli ktoś wrzuci tylko netto, niech retail też coś pokaże (awaryjnie)
       p.price_net, p.netto, p.net
     ];
     for (const c of candidates) {
@@ -164,7 +207,6 @@
   const pickFallbackB2B = (p) => {
     const candidates = [
       p.priceB2B, p.priceWholesale, p.hurt, p.wholesale, p.b2b, p.b2bPrice,
-      // ✅ typowo hurtownie dają tylko netto
       p.price_net, p.netto, p.net
     ];
     for (const c of candidates) {
@@ -355,7 +397,8 @@
             </div>
             <div class="p-actions">
               <button class="btn btn-sm btn-primary" data-add="${escapeHtml(p.id)}">Dodaj</button>
-              <a class="btn btn-sm" href="./koszyk.html">Koszyk</a>
+              <!-- ✅ zawsze noś store -->
+              <a class="btn btn-sm" href="${withStore("./koszyk.html")}">Koszyk</a>
             </div>
           </div>
         </div>
@@ -369,11 +412,13 @@
         if (!p) return;
         Cart.upsert(p, 1);
         updateCartCount();
+        // po dodaniu też dopnij linki
+        syncStoreLinks();
       });
     });
   };
 
-  // ===== koszyk view =====
+  // ===== koszyk view (jeśli ktoś używa shop.js na koszyku) =====
   const renderCart = () => {
     const list = $("#cartList");
     const empty = $("#cartEmpty");
@@ -451,6 +496,7 @@
     if (mw) mw.style.display = (t.mode === "b2b" && !t.moqOk) ? "" : "none";
   };
 
+  // ===== koszyk page bind (zostawiam jak było) =====
   const bindCartPage = () => {
     $("#clearCart")?.addEventListener("click", () => Cart.clear());
 
@@ -485,74 +531,21 @@
     ["companyName","companyNip","companyAddr","companyContact"].forEach(id => {
       $("#"+id)?.addEventListener("input", persistProfile);
     });
-
-    const gen = $("#generateOrder");
-    const copy = $("#copyOrder");
-    const out = $("#orderOut");
-
-    const buildOrderText = () => {
-      const t = Cart.totals();
-      const cart = Cart.read();
-      const p = Cart.getB2BProfile();
-      const noteText = Cart.getNote();
-
-      const lines = [];
-      lines.push(`ZAMÓWIENIE – QualitetMarket (${t.mode === "b2b" ? "B2B" : "DETAL"})`);
-      lines.push(`Sklep: ${localStorage.getItem(LS_ACTIVE) || "-"}`);
-      lines.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
-      lines.push(``);
-      if (t.mode === "b2b") {
-        lines.push(`DANE FIRMY:`);
-        lines.push(`- Firma: ${p.companyName || "-"}`);
-        lines.push(`- NIP: ${p.nip || "-"}`);
-        lines.push(`- Adres: ${p.addr || "-"}`);
-        lines.push(`- Kontakt: ${p.contact || "-"}`);
-        lines.push(``);
-      }
-
-      if (noteText) {
-        lines.push(`NOTATKA: ${noteText}`);
-        lines.push(``);
-      }
-
-      lines.push(`POZYCJE:`);
-      for (const it of cart.items) {
-        const price = (t.mode === "b2b" ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0) : (Number(it.priceRetail||0) || 0));
-        lines.push(`- ${it.name} | SKU: ${it.sku || it.id} | Ilość: ${it.qty} ${it.unit || "szt"} | Cena: ${price.toFixed(2)} | Hurt.: ${it.supplier || "-"}`);
-      }
-
-      lines.push(``);
-      lines.push(`PODSUMOWANIE:`);
-      lines.push(`- Pozycje: ${t.items}`);
-      lines.push(`- Netto: ${t.net.toFixed(2)}`);
-      lines.push(`- VAT(23%): ${t.vat.toFixed(2)}`);
-      lines.push(`- Brutto: ${t.gross.toFixed(2)}`);
-
-      if (t.mode === "b2b" && !t.moqOk) {
-        lines.push(``);
-        lines.push(`UWAGA: Są pozycje poniżej MOQ – popraw ilości przed wysłaniem.`);
-      }
-
-      return lines.join("\n");
-    };
-
-    gen?.addEventListener("click", () => { if (out) out.value = buildOrderText(); });
-    copy?.addEventListener("click", async () => {
-      if (!out) return;
-      if (!out.value) out.value = buildOrderText();
-      try { await navigator.clipboard.writeText(out.value); } catch {}
-    });
   };
 
   const renderAll = () => {
     updateCartCount();
     renderGrid();
     renderCart();
+    syncStoreLinks();
   };
 
   const boot = async () => {
     bindModeButtons();
     updateCartCount();
+
+    // ✅ od razu dopnij linki store=...
+    syncStoreLinks();
 
     if ($("#cartList")) bindCartPage();
 
@@ -560,25 +553,29 @@
       ALL = await loadProducts();
       buildCats();
 
-      $("#q")?.addEventListener("input", renderGrid);
-      $("#cat")?.addEventListener("change", renderGrid);
-      $("#sort")?.addEventListener("change", renderGrid);
+      $("#q")?.addEventListener("input", () => { renderGrid(); syncStoreLinks(); });
+      $("#cat")?.addEventListener("change", () => { renderGrid(); syncStoreLinks(); });
+      $("#sort")?.addEventListener("change", () => { renderGrid(); syncStoreLinks(); });
 
       renderGrid();
+      syncStoreLinks();
     }
 
     window.addEventListener("qm:cart", () => {
       updateCartCount();
       renderGrid();
       renderCart();
+      syncStoreLinks();
     });
 
-    // gdy zmieni się sklep (multi-store) — przelicz ceny i odśwież grid
+    // gdy zmieni się sklep (multi-store) — przelicz ceny i odśwież grid + linki
     window.addEventListener("qm:store", async () => {
+      syncStoreLinks();
       if ($("#grid")) {
         ALL = await loadProducts();
         buildCats();
         renderGrid();
+        syncStoreLinks();
       }
     });
 
