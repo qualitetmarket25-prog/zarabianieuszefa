@@ -1,171 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Panel sklepu – QualitetMarket</title>
-
-  <link rel="stylesheet" href="/styles.css" />
-
+  <link rel="stylesheet" href="styles.css">
   <style>
-    .muted-xs{opacity:.75;font-size:12px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
-    .row .field{flex:1;min-width:220px}
-    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-    .card.soft{border:1px solid rgba(0,0,0,.08)}
-    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.12);font-size:12px}
-    .btnwide{width:100%}
+    .wrap{max-width:980px;margin:42px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
+    .h{font-size:26px;font-weight:900;margin:0 0 10px}
+    .muted{opacity:.7}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+    .btn-primary{background:#22c55e;color:#06110a}
+    .btn-ghost{background:rgba(0,0,0,.06)}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left}
+    code{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:8px}
   </style>
 </head>
-
-<body data-noShell="1">
+<body>
   <div class="wrap">
     <div class="card">
-      <span class="badge">QualitetMarket • Multi-Store</span>
-      <h1 style="margin-top:10px;">Panel sklepu użytkownika</h1>
-      <p class="muted">Ustaw marżę sklepu i wygeneruj link do udostępnienia. Ceny = hurtownia + marża platformy + marża sklepu.</p>
-      <div class="muted-xs">Działa bez backendu (MVP) na localStorage. Następny etap: konta i zapis w bazie.</div>
-    </div>
+      <div class="h">Panel sklepu</div>
+      <div class="muted">MVP: rejestr sklepów + aktywny sklep. Tu masz link i szybkie akcje.</div>
 
-    <div class="card">
-      <h2 style="margin:0 0 10px;">Ustawienia sklepu</h2>
+      <div id="box" style="margin-top:14px"></div>
 
-      <div class="row">
-        <div class="field">
-          <label class="muted-xs">Nazwa sklepu (do linku)</label>
-          <input id="storeSlug" class="input" placeholder="np. bar-u-szefa" />
-          <div class="muted-xs" style="margin-top:6px;">Bez spacji, najlepiej myślniki. To będzie parametr <span class="mono">?store=</span>.</div>
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Marża sklepu (%)</label>
-          <input id="storeMargin" class="input" placeholder="np. 12" inputmode="decimal" />
-          <div class="muted-xs" style="margin-top:6px;">To jest dodatkowa marża sklepu użytkownika (ponad Twoją platformę).</div>
-        </div>
-
-        <div class="field" style="flex:0;min-width:220px;">
-          <button class="btn btn-primary btnwide" id="saveBtn" type="button">Zapisz</button>
-          <div class="muted-xs" style="margin-top:6px;"><span class="pill">qm_store_margin_pct</span> <span class="pill">qm_store_slug</span></div>
-        </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn-primary" id="openShop">Otwórz sklep</button>
+        <button class="btn btn-ghost" id="openGen">Generator sklepów</button>
+        <button class="btn btn-ghost" id="switch">Zmień aktywny sklep</button>
       </div>
 
-      <div class="hr"></div>
-
-      <div class="row">
-        <div class="field">
-          <label class="muted-xs">Link do sklepu</label>
-          <input id="storeLink" class="input mono" readonly />
-          <div class="muted-xs" style="margin-top:6px;">To jest link, który wysyłasz użytkownikowi/klientom.</div>
-        </div>
-
-        <div class="field" style="flex:0;min-width:220px;">
-          <button class="btn btnwide" id="copyLink" type="button">Kopiuj link</button>
-          <button class="btn btnwide" id="openShop" type="button" style="margin-top:10px;">Otwórz sklep</button>
-        </div>
-      </div>
-
-      <div class="card soft" style="margin-top:12px; padding:12px;">
-        <strong>Test w 10 sekund</strong>
-        <div class="muted-xs" style="margin-top:6px;">
-          1) Ustaw marżę np. <span class="mono">12</span> → Zapisz<br/>
-          2) Otwórz sklep i porównaj cenę produktu przed/po (marża sklepu działa).<br/>
-          3) Jeśli chcesz “wrócić do zera” → wpisz <span class="mono">0</span> i zapisz.
-        </div>
-      </div>
+      <div id="list" style="margin-top:18px"></div>
     </div>
-
-    <div class="card">
-      <h2 style="margin:0 0 10px;">Status</h2>
-      <div id="status" class="muted-xs">—</div>
-    </div>
-
-    <div class="footer">QualitetMarket • panel sklepu (MVP)</div>
   </div>
 
 <script>
-(function(){
-  const slugify = (s) => String(s || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
+(() => {
+  "use strict";
 
-  const getBaseShopUrl = () => {
-    // działa na GH Pages (z katalogiem /zarabianieuszefa)
-    const u = new URL(window.location.href);
-    // podmieniamy ścieżkę na sklep.html w tym samym katalogu
-    u.pathname = u.pathname.replace(/\/[^\/]*$/, "/sklep.html");
-    u.search = "";
-    u.hash = "";
-    return u.toString();
-  };
+  const LS_STORES = "qm_stores_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_MARGIN = "qm_store_margin_pct";
 
   const $ = (id) => document.getElementById(id);
 
-  const load = () => {
-    const slug = localStorage.getItem("qm_store_slug") || "";
-    const raw = localStorage.getItem("qm_store_margin_pct") || "";
-
-    $("storeSlug").value = slug;
-    // pokazujemy jako % (jeśli zapisane 0.12 to pokaż 12)
-    let n = Number(String(raw).replace(",", "."));
-    if (isFinite(n) && n > 0 && n <= 1) n = n * 100;
-    $("storeMargin").value = raw ? String(n) : "";
-
-    rebuildLink();
+  const loadStores = () => {
+    try { return JSON.parse(localStorage.getItem(LS_STORES) || "[]"); }
+    catch { return []; }
   };
 
-  const rebuildLink = () => {
-    const slug = slugify($("storeSlug").value);
-    const base = getBaseShopUrl();
-    const link = slug ? `${base}?store=${encodeURIComponent(slug)}` : base;
-    $("storeLink").value = link;
+  const activeSlug = () => (localStorage.getItem(LS_ACTIVE) || "").trim();
+
+  const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
+
+  const setActive = (slug, marginPct) => {
+    localStorage.setItem(LS_ACTIVE, slug);
+    localStorage.setItem(LS_MARGIN, String((marginPct || 0)/100));
   };
 
-  $("storeSlug").addEventListener("input", rebuildLink);
-  $("storeMargin").addEventListener("input", rebuildLink);
+  const render = () => {
+    const stores = loadStores();
+    const slug = activeSlug() || stores[0]?.slug || "";
+    const store = stores.find(s => s.slug === slug);
 
-  $("saveBtn").addEventListener("click", () => {
-    const slug = slugify($("storeSlug").value);
-    let m = String($("storeMargin").value || "").trim();
+    if (!store) {
+      $("box").innerHTML = `Brak sklepów. Wejdź w <a href="generator-sklepu.html">generator</a> i utwórz pierwszy sklep.`;
+      $("list").innerHTML = "";
+      return;
+    }
 
-    // zapisujemy jako 0.xx (np. 12 => 0.12)
-    let n = Number(m.replace(",", "."));
-    if (!isFinite(n) || n < 0) n = 0;
-
-    const pct = n > 1 ? (n / 100) : n; // 12 => 0.12
-    const pctClamped = Math.max(0, Math.min(1, pct)); // max 100%
-
-    localStorage.setItem("qm_store_slug", slug);
-    localStorage.setItem("qm_store_margin_pct", String(pctClamped));
-
-    const status = $("status");
-    status.innerHTML = `
-      Zapisano: <span class="mono">qm_store_slug=${slug || "(pusto)"}</span>,
-      <span class="mono">qm_store_margin_pct=${pctClamped}</span>
+    const url = makeUrl(store.slug);
+    $("box").innerHTML = `
+      <div><b>Aktywny sklep:</b> ${store.title} (<code>${store.slug}</code>)</div>
+      <div><b>Marża:</b> ${store.marginPct}%</div>
+      <div><b>Email:</b> ${store.email || "-"}</div>
+      <div style="margin-top:8px">Link: <a href="${url}" target="_blank" rel="noopener">${url}</a></div>
     `;
 
-    rebuildLink();
-    alert("Zapisano ustawienia sklepu.");
-  });
+    $("list").innerHTML = `
+      <div style="margin-top:10px" class="muted">Twoje sklepy:</div>
+      <table>
+        <thead><tr><th>Sklep</th><th>Slug</th><th>Marża</th><th>Akcja</th></tr></thead>
+        <tbody>
+          ${stores.map(s => `
+            <tr>
+              <td><b>${s.title}</b></td>
+              <td><code>${s.slug}</code></td>
+              <td>${s.marginPct}%</td>
+              <td>
+                <button class="btn btn-ghost" data-set="${s.slug}">Ustaw aktywny</button>
+                <a class="btn btn-ghost" style="display:inline-block;text-decoration:none" href="${makeUrl(s.slug)}" target="_blank">Otwórz</a>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
 
-  $("copyLink").addEventListener("click", async () => {
-    const v = $("storeLink").value || "";
-    if (!v) return;
-    try { await navigator.clipboard.writeText(v); } catch {}
-  });
+    $("list").querySelectorAll("[data-set]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-set");
+        const st = stores.find(x => x.slug === target);
+        setActive(st.slug, st.marginPct);
+        render();
+      });
+    });
+  };
 
   $("openShop").addEventListener("click", () => {
-    const v = $("storeLink").value || "";
-    if (!v) return;
-    window.location.href = v;
+    const stores = loadStores();
+    const slug = activeSlug() || stores[0]?.slug || "";
+    if (!slug) return location.href = "generator-sklepu.html";
+    location.href = `sklep.html?store=${encodeURIComponent(slug)}`;
   });
 
-  load();
+  $("openGen").addEventListener("click", () => location.href = "generator-sklepu.html");
+
+  $("switch").addEventListener("click", () => {
+    const stores = loadStores();
+    if (!stores.length) return location.href = "generator-sklepu.html";
+    alert("Kliknij 'Ustaw aktywny' przy wybranym sklepie w tabeli.");
+  });
+
+  render();
 })();
 </script>
-
 </body>
 </html>
