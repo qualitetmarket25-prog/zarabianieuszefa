@@ -7,6 +7,8 @@
   const LS_ORDER_NOTE = "qm_shop_order_note_v1";
   const LS_B2B_PROFILE = "qm_shop_b2b_profile_v1";
 
+  const VAT_RATE = 0.23;
+
   const money = (n) => {
     const v = Number(n || 0);
     return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
@@ -17,6 +19,13 @@
     if (!Number.isFinite(x)) return min;
     return Math.max(min, Math.min(max, x));
   };
+
+  const num = (v) => {
+    const n = Number(String(v ?? "").replace(",", "."));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const round2 = (x) => Math.round((Number(x || 0) + Number.EPSILON) * 100) / 100;
 
   const readJSON = (k, fallback) => {
     try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
@@ -56,6 +65,8 @@
       if (!id) return;
 
       const idx = cart.items.findIndex(x => String(x.id) === id);
+
+      // ✅ Trzymamy buyNet (przyda się do zamówień do hurtowni)
       const base = {
         id,
         name: product.name || "Produkt",
@@ -66,15 +77,24 @@
         image: product.image || "",
         moq: Number(product.moq || 1) || 1,
 
-        // ceny już “z marżą” — przyjmujemy, że product.priceRetail / priceB2B są finalne
-        priceRetail: Number(product.priceRetail || product.price || 0) || 0,
-        priceB2B: Number(product.priceB2B || product.priceB2BNet || product.priceWholesale || 0) || 0
+        buyNet: num(product.buyNet || product.costNet || product.netto || 0),
+
+        // ✅ ceny finalne (sprzedażowe) już policzone w shop.js
+        // DETAL: brutto
+        priceRetail: num(product.priceRetail || product.price || 0),
+
+        // B2B: netto
+        priceB2B: num(product.priceB2B || product.priceB2BNet || product.priceWholesale || 0)
       };
 
       if (idx === -1) {
         cart.items.push({ ...base, qty: qty });
       } else {
-        cart.items[idx] = { ...cart.items[idx], ...base, qty: clampInt((cart.items[idx].qty || 0) + qty, 1, 999999) };
+        cart.items[idx] = {
+          ...cart.items[idx],
+          ...base,
+          qty: clampInt((cart.items[idx].qty || 0) + qty, 1, 999999)
+        };
       }
       this.write(cart);
     },
@@ -95,35 +115,68 @@
       this.write({ items: [] });
     },
 
-    // sumy
+    // ===== SUMY (spójne z trybem) =====
+    // B2B: ceny = NETTO
+    // DETAL: ceny = BRUTTO (liczymy netto i VAT z brutto)
     totals() {
       const mode = this.getMode();
       const cart = this.read();
 
-      const discountPct = Number(localStorage.getItem(LS_B2B_DISCOUNT) || 0) || 0;
+      const discountPct = num(localStorage.getItem(LS_B2B_DISCOUNT) || 0);
       const discount = (mode === "b2b") ? Math.max(0, Math.min(50, discountPct)) / 100 : 0;
 
       let items = 0;
       let net = 0;
+      let vat = 0;
+      let gross = 0;
       let moqOk = true;
 
       for (const it of cart.items) {
-        const qty = Number(it.qty || 0) || 0;
+        const qty = num(it.qty || 0);
         items += qty;
 
-        const moq = Number(it.moq || 1) || 1;
+        const moq = num(it.moq || 1) || 1;
         if (mode === "b2b" && qty < moq) moqOk = false;
 
-        const price = (mode === "b2b" ? (Number(it.priceB2B || 0) || 0) : (Number(it.priceRetail || 0) || 0));
-        net += qty * price;
+        if (mode === "b2b") {
+          // B2B: priceB2B to NETTO
+          const priceNet = num(it.priceB2B || 0);
+          const lineNet = qty * priceNet;
+          const lineVat = lineNet * VAT_RATE;
+          const lineGross = lineNet + lineVat;
+
+          net += lineNet;
+          vat += lineVat;
+          gross += lineGross;
+        } else {
+          // DETAL: priceRetail to BRUTTO
+          const priceGross = num(it.priceRetail || 0);
+          const lineGross = qty * priceGross;
+          const lineNet = lineGross / (1 + VAT_RATE);
+          const lineVat = lineGross - lineNet;
+
+          gross += lineGross;
+          net += lineNet;
+          vat += lineVat;
+        }
       }
 
-      if (discount > 0) net = net * (1 - discount);
+      // rabat tylko w B2B (netto + vat/gross przeliczone po rabacie)
+      if (discount > 0 && mode === "b2b") {
+        net = net * (1 - discount);
+        vat = net * VAT_RATE;
+        gross = net + vat;
+      }
 
-      const vat = net * 0.23;      // orientacyjnie
-      const gross = net + vat;
-
-      return { mode, items, net, vat, gross, moqOk, discountPct: (discount * 100) };
+      return {
+        mode,
+        items,
+        net: round2(net),
+        vat: round2(vat),
+        gross: round2(gross),
+        moqOk,
+        discountPct: round2(discount * 100)
+      };
     },
 
     // B2B profil
@@ -137,8 +190,8 @@
     getNote() { return localStorage.getItem(LS_ORDER_NOTE) || ""; },
     setNote(v) { localStorage.setItem(LS_ORDER_NOTE, String(v || "")); },
 
-    getDiscount() { return Number(localStorage.getItem(LS_B2B_DISCOUNT) || 0) || 0; },
-    setDiscount(v) { localStorage.setItem(LS_B2B_DISCOUNT, String(Number(v||0) || 0)); }
+    getDiscount() { return num(localStorage.getItem(LS_B2B_DISCOUNT) || 0); },
+    setDiscount(v) { localStorage.setItem(LS_B2B_DISCOUNT, String(num(v || 0))); }
   };
 
   window.QM_SHOP = { Cart, money };
