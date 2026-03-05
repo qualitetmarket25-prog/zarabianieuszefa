@@ -13,35 +13,30 @@
     .replace(/^-|-$/g, "");
 
   const getStoreSlug = () => {
-    // 1) aktywny sklep ustawiony przez shop.js
     const active = slugify(localStorage.getItem("qm_active_store_v1") || "");
     if (active) return active;
 
-    // 2) parametr URL (działa też na koszyku, jeśli link ma ?store=...)
     try {
       const u = new URL(window.location.href);
       const s = slugify(u.searchParams.get("store") || "");
       if (s) return s;
     } catch {}
 
-    // 3) panel fallback
     const panel = slugify(localStorage.getItem("qm_store_slug") || "");
     if (panel) return panel;
 
-    // 4) domyślny sklep
     return "default";
   };
 
   const STORE = getStoreSlug();
 
   // ===== per-store keys =====
-  // Koszyk / rabat / notatka / profil B2B są per sklep.
-  const LS_CART_BASE        = "qm_shop_cart_v1";
-  const LS_B2B_DISCOUNT_BASE= "qm_shop_b2b_discount_v1";
-  const LS_ORDER_NOTE_BASE  = "qm_shop_order_note_v1";
-  const LS_B2B_PROFILE_BASE = "qm_shop_b2b_profile_v1";
+  const LS_CART_BASE         = "qm_shop_cart_v1";
+  const LS_B2B_DISCOUNT_BASE = "qm_shop_b2b_discount_v1";
+  const LS_ORDER_NOTE_BASE   = "qm_shop_order_note_v1";
+  const LS_B2B_PROFILE_BASE  = "qm_shop_b2b_profile_v1";
 
-  // Tryb cen zostawiamy globalnie (preferencja UI)
+  // Tryb cen globalnie (preferencja UI)
   const LS_MODE = "qm_shop_mode_v1"; // retail | b2b
 
   const K = (base) => `${base}__${STORE}`;
@@ -51,36 +46,30 @@
   const LS_ORDER_NOTE   = K(LS_ORDER_NOTE_BASE);
   const LS_B2B_PROFILE  = K(LS_B2B_PROFILE_BASE);
 
+  // ===== Orders store (globalny, ale z storeSlug w rekordzie) =====
+  const LS_ORDERS = "qm_orders_v1";
+  const LS_ORDER_SEQ = "qm_orders_seq_v1"; // licznik do numerów zamówień
+
   // ===== migration (bezpieczne) =====
-  // Jeśli ktoś miał stary koszyk globalny, to przenosimy go do "default" (tylko raz).
   const migrateOnce = () => {
     try {
-      // migrujemy tylko dla default, żeby nie mieszać innych sklepów
       if (STORE !== "default") return;
 
       const hasNew = !!localStorage.getItem(LS_CART);
       const hasOld = !!localStorage.getItem(LS_CART_BASE);
-      if (!hasNew && hasOld) {
-        localStorage.setItem(LS_CART, localStorage.getItem(LS_CART_BASE));
-      }
+      if (!hasNew && hasOld) localStorage.setItem(LS_CART, localStorage.getItem(LS_CART_BASE));
 
       const hasNewDisc = !!localStorage.getItem(LS_B2B_DISCOUNT);
       const hasOldDisc = !!localStorage.getItem(LS_B2B_DISCOUNT_BASE);
-      if (!hasNewDisc && hasOldDisc) {
-        localStorage.setItem(LS_B2B_DISCOUNT, localStorage.getItem(LS_B2B_DISCOUNT_BASE));
-      }
+      if (!hasNewDisc && hasOldDisc) localStorage.setItem(LS_B2B_DISCOUNT, localStorage.getItem(LS_B2B_DISCOUNT_BASE));
 
       const hasNewNote = !!localStorage.getItem(LS_ORDER_NOTE);
       const hasOldNote = !!localStorage.getItem(LS_ORDER_NOTE_BASE);
-      if (!hasNewNote && hasOldNote) {
-        localStorage.setItem(LS_ORDER_NOTE, localStorage.getItem(LS_ORDER_NOTE_BASE));
-      }
+      if (!hasNewNote && hasOldNote) localStorage.setItem(LS_ORDER_NOTE, localStorage.getItem(LS_ORDER_NOTE_BASE));
 
       const hasNewProf = !!localStorage.getItem(LS_B2B_PROFILE);
       const hasOldProf = !!localStorage.getItem(LS_B2B_PROFILE_BASE);
-      if (!hasNewProf && hasOldProf) {
-        localStorage.setItem(LS_B2B_PROFILE, localStorage.getItem(LS_B2B_PROFILE_BASE));
-      }
+      if (!hasNewProf && hasOldProf) localStorage.setItem(LS_B2B_PROFILE, localStorage.getItem(LS_B2B_PROFILE_BASE));
     } catch {}
   };
   migrateOnce();
@@ -103,9 +92,47 @@
 
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
+  const nowISO = () => new Date().toISOString();
+
+  const uid = () => {
+    // krótki, deterministycznie unikalny w LS
+    const a = Math.random().toString(16).slice(2);
+    const b = Date.now().toString(16);
+    return `${b}-${a}`.slice(0, 26);
+  };
+
+  const nextOrderNo = () => {
+    // format: QM-YYYYMMDD-0001
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const ymd = `${yyyy}${mm}${dd}`;
+
+    let seq = 0;
+    try {
+      const raw = Number(localStorage.getItem(LS_ORDER_SEQ) || 0) || 0;
+      seq = raw + 1;
+      localStorage.setItem(LS_ORDER_SEQ, String(seq));
+    } catch {
+      seq = 1;
+    }
+    return `QM-${ymd}-${String(seq).padStart(4, "0")}`;
+  };
+
+  const readOrders = () => {
+    const x = readJSON(LS_ORDERS, []);
+    return Array.isArray(x) ? x : [];
+  };
+
+  const writeOrders = (arr) => {
+    writeJSON(LS_ORDERS, arr);
+    window.dispatchEvent(new CustomEvent("qm:orders"));
+  };
+
   // ===== Cart API =====
   const Cart = {
-    // store info (przydaje się w UI / debug)
+    // store info
     getStore() { return STORE; },
 
     // tryb globalny
@@ -152,10 +179,10 @@
         image: product.image || "",
         moq: Number(product.moq || 1) || 1,
 
-        // ✅ przydaje się do dropship split / raportów
+        // ✅ przydaje się do raportów / split dropship
         buyNet: Number(product.buyNet || 0) || 0,
 
-        // ceny już policzone (albo fallback)
+        // ceny
         priceRetail: Number(product.priceRetail || product.price || 0) || 0,
         priceB2B: Number(product.priceB2B || product.priceB2BNet || product.priceWholesale || 0) || 0
       };
@@ -233,7 +260,118 @@
 
     // rabat per sklep
     getDiscount() { return Number(localStorage.getItem(LS_B2B_DISCOUNT) || 0) || 0; },
-    setDiscount(v) { localStorage.setItem(LS_B2B_DISCOUNT, String(Number(v||0) || 0)); }
+    setDiscount(v) { localStorage.setItem(LS_B2B_DISCOUNT, String(Number(v||0) || 0)); },
+
+    // ===== ✅ ORDERS API (NOWE) =====
+
+    /**
+     * Tworzy zamówienie i zapisuje do qm_orders_v1.
+     * customer: { name, email, phone, address, ... } (opcjonalne)
+     * Zwraca: order object
+     */
+    checkoutCreateOrder(customer = {}) {
+      const cart = this.read();
+      if (!cart.items.length) return null;
+
+      const totals = this.totals();
+      if (totals.mode === "b2b" && !totals.moqOk) {
+        // nie blokuję hard (MVP), ale daję sygnał
+        console.warn("MOQ not met for B2B order");
+      }
+
+      const order = {
+        id: uid(),
+        orderNo: nextOrderNo(),
+        storeSlug: STORE,
+
+        status: "new", // new | paid | shipped | cancelled
+        createdAt: nowISO(),
+        updatedAt: nowISO(),
+
+        mode: totals.mode,
+        totals: {
+          items: totals.items,
+          net: totals.net,
+          vat: totals.vat,
+          gross: totals.gross,
+          discountPct: totals.discountPct
+        },
+
+        note: this.getNote(),
+        b2bProfile: totals.mode === "b2b" ? this.getB2BProfile() : null,
+
+        customer: {
+          name: String(customer.name || ""),
+          email: String(customer.email || ""),
+          phone: String(customer.phone || ""),
+          address: String(customer.address || ""),
+          city: String(customer.city || ""),
+          zip: String(customer.zip || ""),
+          country: String(customer.country || "PL")
+        },
+
+        items: cart.items.map(it => ({
+          id: String(it.id),
+          sku: String(it.sku || it.id),
+          name: String(it.name || "Produkt"),
+          qty: Number(it.qty || 0) || 0,
+          unit: String(it.unit || "szt"),
+          moq: Number(it.moq || 1) || 1,
+          supplier: String(it.supplier || ""),
+          category: String(it.category || ""),
+          image: String(it.image || ""),
+          buyNet: Number(it.buyNet || 0) || 0,
+          priceRetail: Number(it.priceRetail || 0) || 0,
+          priceB2B: Number(it.priceB2B || 0) || 0
+        })),
+
+        // na przyszłość: paymentRef, shippingRef
+        paymentRef: "",
+        shippingRef: ""
+      };
+
+      const orders = readOrders();
+      orders.unshift(order);
+      writeOrders(orders);
+
+      // po utworzeniu, czyścimy koszyk tylko dla tego sklepu
+      this.clear();
+
+      return order;
+    },
+
+    /**
+     * Oznacza zamówienie jako opłacone.
+     * paymentRef: np. Stripe session id / przelew / gotówka
+     */
+    markOrderPaid(orderId, paymentRef = "") {
+      const id = String(orderId || "").trim();
+      if (!id) return false;
+
+      const orders = readOrders();
+      const idx = orders.findIndex(o => String(o.id) === id);
+      if (idx === -1) return false;
+
+      orders[idx] = {
+        ...orders[idx],
+        status: "paid",
+        paymentRef: String(paymentRef || ""),
+        updatedAt: nowISO()
+      };
+
+      writeOrders(orders);
+      return true;
+    },
+
+    /**
+     * Pobiera zamówienia (opcjonalnie filtrowane storeSlug)
+     */
+    listOrders({ storeSlug } = {}) {
+      const orders = readOrders();
+      const s = storeSlug ? slugify(storeSlug) : "";
+      if (!s) return orders;
+      return orders.filter(o => slugify(o.storeSlug) === s);
+    }
   };
 
   window.QM_SHOP = { Cart, money };
