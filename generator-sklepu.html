@@ -3,84 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stwórz swój sklep</title>
-
+<title>Stwórz swój sklep – QualitetMarket</title>
+<link rel="stylesheet" href="styles.css">
 <style>
-body{
-font-family:Arial;
-background:#0f172a;
-color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-height:100vh;
-margin:0;
-}
-
-.box{
-background:#1e293b;
-padding:40px;
-border-radius:10px;
-width:320px;
-text-align:center;
-}
-
-input{
-width:100%;
-padding:10px;
-margin:10px 0;
-border:none;
-border-radius:6px;
-}
-
-button{
-width:100%;
-padding:12px;
-background:#22c55e;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.link{
-margin-top:20px;
-word-break:break-all;
-}
+  .wrap{max-width:860px;margin:42px auto;padding:0 16px}
+  .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .h{font-size:26px;font-weight:900;margin:0 0 8px}
+  .muted{opacity:.7}
+  label{display:block;font-weight:800;margin:12px 0 6px}
+  input{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+  .btn-primary{background:#22c55e;color:#06110a}
+  .btn-ghost{background:rgba(0,0,0,.06)}
+  .out{margin-top:14px;padding:12px;border-radius:12px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);word-break:break-all}
+  .warn{margin-top:14px;padding:12px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25)}
+  code{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:8px}
 </style>
-
 </head>
 <body>
 
-<div class="box">
+<div class="wrap">
+  <div class="card">
+    <div class="h">Stwórz swój sklep</div>
+    <div class="muted">1 klik = sklep + link. Ustawienia zapisują się w rejestrze sklepów (MVP).</div>
 
-<h2>Stwórz swój sklep</h2>
+    <div class="grid">
+      <div>
+        <label>Nazwa sklepu</label>
+        <input id="title" placeholder="np. Sklep Szefa" maxlength="48">
+      </div>
 
-<input id="storeName" placeholder="Nazwa sklepu">
+      <div>
+        <label>Slug (link) – zostaw puste, wygeneruję</label>
+        <input id="slug" placeholder="np. szef, masarnia24" maxlength="32">
+        <div class="muted" style="margin-top:6px">Do URL trafi: <code>sklep.html?store=slug</code></div>
+      </div>
 
-<button onclick="createStore()">Stwórz sklep</button>
+      <div>
+        <label>Marża sprzedawcy (%)</label>
+        <input id="margin" type="number" min="0" max="80" step="0.1" value="8">
+        <div class="muted" style="margin-top:6px">Np. 8 = +8% do ceny bazowej (Twoje pricing rules mogą dodać jeszcze platform fee).</div>
+      </div>
 
-<div class="link" id="link"></div>
+      <div>
+        <label>Email do zamówień</label>
+        <input id="email" type="email" placeholder="np. kontakt@twojsklep.pl" maxlength="80">
+      </div>
+    </div>
 
+    <div class="row">
+      <button class="btn btn-primary" id="createBtn">Utwórz / Zapisz sklep</button>
+      <button class="btn btn-ghost" id="goPanelBtn">Przejdź do panelu</button>
+    </div>
+
+    <div id="out" class="out" style="display:none"></div>
+    <div id="warn" class="warn" style="display:none"></div>
+  </div>
 </div>
 
 <script>
+(() => {
+  "use strict";
 
-function createStore(){
+  const LS_STORES = "qm_stores_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_MARGIN = "qm_store_margin_pct";
 
-let name = document.getElementById("storeName").value
-.toLowerCase()
-.replace(/\s+/g,'-')
+  const $ = (id) => document.getElementById(id);
 
-let url = location.origin + "/zarabianieuszefa/sklep.html?store=" + name
+  const slugify = (s) => (s || "")
+    .toLowerCase()
+    .trim()
+    .replace(/ą/g,"a").replace(/ć/g,"c").replace(/ę/g,"e").replace(/ł/g,"l")
+    .replace(/ń/g,"n").replace(/ó/g,"o").replace(/ś/g,"s").replace(/ż/g,"z").replace(/ź/g,"z")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/(^-|-$)/g,"")
+    .slice(0, 32);
 
-document.getElementById("link").innerHTML =
-'<a href="'+url+'" target="_blank">'+url+'</a>'
+  const loadStores = () => {
+    try { return JSON.parse(localStorage.getItem(LS_STORES) || "[]"); }
+    catch { return []; }
+  };
 
-localStorage.setItem("qm_store_slug",name)
+  const saveStores = (arr) => localStorage.setItem(LS_STORES, JSON.stringify(arr));
 
-}
+  const setActive = (slug, marginPct01) => {
+    localStorage.setItem(LS_ACTIVE, slug);
+    localStorage.setItem(LS_MARGIN, String(marginPct01));
+  };
 
+  const makeStoreUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
+
+  const out = (html) => { $("out").style.display="block"; $("out").innerHTML = html; };
+  const warn = (html) => { $("warn").style.display="block"; $("warn").innerHTML = html; };
+
+  $("createBtn").addEventListener("click", () => {
+    $("warn").style.display="none";
+
+    const title = ($("title").value || "").trim();
+    let slug = ($("slug").value || "").trim();
+    const email = ($("email").value || "").trim();
+    const marginPct = Number($("margin").value || 0);
+
+    if (!title) return warn("Podaj nazwę sklepu.");
+    if (!slug) slug = slugify(title);
+    slug = slugify(slug);
+
+    if (!slug || slug.length < 2) return warn("Slug jest za krótki (min 2 znaki).");
+    if (marginPct < 0 || marginPct > 80) return warn("Marża musi być 0–80%.");
+
+    const stores = loadStores();
+    const existing = stores.find(s => s.slug === slug);
+
+    const store = {
+      slug,
+      title,
+      email,
+      marginPct,        // w %
+      theme: "default",
+      createdAt: existing?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const next = existing
+      ? stores.map(s => s.slug === slug ? store : s)
+      : [store, ...stores].slice(0, 200);
+
+    saveStores(next);
+    setActive(slug, marginPct / 100);
+
+    const url = makeStoreUrl(slug);
+    out(`
+      ✅ Zapisano sklep: <b>${title}</b><br/>
+      Link sklepu: <a href="${url}" target="_blank" rel="noopener">${url}</a><br/>
+      <div style="margin-top:8px" class="muted">Teraz sklep.html sam wczyta nazwę + marżę dla tego sluga.</div>
+    `);
+  });
+
+  $("goPanelBtn").addEventListener("click", () => {
+    location.href = "panel-sklepu.html";
+  });
+})();
 </script>
 
 </body>
