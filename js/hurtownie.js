@@ -1,4 +1,5 @@
-// js/hurtownie.js — FIX: zapewnia window.processCSV() dla hurtownie.html
+// js/hurtownie.js — IMPORT CSV + auto-marża (buyNet -> priceRetail/priceB2B)
+// Zapewnia window.processCSV() dla hurtownie.html
 (() => {
   "use strict";
 
@@ -80,22 +81,92 @@
     return "";
   }
 
-  function mapProduct(row) {
+  // ===== marża: korzystamy z globali wpiętych przez sklep.html
+  const getPricingRules = () => {
+    const cfg = window.QM_CONFIG && window.QM_CONFIG.pricing ? window.QM_CONFIG.pricing : null;
+    return cfg || {
+      retailPct: 0.08,
+      wholesalePct: 0.05,
+      minProfit: 1.5,
+      retailEnds99: true
+    };
+  };
+
+  const priceFromBuySafe = (buyNet, mode) => {
+    const buy = toNumber(buyNet);
+    if (buy <= 0) return 0;
+
+    // jeśli pricing.js jest dostępny (przez sklep.html) -> liczymy automatycznie
+    if (window.QM_PRICE && typeof window.QM_PRICE.priceFromBuy === "function") {
+      return window.QM_PRICE.priceFromBuy(buy, mode, getPricingRules());
+    }
+
+    // fallback prosto (jakby ktoś odpalił import zanim wejdzie w sklep)
+    const r = getPricingRules();
+    const pct = (mode === "hurt") ? (Number(r.wholesalePct ?? 0.05)) : (Number(r.retailPct ?? 0.08));
+    const minProfit = Number(r.minProfit ?? 0);
+
+    let sell = buy * (1 + pct);
+    if (sell < buy + minProfit) sell = buy + minProfit;
+
+    // detal końcówka .99
+    if (mode !== "hurt" && r.retailEnds99) {
+      const zl = Math.floor(sell);
+      sell = zl + 0.99;
+    } else {
+      sell = Math.round((sell + Number.EPSILON) * 100) / 100;
+    }
+    return sell;
+  };
+
+  function mapProduct(row, supplierName) {
     const name = pick(row, ["name","nazwa","produkt","product","title","opis"]) || "produkt";
 
-    const priceRaw = pick(row, [
-      "price_net","cena_netto","netto","net_price",
-      "price","cena","unit_price","buy_price","cena_zakupu"
+    // buyNet: próbujemy znaleźć pole typowo zakupowe/netto
+    const buyRaw = pick(row, [
+      "buy_net","buyNet","cena_zakupu_netto","cena_zakupu","zakup_netto","koszt_netto","cost_net","cost",
+      "price_net","cena_netto","netto","net_price","net",
+      "hurt_netto","wholesale_net","purchase_net"
     ]);
 
+    // fallback: jeśli ktoś ma tylko jedną cenę w CSV, bierzemy ją jako buyNet (najbezpieczniej)
+    const onePriceRaw = pick(row, ["price","cena","unit_price","unitprice"]);
+
+    const buyNet = toNumber(buyRaw) || toNumber(onePriceRaw) || 0;
+
     const stockRaw = pick(row, ["stock","stan","qty","ilosc","quantity"]);
+    const moqRaw = pick(row, ["moq","minimum","min","min_qty","min_ilosc"]);
+
+    const category = pick(row, ["category","kategoria","cat","dzial","grupa"]) || "";
+    const unit = pick(row, ["unit","jm","jednostka","uom"]) || "szt";
+
+    const ean = String(pick(row, ["ean","gtin","barcode","kod_ean"]) || "").trim();
+    const sku = String(pick(row, ["sku","symbol","kod","index"]) || "").trim();
+
+    // ✅ liczymy ceny sprzedażowe automatycznie
+    const priceRetail = buyNet > 0 ? priceFromBuySafe(buyNet, "detal") : 0;
+    const priceB2B = buyNet > 0 ? priceFromBuySafe(buyNet, "hurt") : 0;
 
     return {
       name: String(name).trim(),
-      price_net: toNumber(priceRaw),
+      supplier: String(supplierName || "").trim(),
+
+      // źródłowe identyfikatory
+      ean,
+      sku,
+
+      // metadane
+      category,
+      unit,
+      moq: Math.max(1, Math.floor(toNumber(moqRaw) || 1)),
       stock: Math.max(0, Math.floor(toNumber(stockRaw))),
-      ean: String(pick(row, ["ean","gtin","barcode","kod_ean"]) || "").trim(),
-      sku: String(pick(row, ["sku","symbol","kod","index"]) || "").trim(),
+
+      // ✅ kluczowe pola pod marżę
+      buyNet,
+
+      // ✅ ceny finalne dla sklepu
+      priceRetail,
+      priceB2B
     };
   }
 
@@ -106,12 +177,9 @@
   }
 
   // ---------- PUBLIC API: processCSV() ----------
-  // hurtownie.html woła to onclickiem — MUSI być globalnie.
   window.processCSV = async function processCSV() {
     try {
-      const fileInput =
-        $("#csvFile") ||
-        $('input[type="file"]');
+      const fileInput = $("#csvFile") || $('input[type="file"]');
 
       if (!fileInput || !fileInput.files || !fileInput.files[0]) {
         alert("Wybierz plik CSV.");
@@ -125,18 +193,24 @@
       const { rows } = parseCSV(text);
 
       const products = rows
-        .map(mapProduct)
+        .map(r => mapProduct(r, supplier))
         .filter(p => p.name && p.name !== "produkt");
 
-      const withPrice = products.filter(p => p.price_net > 0).length;
+      const withBuy = products.filter(p => p.buyNet > 0).length;
+      const withRetail = products.filter(p => p.priceRetail > 0).length;
+      const withB2B = products.filter(p => p.priceB2B > 0).length;
 
       saveSupplier(supplier, products);
 
-      alert(`Zaimportowano ${products.length} produktów (${withPrice} z ceną > 0).`);
+      alert(
+        `Zaimportowano ${products.length} produktów.\n` +
+        `buyNet>0: ${withBuy}\n` +
+        `priceRetail>0: ${withRetail}\n` +
+        `priceB2B>0: ${withB2B}\n\n` +
+        `Wejdź na sklep i zrób CTRL+F5.`
+      );
 
-      // opcjonalnie: odśwież ranking tabel, jeśli istnieją elementy
-      // (nie wymagane do działania sklepu)
-      console.log("Import OK. Teraz wejdź na sklep i zrób CTRL+F5.");
+      console.log("Import OK:", { supplier, count: products.length, withBuy, withRetail, withB2B });
 
     } catch (e) {
       console.error(e);
