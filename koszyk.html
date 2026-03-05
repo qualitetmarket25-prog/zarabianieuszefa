@@ -118,12 +118,12 @@
 
           <div class="hr"></div>
 
-          <h3 style="margin:0 0 8px; font-size:16px;">Złóż zamówienie (platforma)</h3>
-          <div class="muted-xs">To zapisuje zamówienie w platformie (MVP: localStorage) i pokazuje je w panelu Zamówień.</div>
+          <h3 style="margin:0 0 8px; font-size:16px;">Checkout (marketplace)</h3>
+          <div class="muted-xs">Przechodzisz do formularza dostawy (Amazon-style). Zamówienie zapisze się dopiero po uzupełnieniu danych.</div>
 
           <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="placeOrder" type="button">Złóż zamówienie (zapisz)</button>
-            <a class="btn" href="./zamowienia.html">Otwórz panel zamówień</a>
+            <button class="btn btn-primary" id="goCheckout" type="button">Dalej: Dostawa</button>
+            <a class="btn" href="./zamowienia.html">Panel zamówień</a>
           </div>
 
           <div id="orderMsg" class="muted-xs" style="margin-top:10px;"></div>
@@ -179,6 +179,11 @@
   const LS_STORE_MARGIN = "qm_store_margin_pct";
   const LS_ORDERS = "qm_orders_v1";
 
+  // ✅ multi-store (AUTO)
+  const LS_STORES = "qm_stores_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_CHECKOUT_DRAFT = "qm_checkout_draft_v1";
+
   const money = (n) => {
     const v = Number(n || 0);
     return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
@@ -204,6 +209,42 @@
     if (!isFinite(n) || n < 0) n = 0;
     if (n > 1) n = n / 100;
     return Math.max(0, Math.min(0.8, n));
+  };
+
+  // ✅ AUTO store/margin sync
+  const getQueryStore = () => {
+    const u = new URL(location.href);
+    const s = (u.searchParams.get("store") || "").trim();
+    return s || "";
+  };
+
+  const readStoresMap = () => {
+    const m = readJSON(LS_STORES, {});
+    return (m && typeof m === "object") ? m : {};
+  };
+
+  const resolveActiveStoreSlug = () => {
+    const fromUrl = getQueryStore();
+    if (fromUrl) {
+      localStorage.setItem(LS_ACTIVE, fromUrl);
+      return fromUrl;
+    }
+    const active = String(localStorage.getItem(LS_ACTIVE) || "").trim();
+    return active || "default";
+  };
+
+  const syncStoreMarginFromStoresMap = (storeSlug) => {
+    const stores = readStoresMap();
+    const st = stores?.[storeSlug];
+    const marginPct = st?.marginPct;
+
+    if (marginPct === undefined || marginPct === null) return;
+
+    let n = Number(String(marginPct).replace("%","").replace(",", "."));
+    if (!isFinite(n) || n < 0) return;
+    if (n > 1) n = n / 100;
+
+    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(0.8, n))));
   };
 
   const groupBySupplier = (items) => {
@@ -390,10 +431,12 @@
         const subject = `Zamówienie QualitetMarket – ${sup} – ${new Date().toLocaleDateString("pl-PL")}`;
         const body = txt;
 
-        // ✅ NOWE: zapis zamówienia także przy mailto
+        // ✅ zapis “śladu” (MVP) także przy mailto (bez statusów, bo statusy będą w checkout)
         try {
           if (cart.items?.length) {
-            const storeSlug = String(localStorage.getItem("qm_active_store_v1") || localStorage.getItem("qm_store_slug") || "default").trim() || "default";
+            const storeSlug = resolveActiveStoreSlug();
+            syncStoreMarginFromStoresMap(storeSlug);
+
             const platformPct = getPlatformPct();
             const storePct = getStoreMarginPct();
 
@@ -497,7 +540,8 @@
     if (fsm) fsm.textContent = `Stawka sklepu: ${(storePct*100).toFixed(1)}% (z qm_store_margin_pct)`;
   };
 
-  const saveOrderToPlatform = () => {
+  // ✅ NOWE: koszyk -> checkout (draft + redirect)
+  const goToCheckout = () => {
     const { Cart } = window.QM_SHOP || {};
     if (!Cart) return;
 
@@ -506,88 +550,48 @@
 
     if (!cart.items?.length) {
       $("orderMsg").textContent = "Koszyk pusty — dodaj produkty.";
-      return;
-    }
-
-    if (t.mode === "b2b" && !t.moqOk) {
-      $("orderMsg").textContent = "Nie można złożyć zamówienia: są pozycje poniżej MOQ (B2B).";
       $("orderMsg").style.color = "rgba(245,158,11,.95)";
       return;
     }
 
-    if (t.mode === "b2b") {
-      const p = Cart.getB2BProfile();
-      if (!String(p.companyName||"").trim() || !String(p.nip||"").trim()) {
-        $("orderMsg").textContent = "Uwaga: B2B bez firmy/NIP — możesz uzupełnić, ale zapis działa (MVP).";
-        $("orderMsg").style.color = "rgba(245,158,11,.95)";
-      }
+    if (t.mode === "b2b" && !t.moqOk) {
+      $("orderMsg").textContent = "Nie można przejść dalej: są pozycje poniżej MOQ (B2B).";
+      $("orderMsg").style.color = "rgba(245,158,11,.95)";
+      return;
     }
 
-    const storeSlug = String(localStorage.getItem("qm_active_store_v1") || localStorage.getItem("qm_store_slug") || "default").trim() || "default";
-    const platformPct = getPlatformPct();
-    const storePct = getStoreMarginPct();
+    const storeSlug = resolveActiveStoreSlug();
+    syncStoreMarginFromStoresMap(storeSlug);
 
-    const platformFee = (Number(t.gross||0)||0) * platformPct;
-    const sellerMargin = (Number(t.gross||0)||0) * storePct;
-
-    const supplierBreakdown = computeSupplierBreakdown(cart.items, t.mode);
-    const id = `ord_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-
-    const order = {
-      id,
+    const draft = {
       ts: Date.now(),
-      createdAt: new Date().toISOString(),
       storeSlug,
       mode: t.mode,
-      items: cart.items.map(it => ({
-        id: it.id,
-        sku: it.sku,
-        name: it.name,
-        supplier: it.supplier,
-        qty: Number(it.qty||0)||0,
-        unit: it.unit,
-        moq: it.moq,
-        priceRetail: Number(it.priceRetail||0)||0,
-        priceB2B: Number(it.priceB2B||0)||0,
-        image: it.image
-      })),
-      totals: {
-        items: Number(t.items||0)||0,
-        net: Number(t.net||0)||0,
-        vat: Number(t.vat||0)||0,
-        gross: Number(t.gross||0)||0,
-        moqOk: !!t.moqOk
-      },
-      fees: {
-        platformPct,
-        storeMarginPct: storePct,
-        platformFee,
-        sellerMargin
-      },
-      supplierBreakdown,
       note: Cart.getNote ? (Cart.getNote() || "") : "",
-      b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {}
+      b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {},
+      b2bDiscountPct: Number(String($("b2bDiscount")?.value || "").replace(",", ".")) || 0
     };
+    writeJSON(LS_CHECKOUT_DRAFT, draft);
 
-    const arr = readJSON(LS_ORDERS, []);
-    const list = Array.isArray(arr) ? arr : [];
-    list.push(order);
-    writeJSON(LS_ORDERS, list);
-
-    $("orderMsg").textContent = `✅ Zapisano zamówienie: ${id} (sklep: ${storeSlug}). Przenoszę do panelu zamówień…`;
+    $("orderMsg").textContent = "➡️ Przechodzę do dostawy…";
     $("orderMsg").style.color = "rgba(34,197,94,.95)";
 
-    try { Cart.clear(); } catch {}
-    setTimeout(() => { window.location.href = "./zamowienia.html"; }, 450);
+    window.location.href = `./checkout.html?store=${encodeURIComponent(storeSlug)}`;
   };
 
-  $("placeOrder")?.addEventListener("click", saveOrderToPlatform);
+  $("goCheckout")?.addEventListener("click", goToCheckout);
 
   window.addEventListener("qm:cart", () => {
     const out = $("splitOut");
     if (out && out.value) generateSplit();
     renderFees();
   });
+
+  // ✅ AUTO-init: wykryj sklep i ustaw marżę od razu
+  try {
+    const storeSlug = resolveActiveStoreSlug();
+    syncStoreMarginFromStoresMap(storeSlug);
+  } catch {}
 
   setTimeout(renderFees, 0);
 })();
