@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     :root { color-scheme: dark; }
-    .wrap{max-width:980px;margin:42px auto;padding:0 16px}
+    .wrap{max-width:1080px;margin:42px auto;padding:0 16px}
     .card{
       border-radius:18px;
       padding:20px;
@@ -21,6 +21,7 @@
     .h{font-size:30px;font-weight:950;margin:0 0 10px}
 
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
     .btn{
       appearance:none;border:0;border-radius:12px;padding:12px 14px;
@@ -31,13 +32,14 @@
     .btn:active{ transform: translateY(1px); }
     .btn-primary{ background:#22c55e !important; color:#06110a !important; }
     .btn-ghost{ background:rgba(255,255,255,.10) !important; color:#eaf0ff !important; border:1px solid rgba(255,255,255,.12); }
-    .btn-primary:hover, .btn-ghost:hover{ filter:brightness(1.08); }
+    .btn-danger{ background:rgba(239,68,68,.92) !important; color:#190707 !important; }
+    .btn-primary:hover, .btn-ghost:hover, .btn-danger:hover{ filter:brightness(1.08); }
 
     table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);text-align:left}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);text-align:left;vertical-align:top}
     code{background:rgba(255,255,255,.10);padding:2px 6px;border-radius:8px}
 
-    input{
+    input, select{
       padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       width:100%;background:rgba(255,255,255,.92); color:#0b1220 !important;
     }
@@ -47,18 +49,32 @@
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
     .box{margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
     a{ color:#bfe1ff !important; text-decoration: underline !important; }
+
+    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);font-size:12px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    @media(max-width:980px){.kpi-grid{grid-template-columns:1fr 1fr}}
+    .kpi{border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(255,255,255,.06);padding:12px}
+    .kpi .label{opacity:.75;font-size:12px}
+    .kpi .val{font-size:18px;font-weight:950;margin-top:4px}
+
+    .btn-xs{padding:8px 10px;border-radius:10px;font-size:12px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .right{text-align:right}
+    .divider{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <div class="h">Panel sklepu</div>
-      <div class="muted">Tu sprzedawca widzi link sklepu i może edytować marżę / nazwę / email.</div>
+      <div class="h">Panel sklepu (sprzedawca)</div>
+      <div class="muted">Zarządzanie sklepem + zamówieniami (statusy, eksport). Źródło: localStorage.</div>
 
       <div id="box" class="box"></div>
 
       <div class="row" style="margin-top:14px">
         <button class="btn btn-primary" id="openShop">Otwórz aktywny sklep</button>
+        <a class="btn btn-ghost" id="openOrders" href="zamowienia.html">Zamówienia</a>
+        <a class="btn btn-ghost" id="openCart" href="koszyk.html">Koszyk</a>
         <a class="btn btn-ghost" href="generator-sklepu.html">Generator sklepów</a>
         <a class="btn btn-ghost" href="platforma.html">Wejście do platformy</a>
       </div>
@@ -85,6 +101,77 @@
       </div>
 
       <div id="list" style="margin-top:18px"></div>
+
+      <div class="divider"></div>
+
+      <!-- ✅ NOWE: panel zamówień sprzedawcy -->
+      <div style="font-weight:950;font-size:18px">Zamówienia tego sklepu</div>
+      <div class="muted" style="margin-top:6px">Widzisz tylko zamówienia, gdzie <span class="mono">store_slug / storeSlug</span> = aktywny sklep.</div>
+
+      <div class="row" style="margin-top:12px">
+        <div style="flex:1;min-width:240px">
+          <div class="muted" style="font-weight:900;margin:0 0 6px">Szukaj</div>
+          <input id="q" placeholder="np. QM- / hurtownia / @mail">
+        </div>
+        <div style="min-width:200px">
+          <div class="muted" style="font-weight:900;margin:0 0 6px">Status</div>
+          <select id="statusFilter">
+            <option value="">Wszystkie</option>
+            <option value="NEW">NEW</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="SENT">SENT</option>
+            <option value="DONE">DONE</option>
+          </select>
+        </div>
+        <div style="min-width:260px">
+          <div class="muted" style="font-weight:900;margin:0 0 6px">Eksport</div>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-xs" id="exportJson" type="button">JSON</button>
+            <button class="btn btn-ghost btn-xs" id="exportCsv" type="button">CSV</button>
+            <button class="btn btn-primary btn-xs" id="refreshOrders" type="button">Odśwież</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="label">Zamówienia</div>
+          <div class="val" id="kpiOrders">0</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Obrót brutto</div>
+          <div class="val" id="kpiGross">0 zł</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Prowizja platformy</div>
+          <div class="val" id="kpiFee">0 zł</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Marża sprzedawcy</div>
+          <div class="val" id="kpiMargin">0 zł</div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:12px;overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Tryb</th>
+              <th class="right">Szt.</th>
+              <th class="right">Brutto</th>
+              <th class="right">Fee</th>
+              <th>Hurtownie</th>
+              <th class="right">Akcje</th>
+            </tr>
+          </thead>
+          <tbody id="orderRows"></tbody>
+        </table>
+      </div>
+
+      <div id="orderMsg" class="muted" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -95,6 +182,9 @@
   const LS_STORES = "qm_stores_v1";
   const LS_ACTIVE = "qm_active_store_v1";
   const LS_MARGIN = "qm_store_margin_pct";
+  const LS_ORDERS = "qm_orders_v1";
+
+  const STATUSES = ["NEW","CONFIRMED","SENT","DONE"];
 
   const $ = (id) => document.getElementById(id);
 
@@ -110,6 +200,11 @@
 
   const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
 
+  const money = (n) => {
+    const v = Number(n || 0);
+    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+  };
+
   const loadMap = () => {
     const reg = readJSON(LS_STORES, {});
     if (reg && typeof reg === "object" && !Array.isArray(reg)) return reg;
@@ -124,9 +219,296 @@
     const map = loadMap();
     const e = map[s] || {};
     localStorage.setItem(LS_ACTIVE, s);
+
     const m01 = (typeof e.marginPct !== "undefined") ? Number(e.marginPct) : 0;
     localStorage.setItem(LS_MARGIN, String(Math.max(0, Math.min(1, isFinite(m01)?m01:0))));
     localStorage.setItem("qm_store_slug", s);
+  };
+
+  // ----- ORDERS (v1 + v2)
+  const readOrdersRaw = () => {
+    const arr = readJSON(LS_ORDERS, []);
+    return Array.isArray(arr) ? arr : [];
+  };
+  const writeOrdersRaw = (arr) => writeJSON(LS_ORDERS, Array.isArray(arr) ? arr : []);
+
+  const normalizeSuppliers = (supplierBreakdown) => {
+    if (!supplierBreakdown) return [];
+    if (Array.isArray(supplierBreakdown)) return supplierBreakdown;
+
+    const out = [];
+    for (const [supplier, v] of Object.entries(supplierBreakdown)) {
+      out.push({
+        supplier,
+        items: Number(v?.items||0),
+        net: Number(v?.net||0),
+        gross: Number(v?.gross||0)
+      });
+    }
+    out.sort((a,b)=> (b.gross - a.gross));
+    return out;
+  };
+
+  const normOrder = (o) => {
+    if (!o || typeof o !== "object") return null;
+
+    const id = String(o.order_id || o.id || "").trim() || "—";
+    const createdAtISO =
+      o.created_at ||
+      o.createdAt ||
+      (o.ts ? new Date(o.ts).toISOString() : null);
+
+    const ts = o.ts || (createdAtISO ? Date.parse(createdAtISO) : Date.now());
+    const storeSlug = String(o.store_slug || o.storeSlug || "").trim() || "default";
+    const mode = String(o.mode || o.totals?.mode || "").trim() || "—";
+
+    const statusRaw = String(o.status || "NEW").toUpperCase().trim();
+    const status = STATUSES.includes(statusRaw) ? statusRaw : "NEW";
+
+    const totals = o.totals || {};
+    const gross = Number(totals.gross ?? 0) || 0;
+    const itemsCount = Number(totals.items ?? 0) || 0;
+
+    const fees = o.fees || {};
+    const platformFee = Number(fees.platformFee ?? 0) || 0;
+    const sellerMargin = Number(fees.sellerMargin ?? 0) || 0;
+
+    const sups = normalizeSuppliers(o.supplierBreakdown || o.supplier_breakdown || null);
+
+    const email =
+      (o.customer && (o.customer.email || o.customer.shipping?.email)) ||
+      (o.b2bProfile && o.b2bProfile.contact) ||
+      "";
+
+    const hay = JSON.stringify({
+      id, storeSlug, status, mode,
+      suppliers: sups.map(x=>x.supplier),
+      email,
+      note: o.note || ""
+    }).toLowerCase();
+
+    return {
+      __raw: o,
+      id,
+      createdAtISO,
+      ts,
+      storeSlug,
+      status,
+      mode: String(mode).toUpperCase(),
+      itemsCount,
+      gross,
+      platformFee,
+      sellerMargin,
+      suppliers: sups,
+      hay
+    };
+  };
+
+  const updateOrderStatus = (orderId, nextStatus) => {
+    const status = String(nextStatus||"").toUpperCase().trim();
+    if (!STATUSES.includes(status)) return;
+
+    const raw = readOrdersRaw();
+    let changed = false;
+
+    const updated = raw.map(o => {
+      const id = String(o?.order_id || o?.id || "").trim();
+      if (id !== orderId) return o;
+      o.status = status; // zapis w raw
+      changed = true;
+      return o;
+    });
+
+    if (changed) {
+      writeOrdersRaw(updated);
+      window.dispatchEvent(new CustomEvent("qm:orders"));
+    }
+  };
+
+  const deleteOrder = (orderId) => {
+    const raw = readOrdersRaw();
+    const filtered = raw.filter(o => String(o?.order_id || o?.id || "").trim() !== orderId);
+    writeOrdersRaw(filtered);
+    window.dispatchEvent(new CustomEvent("qm:orders"));
+  };
+
+  const applyOrderFilters = (list, activeStore) => {
+    const q = String($("q").value || "").trim().toLowerCase();
+    const st = String($("statusFilter").value || "").trim().toUpperCase();
+
+    return (list || []).filter(o => {
+      if (!o) return false;
+      if (String(o.storeSlug).toLowerCase() !== String(activeStore).toLowerCase()) return false;
+      if (st && o.status !== st) return false;
+      if (q && !o.hay.includes(q)) return false;
+      return true;
+    });
+  };
+
+  const exportOrdersJSON = (list, storeSlug) => {
+    const payload = (list || []).map(o => ({
+      order_id: o.id,
+      created_at: o.createdAtISO,
+      store_slug: o.storeSlug,
+      status: o.status,
+      mode: o.mode,
+      totals: { items: o.itemsCount, gross: o.gross },
+      fees: { platformFee: o.platformFee, sellerMargin: o.sellerMargin },
+      suppliers: o.suppliers
+    }));
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `qm_orders_${storeSlug}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const exportOrdersCSV = (list, storeSlug) => {
+    const head = [
+      "created_at","order_id","store_slug","status","mode",
+      "items","gross","platform_fee","seller_margin","suppliers"
+    ];
+
+    const rows = (list || []).map(o => {
+      const sups = (o.suppliers || [])
+        .map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`)
+        .join("|");
+
+      return [
+        o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
+        o.id,
+        o.storeSlug,
+        o.status,
+        o.mode,
+        Number(o.itemsCount||0),
+        Number(o.gross||0).toFixed(2),
+        Number(o.platformFee||0).toFixed(2),
+        Number(o.sellerMargin||0).toFixed(2),
+        sups
+      ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
+    });
+
+    const csv = [head.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `qm_orders_${storeSlug}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const renderOrders = () => {
+    const active = getActiveSlug();
+    const tbody = $("orderRows");
+    tbody.innerHTML = "";
+
+    if (!active) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="9" class="muted">Brak aktywnego sklepu.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const raw = readOrdersRaw();
+    const norm = raw.map(normOrder).filter(Boolean);
+
+    const list = applyOrderFilters(norm, active);
+    const sorted = list.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0)));
+
+    const sumGross = sorted.reduce((a,o)=>a + (Number(o.gross)||0), 0);
+    const sumFee = sorted.reduce((a,o)=>a + (Number(o.platformFee)||0), 0);
+    const sumMargin = sorted.reduce((a,o)=>a + (Number(o.sellerMargin)||0), 0);
+
+    $("kpiOrders").textContent = String(sorted.length);
+    $("kpiGross").textContent = money(sumGross);
+    $("kpiFee").textContent = money(sumFee);
+    $("kpiMargin").textContent = money(sumMargin);
+
+    if (!sorted.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="9" class="muted">Brak zamówień dla tego sklepu.</td>`;
+      tbody.appendChild(tr);
+      $("exportJson").onclick = () => exportOrdersJSON(sorted, active);
+      $("exportCsv").onclick = () => exportOrdersCSV(sorted, active);
+      return;
+    }
+
+    for (const o of sorted) {
+      const dt = o.createdAtISO ? new Date(o.createdAtISO) : new Date(o.ts || Date.now());
+      const dts = dt.toLocaleString("pl-PL");
+
+      const sups = o.suppliers || [];
+      const supsHtml = sups.slice(0,2).map(x => `${x.supplier}: ${money(x.gross)}`).join("<br>")
+        + (sups.length>2 ? `<br><span class="muted">+${sups.length-2} więcej</span>` : "");
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${dts}</td>
+        <td class="mono">${o.id}</td>
+        <td><span class="pill">${o.status}</span></td>
+        <td>${o.mode}</td>
+        <td class="right">${Number(o.itemsCount||0)}</td>
+        <td class="right"><b>${money(o.gross||0)}</b></td>
+        <td class="right">${money(o.platformFee||0)}</td>
+        <td>${supsHtml || "—"}</td>
+        <td class="right">
+          <div class="row-actions" style="justify-content:flex-end">
+            <select data-status="${o.id}">
+              ${STATUSES.map(s => `<option value="${s}" ${s===o.status?"selected":""}>${s}</option>`).join("")}
+            </select>
+            <button class="btn btn-ghost btn-xs" data-next="${o.id}" title="Następny status">➡️</button>
+            <button class="btn btn-ghost btn-xs" data-json="${o.id}">JSON</button>
+            <button class="btn btn-danger btn-xs" data-del="${o.id}">Usuń</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    tbody.querySelectorAll("select[data-status]").forEach(sel => {
+      sel.addEventListener("change", () => {
+        const id = sel.getAttribute("data-status");
+        updateOrderStatus(id, sel.value);
+      });
+    });
+
+    tbody.querySelectorAll("[data-next]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-next");
+        const raw = readOrdersRaw();
+        const foundRaw = raw.find(x => String(x?.order_id || x?.id || "").trim() === id);
+        const cur = String(foundRaw?.status || "NEW").toUpperCase().trim();
+        const idx = Math.max(0, STATUSES.indexOf(cur));
+        const next = STATUSES[Math.min(STATUSES.length-1, idx+1)];
+        updateOrderStatus(id, next);
+      });
+    });
+
+    tbody.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-del");
+        deleteOrder(id);
+      });
+    });
+
+    tbody.querySelectorAll("[data-json]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-json");
+        const raw = readOrdersRaw();
+        const o = raw.find(x => String(x?.order_id || x?.id || "").trim() === id);
+        if (!o) return;
+        const blob = new Blob([JSON.stringify(o, null, 2)], { type:"application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${id}.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    });
+
+    $("exportJson").onclick = () => exportOrdersJSON(sorted, active);
+    $("exportCsv").onclick = () => exportOrdersCSV(sorted, active);
   };
 
   const render = () => {
@@ -137,6 +519,8 @@
     if (!slugs.length) {
       $("box").innerHTML = `Brak sklepów. Wejdź w <a href="generator-sklepu.html">generator</a> i utwórz pierwszy sklep.`;
       $("list").innerHTML = "";
+      $("openOrders").href = "zamowienia.html";
+      $("openCart").href = "koszyk.html";
       return;
     }
 
@@ -160,6 +544,9 @@
     $("eMargin").value = String(mPct);
     $("eEmail").value = String(e.email || "");
 
+    $("openOrders").href = `zamowienia.html?store=${encodeURIComponent(a)}`;
+    $("openCart").href = `koszyk.html?store=${encodeURIComponent(a)}`;
+
     $("list").innerHTML = `
       <div class="muted" style="margin-top:10px">Twoje sklepy:</div>
       <table>
@@ -176,8 +563,8 @@
                 <td><code>${s}</code></td>
                 <td>${mp}%</td>
                 <td>
-                  <button class="btn btn-ghost" data-set="${s}">Ustaw aktywny</button>
-                  <a class="btn btn-ghost" href="${makeUrl(s)}" target="_blank">Otwórz</a>
+                  <button class="btn btn-ghost btn-xs" data-set="${s}">Ustaw aktywny</button>
+                  <a class="btn btn-ghost btn-xs" href="${makeUrl(s)}" target="_blank">Otwórz</a>
                 </td>
               </tr>
             `;
@@ -191,8 +578,11 @@
         const s = btn.getAttribute("data-set");
         setActive(s);
         render();
+        renderOrders();
       });
     });
+
+    renderOrders();
   };
 
   $("saveActive").addEventListener("click", () => {
@@ -212,6 +602,7 @@
     writeJSON(LS_STORES, map);
     setActive(a);
     render();
+    renderOrders();
   });
 
   $("openShop").addEventListener("click", () => {
@@ -219,6 +610,12 @@
     if (!a) return location.href = "generator-sklepu.html";
     location.href = `sklep.html?store=${encodeURIComponent(a)}`;
   });
+
+  $("refreshOrders").addEventListener("click", renderOrders);
+  $("q").addEventListener("input", renderOrders);
+  $("statusFilter").addEventListener("change", renderOrders);
+
+  window.addEventListener("qm:orders", renderOrders);
 
   render();
 })();
