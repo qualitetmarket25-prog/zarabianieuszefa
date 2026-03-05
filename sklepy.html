@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sklepy – QualitetMarket</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .muted-xs{opacity:.75;font-size:12px}
+    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+    .row .field{flex:1;min-width:220px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid rgba(0,0,0,.08);padding:10px 8px;text-align:left;font-size:13px;vertical-align:top}
+    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.12);font-size:12px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+  </style>
+</head>
+
+<body data-noShell="1">
+  <div class="wrap">
+    <div class="card">
+      <span class="badge">QualitetMarket • Multi-Store</span>
+      <h1 style="margin-top:10px;">Katalog sklepów</h1>
+      <p class="muted">Tu widzisz wszystkie sklepy zapisane lokalnie (<span class="mono">qm_stores_v1</span>). Każdy sklep ma własną marżę.</p>
+      <div class="muted-xs">MVP: localStorage. Następny etap: logowanie i baza.</div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px;">Dodaj sklep</h2>
+
+      <div class="row">
+        <div class="field">
+          <label class="muted-xs">Slug sklepu</label>
+          <input id="newSlug" class="input" placeholder="np. bar-u-szefa" />
+          <div class="muted-xs" style="margin-top:6px;">Będzie w linku: <span class="mono">sklep.html?store=slug</span></div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Marża sklepu (%)</label>
+          <input id="newMargin" class="input" placeholder="np. 12" inputmode="decimal" />
+          <div class="muted-xs" style="margin-top:6px;">Zapiszemy jako <span class="mono">0.12</span></div>
+        </div>
+
+        <div class="field" style="flex:0;min-width:220px;">
+          <button class="btn btn-primary" id="addBtn" type="button" style="width:100%;">Dodaj</button>
+          <div class="muted-xs" style="margin-top:6px;"><span class="pill">rejestr sklepów</span> <span class="pill">marże</span></div>
+        </div>
+      </div>
+
+      <div id="addStatus" class="muted-xs" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center;">
+        <div>
+          <h2 style="margin:0 0 6px;">Lista sklepów</h2>
+          <div class="muted-xs">Edytuj marżę, otwórz sklep, ustaw aktywny.</div>
+        </div>
+        <div class="actions">
+          <a class="btn" href="./panel-sklepu.html">Panel sklepu</a>
+          <a class="btn" href="./sklep.html">Sklep (bez parametru)</a>
+          <button class="btn btn-danger" id="wipeBtn" type="button">Wyczyść rejestr</button>
+        </div>
+      </div>
+
+      <div id="emptyBox" class="card soft" style="display:none;margin-top:12px;">
+        <strong>Brak sklepów</strong>
+        <div class="muted-xs" style="margin-top:6px;">Dodaj pierwszy sklep powyżej.</div>
+      </div>
+
+      <div id="tableWrap" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="footer">QualitetMarket • sklepy (MVP)</div>
+  </div>
+
+<script>
+(function(){
+  const LS_STORES = "qm_stores_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_STORE_MARGIN = "qm_store_margin_pct";
+
+  const $ = (id) => document.getElementById(id);
+
+  const slugify = (s) => String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
+  };
+  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+  const pctFromInput = (raw) => {
+    let n = Number(String(raw || "").replace(",", "."));
+    if (!isFinite(n) || n < 0) n = 0;
+    const pct = n > 1 ? (n / 100) : n; // 12 => 0.12
+    return Math.max(0, Math.min(1, pct));
+  };
+
+  const getBaseShopUrl = () => {
+    const u = new URL(window.location.href);
+    u.pathname = u.pathname.replace(/\/[^\/]*$/, "/sklep.html");
+    u.search = "";
+    u.hash = "";
+    return u.toString();
+  };
+
+  const setActive = (slug) => {
+    localStorage.setItem(LS_ACTIVE, slug);
+    const reg = readJSON(LS_STORES, {});
+    const m = Number(reg[slug]?.marginPct || 0) || 0;
+    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(1, m))));
+  };
+
+  const render = () => {
+    const reg = readJSON(LS_STORES, {});
+    const active = slugify(localStorage.getItem(LS_ACTIVE) || "");
+    const keys = Object.keys(reg).sort((a,b)=>a.localeCompare(b,"pl"));
+
+    $("emptyBox").style.display = keys.length ? "none" : "";
+    $("tableWrap").innerHTML = "";
+
+    if (!keys.length) return;
+
+    const base = getBaseShopUrl();
+
+    $("tableWrap").innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Sklep</th>
+            <th>Marża</th>
+            <th>Link</th>
+            <th>Akcje</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${keys.map(k => {
+            const st = reg[k] || {};
+            const m = Number(st.marginPct || 0) || 0;
+            const pct = Math.round(m * 10000) / 100; // 2 miejsca
+            const link = `${base}?store=${encodeURIComponent(k)}`;
+            const isActive = (k === active);
+            return `
+              <tr>
+                <td>
+                  <strong>${k}</strong>
+                  ${isActive ? `<div class="muted-xs"><span class="pill">aktywny</span></div>` : ``}
+                </td>
+                <td>
+                  <input class="input" style="max-width:140px" data-margin="${k}" value="${pct}" inputmode="decimal" />
+                  <div class="muted-xs">%</div>
+                </td>
+                <td>
+                  <input class="input mono" data-link="${k}" value="${link}" readonly />
+                </td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-primary btn-sm" data-save="${k}" type="button">Zapisz</button>
+                    <button class="btn btn-sm" data-active="${k}" type="button">Ustaw aktywny</button>
+                    <a class="btn btn-sm" href="${link}">Otwórz</a>
+                    <button class="btn btn-danger btn-sm" data-del="${k}" type="button">Usuń</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+
+    // bind save margin
+    $$("[data-save]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const k = btn.getAttribute("data-save");
+        const inp = document.querySelector(`[data-margin="${CSS.escape(k)}"]`);
+        const pct = pctFromInput(inp?.value || "");
+        const reg2 = readJSON(LS_STORES, {});
+        reg2[k] = reg2[k] || { title: k.replaceAll("-"," "), theme:"default" };
+        reg2[k].marginPct = pct;
+        writeJSON(LS_STORES, reg2);
+
+        // jeśli to aktywny -> od razu aktualizujemy runtime margin
+        const activeNow = slugify(localStorage.getItem(LS_ACTIVE) || "");
+        if (activeNow === k) {
+          localStorage.setItem(LS_STORE_MARGIN, String(pct));
+        }
+
+        alert("Zapisano marżę.");
+        render();
+      });
+    });
+
+    // bind set active
+    $$("[data-active]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const k = btn.getAttribute("data-active");
+        setActive(k);
+        alert("Ustawiono aktywny sklep.");
+        render();
+      });
+    });
+
+    // bind delete
+    $$("[data-del]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const k = btn.getAttribute("data-del");
+        const reg2 = readJSON(LS_STORES, {});
+        delete reg2[k];
+        writeJSON(LS_STORES, reg2);
+
+        const activeNow = slugify(localStorage.getItem(LS_ACTIVE) || "");
+        if (activeNow === k) {
+          localStorage.removeItem(LS_ACTIVE);
+          localStorage.setItem(LS_STORE_MARGIN, "0");
+        }
+        render();
+      });
+    });
+  };
+
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  $("addBtn").addEventListener("click", () => {
+    const slug = slugify($("newSlug").value);
+    const pct = pctFromInput($("newMargin").value);
+
+    if (!slug) {
+      $("addStatus").textContent = "Podaj slug sklepu.";
+      return;
+    }
+
+    const reg = readJSON(LS_STORES, {});
+    if (!reg[slug]) reg[slug] = { title: slug.replaceAll("-"," "), theme:"default", marginPct: pct };
+    else reg[slug].marginPct = pct;
+
+    writeJSON(LS_STORES, reg);
+
+    $("addStatus").innerHTML = `Dodano/zaktualizowano: <span class="mono">${slug}</span> (marża: ${(pct*100).toFixed(2)}%)`;
+    $("newSlug").value = "";
+    $("newMargin").value = "";
+
+    render();
+  });
+
+  $("wipeBtn").addEventListener("click", () => {
+    localStorage.removeItem(LS_STORES);
+    localStorage.removeItem(LS_ACTIVE);
+    localStorage.setItem(LS_STORE_MARGIN, "0");
+    render();
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
