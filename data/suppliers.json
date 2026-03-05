@@ -1,25 +1,406 @@
-{
-  "GastroPRO": {
-    "email": "zamowienia@gastropro.pl",
-    "phone": "",
-    "api": ""
-  },
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Koszyk – QualitetMarket</title>
 
-  "MasarniaTech": {
-    "email": "hurt@masarniatech.pl",
-    "phone": "",
-    "api": ""
-  },
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./shop.css" />
 
-  "OpakowaniaPRO": {
-    "email": "zamowienia@opakowaniapro.pl",
-    "phone": "",
-    "api": ""
-  },
+  <script defer src="./js/shopCart.js"></script>
+  <script defer src="./js/shop.js"></script>
 
-  "BRAK_HURTOWNI": {
-    "email": "",
-    "phone": "",
-    "api": ""
-  }
-}
+  <style>
+    .muted-xs { opacity:.75; font-size:12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .pill { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+    .row .field { flex:1; min-width:220px; }
+    .miniTable { width:100%; border-collapse: collapse; margin-top:10px; }
+    .miniTable th, .miniTable td { border-bottom:1px solid rgba(0,0,0,.08); padding:8px 6px; text-align:left; font-size:13px; vertical-align:top; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+  </style>
+</head>
+
+<body data-noShell="1">
+  <div class="wrap">
+    <div class="hero-card">
+      <div class="shop-top">
+        <div>
+          <h1 class="h1">Koszyk</h1>
+          <p class="p">Zamówienia B2B: MOQ, dane firmy, NIP, notatki do hurtowni. Teraz: split per hurtownia + auto-email.</p>
+        </div>
+
+        <div class="shop-actions">
+          <a class="btn btn-sm" href="./sklep.html">← Sklep</a>
+          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+          <button class="btn btn-danger btn-sm" id="clearCart" type="button">Wyczyść</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="shop-toolbar">
+        <div class="field">
+          <label class="muted-xs">Tryb</label>
+          <div class="seg">
+            <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
+            <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
+          </div>
+          <div class="muted-xs" style="margin-top:6px">
+            Tryb dotyczy wyliczenia sumy i wymagań MOQ.
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Rabat B2B (opcjonalnie)</label>
+          <input id="b2bDiscount" class="input" placeholder="np. 5 (%)" inputmode="decimal" />
+          <div class="muted-xs" style="margin-top:6px">To jest rabat globalny na koszyk (MVP).</div>
+        </div>
+
+        <div class="field">
+          <label class="muted-xs">Notatka</label>
+          <input id="orderNote" class="input" placeholder="np. dostawa rano, kontakt..." />
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div id="cartList" class="cart-list"></div>
+      <div id="cartEmpty" class="card soft" style="display:none; margin-top:14px;">
+        <strong>Pusto</strong>
+        <p class="p" style="margin-top:6px;">Wracaj do sklepu i dodaj produkty.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Dane B2B (faktura)</h2>
+
+          <div class="form-grid">
+            <div class="field">
+              <label class="muted-xs">Nazwa firmy</label>
+              <input id="companyName" class="input" placeholder="np. Bar u Szefa" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">NIP</label>
+              <input id="companyNip" class="input" placeholder="np. 1234567890" inputmode="numeric" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Adres</label>
+              <input id="companyAddr" class="input" placeholder="ul., miasto, kod" />
+            </div>
+            <div class="field">
+              <label class="muted-xs">Email / telefon</label>
+              <input id="companyContact" class="input" placeholder="kontakt do zamówienia" />
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="generateSplit" type="button">Generuj per hurtownia</button>
+            <button class="btn" id="copySplitAll" type="button">Kopiuj wszystko</button>
+          </div>
+
+          <textarea id="splitOut" class="input" style="margin-top:12px; min-height:220px; resize:vertical;" placeholder="Tu pojawią się zamówienia rozbite na hurtownie..."></textarea>
+
+          <div class="hr"></div>
+          <h3 style="margin:0 0 8px; font-size:16px;">Hurtownie (akcje)</h3>
+          <div class="muted-xs">
+            Email hurtowni pobierany z <span class="mono">/data/suppliers.json</span>.
+            Jeśli brak — otworzy mail bez adresu (MVP fallback).
+          </div>
+
+          <div id="supActions" style="margin-top:10px;"></div>
+          <div id="splitInfo" class="muted-xs" style="margin-top:10px;"></div>
+
+        </div>
+
+        <div class="card">
+          <h2 style="margin:0 0 10px; font-size:18px;">Podsumowanie</h2>
+
+          <div class="sum-row"><span class="muted">Pozycje</span><strong id="sumItems">0</strong></div>
+          <div class="sum-row"><span class="muted">Suma netto</span><strong id="sumNet">0,00 zł</strong></div>
+          <div class="sum-row"><span class="muted">VAT (23% – orientacyjnie)</span><strong id="sumVat">0,00 zł</strong></div>
+          <div class="sum-row"><span class="muted">Suma brutto</span><strong id="sumGross">0,00 zł</strong></div>
+
+          <div class="hr"></div>
+
+          <div class="muted-xs" id="moqWarn" style="display:none;">
+            Uwaga: w trybie B2B masz pozycje poniżej MOQ (minimum). Popraw ilości.
+          </div>
+
+          <div class="hr"></div>
+          <div class="muted-xs">
+            Sklep (multi-store): <strong id="storeInfo">—</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">QualitetMarket • koszyk B2B (MVP)</div>
+  </div>
+
+<script>
+(function(){
+  const VAT_RATE = 0.23;
+
+  const money = (n) => {
+    const v = Number(n || 0);
+    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+  };
+  const esc = (s) => String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+  const enc = (s) => encodeURIComponent(String(s ?? ""));
+
+  const $ = (id) => document.getElementById(id);
+
+  const getStore = () => {
+    try {
+      const { Cart } = window.QM_SHOP || {};
+      if (Cart && typeof Cart.getStore === "function") return Cart.getStore();
+    } catch {}
+    // fallback
+    return (localStorage.getItem("qm_active_store_v1") || "default");
+  };
+
+  const loadSupplierMap = async () => {
+    try {
+      const res = await fetch("/data/suppliers.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("no suppliers.json");
+      return await res.json();
+    } catch {
+      return {};
+    }
+  };
+
+  const groupBySupplier = (items) => {
+    const map = new Map();
+    for (const it of items) {
+      const sup = String(it.supplier || "BRAK_HURTOWNI").trim() || "BRAK_HURTOWNI";
+      if (!map.has(sup)) map.set(sup, []);
+      map.get(sup).push(it);
+    }
+    return map;
+  };
+
+  const buildSupplierBlock = (sup, items, mode, profile, noteText, storeSlug) => {
+    const lines = [];
+    lines.push(`HURTOWNIA: ${sup}`);
+    lines.push(`Sklep: ${storeSlug || "-"}`);
+    lines.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
+    lines.push(`Tryb: ${mode === "b2b" ? "B2B (netto)" : "DETAL (brutto)"}`);
+    lines.push(``);
+
+    if (mode === "b2b") {
+      lines.push(`DANE FIRMY (B2B):`);
+      lines.push(`- Firma: ${profile.companyName || "-"}`);
+      lines.push(`- NIP: ${profile.nip || "-"}`);
+      lines.push(`- Adres: ${profile.addr || "-"}`);
+      lines.push(`- Kontakt: ${profile.contact || "-"}`);
+      lines.push(``);
+    }
+
+    if (noteText) {
+      lines.push(`NOTATKA: ${noteText}`);
+      lines.push(``);
+    }
+
+    lines.push(`POZYCJE:`);
+    let sum = 0;
+    let moqOk = true;
+
+    for (const it of items) {
+      const qty = Number(it.qty || 0) || 0;
+      const moq = Number(it.moq || 1) || 1;
+      if (mode === "b2b" && qty < moq) moqOk = false;
+
+      const price = (mode === "b2b"
+        ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
+        : (Number(it.priceRetail||0) || 0)
+      );
+
+      sum += qty * price;
+
+      lines.push(`- ${it.name} | SKU: ${it.sku || it.id} | Ilość: ${qty} ${it.unit || "szt"} | Cena: ${price.toFixed(2)} | MOQ: ${moq}`);
+    }
+
+    lines.push(``);
+    lines.push(`SUMA (wg trybu): ${money(sum)}`);
+
+    if (mode === "b2b") {
+      const vat = sum * VAT_RATE;
+      lines.push(`VAT(23%): ${money(vat)} | BRUTTO: ${money(sum + vat)}`);
+    } else {
+      const net = sum / (1 + VAT_RATE);
+      lines.push(`NETTO (wyliczone): ${money(net)} | VAT: ${money(sum - net)}`);
+    }
+
+    if (mode === "b2b" && !moqOk) {
+      lines.push(``);
+      lines.push(`UWAGA: Są pozycje poniżej MOQ — popraw ilości.`);
+    }
+
+    return lines.join("\n");
+  };
+
+  let supplierMap = {};
+  let state = { text:"", suppliers: [], blocks: new Map() };
+
+  const buildSplitText = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return { text:"", suppliers: [], blocks: new Map() };
+
+    const totals = Cart.totals();
+    const cart = Cart.read();
+    const profile = Cart.getB2BProfile();
+    const noteText = Cart.getNote();
+    const storeSlug = getStore();
+
+    const bySupplier = groupBySupplier(cart.items);
+    const suppliers = Array.from(bySupplier.keys()).sort((a,b)=>a.localeCompare(b,"pl"));
+
+    const blocks = new Map();
+    const out = [];
+
+    out.push(`ZAMÓWIENIA PER HURTOWNIA – QualitetMarket`);
+    out.push(`Sklep: ${storeSlug || "-"}`);
+    out.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
+    out.push(`Tryb: ${totals.mode === "b2b" ? "B2B (netto)" : "DETAL (brutto)"}`);
+    out.push(``);
+
+    for (const sup of suppliers) {
+      const items = bySupplier.get(sup) || [];
+      const block = buildSupplierBlock(sup, items, totals.mode, profile, noteText, storeSlug);
+      blocks.set(sup, block);
+
+      out.push(`==============================`);
+      out.push(block);
+      out.push(``);
+    }
+
+    return { text: out.join("\n"), suppliers, blocks };
+  };
+
+  const supplierEmail = (sup) => {
+    const row = supplierMap?.[sup];
+    const email = row?.email ? String(row.email).trim() : "";
+    return email;
+  };
+
+  const renderSupActions = () => {
+    const box = $("supActions");
+    if (!box) return;
+
+    if (!state.suppliers.length) {
+      box.innerHTML = `<div class="muted-xs">Brak hurtowni do pokazania — kliknij “Generuj per hurtownia”.</div>`;
+      return;
+    }
+
+    box.innerHTML = `
+      <table class="miniTable">
+        <thead>
+          <tr>
+            <th>Hurtownia</th>
+            <th>Email</th>
+            <th>Akcje</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.suppliers.map(sup => {
+            const em = supplierEmail(sup);
+            return `
+              <tr>
+                <td><strong>${esc(sup)}</strong></td>
+                <td><span class="mono">${esc(em || "(brak w mapie)")}</span></td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-sm" data-copy="${esc(sup)}" type="button">Kopiuj</button>
+                    <a class="btn btn-sm btn-primary" data-mail="${esc(sup)}" href="#" role="button">Wyślij e-mail</a>
+                  </div>
+                  <div class="muted-xs" style="margin-top:6px;">
+                    ${em ? "Auto-email działa." : "Brak emaila w suppliers.json → mail otworzy się bez adresu."}
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+
+    // copy
+    box.querySelectorAll("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const sup = btn.getAttribute("data-copy");
+        const txt = state.blocks.get(sup) || "";
+        if (!txt) return;
+        try { await navigator.clipboard.writeText(txt); } catch {}
+      });
+    });
+
+    // mailto
+    box.querySelectorAll("[data-mail]").forEach(a => {
+      a.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const sup = a.getAttribute("data-mail");
+        const txt = state.blocks.get(sup) || "";
+        if (!txt) return;
+
+        const to = supplierEmail(sup); // może być pusty
+        const subject = `Zamówienie QualitetMarket – ${sup} – ${new Date().toLocaleDateString("pl-PL")}`;
+        const body = txt;
+
+        const url = `mailto:${encodeURIComponent(to)}?subject=${enc(subject)}&body=${enc(body)}`;
+        window.location.href = url;
+      });
+    });
+  };
+
+  const generateSplit = () => {
+    state = buildSplitText();
+    $("splitOut").value = state.text || "";
+
+    $("splitInfo").textContent = state.suppliers?.length
+      ? `Wykryte hurtownie: ${state.suppliers.join(", ")}`
+      : `Brak hurtowni w koszyku (sprawdź pole supplier przy produktach).`;
+
+    renderSupActions();
+  };
+
+  const boot = async () => {
+    $("storeInfo").textContent = getStore();
+
+    supplierMap = await loadSupplierMap();
+
+    $("generateSplit")?.addEventListener("click", generateSplit);
+
+    $("copySplitAll")?.addEventListener("click", async () => {
+      const out = $("splitOut");
+      if (!out) return;
+      if (!out.value) generateSplit();
+      try { await navigator.clipboard.writeText(out.value); } catch {}
+    });
+
+    // auto-refresh jeśli koszyk się zmienia i splitOut już był użyty
+    window.addEventListener("qm:cart", () => {
+      const out = $("splitOut");
+      if (out && out.value) generateSplit();
+      $("storeInfo").textContent = getStore();
+    });
+
+    // jeśli sklep się zmieni — odśwież info
+    window.addEventListener("qm:store", () => {
+      $("storeInfo").textContent = getStore();
+    });
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+</script>
+
+</body>
+</html>
