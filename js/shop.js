@@ -6,8 +6,22 @@
 
   const { Cart, money } = window.QM_SHOP;
 
+  // ===== marża/config z window (wstrzyknięte w sklep.html) =====
+  const PR = (window.QM_PRICE && window.QM_PRICE.priceFromBuy) ? window.QM_PRICE : null;
+  const CFG = (window.QM_CONFIG && window.QM_CONFIG.pricing) ? window.QM_CONFIG : null;
+
+  const getPricingRules = () => {
+    // jeśli nie ma configu — fallback na sensowne wartości
+    return (CFG && CFG.pricing) ? CFG.pricing : {
+      retailPct: 0.08,
+      wholesalePct: 0.05,
+      minProfit: 1.5,
+      retailEnds99: true
+    };
+  };
+
   // ===== produkty: z importu CSV (LS) + fallback products.json =====
-  const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1"; // u Ciebie już jest
+  const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
   const FALLBACK_JSON = "/products.json";
 
   const readLS = (k, fallback) => {
@@ -21,8 +35,64 @@
     let h = 0;
     for (let i=0;i<x.length;i++) h = ((h<<5)-h) + x.charCodeAt(i);
     const n = Math.abs(h) % 4;
-    // masz w repo: produkt_1.png, produkt_3.png, produkt_4.png, produkt_5.png
     return ["/produkt_1.png","/produkt_3.png","/produkt_4.png","/produkt_5.png"][n];
+  };
+
+  // ===== helpers ceny zakupu =====
+  const num = (v) => {
+    const n = Number(String(v ?? "").replace(",", "."));
+    return isFinite(n) ? n : 0;
+  };
+
+  const pickBuyNet = (p) => {
+    // Preferuj pola typowo "zakupowe" / netto / cost
+    const candidates = [
+      p.buyNet, p.buy, p.costNet, p.cost, p.purchaseNet, p.purchase,
+      p.netto, p.cenaNetto, p.priceNet, p.net, p.wholesaleNet
+    ];
+    for (const c of candidates) {
+      const n = num(c);
+      if (n > 0) return n;
+    }
+    return 0;
+  };
+
+  const pickFallbackRetail = (p) => {
+    const candidates = [
+      p.priceRetail, p.price, p.cena, p.brutto, p.priceGross, p.gross
+    ];
+    for (const c of candidates) {
+      const n = num(c);
+      if (n > 0) return n;
+    }
+    return 0;
+  };
+
+  const pickFallbackB2B = (p) => {
+    const candidates = [
+      p.priceB2B, p.priceWholesale, p.hurt, p.wholesale, p.b2b, p.b2bPrice
+    ];
+    for (const c of candidates) {
+      const n = num(c);
+      if (n > 0) return n;
+    }
+    return 0;
+  };
+
+  const computePrices = (buyNet, fallbackRetail, fallbackB2B) => {
+    const rules = getPricingRules();
+
+    // Jeżeli mamy buyNet i mamy silnik marży — liczymy automatycznie
+    if (buyNet > 0 && PR && typeof PR.priceFromBuy === "function") {
+      const retail = PR.priceFromBuy(buyNet, "detal", rules);
+      const b2b = PR.priceFromBuy(buyNet, "hurt", rules);
+      return { priceRetail: retail, priceB2B: b2b, buyNet };
+    }
+
+    // Fallback: jeśli nie ma buyNet albo brak silnika — użyj tego co w produkcie
+    const pr = fallbackRetail > 0 ? fallbackRetail : 0;
+    const pb = fallbackB2B > 0 ? fallbackB2B : (pr > 0 ? pr : 0);
+    return { priceRetail: pr, priceB2B: pb, buyNet: buyNet || 0 };
   };
 
   const normalizeProduct = (p) => {
@@ -31,16 +101,17 @@
     const category = p.category || p.kategoria || p.cat || "";
     const supplier = p.supplier || p.hurtownia || p.vendor || "";
 
-    // ceny: zakładamy że już masz “z marżą”
-    const priceRetail = Number(p.priceRetail ?? p.price ?? p.cena ?? p.brutto ?? 0) || 0;
-    const priceB2B = Number(p.priceB2B ?? p.priceWholesale ?? p.hurt ?? p.netto ?? 0) || 0;
-
     const unit = p.unit || p.jm || p.jednostka || "szt";
     const moq = Number(p.moq ?? p.min ?? p.minimum ?? 1) || 1;
 
     const image = p.image || p.img || p.photo || hashPick(name);
-
     const rank = Number(p.rank ?? p.score ?? p.rating ?? 0) || 0;
+
+    // ✅ ceny: bierzemy buyNet i liczymy marżę automatycznie
+    const buyNet = pickBuyNet(p);
+    const fallbackRetail = pickFallbackRetail(p);
+    const fallbackB2B = pickFallbackB2B(p);
+    const prices = computePrices(buyNet, fallbackRetail, fallbackB2B);
 
     return {
       id: String(id),
@@ -52,13 +123,17 @@
       moq,
       image,
       rank,
-      priceRetail,
-      priceB2B
+
+      // zapisujemy też buyNet (przyda się później do splitu zamówień do hurtowni)
+      buyNet: prices.buyNet,
+
+      // ceny sprzedaży (automatyczne)
+      priceRetail: prices.priceRetail,
+      priceB2B: prices.priceB2B
     };
   };
 
   const loadProducts = async () => {
-    // 1) LS z hurtowni (Twoje importy)
     const bySupplier = readLS(LS_PRODUCTS_BY_SUPPLIER, null);
     let out = [];
 
@@ -69,7 +144,7 @@
       }
     }
 
-    // 2) fallback z /products.json
+    // fallback z /products.json
     if (!out.length) {
       try {
         const res = await fetch(FALLBACK_JSON, { cache:"no-store" });
@@ -120,6 +195,9 @@
   // ===== sklep view =====
   let ALL = [];
 
+  const escapeHtml = (s) =>
+    String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+
   const buildCats = () => {
     const sel = $("#cat");
     if (!sel) return;
@@ -128,9 +206,6 @@
     const k = $("#kpiCats");
     if (k) k.textContent = String(cats.length);
   };
-
-  const escapeHtml = (s) =>
-    String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 
   const priceForMode = (p) => (Cart.getMode() === "b2b" ? (p.priceB2B || p.priceRetail) : p.priceRetail);
 
@@ -206,6 +281,8 @@
         const id = btn.getAttribute("data-add");
         const p = ALL.find(x => String(x.id) === String(id));
         if (!p) return;
+
+        // ✅ ważne: do koszyka zapisujemy już policzone ceny
         Cart.upsert(p, 1);
         updateCartCount();
       });
@@ -227,7 +304,11 @@
       const mode = Cart.getMode();
 
       list.innerHTML = cart.items.map(it => {
-        const price = (mode === "b2b" ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0) : (Number(it.priceRetail||0) || 0));
+        const price = (mode === "b2b"
+          ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
+          : (Number(it.priceRetail||0) || 0)
+        );
+
         const line = price * (Number(it.qty||0)||0);
         const moq = Number(it.moq||1)||1;
         const moqWarn = (mode === "b2b" && (Number(it.qty||0)||0) < moq)
@@ -290,7 +371,6 @@
   const bindCartPage = () => {
     $("#clearCart")?.addEventListener("click", () => Cart.clear());
 
-    // rabat/notatka
     const disc = $("#b2bDiscount");
     if (disc) {
       disc.value = String(Cart.getDiscount() || "");
@@ -305,7 +385,6 @@
       note.addEventListener("input", () => Cart.setNote(note.value));
     }
 
-    // profil B2B
     const prof = Cart.getB2BProfile();
     $("#companyName") && ($("#companyName").value = prof.companyName || "");
     $("#companyNip") && ($("#companyNip").value = prof.nip || "");
@@ -324,7 +403,6 @@
       $("#"+id)?.addEventListener("input", persistProfile);
     });
 
-    // generowanie zamówienia
     const gen = $("#generateOrder");
     const copy = $("#copyOrder");
     const out = $("#orderOut");
@@ -392,10 +470,8 @@
     bindModeButtons();
     updateCartCount();
 
-    // jeśli jesteśmy na stronie koszyka, podpinamy funkcje
     if ($("#cartList")) bindCartPage();
 
-    // sklep: ładuj produkty i renderuj
     if ($("#grid")) {
       ALL = await loadProducts();
       buildCats();
@@ -413,7 +489,6 @@
       renderCart();
     });
 
-    // odśwież karty po starcie
     renderAll();
   };
 
