@@ -6,6 +6,16 @@
 <title>Hurtownie – Zarabianie u Szefa</title>
 <link rel="stylesheet" href="styles.css">
 <script defer src="js/hurtownie.js"></script>
+
+<style>
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+  .row .field { flex:1; min-width:240px; }
+  .muted-xs { opacity:.75; font-size:12px; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  .miniTable { width:100%; border-collapse: collapse; margin-top:10px; }
+  .miniTable th, .miniTable td { border-bottom:1px solid rgba(0,0,0,.08); padding:8px 6px; text-align:left; font-size:13px; }
+  .pill { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
+</style>
 </head>
 <body>
 
@@ -13,19 +23,48 @@
   <div class="card">
     <span class="badge">QualitetMarket • Dostawcy</span>
     <h1>System Hurtowni</h1>
-    <p class="muted">Importuj CSV dostawcy i sprawdź ranking opłacalności.</p>
+    <p class="muted">Importuj CSV dostawcy. System zapisze produkty do bazy (LS) i policzy ceny DETAL/HURT automatycznie.</p>
+    <div class="muted-xs" style="margin-top:6px;">
+      Po imporcie wejdź do <span class="mono">sklep.html</span> i zrób <strong>CTRL+F5</strong>.
+    </div>
   </div>
 
   <div class="card">
     <h2>Import CSV Hurtowni</h2>
-    <input type="file" id="csvFile" accept=".csv">
-    <button class="btn-primary" onclick="processCSV()">Analizuj hurtownię</button>
+
+    <div class="row">
+      <div class="field">
+        <label class="muted-xs">Nazwa hurtowni (żeby nie mieszać importów)</label>
+        <input class="input" id="supplierName" placeholder="np. GastroPRO / MasarniaX / NiemcyHurt" />
+      </div>
+
+      <div class="field">
+        <label class="muted-xs">Plik CSV</label>
+        <input type="file" id="csvFile" class="input" accept=".csv">
+      </div>
+
+      <div class="field" style="flex:0; min-width:220px;">
+        <button class="btn-primary" style="width:100%" onclick="processCSV()">Analizuj hurtownię</button>
+        <div class="muted-xs" style="margin-top:6px;">Zapisze: <span class="pill">buyNet</span> <span class="pill">priceRetail</span> <span class="pill">priceB2B</span></div>
+      </div>
+    </div>
+
     <div class="hr"></div>
     <div id="supplierSummary"></div>
+
+    <!-- ✅ Podgląd próbek po imporcie -->
+    <div class="hr"></div>
+    <h3 style="margin:0 0 8px;">Szybki podgląd (5 szt.)</h3>
+    <div class="muted-xs">Pokazuje, czy import zapisał <span class="mono">buyNet</span> oraz czy policzył ceny DETAL/HURT.</div>
+    <button class="btn" style="margin-top:10px;" type="button" onclick="window.qmPreviewLastImport?.()">Pokaż próbkę</button>
+    <div id="previewBox" style="margin-top:10px;"></div>
   </div>
 
   <div class="card">
     <h2>Ranking Produktów</h2>
+    <div class="muted-xs" style="margin-top:-8px; margin-bottom:10px;">
+      (To miejsce możesz później spiąć z rankingiem — teraz najważniejsze jest, że import zapisuje buyNet i ceny z marżą.)
+    </div>
     <table id="resultsTable">
       <thead>
         <tr>
@@ -49,6 +88,63 @@
     Zarabianie u Szefa × QualitetMarket
   </div>
 </div>
+
+<script>
+  // ✅ Preview: czytamy ostatnio importowaną hurtownię z pola supplierName
+  // i pokazujemy 5 pierwszych produktów z localStorage.
+  (function(){
+    const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
+    const money = (n) => {
+      const v = Number(n || 0);
+      return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+    };
+
+    window.qmPreviewLastImport = function(){
+      const box = document.getElementById("previewBox");
+      if (!box) return;
+
+      let db = {};
+      try { db = JSON.parse(localStorage.getItem(LS_PRODUCTS_BY_SUPPLIER) || "{}"); } catch {}
+
+      const sup = (document.getElementById("supplierName")?.value || "GastroPRO").trim() || "GastroPRO";
+      const arr = Array.isArray(db[sup]) ? db[sup] : [];
+
+      if (!arr.length) {
+        box.innerHTML = `<div class="card soft"><strong>Brak danych</strong><div class="muted-xs" style="margin-top:6px;">Zrób import CSV dla hurtowni: <span class="mono">${sup}</span>.</div></div>`;
+        return;
+      }
+
+      const sample = arr.slice(0, 5);
+      box.innerHTML = `
+        <table class="miniTable">
+          <thead>
+            <tr>
+              <th>Produkt</th>
+              <th>buyNet</th>
+              <th>DETAL</th>
+              <th>HURT</th>
+              <th>SKU/EAN</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sample.map(p => `
+              <tr>
+                <td><strong>${String(p.name||"").slice(0,80)}</strong></td>
+                <td class="mono">${money(p.buyNet||0)}</td>
+                <td>${money(p.priceRetail||0)}</td>
+                <td>${money(p.priceB2B||0)}</td>
+                <td class="mono">${(p.sku||"")} ${(p.ean ? " • "+p.ean : "")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        <div class="muted-xs" style="margin-top:10px;">
+          Jeśli <span class="mono">buyNet</span> jest 0 albo ceny są 0 — w CSV brakuje ceny lub ma inny nagłówek.
+        </div>
+      `;
+    };
+  })();
+</script>
 
 </body>
 </html>
