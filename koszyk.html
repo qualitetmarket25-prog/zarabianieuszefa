@@ -118,7 +118,6 @@
 
           <div class="hr"></div>
 
-          <!-- ✅ NOWE: składanie zamówienia do platformy -->
           <h3 style="margin:0 0 8px; font-size:16px;">Złóż zamówienie (platforma)</h3>
           <div class="muted-xs">To zapisuje zamówienie w platformie (MVP: localStorage) i pokazuje je w panelu Zamówień.</div>
 
@@ -146,7 +145,6 @@
 
           <div class="hr"></div>
 
-          <!-- ✅ NOWE: KPI prowizji -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div class="card soft" style="margin:0;">
               <div class="muted-xs">Prowizja platformy (MVP)</div>
@@ -175,14 +173,10 @@
 (function(){
   const VAT_RATE = 0.23;
 
-  // ✅ Marketplace fee (Twoje)
-  const LS_PLATFORM_PCT = "qm_platform_fee_pct"; // opcjonalnie sterowanie z LS
-  const DEFAULT_PLATFORM_FEE_PCT = 0.02;         // 2% brutto (MVP)
+  const LS_PLATFORM_PCT = "qm_platform_fee_pct";
+  const DEFAULT_PLATFORM_FEE_PCT = 0.02;
 
-  // ✅ Store margin (sprzedawcy) jest w LS, ustawiane przez sklep/panel
-  const LS_STORE_MARGIN = "qm_store_margin_pct"; // "0.08"
-
-  // ✅ Orders storage
+  const LS_STORE_MARGIN = "qm_store_margin_pct";
   const LS_ORDERS = "qm_orders_v1";
 
   const money = (n) => {
@@ -200,7 +194,7 @@
     const raw = String(localStorage.getItem(LS_PLATFORM_PCT) || "").trim().replace(",", ".");
     let n = Number(raw);
     if (!isFinite(n) || n < 0) n = DEFAULT_PLATFORM_FEE_PCT;
-    if (n > 1) n = n / 100; // jak ktoś wpisze 2 zamiast 0.02
+    if (n > 1) n = n / 100;
     return Math.max(0, Math.min(0.25, n));
   };
 
@@ -387,8 +381,73 @@
         const txt = state.blocks.get(sup) || "";
         if (!txt) return;
 
+        const { Cart } = window.QM_SHOP || {};
+        if (!Cart) return;
+
+        const cart = Cart.read();
+        const t = Cart.totals();
+
         const subject = `Zamówienie QualitetMarket – ${sup} – ${new Date().toLocaleDateString("pl-PL")}`;
         const body = txt;
+
+        // ✅ NOWE: zapis zamówienia także przy mailto
+        try {
+          if (cart.items?.length) {
+            const storeSlug = String(localStorage.getItem("qm_active_store_v1") || localStorage.getItem("qm_store_slug") || "default").trim() || "default";
+            const platformPct = getPlatformPct();
+            const storePct = getStoreMarginPct();
+
+            const platformFee = (Number(t.gross||0)||0) * platformPct;
+            const sellerMargin = (Number(t.gross||0)||0) * storePct;
+
+            const supplierBreakdown = computeSupplierBreakdown(cart.items, t.mode);
+            const id = `ord_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+            const order = {
+              id,
+              ts: Date.now(),
+              createdAt: new Date().toISOString(),
+              storeSlug,
+              mode: t.mode,
+              items: cart.items.map(it => ({
+                id: it.id,
+                sku: it.sku,
+                name: it.name,
+                supplier: it.supplier,
+                qty: Number(it.qty||0)||0,
+                unit: it.unit,
+                moq: it.moq,
+                priceRetail: Number(it.priceRetail||0)||0,
+                priceB2B: Number(it.priceB2B||0)||0,
+                image: it.image
+              })),
+              totals: {
+                items: Number(t.items||0)||0,
+                net: Number(t.net||0)||0,
+                vat: Number(t.vat||0)||0,
+                gross: Number(t.gross||0)||0,
+                moqOk: !!t.moqOk
+              },
+              fees: {
+                platformPct,
+                storeMarginPct: storePct,
+                platformFee,
+                sellerMargin
+              },
+              supplierBreakdown,
+              note: Cart.getNote ? (Cart.getNote() || "") : "",
+              b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {},
+              meta: { action:"mailto", supplier: sup, subject }
+            };
+
+            const arr = readJSON(LS_ORDERS, []);
+            const list = Array.isArray(arr) ? arr : [];
+            list.push(order);
+            writeJSON(LS_ORDERS, list);
+
+            window.dispatchEvent(new CustomEvent("qm:orders"));
+          }
+        } catch {}
 
         const url = `mailto:?subject=${enc(subject)}&body=${enc(body)}`;
         window.location.href = url;
@@ -416,7 +475,6 @@
     try { await navigator.clipboard.writeText(out.value); } catch {}
   });
 
-  // ✅ Prowizje w podsumowaniu
   const renderFees = () => {
     const { Cart } = window.QM_SHOP || {};
     if (!Cart) return;
@@ -439,7 +497,6 @@
     if (fsm) fsm.textContent = `Stawka sklepu: ${(storePct*100).toFixed(1)}% (z qm_store_margin_pct)`;
   };
 
-  // ✅ Zapis zamówienia do platformy
   const saveOrderToPlatform = () => {
     const { Cart } = window.QM_SHOP || {};
     if (!Cart) return;
@@ -458,7 +515,6 @@
       return;
     }
 
-    // (opcjonalne) miękka walidacja B2B
     if (t.mode === "b2b") {
       const p = Cart.getB2BProfile();
       if (!String(p.companyName||"").trim() || !String(p.nip||"").trim()) {
@@ -475,12 +531,12 @@
     const sellerMargin = (Number(t.gross||0)||0) * storePct;
 
     const supplierBreakdown = computeSupplierBreakdown(cart.items, t.mode);
-
     const id = `ord_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
     const order = {
       id,
       ts: Date.now(),
+      createdAt: new Date().toISOString(),
       storeSlug,
       mode: t.mode,
       items: cart.items.map(it => ({
@@ -510,7 +566,7 @@
       },
       supplierBreakdown,
       note: Cart.getNote ? (Cart.getNote() || "") : "",
-      b2bProfile: Cart.getB2BProfile ? Cart.getB2BProfile() : {}
+      b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {}
     };
 
     const arr = readJSON(LS_ORDERS, []);
@@ -521,9 +577,7 @@
     $("orderMsg").textContent = `✅ Zapisano zamówienie: ${id} (sklep: ${storeSlug}). Przenoszę do panelu zamówień…`;
     $("orderMsg").style.color = "rgba(34,197,94,.95)";
 
-    // MVP: czyścimy koszyk po złożeniu (jak w normalnym sklepie)
     try { Cart.clear(); } catch {}
-
     setTimeout(() => { window.location.href = "./zamowienia.html"; }, 450);
   };
 
@@ -535,7 +589,6 @@
     renderFees();
   });
 
-  // start: render fees
   setTimeout(renderFees, 0);
 })();
 </script>
