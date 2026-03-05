@@ -23,14 +23,14 @@
   <div class="wrap">
     <div class="card">
       <div class="h">Panel sklepu</div>
-      <div class="muted">MVP: rejestr sklepów + aktywny sklep. Tu masz link i szybkie akcje.</div>
+      <div class="muted">MVP: zarządzanie sklepami w rejestrze <code>qm_stores_v1</code> + aktywny sklep.</div>
 
       <div id="box" style="margin-top:14px"></div>
 
       <div class="row" style="margin-top:14px">
-        <button class="btn btn-primary" id="openShop">Otwórz sklep</button>
+        <button class="btn btn-primary" id="openShop">Otwórz aktywny sklep</button>
         <button class="btn btn-ghost" id="openGen">Generator sklepów</button>
-        <button class="btn btn-ghost" id="switch">Zmień aktywny sklep</button>
+        <a class="btn btn-ghost" href="sklep.html" style="text-decoration:none;display:inline-block">Sklep główny</a>
       </div>
 
       <div id="list" style="margin-top:18px"></div>
@@ -47,83 +47,108 @@
 
   const $ = (id) => document.getElementById(id);
 
-  const loadStores = () => {
-    try { return JSON.parse(localStorage.getItem(LS_STORES) || "[]"); }
-    catch { return []; }
-  };
+  const slugify = (s) => String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 
-  const activeSlug = () => (localStorage.getItem(LS_ACTIVE) || "").trim();
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
+  };
 
   const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
 
-  const setActive = (slug, marginPct) => {
-    localStorage.setItem(LS_ACTIVE, slug);
-    localStorage.setItem(LS_MARGIN, String((marginPct || 0)/100));
+  const loadMap = () => {
+    const reg = readJSON(LS_STORES, {});
+    if (reg && typeof reg === "object" && !Array.isArray(reg)) return reg;
+    return {};
+  };
+
+  const getActiveSlug = () => slugify(localStorage.getItem(LS_ACTIVE) || "");
+
+  const setActive = (slug) => {
+    const s = slugify(slug);
+    if (!s) return;
+    const map = loadMap();
+    const e = map[s];
+    localStorage.setItem(LS_ACTIVE, s);
+    const m = (e && typeof e.marginPct !== "undefined") ? Number(e.marginPct) : 0;
+    localStorage.setItem(LS_MARGIN, String(Math.max(0, Math.min(1, isFinite(m)?m:0))));
+    localStorage.setItem("qm_store_slug", s);
   };
 
   const render = () => {
-    const stores = loadStores();
-    const slug = activeSlug() || stores[0]?.slug || "";
-    const store = stores.find(s => s.slug === slug);
+    const map = loadMap();
+    const slugs = Object.keys(map);
+    const active = getActiveSlug() || slugs[0] || "";
 
-    if (!store) {
+    if (!slugs.length) {
       $("box").innerHTML = `Brak sklepów. Wejdź w <a href="generator-sklepu.html">generator</a> i utwórz pierwszy sklep.`;
       $("list").innerHTML = "";
       return;
     }
 
-    const url = makeUrl(store.slug);
+    if (active && !getActiveSlug()) setActive(active);
+
+    const a = getActiveSlug() || active;
+    const e = map[a] || {};
+    const title = String(e.title || a.replaceAll("-", " "));
+    const marginPct01 = Number(e.marginPct || 0) || 0;
+    const marginPct = Math.round(marginPct01 * 1000) / 10; // 1 miejsce po przecinku
+    const url = makeUrl(a);
+
     $("box").innerHTML = `
-      <div><b>Aktywny sklep:</b> ${store.title} (<code>${store.slug}</code>)</div>
-      <div><b>Marża:</b> ${store.marginPct}%</div>
-      <div><b>Email:</b> ${store.email || "-"}</div>
+      <div><b>Aktywny sklep:</b> ${title} (<code>${a}</code>)</div>
+      <div><b>Marża:</b> ${marginPct}%</div>
+      <div><b>Email:</b> ${String(e.email || "-")}</div>
       <div style="margin-top:8px">Link: <a href="${url}" target="_blank" rel="noopener">${url}</a></div>
     `;
 
     $("list").innerHTML = `
-      <div style="margin-top:10px" class="muted">Twoje sklepy:</div>
+      <div class="muted" style="margin-top:10px">Twoje sklepy:</div>
       <table>
         <thead><tr><th>Sklep</th><th>Slug</th><th>Marża</th><th>Akcja</th></tr></thead>
         <tbody>
-          ${stores.map(s => `
-            <tr>
-              <td><b>${s.title}</b></td>
-              <td><code>${s.slug}</code></td>
-              <td>${s.marginPct}%</td>
-              <td>
-                <button class="btn btn-ghost" data-set="${s.slug}">Ustaw aktywny</button>
-                <a class="btn btn-ghost" style="display:inline-block;text-decoration:none" href="${makeUrl(s.slug)}" target="_blank">Otwórz</a>
-              </td>
-            </tr>
-          `).join("")}
+          ${slugs.map(s => {
+            const x = map[s] || {};
+            const t = String(x.title || s.replaceAll("-", " "));
+            const m01 = Number(x.marginPct || 0) || 0;
+            const mp = Math.round(m01 * 1000) / 10;
+            return `
+              <tr>
+                <td><b>${t}</b></td>
+                <td><code>${s}</code></td>
+                <td>${mp}%</td>
+                <td>
+                  <button class="btn btn-ghost" data-set="${s}">Ustaw aktywny</button>
+                  <a class="btn btn-ghost" style="display:inline-block;text-decoration:none" href="${makeUrl(s)}" target="_blank">Otwórz</a>
+                </td>
+              </tr>
+            `;
+          }).join("")}
         </tbody>
       </table>
     `;
 
     $("list").querySelectorAll("[data-set]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-set");
-        const st = stores.find(x => x.slug === target);
-        setActive(st.slug, st.marginPct);
+        const s = btn.getAttribute("data-set");
+        setActive(s);
         render();
       });
     });
   };
 
   $("openShop").addEventListener("click", () => {
-    const stores = loadStores();
-    const slug = activeSlug() || stores[0]?.slug || "";
-    if (!slug) return location.href = "generator-sklepu.html";
-    location.href = `sklep.html?store=${encodeURIComponent(slug)}`;
+    const a = getActiveSlug();
+    if (!a) return location.href = "generator-sklepu.html";
+    location.href = `sklep.html?store=${encodeURIComponent(a)}`;
   });
 
   $("openGen").addEventListener("click", () => location.href = "generator-sklepu.html");
-
-  $("switch").addEventListener("click", () => {
-    const stores = loadStores();
-    if (!stores.length) return location.href = "generator-sklepu.html";
-    alert("Kliknij 'Ustaw aktywny' przy wybranym sklepie w tabeli.");
-  });
 
   render();
 })();
