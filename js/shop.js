@@ -1,3 +1,6 @@
+// js/shop.js (IIFE)
+// Sklep + koszyk (UI) + multi-store link sync + produkty z LS/JSON + ceny z pricing.js
+
 (() => {
   "use strict";
 
@@ -95,13 +98,16 @@
       const fromUrl = slugify(u.searchParams.get("store") || "");
       if (fromUrl) return fromUrl;
     } catch {}
-    const fromLS = slugify(localStorage.getItem(LS_ACTIVE) || "") || slugify(localStorage.getItem("qm_store_slug") || "");
-    return fromLS || "default";
+    const fromLS =
+      slugify(localStorage.getItem(LS_ACTIVE) || "") ||
+      slugify(localStorage.getItem("qm_store_slug") || "");
+    return fromLS || "";
   };
 
   const withStore = (href) => {
     const s = getActiveStoreSlug();
     if (!href) return href;
+    if (!s) return href; // brak aktywnego sklepu = nie dopinaj
     if (String(href).includes("store=")) return href;
     const sep = String(href).includes("?") ? "&" : "?";
     return `${href}${sep}store=${encodeURIComponent(s)}`;
@@ -110,11 +116,9 @@
   const syncStoreLinks = () => {
     const s = getActiveStoreSlug();
 
-    // badge (opcjonalnie, jeśli dodasz w sklep.html: <span id="activeStoreBadge">...</span>)
     const badge = document.getElementById("activeStoreBadge");
-    if (badge) badge.textContent = `store: ${s}`;
+    if (badge) badge.textContent = s ? `store: ${s}` : "";
 
-    // linki w akcjach nagłówka
     const shopActions = document.querySelector(".shop-actions");
     if (shopActions) {
       shopActions.querySelectorAll("a[href]").forEach(a => {
@@ -130,7 +134,6 @@
       });
     }
 
-    // globalnie: wszystkie linki do kluczowych stron
     document.querySelectorAll("a[href]").forEach(a => {
       const href = a.getAttribute("href") || "";
       if (
@@ -145,7 +148,7 @@
   };
 
   // ===== marża/config z window (wstrzyknięte w sklep.html) =====
-  const PR = (window.QM_PRICE && window.QM_PRICE.priceFromBuy) ? window.QM_PRICE : null;
+  const PR = (window.QM_PRICE && (window.QM_PRICE.priceFromProduct || window.QM_PRICE.priceFromBuy)) ? window.QM_PRICE : null;
   const CFG = (window.QM_CONFIG && window.QM_CONFIG.pricing) ? window.QM_CONFIG : null;
 
   const getPricingRules = () => {
@@ -159,7 +162,8 @@
 
   // ===== produkty: z importu CSV (LS) + fallback products.json =====
   const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
-  const FALLBACK_JSON = "/products.json";
+  // ⚠️ ważne na GitHub Pages projektu: nie używaj "/products.json"
+  const FALLBACK_JSON = "./products.json";
 
   const readLS = (k, fallback) => {
     try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
@@ -170,7 +174,7 @@
     let h = 0;
     for (let i=0;i<x.length;i++) h = ((h<<5)-h) + x.charCodeAt(i);
     const n = Math.abs(h) % 4;
-    return ["/produkt_1.png","/produkt_3.png","/produkt_4.png","/produkt_5.png"][n];
+    return ["./produkt_1.png","./produkt_3.png","./produkt_4.png","./produkt_5.png"][n];
   };
 
   // ===== helpers ceny zakupu =====
@@ -216,15 +220,25 @@
     return 0;
   };
 
-  const computePrices = (buyNet, fallbackRetail, fallbackB2B) => {
+  // ===== ceny: preferuj QM_PRICE.priceFromProduct (nowy pricing.js) =====
+  const computePrices = (rawProduct, buyNet, fallbackRetail, fallbackB2B) => {
     const rules = getPricingRules();
 
+    // 1) jeśli mamy nowy API: priceFromProduct()
+    if (buyNet > 0 && PR && typeof PR.priceFromProduct === "function") {
+      const retail = PR.priceFromProduct(rawProduct, "detal", rules);
+      const b2b = PR.priceFromProduct(rawProduct, "hurt", rules);
+      return { priceRetail: retail, priceB2B: b2b, buyNet };
+    }
+
+    // 2) fallback: priceFromBuy()
     if (buyNet > 0 && PR && typeof PR.priceFromBuy === "function") {
       const retail = PR.priceFromBuy(buyNet, "detal", rules);
       const b2b = PR.priceFromBuy(buyNet, "hurt", rules);
       return { priceRetail: retail, priceB2B: b2b, buyNet };
     }
 
+    // 3) total fallback: bierz ceny z danych
     const pr = fallbackRetail > 0 ? fallbackRetail : 0;
     const pb = fallbackB2B > 0 ? fallbackB2B : (pr > 0 ? pr : 0);
     return { priceRetail: pr, priceB2B: pb, buyNet: buyNet || 0 };
@@ -245,7 +259,7 @@
     const buyNet = pickBuyNet(p);
     const fallbackRetail = pickFallbackRetail(p);
     const fallbackB2B = pickFallbackB2B(p);
-    const prices = computePrices(buyNet, fallbackRetail, fallbackB2B);
+    const prices = computePrices(p, buyNet, fallbackRetail, fallbackB2B);
 
     return {
       id: String(id),
@@ -335,7 +349,11 @@
     if (k) k.textContent = String(cats.length);
   };
 
-  const priceForMode = (p) => (Cart.getMode() === "b2b" ? (p.priceB2B || p.priceRetail) : p.priceRetail);
+  const priceForMode = (p) => {
+    const mode = Cart.getMode();
+    const v = (mode === "b2b" ? (p.priceB2B || p.priceRetail) : p.priceRetail);
+    return (isFinite(Number(v)) ? Number(v) : 0);
+  };
 
   const renderGrid = () => {
     const grid = $("#grid");
@@ -358,7 +376,6 @@
     }
     if (cat) list = list.filter(p => p.category === cat);
 
-    const mode = Cart.getMode();
     if (sort === "rank_desc") list.sort((a,b)=> (b.rank||0)-(a.rank||0));
     if (sort === "price_asc") list.sort((a,b)=> priceForMode(a)-priceForMode(b));
     if (sort === "price_desc") list.sort((a,b)=> priceForMode(b)-priceForMode(a));
@@ -372,6 +389,8 @@
       return;
     }
     if (empty) empty.style.display = "none";
+
+    const mode = Cart.getMode();
 
     grid.innerHTML = list.map(p => {
       const price = priceForMode(p);
@@ -397,7 +416,6 @@
             </div>
             <div class="p-actions">
               <button class="btn btn-sm btn-primary" data-add="${escapeHtml(p.id)}">Dodaj</button>
-              <!-- ✅ zawsze noś store -->
               <a class="btn btn-sm" href="${withStore("./koszyk.html")}">Koszyk</a>
             </div>
           </div>
@@ -412,7 +430,6 @@
         if (!p) return;
         Cart.upsert(p, 1);
         updateCartCount();
-        // po dodaniu też dopnij linki
         syncStoreLinks();
       });
     });
@@ -496,7 +513,7 @@
     if (mw) mw.style.display = (t.mode === "b2b" && !t.moqOk) ? "" : "none";
   };
 
-  // ===== koszyk page bind (zostawiam jak było) =====
+  // ===== koszyk page bind =====
   const bindCartPage = () => {
     $("#clearCart")?.addEventListener("click", () => Cart.clear());
 
@@ -544,7 +561,6 @@
     bindModeButtons();
     updateCartCount();
 
-    // ✅ od razu dopnij linki store=...
     syncStoreLinks();
 
     if ($("#cartList")) bindCartPage();
@@ -568,7 +584,6 @@
       syncStoreLinks();
     });
 
-    // gdy zmieni się sklep (multi-store) — przelicz ceny i odśwież grid + linki
     window.addEventListener("qm:store", async () => {
       syncStoreLinks();
       if ($("#grid")) {
