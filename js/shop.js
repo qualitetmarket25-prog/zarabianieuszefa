@@ -131,10 +131,15 @@
     return isFinite(n) ? n : 0;
   };
 
+  // ✅ FIX: Twoje dane z hurtowni mają "price_net" — wcześniej nie było w ogóle obsługiwane
   const pickBuyNet = (p) => {
     const candidates = [
+      // koszt/zakup
       p.buyNet, p.buy, p.costNet, p.cost, p.purchaseNet, p.purchase,
-      p.netto, p.cenaNetto, p.priceNet, p.net, p.wholesaleNet
+      // popularne nazwy netto
+      p.netto, p.cenaNetto, p.priceNet, p.net, p.wholesaleNet,
+      // ✅ snake_case / exporty CSV
+      p.price_net, p.cena_netto, p.net_price, p.wholesale_net
     ];
     for (const c of candidates) {
       const n = num(c);
@@ -145,7 +150,9 @@
 
   const pickFallbackRetail = (p) => {
     const candidates = [
-      p.priceRetail, p.price, p.cena, p.brutto, p.priceGross, p.gross
+      p.priceRetail, p.price, p.cena, p.brutto, p.priceGross, p.gross,
+      // ✅ jeśli ktoś wrzuci tylko netto, niech retail też coś pokaże (awaryjnie)
+      p.price_net, p.netto, p.net
     ];
     for (const c of candidates) {
       const n = num(c);
@@ -156,7 +163,9 @@
 
   const pickFallbackB2B = (p) => {
     const candidates = [
-      p.priceB2B, p.priceWholesale, p.hurt, p.wholesale, p.b2b, p.b2bPrice
+      p.priceB2B, p.priceWholesale, p.hurt, p.wholesale, p.b2b, p.b2bPrice,
+      // ✅ typowo hurtownie dają tylko netto
+      p.price_net, p.netto, p.net
     ];
     for (const c of candidates) {
       const n = num(c);
