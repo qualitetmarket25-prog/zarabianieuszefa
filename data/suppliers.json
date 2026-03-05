@@ -1,0 +1,25 @@
+{
+  "GastroPRO": {
+    "email": "zamowienia@gastropro.pl",
+    "phone": "",
+    "api": ""
+  },
+
+  "MasarniaTech": {
+    "email": "hurt@masarniatech.pl",
+    "phone": "",
+    "api": ""
+  },
+
+  "OpakowaniaPRO": {
+    "email": "zamowienia@opakowaniapro.pl",
+    "phone": "",
+    "api": ""
+  },
+
+  "BRAK_HURTOWNI": {
+    "email": "",
+    "phone": "",
+    "api": ""
+  }
+}
