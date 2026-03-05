@@ -1,60 +1,59 @@
 // js/pricing.js
-// Silnik cen: marża DETAL / HURT + zaokrąglenia
+// Silnik cen QualitetMarket (marża platformy + marża sklepu)
 
-export function round2(x) {
-  const n = Number(x);
-  if (!isFinite(n)) return 0;
-  return Math.round((n + Number.EPSILON) * 100) / 100;
+(function(){
+
+function round2(v){
+  return Math.round((Number(v) + Number.EPSILON) * 100) / 100;
 }
 
-// detal -> końcówka .99
-export function roundTo99(x) {
-  const n = Number(x);
-  if (!isFinite(n) || n <= 0) return 0;
-  const zl = Math.floor(n);
-  return zl + 0.99;
+function formatPLN(v){
+  const n = Number(v || 0);
+  return n.toLocaleString("pl-PL", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " zł";
 }
 
-/**
- * buyNet: cena zakupu netto (liczba)
- * mode: "detal" | "hurt"
- * rules:
- *  {
- *    retailPct: 0.08,
- *    wholesalePct: 0.05,
- *    minProfit: 1.5,
- *    retailEnds99: true
- *  }
- */
-export function priceFromBuy(buyNet, mode, rules) {
-  const buy = Number(buyNet || 0);
-  if (!isFinite(buy) || buy <= 0) return 0;
+/*
+buyNet = cena zakupu z hurtowni
+mode = detal / hurt
+*/
+function priceFromBuy(buyNet, mode="detal"){
 
-  const r = rules || {};
-  const pct = mode === "hurt" ? Number(r.wholesalePct ?? 0.05) : Number(r.retailPct ?? 0.08);
+  const base = Number(buyNet || 0);
 
-  let sell = buy * (1 + pct);
+  // marża platformy
+  const platformMargin =
+    mode === "hurt"
+      ? (window.QM_CONFIG?.pricing?.wholesalePct || 0.05)
+      : (window.QM_CONFIG?.pricing?.retailPct || 0.08);
 
-  // minimalna marża kwotowa
-  const minProfit = Number(r.minProfit ?? 0);
-  const minSell = buy + (isFinite(minProfit) ? minProfit : 0);
-  if (sell < minSell) sell = minSell;
+  // marża sklepu użytkownika
+  const storeMargin =
+    Number(localStorage.getItem("qm_store_margin") || 0);
 
-  // detal końcówka .99
-  if (mode !== "hurt" && r.retailEnds99) {
-    sell = roundTo99(sell);
-  } else {
-    sell = round2(sell);
+  const margin = platformMargin + storeMargin;
+
+  let price = base * (1 + margin);
+
+  const minProfit = window.QM_CONFIG?.pricing?.minProfit || 1;
+
+  if(price - base < minProfit){
+    price = base + minProfit;
   }
-  return sell;
+
+  if(mode === "detal" && window.QM_CONFIG?.pricing?.retailEnds99){
+    price = Math.floor(price) + 0.99;
+  }
+
+  return round2(price);
 }
 
-// helper: format PL
-export function formatPLN(x) {
-  const n = round2(x);
-  try {
-    return new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" }).format(n);
-  } catch {
-    return `${n.toFixed(2)} zł`;
-  }
-}
+window.QM_PRICE = {
+  priceFromBuy,
+  formatPLN,
+  round2
+};
+
+})();
