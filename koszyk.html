@@ -35,6 +35,8 @@
         <div class="shop-actions">
           <a class="btn btn-sm" href="./sklep.html">← Sklep</a>
           <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+          <a class="btn btn-sm" href="./platforma.html">Platforma</a>
+          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
           <button class="btn btn-danger btn-sm" id="clearCart" type="button">Wyczyść</button>
         </div>
       </div>
@@ -114,6 +116,18 @@
           <div id="supActions" style="margin-top:10px;"></div>
           <div id="splitInfo" class="muted-xs" style="margin-top:10px;"></div>
 
+          <div class="hr"></div>
+
+          <!-- ✅ NOWE: składanie zamówienia do platformy -->
+          <h3 style="margin:0 0 8px; font-size:16px;">Złóż zamówienie (platforma)</h3>
+          <div class="muted-xs">To zapisuje zamówienie w platformie (MVP: localStorage) i pokazuje je w panelu Zamówień.</div>
+
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="placeOrder" type="button">Złóż zamówienie (zapisz)</button>
+            <a class="btn" href="./zamowienia.html">Otwórz panel zamówień</a>
+          </div>
+
+          <div id="orderMsg" class="muted-xs" style="margin-top:10px;"></div>
         </div>
 
         <div class="card">
@@ -131,8 +145,24 @@
           </div>
 
           <div class="hr"></div>
+
+          <!-- ✅ NOWE: KPI prowizji -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="card soft" style="margin:0;">
+              <div class="muted-xs">Prowizja platformy (MVP)</div>
+              <div style="font-weight:900; margin-top:4px;" id="feePlatform">0,00 zł</div>
+              <div class="muted-xs" id="feePlatformMeta" style="margin-top:4px;"></div>
+            </div>
+            <div class="card soft" style="margin:0;">
+              <div class="muted-xs">Marża sprzedawcy (MVP)</div>
+              <div style="font-weight:900; margin-top:4px;" id="feeSeller">0,00 zł</div>
+              <div class="muted-xs" id="feeSellerMeta" style="margin-top:4px;"></div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
           <div class="muted-xs">
-            Następny etap: mapowanie e-maili/API hurtowni (żeby mailto był automatycznie do właściwego adresu).
+            Następny etap: backend + webhook płatności + realne zamówienia dla hurtowni.
           </div>
         </div>
       </div>
@@ -145,6 +175,16 @@
 (function(){
   const VAT_RATE = 0.23;
 
+  // ✅ Marketplace fee (Twoje)
+  const LS_PLATFORM_PCT = "qm_platform_fee_pct"; // opcjonalnie sterowanie z LS
+  const DEFAULT_PLATFORM_FEE_PCT = 0.02;         // 2% brutto (MVP)
+
+  // ✅ Store margin (sprzedawcy) jest w LS, ustawiane przez sklep/panel
+  const LS_STORE_MARGIN = "qm_store_margin_pct"; // "0.08"
+
+  // ✅ Orders storage
+  const LS_ORDERS = "qm_orders_v1";
+
   const money = (n) => {
     const v = Number(n || 0);
     return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
@@ -152,6 +192,25 @@
 
   const esc = (s) => String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
   const enc = (s) => encodeURIComponent(String(s ?? ""));
+
+  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
+  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+  const getPlatformPct = () => {
+    const raw = String(localStorage.getItem(LS_PLATFORM_PCT) || "").trim().replace(",", ".");
+    let n = Number(raw);
+    if (!isFinite(n) || n < 0) n = DEFAULT_PLATFORM_FEE_PCT;
+    if (n > 1) n = n / 100; // jak ktoś wpisze 2 zamiast 0.02
+    return Math.max(0, Math.min(0.25, n));
+  };
+
+  const getStoreMarginPct = () => {
+    const raw = String(localStorage.getItem(LS_STORE_MARGIN) || "").trim().replace(",", ".");
+    let n = Number(raw);
+    if (!isFinite(n) || n < 0) n = 0;
+    if (n > 1) n = n / 100;
+    return Math.max(0, Math.min(0.8, n));
+  };
 
   const groupBySupplier = (items) => {
     const map = new Map();
@@ -161,6 +220,30 @@
       map.get(sup).push(it);
     }
     return map;
+  };
+
+  const priceForMode = (it, mode) => (
+    mode === "b2b"
+      ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
+      : (Number(it.priceRetail||0) || 0)
+  );
+
+  const computeSupplierBreakdown = (items, mode) => {
+    const out = {};
+    const bySupplier = groupBySupplier(items);
+    for (const [sup, arr] of bySupplier.entries()) {
+      let net = 0;
+      let count = 0;
+      for (const it of arr) {
+        const qty = Number(it.qty||0)||0;
+        const price = priceForMode(it, mode);
+        net += qty * price;
+        count += qty;
+      }
+      const gross = (mode === "b2b") ? (net * (1 + VAT_RATE)) : net;
+      out[sup] = { items: count, net, gross };
+    }
+    return out;
   };
 
   const buildSupplierBlock = (sup, items, mode, profile, noteText) => {
@@ -193,11 +276,7 @@
       const moq = Number(it.moq || 1) || 1;
       if (mode === "b2b" && qty < moq) moqOk = false;
 
-      const price = (mode === "b2b"
-        ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
-        : (Number(it.priceRetail||0) || 0)
-      );
-
+      const price = priceForMode(it, mode);
       sum += qty * price;
 
       lines.push(`- ${it.name} | SKU: ${it.sku || it.id} | Ilość: ${qty} ${it.unit || "szt"} | Cena: ${price.toFixed(2)} | MOQ: ${moq}`);
@@ -267,8 +346,6 @@
       return;
     }
 
-    // Na MVP email adresu hurtowni nie znamy -> mailto bez adresu (użytkownik wpisze / ma ustawiony domyślny)
-    // W kolejnym etapie zrobimy mapę: supplier -> email.
     box.innerHTML = `
       <table class="miniTable">
         <thead>
@@ -294,7 +371,6 @@
       </div>
     `;
 
-    // bind copy
     box.querySelectorAll("[data-copy]").forEach(btn => {
       btn.addEventListener("click", async () => {
         const sup = btn.getAttribute("data-copy");
@@ -304,7 +380,6 @@
       });
     });
 
-    // bind mailto
     box.querySelectorAll("[data-mail]").forEach(a => {
       a.addEventListener("click", (ev) => {
         ev.preventDefault();
@@ -315,7 +390,6 @@
         const subject = `Zamówienie QualitetMarket – ${sup} – ${new Date().toLocaleDateString("pl-PL")}`;
         const body = txt;
 
-        // mailto bez adresu (MVP)
         const url = `mailto:?subject=${enc(subject)}&body=${enc(body)}`;
         window.location.href = url;
       });
@@ -342,10 +416,127 @@
     try { await navigator.clipboard.writeText(out.value); } catch {}
   });
 
+  // ✅ Prowizje w podsumowaniu
+  const renderFees = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
+
+    const t = Cart.totals();
+    const platformPct = getPlatformPct();
+    const storePct = getStoreMarginPct();
+
+    const platformFee = (Number(t.gross||0)||0) * platformPct;
+    const sellerMargin = (Number(t.gross||0)||0) * storePct;
+
+    const fp = $("feePlatform");
+    const fpm = $("feePlatformMeta");
+    const fs = $("feeSeller");
+    const fsm = $("feeSellerMeta");
+
+    if (fp) fp.textContent = money(platformFee);
+    if (fpm) fpm.textContent = `Stawka: ${(platformPct*100).toFixed(1)}% brutto (MVP)`;
+    if (fs) fs.textContent = money(sellerMargin);
+    if (fsm) fsm.textContent = `Stawka sklepu: ${(storePct*100).toFixed(1)}% (z qm_store_margin_pct)`;
+  };
+
+  // ✅ Zapis zamówienia do platformy
+  const saveOrderToPlatform = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
+
+    const cart = Cart.read();
+    const t = Cart.totals();
+
+    if (!cart.items?.length) {
+      $("orderMsg").textContent = "Koszyk pusty — dodaj produkty.";
+      return;
+    }
+
+    if (t.mode === "b2b" && !t.moqOk) {
+      $("orderMsg").textContent = "Nie można złożyć zamówienia: są pozycje poniżej MOQ (B2B).";
+      $("orderMsg").style.color = "rgba(245,158,11,.95)";
+      return;
+    }
+
+    // (opcjonalne) miękka walidacja B2B
+    if (t.mode === "b2b") {
+      const p = Cart.getB2BProfile();
+      if (!String(p.companyName||"").trim() || !String(p.nip||"").trim()) {
+        $("orderMsg").textContent = "Uwaga: B2B bez firmy/NIP — możesz uzupełnić, ale zapis działa (MVP).";
+        $("orderMsg").style.color = "rgba(245,158,11,.95)";
+      }
+    }
+
+    const storeSlug = String(localStorage.getItem("qm_active_store_v1") || localStorage.getItem("qm_store_slug") || "default").trim() || "default";
+    const platformPct = getPlatformPct();
+    const storePct = getStoreMarginPct();
+
+    const platformFee = (Number(t.gross||0)||0) * platformPct;
+    const sellerMargin = (Number(t.gross||0)||0) * storePct;
+
+    const supplierBreakdown = computeSupplierBreakdown(cart.items, t.mode);
+
+    const id = `ord_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+    const order = {
+      id,
+      ts: Date.now(),
+      storeSlug,
+      mode: t.mode,
+      items: cart.items.map(it => ({
+        id: it.id,
+        sku: it.sku,
+        name: it.name,
+        supplier: it.supplier,
+        qty: Number(it.qty||0)||0,
+        unit: it.unit,
+        moq: it.moq,
+        priceRetail: Number(it.priceRetail||0)||0,
+        priceB2B: Number(it.priceB2B||0)||0,
+        image: it.image
+      })),
+      totals: {
+        items: Number(t.items||0)||0,
+        net: Number(t.net||0)||0,
+        vat: Number(t.vat||0)||0,
+        gross: Number(t.gross||0)||0,
+        moqOk: !!t.moqOk
+      },
+      fees: {
+        platformPct,
+        storeMarginPct: storePct,
+        platformFee,
+        sellerMargin
+      },
+      supplierBreakdown,
+      note: Cart.getNote ? (Cart.getNote() || "") : "",
+      b2bProfile: Cart.getB2BProfile ? Cart.getB2BProfile() : {}
+    };
+
+    const arr = readJSON(LS_ORDERS, []);
+    const list = Array.isArray(arr) ? arr : [];
+    list.push(order);
+    writeJSON(LS_ORDERS, list);
+
+    $("orderMsg").textContent = `✅ Zapisano zamówienie: ${id} (sklep: ${storeSlug}). Przenoszę do panelu zamówień…`;
+    $("orderMsg").style.color = "rgba(34,197,94,.95)";
+
+    // MVP: czyścimy koszyk po złożeniu (jak w normalnym sklepie)
+    try { Cart.clear(); } catch {}
+
+    setTimeout(() => { window.location.href = "./zamowienia.html"; }, 450);
+  };
+
+  $("placeOrder")?.addEventListener("click", saveOrderToPlatform);
+
   window.addEventListener("qm:cart", () => {
     const out = $("splitOut");
     if (out && out.value) generateSplit();
+    renderFees();
   });
+
+  // start: render fees
+  setTimeout(renderFees, 0);
 })();
 </script>
 
