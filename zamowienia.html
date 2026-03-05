@@ -21,6 +21,8 @@
     .right{text-align:right}
     .row-actions{display:flex;gap:8px;flex-wrap:wrap}
     .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.12);font-size:12px}
+    .select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px;font-size:13px}
+    .btn-xs{padding:6px 8px;font-size:12px;border-radius:10px}
   </style>
 </head>
 
@@ -29,8 +31,8 @@
     <div class="hero-card">
       <div class="shop-top">
         <div>
-          <h1 class="h1">Zamówienia (MVP)</h1>
-          <p class="p">Panel KPI + rozbicie per hurtownia. Źródło: localStorage <span class="mono">qm_orders_v1</span>.</p>
+          <h1 class="h1">Zamówienia</h1>
+          <p class="p">Panel marketplace (statusy + eksport). Źródło: localStorage <span class="mono">qm_orders_v1</span>.</p>
         </div>
         <div class="shop-actions">
           <a class="btn btn-sm" href="./platforma.html">Platforma</a>
@@ -49,12 +51,23 @@
           <input class="input" id="storeFilter" placeholder="np. szef / masarnia24 / default" />
         </div>
 
-        <div class="field" style="min-width:220px">
-          <label style="opacity:.75;font-size:12px">Szukaj (id/supplier)</label>
-          <input class="input" id="q" placeholder="np. ord_ / hurtownia" />
+        <div class="field" style="min-width:200px">
+          <label style="opacity:.75;font-size:12px">Filtr: status</label>
+          <select id="statusFilter" class="select" style="width:100%">
+            <option value="">Wszystkie</option>
+            <option value="NEW">NEW</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="SENT">SENT</option>
+            <option value="DONE">DONE</option>
+          </select>
         </div>
 
         <div class="field" style="min-width:220px">
+          <label style="opacity:.75;font-size:12px">Szukaj (id/supplier/email)</label>
+          <input class="input" id="q" placeholder="np. QM- / hurtownia / @mail" />
+        </div>
+
+        <div class="field" style="min-width:240px">
           <label style="opacity:.75;font-size:12px">Eksport</label>
           <div class="row-actions">
             <button class="btn btn-sm" id="exportJson" type="button">JSON</button>
@@ -104,12 +117,13 @@
                 <th>Data</th>
                 <th>ID</th>
                 <th>Sklep</th>
+                <th>Status</th>
                 <th>Tryb</th>
                 <th class="right">Szt.</th>
                 <th class="right">Brutto</th>
                 <th class="right">Fee</th>
                 <th>Hurtownie</th>
-                <th></th>
+                <th class="right">Akcje</th>
               </tr>
             </thead>
             <tbody id="rows"></tbody>
@@ -125,15 +139,23 @@
   "use strict";
 
   const LS_ORDERS = "qm_orders_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+
+  const STATUSES = ["NEW","CONFIRMED","SENT","DONE"];
+
   const $ = (s, r=document) => r.querySelector(s);
 
-  const readOrders = () => {
+  const readOrdersRaw = () => {
     try {
       const arr = JSON.parse(localStorage.getItem(LS_ORDERS) || "[]");
       return Array.isArray(arr) ? arr : [];
     } catch {
       return [];
     }
+  };
+
+  const writeOrdersRaw = (arr) => {
+    localStorage.setItem(LS_ORDERS, JSON.stringify(Array.isArray(arr) ? arr : []));
   };
 
   const money = (n) => {
@@ -147,7 +169,7 @@
       const s = (u.searchParams.get("store") || "").trim();
       if (s) return s;
     } catch {}
-    return String(localStorage.getItem("qm_active_store_v1") || "default").trim() || "default";
+    return String(localStorage.getItem(LS_ACTIVE) || "default").trim() || "default";
   };
 
   const setLinks = () => {
@@ -159,8 +181,8 @@
     if (f && !f.value) f.value = store;
   };
 
+  // --- NORMALIZACJA v1 -> v2 (żeby panel ogarniał oba formaty)
   const normalizeSuppliers = (supplierBreakdown) => {
-    // u Ciebie to jest obiekt: { SUP: {items, net, gross}, ... }
     if (!supplierBreakdown) return [];
     if (Array.isArray(supplierBreakdown)) return supplierBreakdown;
 
@@ -177,27 +199,108 @@
     return out;
   };
 
-  const applyFilters = (list) => {
+  const normOne = (o) => {
+    if (!o || typeof o !== "object") return null;
+
+    // v2
+    const isV2 = !!(o.order_id || o.store_slug || o.created_at || o.customer);
+
+    const id = String(o.order_id || o.id || "").trim() || "—";
+    const createdAtISO =
+      o.created_at ||
+      o.createdAt ||
+      (o.ts ? new Date(o.ts).toISOString() : null);
+
+    const ts = o.ts || (createdAtISO ? Date.parse(createdAtISO) : Date.now());
+
+    const storeSlug = String(o.store_slug || o.storeSlug || "").trim() || "default";
+    const mode = String(o.mode || o.totals?.mode || "").trim() || "—";
+
+    const statusRaw = String(o.status || "NEW").toUpperCase().trim();
+    const status = STATUSES.includes(statusRaw) ? statusRaw : "NEW";
+
+    const totals = o.totals || {};
+    const gross = Number(totals.gross ?? 0) || 0;
+    const itemsCount = Number(totals.items ?? 0) || 0;
+
+    const fees = o.fees || {};
+    const platformFee = Number(fees.platformFee ?? 0) || 0;
+    const sellerMargin = Number(fees.sellerMargin ?? 0) || 0;
+
+    const sups = normalizeSuppliers(o.supplierBreakdown || o.supplier_breakdown || null);
+
+    const email =
+      (o.customer && (o.customer.email || o.customer.shipping?.email)) ||
+      (o.b2bProfile && o.b2bProfile.contact) ||
+      "";
+
+    // do wyszukiwania
+    const hay = JSON.stringify({
+      id,
+      storeSlug,
+      status,
+      mode,
+      suppliers: sups.map(x=>x.supplier),
+      email,
+      meta: o.meta || {},
+      note: o.note || ""
+    }).toLowerCase();
+
+    return {
+      __raw: o,
+      __isV2: isV2,
+      id,
+      createdAtISO,
+      ts,
+      storeSlug,
+      status,
+      mode: String(mode).toUpperCase(),
+      itemsCount,
+      gross,
+      platformFee,
+      sellerMargin,
+      suppliers: sups,
+      hay
+    };
+  };
+
+  const normalizeAll = (rawList) => {
+    const out = [];
+    for (const o of (rawList || [])) {
+      const n = normOne(o);
+      if (n) out.push(n);
+    }
+    return out;
+  };
+
+  const applyFilters = (normList) => {
     const store = ($("#storeFilter").value || "").trim().toLowerCase();
+    const status = ($("#statusFilter").value || "").trim().toUpperCase();
     const q = ($("#q").value || "").trim().toLowerCase();
 
-    return (list || []).filter(o => {
+    return (normList || []).filter(o => {
       if (!o) return false;
-      if (store && String(o.storeSlug || "").toLowerCase() !== store) return false;
-      if (q) {
-        const s = JSON.stringify({
-          id:o.id, store:o.storeSlug,
-          supplierBreakdown:o.supplierBreakdown,
-          meta:o.meta
-        }).toLowerCase();
-        if (!s.includes(q)) return false;
-      }
+      if (store && String(o.storeSlug).toLowerCase() !== store) return false;
+      if (status && String(o.status) !== status) return false;
+      if (q && !o.hay.includes(q)) return false;
       return true;
     });
   };
 
   const exportJSON = (list) => {
-    const blob = new Blob([JSON.stringify(list, null, 2)], { type:"application/json" });
+    // eksportujemy wersję znormalizowaną (czytelna)
+    const payload = (list || []).map(o => ({
+      order_id: o.id,
+      created_at: o.createdAtISO,
+      store_slug: o.storeSlug,
+      status: o.status,
+      mode: o.mode,
+      totals: { items: o.itemsCount, gross: o.gross },
+      fees: { platformFee: o.platformFee, sellerMargin: o.sellerMargin },
+      suppliers: o.suppliers
+    }));
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `qm_orders_export.json`;
@@ -206,20 +309,26 @@
   };
 
   const exportCSV = (list) => {
-    const head = ["createdAt","id","storeSlug","mode","items","gross","platformFee","sellerMargin","suppliers"];
-    const rows = list.map(o => {
-      const sups = normalizeSuppliers(o.supplierBreakdown)
-        .map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`).join("|");
+    const head = [
+      "created_at","order_id","store_slug","status","mode",
+      "items","gross","platform_fee","seller_margin","suppliers"
+    ];
+
+    const rows = (list || []).map(o => {
+      const sups = (o.suppliers || [])
+        .map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`)
+        .join("|");
 
       return [
-        o.createdAt || new Date(o.ts||Date.now()).toISOString(),
-        o.id || "",
-        o.storeSlug || "",
-        o.mode || o.totals?.mode || "",
-        Number(o.totals?.items ?? o.totals?.items ?? 0),
-        Number(o.totals?.gross ?? o.totals?.gross ?? 0).toFixed(2),
-        Number(o.fees?.platformFee ?? 0).toFixed(2),
-        Number(o.fees?.sellerMargin ?? 0).toFixed(2),
+        o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
+        o.id,
+        o.storeSlug,
+        o.status,
+        o.mode,
+        Number(o.itemsCount||0),
+        Number(o.gross||0).toFixed(2),
+        Number(o.platformFee||0).toFixed(2),
+        Number(o.sellerMargin||0).toFixed(2),
         sups
       ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
     });
@@ -233,13 +342,50 @@
     URL.revokeObjectURL(a.href);
   };
 
-  const render = () => {
-    const all = readOrders();
-    const list = applyFilters(all);
+  // --- update status w RAW (v1 i v2)
+  const updateOrderStatus = (orderId, nextStatus) => {
+    const status = String(nextStatus||"").toUpperCase().trim();
+    if (!STATUSES.includes(status)) return;
 
-    const sumGross = list.reduce((a,o)=>a + (Number(o?.totals?.gross)||0), 0);
-    const sumFee = list.reduce((a,o)=>a + (Number(o?.fees?.platformFee)||0), 0);
-    const sumMargin = list.reduce((a,o)=>a + (Number(o?.fees?.sellerMargin)||0), 0);
+    const raw = readOrdersRaw();
+    let changed = false;
+
+    const updated = raw.map(o => {
+      if (!o || typeof o !== "object") return o;
+
+      const id = String(o.order_id || o.id || "").trim();
+      if (id !== orderId) return o;
+
+      // zapisujemy w obu dla bezpieczeństwa
+      o.status = status;
+      changed = true;
+      return o;
+    });
+
+    if (changed) {
+      writeOrdersRaw(updated);
+      window.dispatchEvent(new CustomEvent("qm:orders"));
+    }
+  };
+
+  const deleteOrder = (orderId) => {
+    const raw = readOrdersRaw();
+    const filtered = raw.filter(o => {
+      const id = String(o?.order_id || o?.id || "").trim();
+      return id !== orderId;
+    });
+    writeOrdersRaw(filtered);
+    window.dispatchEvent(new CustomEvent("qm:orders"));
+  };
+
+  const render = () => {
+    const raw = readOrdersRaw();
+    const normAll = normalizeAll(raw);
+    const list = applyFilters(normAll);
+
+    const sumGross = list.reduce((a,o)=>a + (Number(o?.gross)||0), 0);
+    const sumFee = list.reduce((a,o)=>a + (Number(o?.platformFee)||0), 0);
+    const sumMargin = list.reduce((a,o)=>a + (Number(o?.sellerMargin)||0), 0);
 
     $("#kpiOrders").textContent = String(list.length);
     $("#kpiGross").textContent = money(sumGross);
@@ -251,8 +397,10 @@
 
     if (!list.length) {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="9" style="opacity:.7">Brak zamówień.</td>`;
+      tr.innerHTML = `<td colspan="10" style="opacity:.7">Brak zamówień.</td>`;
       tbody.appendChild(tr);
+      $("#exportJson").onclick = () => exportJSON(list);
+      $("#exportCsv").onclick = () => exportCSV(list);
       return;
     }
 
@@ -260,46 +408,76 @@
     const sorted = list.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0)));
 
     for (const o of sorted) {
-      const dt = o.createdAt ? new Date(o.createdAt) : new Date(o.ts || Date.now());
+      const dt = o.createdAtISO ? new Date(o.createdAtISO) : new Date(o.ts || Date.now());
       const dts = dt.toLocaleString("pl-PL");
 
-      const sups = normalizeSuppliers(o.supplierBreakdown);
+      const sups = o.suppliers || [];
       const supsHtml = sups.slice(0,3).map(x => `${x.supplier}: ${money(x.gross)}`).join("<br>")
         + (sups.length>3 ? `<br><span style="opacity:.7">+${sups.length-3} więcej</span>` : "");
+
+      const statusBadge = `<span class="badge">${o.status}</span>`;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${dts}</td>
-        <td class="mono">${o.id || "—"}</td>
-        <td>${o.storeSlug || "—"}</td>
-        <td>${String(o.mode || o.totals?.mode || "—").toUpperCase()}</td>
-        <td class="right">${Number(o.totals?.items || 0)}</td>
-        <td class="right"><strong>${money(o.totals?.gross || 0)}</strong></td>
-        <td class="right">${money(o.fees?.platformFee || 0)}</td>
+        <td class="mono">${o.id}</td>
+        <td>${o.storeSlug}</td>
+        <td>${statusBadge}</td>
+        <td>${o.mode}</td>
+        <td class="right">${Number(o.itemsCount || 0)}</td>
+        <td class="right"><strong>${money(o.gross || 0)}</strong></td>
+        <td class="right">${money(o.platformFee || 0)}</td>
         <td>${supsHtml || "—"}</td>
         <td class="right">
-          <div class="row-actions" style="justify-content:flex-end">
-            <button class="btn btn-sm" data-json="${o.id}">JSON</button>
-            <button class="btn btn-danger btn-sm" data-del="${o.id}">Usuń</button>
+          <div class="row-actions" style="justify-content:flex-end;align-items:center">
+            <select class="select" data-status="${o.id}" title="Zmień status">
+              ${STATUSES.map(s => `<option value="${s}" ${s===o.status?"selected":""}>${s}</option>`).join("")}
+            </select>
+            <button class="btn btn-sm btn-xs" data-next="${o.id}" title="Następny status">➡️</button>
+            <button class="btn btn-sm btn-xs" data-json="${o.id}">JSON</button>
+            <button class="btn btn-danger btn-sm btn-xs" data-del="${o.id}">Usuń</button>
           </div>
         </td>
       `;
       tbody.appendChild(tr);
     }
 
-    tbody.querySelectorAll("[data-del]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-del");
-        const arr = readOrders().filter(x => x && x.id !== id);
-        localStorage.setItem(LS_ORDERS, JSON.stringify(arr));
-        render();
+    // status change
+    tbody.querySelectorAll("select[data-status]").forEach(sel => {
+      sel.addEventListener("change", () => {
+        const id = sel.getAttribute("data-status");
+        const st = sel.value;
+        updateOrderStatus(id, st);
       });
     });
 
+    // next status button
+    tbody.querySelectorAll("[data-next]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-next");
+        const raw = readOrdersRaw();
+        const found = normOne(raw.find(x => String(x?.order_id || x?.id || "").trim() === id));
+        const cur = found?.status || "NEW";
+        const idx = Math.max(0, STATUSES.indexOf(cur));
+        const next = STATUSES[Math.min(STATUSES.length-1, idx+1)];
+        updateOrderStatus(id, next);
+      });
+    });
+
+    // delete
+    tbody.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-del");
+        deleteOrder(id);
+      });
+    });
+
+    // single JSON (surowy rekord, żeby było 1:1 jak zapisane)
     tbody.querySelectorAll("[data-json]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-json");
-        const o = readOrders().find(x => x && x.id === id);
+        const raw = readOrdersRaw();
+        const o = raw.find(x => String(x?.order_id || x?.id || "").trim() === id);
         if (!o) return;
         const blob = new Blob([JSON.stringify(o, null, 2)], { type:"application/json" });
         const a = document.createElement("a");
@@ -316,11 +494,12 @@
 
   $("#refresh").addEventListener("click", render);
   $("#storeFilter").addEventListener("input", render);
+  $("#statusFilter").addEventListener("change", render);
   $("#q").addEventListener("input", render);
 
   $("#clearOrders").addEventListener("click", () => {
-    localStorage.setItem(LS_ORDERS, "[]");
-    render();
+    writeOrdersRaw([]);
+    window.dispatchEvent(new CustomEvent("qm:orders"));
   });
 
   setLinks();
