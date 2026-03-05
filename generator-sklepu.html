@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stwórz swój sklep</title>
+
+<style>
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+margin:0;
+}
+
+.box{
+background:#1e293b;
+padding:40px;
+border-radius:10px;
+width:320px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:none;
+border-radius:6px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.link{
+margin-top:20px;
+word-break:break-all;
+}
+</style>
+
+</head>
+<body>
+
+<div class="box">
+
+<h2>Stwórz swój sklep</h2>
+
+<input id="storeName" placeholder="Nazwa sklepu">
+
+<button onclick="createStore()">Stwórz sklep</button>
+
+<div class="link" id="link"></div>
+
+</div>
+
+<script>
+
+function createStore(){
+
+let name = document.getElementById("storeName").value
+.toLowerCase()
+.replace(/\s+/g,'-')
+
+let url = location.origin + "/zarabianieuszefa/sklep.html?store=" + name
+
+document.getElementById("link").innerHTML =
+'<a href="'+url+'" target="_blank">'+url+'</a>'
+
+localStorage.setItem("qm_store_slug",name)
+
+}
+
+</script>
+
+</body>
+</html>
