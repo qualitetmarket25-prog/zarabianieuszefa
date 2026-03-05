@@ -1,275 +1,390 @@
 (() => {
   "use strict";
 
+  const VAT_RATE = 0.23;
+
   const LS_ORDERS = "qm_orders_v1";
-  const LS_ACTIVE_STORE = "qm_active_store_v1";
   const LS_STORES = "qm_stores_v1";
-  const LS_MARGIN = "qm_store_margin_pct";
-  const LS_COMMISSION_RULES = "qm_commission_rules_v1";
+  const LS_ACTIVE = "qm_active_store_v1";
+  const LS_STORE_MARGIN = "qm_store_margin_pct";
+  const LS_PLATFORM_PCT = "qm_platform_fee_pct";
+  const LS_CHECKOUT_DRAFT = "qm_checkout_draft_v1";
 
-  const $ = (s, r=document) => r.querySelector(s);
+  const DEFAULT_PLATFORM_FEE_PCT = 0.02;
+  const DEFAULT_MIN_FEE = 2.0; // ✅ minimalna prowizja (MVP)
 
-  const uid = () =>
-    "ord_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  const $ = (id) => document.getElementById(id);
 
-  const money = (n) => {
-    const x = Number(n || 0);
-    return x.toLocaleString("pl-PL", { style: "currency", currency: "PLN" });
-  };
-
-  const readJSON = (k, fallback) => {
-    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
-  };
+  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  // ===== prowizje platformy: per supplier / per category + minimalna =====
-  // format:
-  // { defaultPct: 0.02, minFee: 2, bySupplier: { "Hurtownia A": 0.03 }, byCategory: { "mięso": 0.025 }, bySupplierCategory: { "Hurtownia A||mięso": 0.035 } }
-  const getCommissionRules = () => {
-    return readJSON(LS_COMMISSION_RULES, {
-      defaultPct: 0.02,
-      minFee: 2,
-      bySupplier: {},
-      byCategory: {},
-      bySupplierCategory: {}
-    });
+  const money = (n) => {
+    const v = Number(n || 0);
+    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
   };
 
-  const commissionPctFor = (supplierName, category) => {
-    const r = getCommissionRules();
-    const key = `${supplierName || ""}||${category || ""}`;
-    if (r.bySupplierCategory && r.bySupplierCategory[key] != null) return Number(r.bySupplierCategory[key]);
-    if (r.bySupplier && r.bySupplier[supplierName] != null) return Number(r.bySupplier[supplierName]);
-    if (r.byCategory && r.byCategory[category] != null) return Number(r.byCategory[category]);
-    return Number(r.defaultPct || 0.02);
+  const getQueryStore = () => {
+    const u = new URL(location.href);
+    return (u.searchParams.get("store") || "").trim();
   };
 
-  const computeCommissionFee = (grossTotal, pct) => {
-    const r = getCommissionRules();
-    const fee = Number(grossTotal) * Number(pct || 0);
-    const minFee = Number(r.minFee || 0);
-    return Math.max(fee, minFee);
+  const resolveActiveStoreSlug = () => {
+    const fromUrl = getQueryStore();
+    if (fromUrl) {
+      localStorage.setItem(LS_ACTIVE, fromUrl);
+      return fromUrl;
+    }
+    const active = String(localStorage.getItem(LS_ACTIVE) || "").trim();
+    return active || "default";
   };
 
-  // ===== koszyk (z twojego QM_SHOP Cart jeśli istnieje) =====
-  const getCart = () => {
-    if (window.QM_SHOP && window.QM_SHOP.Cart) return window.QM_SHOP.Cart.get();
-    // fallback: jeśli masz inny klucz, dopasuj tu:
-    return readJSON("qm_cart_v1", { items: [] });
+  const syncStoreMarginFromStoresMap = (storeSlug) => {
+    const stores = readJSON(LS_STORES, {});
+    const st = stores?.[storeSlug];
+    const marginPct = st?.marginPct;
+    if (marginPct === undefined || marginPct === null) return;
+
+    let n = Number(String(marginPct).replace("%","").replace(",", "."));
+    if (!isFinite(n) || n < 0) return;
+    if (n > 1) n = n / 100;
+    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(0.8, n))));
   };
 
-  const getStoreSlug = () => {
-    const url = new URL(location.href);
-    return url.searchParams.get("store") || readJSON(LS_ACTIVE_STORE, null);
+  const getPlatformPct = () => {
+    const raw = String(localStorage.getItem(LS_PLATFORM_PCT) || "").trim().replace(",", ".");
+    let n = Number(raw);
+    if (!isFinite(n) || n < 0) n = DEFAULT_PLATFORM_FEE_PCT;
+    if (n > 1) n = n / 100;
+    return Math.max(0, Math.min(0.25, n));
   };
 
-  const getStore = (slug) => {
-    const stores = readJSON(LS_STORES, []);
-    return stores.find(s => s.slug === slug) || null;
+  const getStoreMarginPct = () => {
+    const raw = String(localStorage.getItem(LS_STORE_MARGIN) || "").trim().replace(",", ".");
+    let n = Number(raw);
+    if (!isFinite(n) || n < 0) n = 0;
+    if (n > 1) n = n / 100;
+    return Math.max(0, Math.min(0.8, n));
   };
 
-  const groupItemsBySupplier = (items) => {
-    const map = {};
-    for (const it of items || []) {
-      const supplier = it.supplier || it.supplierName || it.hurtownia || "Nieznana hurtownia";
-      if (!map[supplier]) map[supplier] = [];
-      map[supplier].push(it);
+  const groupBySupplier = (items) => {
+    const map = new Map();
+    for (const it of items) {
+      const sup = String(it.supplier || "BRAK_HURTOWNI").trim() || "BRAK_HURTOWNI";
+      if (!map.has(sup)) map.set(sup, []);
+      map.get(sup).push(it);
     }
     return map;
   };
 
-  const calcLineGross = (it) => Number(it.price || 0) * Number(it.qty || 0);
+  const priceForMode = (it, mode) => (
+    mode === "b2b"
+      ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
+      : (Number(it.priceRetail||0) || 0)
+  );
 
-  const calcItemsGross = (items) => (items || []).reduce((s, it) => s + calcLineGross(it), 0);
-
-  const renderSummary = () => {
-    const slug = getStoreSlug();
-    const store = getStore(slug);
-    const badge = $("#storeBadge");
-    badge.textContent = store ? `Sklep: ${store.name} (${store.slug})` : `Sklep: ${slug || "?"}`;
-
-    const cart = getCart();
-    const items = cart.items || [];
-
-    if (!items.length) {
-      $("#summaryBox").innerHTML = `<div>Brak produktów w koszyku.</div><div class="muted">Wróć i dodaj produkty.</div>`;
-      return;
+  const computeSupplierBreakdown = (items, mode) => {
+    const out = [];
+    const bySupplier = groupBySupplier(items);
+    for (const [supplier, arr] of bySupplier.entries()) {
+      let net = 0;
+      let qty = 0;
+      for (const it of arr) {
+        const q = Number(it.qty||0) || 0;
+        const p = priceForMode(it, mode);
+        qty += q;
+        net += q * p;
+      }
+      const gross = (mode === "b2b") ? net * (1 + VAT_RATE) : net;
+      out.push({ supplier, items: qty, net, gross });
     }
-
-    const groups = groupItemsBySupplier(items);
-
-    let html = "";
-    let grandGross = 0;
-    let grandPlatformFee = 0;
-
-    for (const [supplier, arr] of Object.entries(groups)) {
-      const gross = calcItemsGross(arr);
-      grandGross += gross;
-
-      // pct wyliczamy per pozycja (supplier/category), ale dla podsumowania pokazujemy “od…”
-      // fee liczona po sumie brutto tej hurtowni — to prostsze i stabilne.
-      // Jeśli chcesz fee per linia: zrobimy później.
-      const anyCat = (arr[0] && (arr[0].category || arr[0].kategoria)) || "";
-      const pct = commissionPctFor(supplier, anyCat);
-      const fee = computeCommissionFee(gross, pct);
-      grandPlatformFee += fee;
-
-      html += `
-        <div style="margin:10px 0 6px; font-weight:900;">${supplier}</div>
-        <div class="kpi"><span>Wartość brutto</span><b>${money(gross)}</b></div>
-        <div class="kpi"><span>Prowizja platformy</span><b>${money(fee)}</b></div>
-      `;
-    }
-
-    const marginPct = Number(localStorage.getItem(LS_MARGIN) || "0") / 100; // sprzedawcy
-    const sellerMargin = grandGross * marginPct;
-
-    html += `<hr style="border:0;border-top:1px solid rgba(0,0,0,.12); margin:12px 0;">`;
-    html += `<div class="kpi"><span>Razem brutto</span><b>${money(grandGross)}</b></div>`;
-    html += `<div class="kpi"><span>Prowizja platformy (razem)</span><b>${money(grandPlatformFee)}</b></div>`;
-    html += `<div class="kpi"><span>Marża sprzedawcy (szac.)</span><b>${money(sellerMargin)}</b></div>`;
-
-    $("#summaryBox").innerHTML = html;
+    out.sort((a,b)=>String(a.supplier).localeCompare(String(b.supplier),"pl"));
+    return out;
   };
 
-  const buildOrder = (formData) => {
-    const slug = getStoreSlug();
-    const store = getStore(slug);
-    const cart = getCart();
-    const items = cart.items || [];
-    const grouped = groupItemsBySupplier(items);
+  const renderSummary = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
 
-    const now = new Date().toISOString();
+    const t = Cart.totals();
 
-    // totals
-    let grossTotal = 0;
-    let platformFeeTotal = 0;
+    $("sumItems").textContent = String(t.items || 0);
+    $("sumNet").textContent = money(t.net || 0);
+    $("sumVat").textContent = money(t.vat || 0);
+    $("sumGross").textContent = money(t.gross || 0);
 
-    const supplierSplits = Object.entries(grouped).map(([supplier, arr]) => {
-      const gross = calcItemsGross(arr);
-      grossTotal += gross;
+    const storeSlug = resolveActiveStoreSlug();
+    $("storeLabel").textContent = `Sklep: ${storeSlug}`;
+    $("modeLabel").textContent = (t.mode === "b2b") ? "HURT (B2B)" : "DETAL";
 
-      // prowizja per hurtownia (proste i czytelne)
-      const anyCat = (arr[0] && (arr[0].category || arr[0].kategoria)) || "";
-      const pct = commissionPctFor(supplier, anyCat);
-      const fee = computeCommissionFee(gross, pct);
-      platformFeeTotal += fee;
+    const cart = Cart.read();
+    const split = computeSupplierBreakdown(cart.items || [], t.mode);
 
-      return {
-        supplier,
-        gross,
-        platformFee: fee,
-        items: arr.map(it => ({
-          id: it.id || it.sku || it.code || null,
-          name: it.name || it.title || "",
-          qty: Number(it.qty || 0),
-          price: Number(it.price || 0),       // brutto (u Ciebie już w sklepie)
-          category: it.category || it.kategoria || "",
-          raw: it
-        }))
-      };
-    });
+    $("splitMeta").textContent = split.length ? `Hurtownie: ${split.map(x=>x.supplier).join(", ")}` : "Brak hurtowni w koszyku.";
 
-    const marginPct = Number(localStorage.getItem(LS_MARGIN) || "0") / 100;
-    const sellerMargin = grossTotal * marginPct;
+    $("splitTableWrap").innerHTML = split.length ? `
+      <table class="miniTable">
+        <thead>
+          <tr><th>Hurtownia</th><th>Ilość</th><th>Netto</th><th>Brutto</th></tr>
+        </thead>
+        <tbody>
+          ${split.map(x => `
+            <tr>
+              <td><strong>${x.supplier}</strong></td>
+              <td>${x.items}</td>
+              <td>${money(x.net)}</td>
+              <td>${money(x.gross)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    ` : "";
+  };
+
+  const hydrateFromDraft = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
+
+    const draft = readJSON(LS_CHECKOUT_DRAFT, null) || {};
+    if (draft.note !== undefined) $("note").value = String(draft.note || "");
+
+    const t = Cart.totals();
+    const p = (draft.b2bProfile && typeof draft.b2bProfile === "object") ? draft.b2bProfile : (Cart.getB2BProfile ? Cart.getB2BProfile() : {});
+
+    // B2B pola (można poprawić)
+    $("b2bCompany").value = String(p.companyName || "");
+    $("b2bNip").value = String(p.nip || "");
+    $("b2bAddr").value = String(p.addr || "");
+    $("b2bContact").value = String(p.contact || "");
+
+    // jeśli detal — zostaw, ale nie przeszkadza
+    if (t.mode !== "b2b") {
+      // nic nie blokujemy, ale użytkownik widzi, że B2B jest opcjonalne
+    }
+  };
+
+  const readShip = () => ({
+    name: String($("shipName").value || "").trim(),
+    phone: String($("shipPhone").value || "").trim(),
+    email: String($("shipEmail").value || "").trim(),
+    street: String($("shipStreet").value || "").trim(),
+    city: String($("shipCity").value || "").trim(),
+    zip: String($("shipZip").value || "").trim(),
+    msg: String($("shipMsg").value || "").trim(),
+  });
+
+  const readB2B = () => ({
+    companyName: String($("b2bCompany").value || "").trim(),
+    nip: String($("b2bNip").value || "").trim(),
+    addr: String($("b2bAddr").value || "").trim(),
+    contact: String($("b2bContact").value || "").trim(),
+  });
+
+  const validateShip = (ship) => {
+    if (!ship.name || !ship.phone || !ship.street || !ship.city || !ship.zip) return false;
+    return true;
+  };
+
+  const genOrderId = () => {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2,"0");
+    const y = d.getFullYear();
+    const m = pad(d.getMonth()+1);
+    const day = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mm = pad(d.getMinutes());
+    const ss = pad(d.getSeconds());
+    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
+    return `QM-${y}${m}${day}-${hh}${mm}${ss}-${rnd}`;
+  };
+
+  const calcFees = (grossTotal, mode) => {
+    const platformPct = getPlatformPct();
+    const storePct = getStoreMarginPct();
+
+    // ✅ prowizja platformy: max(% * suma, minFee)
+    const pctFee = (Number(grossTotal)||0) * platformPct;
+    const platformFee = Math.max(DEFAULT_MIN_FEE, pctFee);
+
+    const sellerMargin = (Number(grossTotal)||0) * storePct;
 
     return {
-      id: uid(),
-      createdAt: now,
-      updatedAt: now,
-      status: "NEW",
-
-      storeSlug: slug || (store && store.slug) || null,
-      storeName: store ? store.name : null,
-
-      buyer: {
-        fullName: formData.fullName,
-        phone: formData.phone,
-        email: formData.email,
-        address: {
-          street: formData.street,
-          zip: formData.zip,
-          city: formData.city,
-          country: formData.country
-        },
-        notes: formData.notes || ""
-      },
-
-      payment: {
-        method: formData.paymentMethod || "PAY_LATER",
-        paid: false
-      },
-
-      totals: {
-        gross: grossTotal,
-        platformFee: platformFeeTotal,
-        sellerMargin
-      },
-
-      splits: supplierSplits
+      platformPct,
+      storeMarginPct: storePct,
+      platformFee,
+      platformFeeMin: DEFAULT_MIN_FEE,
+      sellerMargin
     };
   };
 
-  const clearCart = () => {
-    if (window.QM_SHOP && window.QM_SHOP.Cart) {
-      window.QM_SHOP.Cart.clear();
+  const saveDraft = () => {
+    const storeSlug = resolveActiveStoreSlug();
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
+
+    const t = Cart.totals();
+    const draft = {
+      ts: Date.now(),
+      storeSlug,
+      mode: t.mode,
+      note: String($("note").value || ""),
+      ship: readShip(),
+      b2bProfile: readB2B()
+    };
+    writeJSON(LS_CHECKOUT_DRAFT, draft);
+
+    $("msg").textContent = "✅ Szkic zapisany.";
+    $("msg").style.color = "rgba(34,197,94,.95)";
+  };
+
+  const placeOrderFinal = () => {
+    const { Cart } = window.QM_SHOP || {};
+    if (!Cart) return;
+
+    const cart = Cart.read();
+    const t = Cart.totals();
+
+    if (!cart.items?.length) {
+      $("msg").textContent = "Koszyk pusty.";
+      $("msg").style.color = "rgba(245,158,11,.95)";
       return;
     }
-    writeJSON("qm_cart_v1", { items: [] });
+    if (t.mode === "b2b" && !t.moqOk) {
+      $("msg").textContent = "B2B: są pozycje poniżej MOQ — popraw ilości w koszyku.";
+      $("msg").style.color = "rgba(245,158,11,.95)";
+      return;
+    }
+
+    const storeSlug = resolveActiveStoreSlug();
+    syncStoreMarginFromStoresMap(storeSlug);
+
+    const ship = readShip();
+    if (!validateShip(ship)) {
+      $("msg").textContent = "Uzupełnij dane dostawy: imię, telefon, ulica, miasto, kod.";
+      $("msg").style.color = "rgba(245,158,11,.95)";
+      return;
+    }
+
+    const note = String($("note").value || "").trim();
+    const b2bProfile = readB2B();
+
+    const order_id = genOrderId();
+    const created_at = new Date().toISOString();
+
+    const supplierSplit = computeSupplierBreakdown(cart.items || [], t.mode);
+
+    // suborders (split per hurtownia) — MVP
+    const bySup = groupBySupplier(cart.items || []);
+    const suborders = [];
+    for (const [supplier, items] of bySup.entries()) {
+      suborders.push({
+        supplier,
+        status: "NEW",
+        items: items.map(it => ({
+          id: it.id,
+          sku: it.sku,
+          name: it.name,
+          supplier: it.supplier,
+          qty: Number(it.qty||0)||0,
+          unit: it.unit,
+          moq: it.moq,
+          priceRetail: Number(it.priceRetail||0)||0,
+          priceB2B: Number(it.priceB2B||0)||0,
+          image: it.image
+        }))
+      });
+    }
+
+    const fees = calcFees(Number(t.gross||0)||0, t.mode);
+
+    const order = {
+      // v2 fields
+      order_id,
+      created_at,
+      store_slug: storeSlug,
+      status: "NEW",
+
+      mode: t.mode,
+
+      customer: {
+        shipping: ship,
+        email: ship.email || "",
+        phone: ship.phone || ""
+      },
+
+      note,
+      b2bProfile,
+
+      items: cart.items.map(it => ({
+        id: it.id,
+        sku: it.sku,
+        name: it.name,
+        supplier: it.supplier,
+        qty: Number(it.qty||0)||0,
+        unit: it.unit,
+        moq: it.moq,
+        priceRetail: Number(it.priceRetail||0)||0,
+        priceB2B: Number(it.priceB2B||0)||0,
+        image: it.image
+      })),
+
+      totals: {
+        items: Number(t.items||0)||0,
+        net: Number(t.net||0)||0,
+        vat: Number(t.vat||0)||0,
+        gross: Number(t.gross||0)||0,
+        moqOk: !!t.moqOk
+      },
+
+      fees,
+      supplierBreakdown: supplierSplit,
+      suborders
+    };
+
+    const arr = readJSON(LS_ORDERS, []);
+    const list = Array.isArray(arr) ? arr : [];
+    list.push(order);
+    writeJSON(LS_ORDERS, list);
+
+    // zapis draftu (dla pewności)
+    writeJSON(LS_CHECKOUT_DRAFT, { ts: Date.now(), storeSlug, mode: t.mode, note, ship, b2bProfile });
+
+    $("msg").textContent = `✅ Zamówienie zapisane: ${order_id}. Przenoszę do panelu zamówień…`;
+    $("msg").style.color = "rgba(34,197,94,.95)";
+
+    try { Cart.clear(); } catch {}
+
+    setTimeout(() => {
+      window.location.href = `./zamowienia.html?order=${encodeURIComponent(order_id)}`;
+    }, 450);
   };
 
-  const saveOrder = (order) => {
-    const orders = readJSON(LS_ORDERS, []);
-    orders.unshift(order);
-    writeJSON(LS_ORDERS, orders);
-  };
-
-  const downloadJSON = (obj, filename) => {
-    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  const wireAutoDraft = () => {
+    const ids = [
+      "note","shipName","shipPhone","shipEmail","shipStreet","shipCity","shipZip","shipMsg",
+      "b2bCompany","b2bNip","b2bAddr","b2bContact"
+    ];
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener("change", saveDraft);
+      el.addEventListener("blur", saveDraft);
+    });
   };
 
   const init = () => {
+    const storeSlug = resolveActiveStoreSlug();
+    syncStoreMarginFromStoresMap(storeSlug);
+
     renderSummary();
+    hydrateFromDraft();
+    wireAutoDraft();
 
-    const form = $("#checkoutForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+    $("saveDraft")?.addEventListener("click", saveDraft);
+    $("placeOrderFinal")?.addEventListener("click", placeOrderFinal);
 
-      const fd = Object.fromEntries(new FormData(form).entries());
-      const cart = getCart();
-      if (!cart.items || !cart.items.length) {
-        alert("Koszyk jest pusty.");
-        return;
-      }
-
-      const order = buildOrder(fd);
-      saveOrder(order);
-
-      // czyścimy koszyk
-      clearCart();
-
-      // przekieruj na zamówienia klienta (może być twoja strona “dziękujemy”)
-      // Na teraz: pokaż szybki JSON
-      downloadJSON(order, `${order.id}.json`);
-      alert(`Zamówienie złożone! Status: ${order.status}\nID: ${order.id}`);
-
-      // jeśli masz stronę “dziekujemy.html”, ustaw:
-      // location.href = `./dziekujemy.html?order=${encodeURIComponent(order.id)}&store=${encodeURIComponent(order.storeSlug||"")}`;
-      location.href = `./zamowienia.html?store=${encodeURIComponent(order.storeSlug||"")}`;
-    });
-
-    $("#btnExportDraft").addEventListener("click", () => {
-      const fd = Object.fromEntries(new FormData(form).entries());
-      const cart = getCart();
-      const draft = { buyer: fd, cart };
-      downloadJSON(draft, `checkout-draft.json`);
-    });
+    // aktualizacja podsumowania przy zmianie koszyka
+    window.addEventListener("qm:cart", renderSummary);
   };
 
-  document.addEventListener("DOMContentLoaded", init);
+  init();
 })();
