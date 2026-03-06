@@ -1,138 +1,127 @@
-(() => {
+(function(){
   'use strict';
 
-  const KEY = 'qm_user_plan_v1';
+  const LS_PLAN = 'qm_user_plan_v1';
+  const LS_MARGIN = 'qm_store_margin_pct';
+
   const plans = {
     basic: {
       id: 'basic',
-      name: 'BASIC',
-      priceMonthly: 49,
-      priceYearly: 490,
-      badge: 'Start',
-      defaultStoreMarginPct: 0.08,
-      canUseSellerPanel: false,
-      canUsePremiumSuppliers: false,
-      canUseAdvancedBoosts: false,
-      maxStores: 1,
-      maxImportsPerDay: 2,
-      description: 'Start bez panelu sprzedawcy. Idealny na wejście i testy.',
-      bullets: [
-        '1 sklep',
-        'import CSV',
-        'sklep mobilny',
-        'podstawowe statystyki',
-        'bez panelu sprzedaży Webkul'
-      ],
-      cta: 'Wybieram BASIC'
+      label: 'BASIC',
+      price: 49,
+      defaultMargin: 0.12,
+      features: [
+        'Wejście startowe do platformy',
+        'Niski koszt wejścia',
+        'Podgląd sklepu i podstawowych modułów',
+        'Bez pełnego panelu premium'
+      ]
     },
     pro: {
       id: 'pro',
-      name: 'PRO',
-      priceMonthly: 149,
-      priceYearly: 1490,
-      badge: 'Najczęściej wybierany',
-      defaultStoreMarginPct: 0.12,
-      canUseSellerPanel: true,
-      canUsePremiumSuppliers: true,
-      canUseAdvancedBoosts: true,
-      maxStores: 3,
-      maxImportsPerDay: 20,
-      description: 'Plan do realnej sprzedaży. Daje panel sprzedawcy i pełny silnik sklepu.',
-      bullets: [
-        'panel sprzedaży Webkul',
-        'do 3 sklepów',
-        'hurtownie premium',
-        'bestsellery i badge',
-        'automatyczna marża sklepu'
-      ],
-      cta: 'Wybieram PRO'
+      label: 'PRO',
+      price: 149,
+      defaultMargin: 0.18,
+      features: [
+        'Pełny panel sklepu i sprzedaży',
+        'Dostęp do hurtowni premium',
+        'Automatyczne bestsellery i badge',
+        'Plan główny do realnej sprzedaży'
+      ]
     },
     elite: {
       id: 'elite',
-      name: 'ELITE',
-      priceMonthly: 299,
-      priceYearly: 2990,
-      badge: 'Skalowanie',
-      defaultStoreMarginPct: 0.18,
-      canUseSellerPanel: true,
-      canUsePremiumSuppliers: true,
-      canUseAdvancedBoosts: true,
-      maxStores: 10,
-      maxImportsPerDay: 999,
-      description: 'Plan dla ludzi, którzy chcą szybko skalować i mieć najmocniejsze narzędzia.',
-      bullets: [
-        'panel sprzedaży Webkul',
-        'do 10 sklepów',
-        'premium suppliers + boosty',
-        'priorytet i automatyzacje',
-        'wyższa domyślna marża'
-      ],
-      cta: 'Wybieram ELITE'
+      label: 'ELITE',
+      price: 299,
+      defaultMargin: 0.24,
+      features: [
+        'Wszystko z PRO',
+        'Wyższa domyślna marża',
+        'Silniejszy status dla skalowania',
+        'Priorytet pod dalsze automatyzacje'
+      ]
     }
   };
 
-  function safe(str) {
-    return String(str ?? '').trim().toLowerCase();
-  }
-
-  function normalizePlan(raw) {
-    const p = safe(raw);
-    return plans[p] ? p : 'basic';
-  }
-
-  function getCurrentPlanId() {
+  function safeGet(key, fallback) {
     try {
-      return normalizePlan(localStorage.getItem(KEY));
+      const value = localStorage.getItem(key);
+      return value == null ? fallback : value;
     } catch {
-      return 'basic';
+      return fallback;
     }
   }
 
-  function getCurrentPlan() {
-    return plans[getCurrentPlanId()] || plans.basic;
+  function safeSet(key, value) {
+    try { localStorage.setItem(key, value); } catch {}
   }
 
-  function setCurrentPlan(planId) {
-    const next = normalizePlan(planId);
+  function getPlanId() {
+    const raw = String(safeGet(LS_PLAN, 'basic') || 'basic').toLowerCase();
+    return plans[raw] ? raw : 'basic';
+  }
+
+  function getPlanConfig(id) {
+    return plans[String(id || '').toLowerCase()] || plans.basic;
+  }
+
+  function getPlan() {
+    return getPlanConfig(getPlanId());
+  }
+
+  function getDefaultMarginFromPlan(planId) {
+    return getPlanConfig(planId).defaultMargin;
+  }
+
+  function activatePlan(planId) {
+    const plan = getPlanConfig(planId);
+    safeSet(LS_PLAN, plan.id);
+    safeSet(LS_MARGIN, String(plan.defaultMargin));
     try {
-      localStorage.setItem(KEY, next);
+      document.documentElement.setAttribute('data-plan', plan.id);
+      document.body && document.body.setAttribute('data-plan', plan.id);
     } catch {}
-    return plans[next];
+    return plan;
   }
 
-  function getPlan(planId) {
-    return plans[normalizePlan(planId)];
+  function hasAccess(requiredPlan) {
+    const order = { basic: 1, pro: 2, elite: 3 };
+    return order[getPlanId()] >= order[getPlanConfig(requiredPlan).id];
   }
 
-  function getAllPlans() {
-    return Object.values(plans);
-  }
-
-  function applyPlanToStoreMargin(planId) {
-    const plan = getPlan(planId);
+  function applyPlanToDom() {
+    const plan = getPlan();
     try {
-      const stores = JSON.parse(localStorage.getItem('qm_stores_v1') || '{}');
-      const active = localStorage.getItem('qm_active_store_v1') || '';
-      if (active && stores[active]) {
-        if (stores[active].marginPct == null || stores[active].marginPct === '') {
-          stores[active].marginPct = plan.defaultStoreMarginPct;
-        }
-        localStorage.setItem('qm_stores_v1', JSON.stringify(stores));
-      }
-      localStorage.setItem('qm_store_margin_pct', String(plan.defaultStoreMarginPct));
-    } catch {
-      try { localStorage.setItem('qm_store_margin_pct', String(plan.defaultStoreMarginPct)); } catch {}
-    }
+      document.documentElement.setAttribute('data-plan', plan.id);
+      document.body && document.body.setAttribute('data-plan', plan.id);
+      document.querySelectorAll('[data-require]').forEach((node) => {
+        const req = node.getAttribute('data-require') || 'basic';
+        const ok = hasAccess(req);
+        node.classList.toggle('is-locked', !ok);
+        if (!ok) node.setAttribute('aria-disabled', 'true');
+      });
+      document.querySelectorAll('[data-plan-label]').forEach((node) => {
+        node.textContent = plan.label;
+      });
+    } catch {}
   }
 
-  window.QM_SUBS = {
-    key: KEY,
+  const api = {
     plans,
     getPlan,
-    getAllPlans,
-    getCurrentPlan,
-    getCurrentPlanId,
-    setCurrentPlan,
-    applyPlanToStoreMargin,
+    getPlanId,
+    getPlanConfig,
+    getDefaultMarginFromPlan,
+    activatePlan,
+    hasAccess,
+    applyPlanToDom
   };
+
+  window.QM_SUBS = api;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPlanToDom);
+  } else {
+    applyPlanToDom();
+  }
 })();
