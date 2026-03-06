@@ -1,95 +1,99 @@
-// ===== PLAN GUARD SYSTEM =====
-// Zarabianie u Szefa × QualitetMarket
-
 (function () {
+  "use strict";
 
-  const DEFAULT_PLAN = "BASIC";
-  const plan = localStorage.getItem("plan") || DEFAULT_PLAN;
-
-  // ===== USTAW BADGE + KPI =====
-  function applyPlanUI() {
-
-    const badge = document.getElementById("planBadge");
-    const currentPlan = document.getElementById("currentPlan");
-    const moduleAccess = document.getElementById("moduleAccess");
-
-    if (badge) {
-      badge.innerHTML = `<span class="badge">${plan}</span>`;
-    }
-
-    if (currentPlan) {
-      currentPlan.innerText = plan;
-    }
-
-    if (moduleAccess) {
-      if (plan === "BASIC") moduleAccess.innerText = "Ograniczone";
-      if (plan === "PRO") moduleAccess.innerText = "Pełny dostęp";
-      if (plan === "ELITE") moduleAccess.innerText = "Pełny + Premium";
+  function ready(fn) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fn);
+    } else {
+      fn();
     }
   }
 
-  // ===== BLOKADA MODUŁU HURTOWNIE =====
-  function guardHurtownie() {
+  function getSubs() {
+    return window.QM_SUBS || null;
+  }
 
-    const hurtownieLink = document.getElementById("hurtownieLink");
-    const hurtownieBtn = document.getElementById("hurtownieBtn");
+  function normalizePlan(planId) {
+    const raw = String(planId || "basic").toLowerCase().trim();
+    return ["basic", "pro", "elite"].includes(raw) ? raw : "basic";
+  }
 
-    if (plan === "BASIC") {
+  function goToPricing(requiredPlan) {
+    const target = "./cennik.html?required=" + encodeURIComponent(normalizePlan(requiredPlan || "pro"));
+    window.location.href = target;
+  }
 
-      if (hurtownieLink) hurtownieLink.style.display = "none";
+  function decorateLockedNode(node, requiredPlan) {
+    if (!node || node.dataset.guardReady === "1") return;
 
-      if (hurtownieBtn) {
-        hurtownieBtn.onclick = function (e) {
-          e.preventDefault();
-          alert("Moduł Hurtownie dostępny od planu PRO.");
-          window.location.href = "cennik.html";
-        };
+    node.dataset.guardReady = "1";
+    node.classList.add("qm-guard-ready");
+
+    if (!node.hasAttribute("title")) {
+      node.setAttribute("title", "Wymagany plan: " + String(requiredPlan || "PRO").toUpperCase());
+    }
+
+    const tag = node.tagName.toLowerCase();
+    const clickable = tag === "a" || tag === "button" || node.hasAttribute("data-click-guard");
+
+    if (clickable) {
+      node.addEventListener("click", function (e) {
+        const subs = getSubs();
+        const req = normalizePlan(node.getAttribute("data-require") || requiredPlan || "pro");
+        const ok = subs && typeof subs.hasAccess === "function" ? subs.hasAccess(req) : false;
+
+        if (ok) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        goToPricing(req);
+      });
+    }
+  }
+
+  function renderTopNotice(planId) {
+    const notice = document.querySelector("[data-plan-notice]");
+    if (!notice) return;
+
+    if (planId === "basic") {
+      notice.innerHTML = 'Masz plan <strong>BASIC</strong>. Odblokuj <strong>PRO</strong> dla hurtowni premium i panelu sprzedawcy.';
+      notice.hidden = false;
+      return;
+    }
+
+    if (planId === "pro") {
+      notice.innerHTML = 'Masz plan <strong>PRO</strong>. Wejdź w <strong>ELITE</strong>, żeby odblokować AI pomocnika i najmocniejszy pakiet.';
+      notice.hidden = false;
+      return;
+    }
+
+    notice.hidden = true;
+  }
+
+  ready(function () {
+    const subs = getSubs();
+    const planId = subs && typeof subs.getPlanId === "function" ? subs.getPlanId() : "basic";
+
+    if (subs && typeof subs.applyPlanToDom === "function") {
+      subs.applyPlanToDom();
+    }
+
+    document.querySelectorAll("[data-require]").forEach((node) => {
+      const req = normalizePlan(node.getAttribute("data-require") || "basic");
+      const ok = subs && typeof subs.hasAccess === "function" ? subs.hasAccess(req) : false;
+
+      if (!ok) {
+        node.classList.add("is-locked");
+        decorateLockedNode(node, req);
+      } else {
+        node.classList.remove("is-locked");
       }
+    });
 
-      // jeśli ktoś wejdzie bezpośrednio w URL
-      if (window.location.pathname.includes("hurtownie.html")) {
-        alert("Ten moduł wymaga planu PRO.");
-        window.location.href = "cennik.html";
-      }
-    }
-  }
+    document.querySelectorAll("[data-plan-label]").forEach((node) => {
+      node.textContent = String(planId || "basic").toUpperCase();
+    });
 
-  // ===== OGRANICZENIE IMPORTÓW (BASIC = 1) =====
-  function guardImports() {
-
-    if (!window.location.pathname.includes("hurtownie.html")) return;
-
-    let importCount = parseInt(localStorage.getItem("importCount") || "0");
-
-    if (plan === "BASIC" && importCount >= 1) {
-      alert("Limit importów w planie BASIC został wykorzystany.");
-      window.location.href = "cennik.html";
-    }
-
-    const originalProcess = window.processCSV;
-
-    if (originalProcess) {
-      window.processCSV = function () {
-
-        if (plan === "BASIC" && importCount >= 1) {
-          alert("Upgrade do PRO aby analizować kolejne hurtownie.");
-          window.location.href = "cennik.html";
-          return;
-        }
-
-        originalProcess();
-
-        importCount++;
-        localStorage.setItem("importCount", importCount);
-      };
-    }
-  }
-
-  // ===== INIT =====
-  document.addEventListener("DOMContentLoaded", function () {
-    applyPlanUI();
-    guardHurtownie();
-    setTimeout(guardImports, 300);
+    renderTopNotice(planId);
   });
-
 })();
