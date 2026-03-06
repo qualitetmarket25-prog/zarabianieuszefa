@@ -1,72 +1,58 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Aktywuj PRO</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aktywacja planu – QualitetMarket</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body{background:#0b1020;color:#eef3ff;font-family:Inter,Arial,sans-serif;margin:0}
+    .wrap{max-width:760px;margin:0 auto;padding:22px}.box{background:#131a2b;border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:22px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
+    .muted{color:#aab6d3}.price{font-size:2rem;font-weight:900;margin:8px 0}.row{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 14px;border-radius:14px;text-decoration:none;border:0;font-weight:800;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,#7c9cff,#a8baff);color:#081224}.btn-secondary{background:#1b2540;color:#eef3ff}.ok{color:#8ef5bd}
+  </style>
 </head>
 <body>
-
-<div class="nav">
-  <div class="nav-inner" data-nav>
-    <div class="brand">
-      <div class="logo"></div>
-      <div>Zarabianie u Szefa</div>
-      <span data-qm-plan style="margin-left:10px"></span>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Start</a>
-      <a href="cennik.html">Plany</a>
-      <a href="qualitetmarket.html">QualitetMarket</a>
-      <a href="dashboard.html">Dashboard</a>
-    </div>
-    <div class="nav-cta">
-      <a class="btn btn-sm btn-ghost" href="cennik.html">Wróć</a>
+  <div class="wrap">
+    <a href="./cennik.html" class="muted">← Wróć do planów</a>
+    <div class="box" style="margin-top:14px">
+      <div class="muted">Aktywacja demo</div>
+      <h1 id="planName">PRO</h1>
+      <div class="price" id="planPrice">149 zł / mies.</div>
+      <p class="muted" id="planDesc">Ładowanie planu...</p>
+      <div class="muted" style="margin-top:12px">Kliknięcie zapisuje plan lokalnie i od razu ustawia domyślną marżę sklepu zgodnie z planem. Docelowo tu podpinasz Stripe albo inną płatność.</div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn btn-primary" id="activateBtn">Aktywuj plan</button>
+        <a class="btn btn-secondary" href="./login.html">Logowanie</a>
+        <a class="btn btn-secondary" href="./platforma.html">Mam już plan</a>
+      </div>
+      <div id="status" style="margin-top:16px"></div>
     </div>
   </div>
-</div>
 
-<div class="wrap">
-  <div class="hero-card reveal">
-    <span class="badge"><span class="dot"></span> Aktywacja (demo)</span>
-    <div class="h1" style="font-size:34px">Aktywuj dostęp PRO</div>
-    <div class="p">
-      W demo kliknięcie nadaje PRO (localStorage). Docelowo w tym miejscu będzie weryfikacja płatności
-      i automatyczne role.
-    </div>
+  <script src="./js/subscriptions.js"></script>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const planId = (params.get('plan') || 'pro').toLowerCase();
+      const plan = window.QM_SUBS ? window.QM_SUBS.getPlan(planId) : null;
+      const safePlan = plan || { id: 'pro', name: 'PRO', priceMonthly: 149, description: 'Plan sprzedażowy.' };
 
-    <div class="hero-cta">
-      <button class="btn btn-primary" type="button" onclick="activateProDemo()">Aktywuj PRO</button>
-      <a class="btn" href="login.html">Logowanie</a>
-      <a class="btn btn-success" href="dashboard.html">Mam już PRO</a>
-    </div>
+      document.getElementById('planName').textContent = safePlan.name;
+      document.getElementById('planPrice').textContent = `${safePlan.priceMonthly} zł / mies.`;
+      document.getElementById('planDesc').textContent = safePlan.description;
 
-    <div class="hr"></div>
-    <div class="note">
-      Jeśli chcesz — w kolejnym kroku robimy PWA (instalacja jak apka: ikona, fullscreen, “Add to Home Screen”).
-    </div>
-  </div>
-</div>
-
-<div class="footer">© 2026 Zarabianie u Szefa</div>
-
-<script src="assets/app.js"></script>
-<script>
-  function activateProDemo(){
-    // jeśli nie zalogowany -> najpierw login
-    if (!(window.QM && QM.isLogged && QM.isLogged())) {
-      location.href = "login.html?back=" + encodeURIComponent("dashboard.html");
-      return;
-    }
-    // ustaw PRO i przejdź do panelu
-    if (window.QM && typeof QM.setPlan === "function") {
-      QM.setPlan("PRO");
-    } else {
-      localStorage.setItem("qm_plan", "PRO");
-    }
-    location.href = "dashboard.html";
-  }
-</script>
+      document.getElementById('activateBtn').addEventListener('click', () => {
+        if (window.QM_SUBS) {
+          window.QM_SUBS.setCurrentPlan(safePlan.id);
+          window.QM_SUBS.applyPlanToStoreMargin(safePlan.id);
+        }
+        const status = document.getElementById('status');
+        status.innerHTML = `<div class="ok"><strong>Plan ${safePlan.name} aktywny.</strong><br>Domyślna marża sklepu została ustawiona na ${Math.round((safePlan.defaultStoreMarginPct || 0) * 100)}%.</div>`;
+        setTimeout(() => { window.location.href = './success.html'; }, 900);
+      });
+    })();
+  </script>
 </body>
 </html>
