@@ -7,6 +7,7 @@
   const LS_SUB_PLAN = "qm_subscription_plan_v1";
   const LS_SUB_SOURCE = "qm_subscription_source_v1";
   const LS_SUB_UPDATED = "qm_subscription_updated_at_v1";
+  const LS_SESSION_ID = "qm_stripe_session_id_v1";
 
   const plans = {
     basic: {
@@ -47,17 +48,10 @@
     }
   };
 
-  /*
-    TU WKLEISZ PÓŹNIEJ PRAWDZIWE LINKI PŁATNOŚCI
-    np.
-    basic: "https://buy.stripe.com/....",
-    pro:   "https://buy.stripe.com/....",
-    elite: "https://buy.stripe.com/...."
-  */
   const CHECKOUT_LINKS = {
-    basic: "",
-    pro: "",
-    elite: ""
+    basic: "https://buy.stripe.com/test_eVq5kF1uZdRk7QXcLQ5J603",
+    pro: "https://buy.stripe.com/test_5kQdrb1uZ7sW7QXbHM5J604",
+    elite: "https://buy.stripe.com/test_28E4gBddHcNg9Z51385J605"
   };
 
   function safeGet(key, fallback) {
@@ -106,6 +100,7 @@
     const plan = getPlanConfig(planId);
     const source = meta && meta.source ? String(meta.source) : "local";
     const status = meta && meta.status ? String(meta.status) : "active";
+    const sessionId = meta && meta.sessionId ? String(meta.sessionId) : "";
 
     safeSet(LS_PLAN, plan.id);
     safeSet(LS_MARGIN, String(plan.defaultMargin));
@@ -113,6 +108,10 @@
     safeSet(LS_SUB_PLAN, plan.id);
     safeSet(LS_SUB_SOURCE, source);
     safeSet(LS_SUB_UPDATED, new Date().toISOString());
+
+    if (sessionId) {
+      safeSet(LS_SESSION_ID, sessionId);
+    }
 
     try {
       document.documentElement.setAttribute("data-plan", plan.id);
@@ -133,7 +132,8 @@
       plan: getPlan(),
       status: String(safeGet(LS_SUB_STATUS, "inactive") || "inactive"),
       source: String(safeGet(LS_SUB_SOURCE, "none") || "none"),
-      updatedAt: String(safeGet(LS_SUB_UPDATED, "") || "")
+      updatedAt: String(safeGet(LS_SUB_UPDATED, "") || ""),
+      sessionId: String(safeGet(LS_SESSION_ID, "") || "")
     };
   }
 
@@ -173,6 +173,11 @@
     } catch (e) {}
   }
 
+  function buildFallbackSuccessUrl(planId) {
+    const plan = normalizePlanId(planId);
+    return "./success.html?plan=" + encodeURIComponent(plan) + "&source=local";
+  }
+
   function openCheckout(planId) {
     const plan = getPlanConfig(planId);
     const checkoutUrl = getCheckoutUrl(plan.id);
@@ -190,6 +195,7 @@
 
     try {
       applyPlanToDom();
+      window.location.href = buildFallbackSuccessUrl(plan.id);
     } catch (e) {}
 
     return { ok: true, mode: "local", plan };
