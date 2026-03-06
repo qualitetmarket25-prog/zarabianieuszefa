@@ -168,9 +168,9 @@
       slug: s,
       title: safeStr(raw.title) || DEFAULT_STORE_TITLE,
       theme: safeStr(raw.theme) || DEFAULT_THEME,
-      accent: safeStr(raw.accent) || DEFAULT_ACCENT,
-      logo: safeStr(raw.logo) || "",
-      hero: safeStr(raw.hero) || "",
+      accent: safeStr(raw.accent) || getThemePreset(raw.theme).accent || DEFAULT_ACCENT,
+      logo: safeStr(raw.logo) || getThemePreset(raw.theme).logo || "",
+      hero: safeStr(raw.hero) || getThemePreset(raw.theme).hero || "",
       email: safeStr(raw.email) || "",
       marginPct: clampMargin(raw.marginPct || 0)
     };
@@ -286,24 +286,7 @@
     document.documentElement.style.setProperty(name, value);
   };
 
-  const themeHeroFallback = (theme) => {
-    switch (String(theme || DEFAULT_THEME)) {
-      case "dark":
-        return "linear-gradient(180deg,#0b1220,#050814)";
-      case "light":
-        return "linear-gradient(180deg,#f8fafc,#e2e8f0)";
-      case "neon":
-        return "radial-gradient(circle at 20% 20%, rgba(110,231,255,.35), transparent 30%), linear-gradient(180deg,#12051d,#050816)";
-      case "gastro":
-        return "linear-gradient(180deg,#2a1707,#120b06)";
-      case "premium":
-        return "linear-gradient(180deg,#1a2030,#0a0f19)";
-      case "gold":
-        return "linear-gradient(180deg,#332300,#120d04)";
-      default:
-        return "linear-gradient(180deg,#101826,#0a101a)";
-    }
-  };
+  const themeHeroFallback = (theme) => getThemePreset(theme).hero || THEME_PRESETS.default.hero;
 
   const applyStoreVisuals = () => {
     const store = getStoreConfig();
@@ -315,7 +298,10 @@
     document.body.classList.add(`theme-${store.theme || DEFAULT_THEME}`);
 
     // css variables
-    setRootVar("--store-accent", store.accent || DEFAULT_ACCENT);
+    const preset = getThemePreset(store.theme);
+    const vars = preset.vars || {};
+    Object.entries(vars).forEach(([name, value]) => setRootVar(name, value));
+    setRootVar("--store-accent", store.accent || preset.accent || DEFAULT_ACCENT);
 
     // title
     const titleEl = $("#storeTitle");
@@ -332,10 +318,10 @@
     // logo
     const logoEl = $("#storeLogo");
     if (logoEl) {
-      logoEl.src = store.logo || DEFAULT_LOGO;
+      logoEl.src = store.logo || preset.logo || DEFAULT_LOGO;
       logoEl.onerror = function () {
         this.onerror = null;
-        this.src = DEFAULT_LOGO;
+        this.src = preset.logo || DEFAULT_LOGO;
       };
     }
 
