@@ -6,7 +6,7 @@
   <title>QualitetMarket — płatność przyjęta</title>
   <meta name="description" content="Płatność przyjęta — aktywacja planu QualitetMarket." />
   <link rel="stylesheet" href="./styles.css" />
-  <script defer src="./js/subscriptions.js"></script>
+  <script defer src="./js/subscriptions.js?v=4"></script>
 
   <style>
     :root{
@@ -127,6 +127,36 @@
         return ["basic","pro","elite"].includes(p) ? p : "basic";
       }
 
+      function fallbackActivate(planId, source, sessionId){
+        var margins = {
+          basic: 0.12,
+          pro: 0.18,
+          elite: 0.24
+        };
+
+        localStorage.setItem("qm_user_plan_v1", planId);
+        localStorage.setItem("qm_store_margin_pct", String(margins[planId] || 0.12));
+        localStorage.setItem("qm_subscription_status_v1", "active");
+        localStorage.setItem("qm_subscription_plan_v1", planId);
+        localStorage.setItem("qm_subscription_source_v1", source || "stripe");
+        localStorage.setItem("qm_subscription_updated_at_v1", new Date().toISOString());
+
+        if (sessionId) {
+          localStorage.setItem("qm_stripe_session_id_v1", sessionId);
+        }
+
+        try {
+          document.documentElement.setAttribute("data-plan", planId);
+          if (document.body) document.body.setAttribute("data-plan", planId);
+        } catch(e) {}
+
+        return {
+          id: planId,
+          label: planId.toUpperCase(),
+          defaultMargin: margins[planId] || 0.12
+        };
+      }
+
       var planId = normalizePlan(getParam("plan", "basic"));
       var source = String(getParam("source", "stripe") || "stripe");
       var sessionId = String(getParam("session_id", "") || "");
@@ -136,41 +166,47 @@
       var statusBox = document.getElementById("statusBox");
       var metaBox = document.getElementById("metaBox");
 
-      if (!window.QM_SUBS || typeof window.QM_SUBS.activatePlan !== "function") {
-        title.textContent = "Nie udało się zapisać planu";
-        lead.textContent = "Brakuje modułu subskrypcji na stronie.";
-        statusBox.innerHTML = '<span class="warn">Sprawdź, czy plik js/subscriptions.js jest wgrany poprawnie.</span>';
-        return;
+      function finish(plan){
+        title.textContent = "Plan " + plan.label + " aktywny";
+        lead.textContent = "Dostęp został zapisany. Możesz wejść do platformy i działać dalej.";
+        statusBox.innerHTML =
+          '<span class="ok">Aktywacja zakończona sukcesem.</span><br>' +
+          'Plan: <strong>' + plan.label + '</strong><br>' +
+          'Domyślna marża: <strong>' + Math.round(plan.defaultMargin * 100) + '%</strong>';
+
+        if (sessionId) {
+          metaBox.hidden = false;
+          metaBox.innerHTML =
+            'Źródło aktywacji: <strong>' + source + '</strong><br>' +
+            'Session ID: <strong>' + sessionId + '</strong>';
+        }
+
+        setTimeout(function(){
+          window.location.href = "./platforma.html";
+        }, 2200);
       }
 
-      var plan = window.QM_SUBS.activatePlan(planId, {
-        source: source,
-        status: "active",
-        sessionId: sessionId
-      });
+      function runActivation(){
+        if (window.QM_SUBS && typeof window.QM_SUBS.activatePlan === "function") {
+          var plan = window.QM_SUBS.activatePlan(planId, {
+            source: source,
+            status: "active",
+            sessionId: sessionId
+          });
 
-      if (window.QM_SUBS.applyPlanToDom) {
-        window.QM_SUBS.applyPlanToDom();
+          if (window.QM_SUBS.applyPlanToDom) {
+            window.QM_SUBS.applyPlanToDom();
+          }
+
+          finish(plan);
+          return;
+        }
+
+        var fallbackPlan = fallbackActivate(planId, source, sessionId);
+        finish(fallbackPlan);
       }
 
-      title.textContent = "Plan " + plan.label + " aktywny";
-      lead.textContent = "Dostęp został zapisany. Możesz wejść do platformy i działać dalej.";
-
-      statusBox.innerHTML =
-        '<span class="ok">Aktywacja zakończona sukcesem.</span><br>' +
-        'Plan: <strong>' + plan.label + '</strong><br>' +
-        'Domyślna marża: <strong>' + Math.round(plan.defaultMargin * 100) + '%</strong>';
-
-      if (sessionId) {
-        metaBox.hidden = false;
-        metaBox.innerHTML =
-          'Źródło aktywacji: <strong>' + source + '</strong><br>' +
-          'Session ID: <strong>' + sessionId + '</strong>';
-      }
-
-      setTimeout(function(){
-        window.location.href = "./platforma.html";
-      }, 2500);
+      setTimeout(runActivation, 250);
     })();
   </script>
 </body>
