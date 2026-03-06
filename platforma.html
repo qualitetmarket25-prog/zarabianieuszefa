@@ -1,19 +1,128 @@
-(function(){
-  const orders = JSON.parse(localStorage.getItem("qm_orders_v1") || "[]");
-  const names = ["Jan", "Anna", "Marek", "Kasia", "Tomasz"];
 
-  function show(msg){
-    const el = document.createElement("div");
-    el.className = "qm-live";
-    el.innerText = msg;
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),4000);
-  }
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QualitetMarket – Platforma</title>
+  <meta name="description" content="QualitetMarket – marketplace multi-store do sprzedaży bez magazynu. Sklep, marża, hurtownie, zamówienia i subskrypcje w jednym miejscu." />
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    :root{color-scheme:dark;--bg:#08111f;--panel:#101b2e;--panel2:#0d1728;--stroke:rgba(255,255,255,.08);--text:#eef4ff;--muted:#9db0cf;--brand:#55e7a7;--brand2:#66b6ff;--warn:#ffd166;--danger:#ff7b89;--shadow:0 20px 50px rgba(0,0,0,.35)}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top,rgba(102,182,255,.16),transparent 28%),linear-gradient(180deg,#08111f,#060c16 55%,#040810);color:var(--text)}
+    a{text-decoration:none;color:inherit}.wrap{max-width:1180px;margin:0 auto;padding:24px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    .logo{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}.logo-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:var(--shadow)}
+    .plan-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted);font-weight:700}
+    .hero{display:grid;grid-template-columns:1.25fr .9fr;gap:18px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--stroke);border-radius:28px;box-shadow:var(--shadow)}
+    .hero-main{padding:34px}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(85,231,167,.12);color:#98f0c9;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(34px,6vw,60px);line-height:.98;margin:16px 0 12px}.lead{font-size:18px;line-height:1.65;color:var(--muted);max-width:840px}
+    .hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.mini{padding:16px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid var(--stroke)}.mini strong{display:block;font-size:26px;margin-bottom:4px}.mini span{color:var(--muted);font-size:14px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;font-weight:900;border:1px solid transparent;cursor:pointer;min-height:50px}.btn-primary{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}.btn-secondary{background:#131f34;border-color:var(--stroke);color:var(--text)}
+    .hero-side{padding:24px;display:flex;flex-direction:column;gap:14px}.feature{padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--stroke)}.feature h3{margin:0 0 8px;font-size:16px}.feature p{margin:0;color:var(--muted);line-height:1.55}
+    .section{margin-top:18px}.section-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.tile{padding:22px}.tile h3{margin:0 0 10px;font-size:18px}.tile p{margin:0 0 14px;color:var(--muted);line-height:1.55}.tile a{display:inline-flex;align-items:center;gap:8px;color:#a7d9ff;font-weight:800}
+    .pricing-banner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 22px;margin-top:18px}.pricing-banner strong{font-size:20px}.pricing-banner span{display:block;color:var(--muted);margin-top:4px}
+    .trust{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.trust .card{padding:20px}
+    .muted{color:var(--muted)}
+    @media (max-width: 980px){.hero,.section-grid,.trust{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr 1fr}.wrap{padding:16px}.hero-main,.hero-side{padding:22px}}
+    @media (max-width: 640px){.hero-grid{grid-template-columns:1fr}.btn{width:100%}.topbar{align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="logo"><div class="logo-badge"></div><div>QualitetMarket</div></div>
+      <div class="plan-pill">Aktywny plan: <strong id="qmPlanLabel">BASIC</strong></div>
+    </header>
 
-  setInterval(()=>{
-    if(Math.random() < 0.6){
-      const name = names[Math.floor(Math.random()*names.length)];
-      show("🔔 " + name + " właśnie kupił produkt");
-    }
-  }, 12000);
-})();
+    <section class="hero">
+      <div class="card hero-main">
+        <div class="eyebrow">Marketplace multi-store</div>
+        <h1>Sklep, marża, hurtownie i sprzedaż w jednym miejscu.</h1>
+        <p class="lead">Użytkownik tworzy sklep, wybiera produkty z hurtowni, system dolicza marżę automatycznie, a zamówienia wpadają do panelu. Całość ma działać szybko na telefonie i prowadzić do prostego modelu: kilka kliknięć i start sprzedaży bez magazynu.</p>
+        <div class="hero-grid">
+          <div class="mini"><strong>1 link</strong><span>do sklepu sprzedawcy</span></div>
+          <div class="mini"><strong>Auto marża</strong><span>zależna od planu i sklepu</span></div>
+          <div class="mini"><strong>CSV → sklep</strong><span>import i publikacja produktów</span></div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="./generator-sklepu.html">Utwórz sklep</a>
+          <a class="btn btn-secondary" href="./panel-sklepu.html">Panel sklepu</a>
+          <a class="btn btn-secondary" href="./zamowienia.html">Zamówienia</a>
+          <a class="btn btn-secondary" href="./cennik.html">Plany i subskrypcje</a>
+        </div>
+      </div>
+
+      <aside class="card hero-side">
+        <div class="feature">
+          <h3>Wejście dla sprzedawcy</h3>
+          <p>Tworzy sklep, ustawia marżę, wybiera motyw, importuje produkty i od razu sprzedaje pod własnym linkiem.</p>
+        </div>
+        <div class="feature">
+          <h3>Wejście dla klienta</h3>
+          <p>Klient wchodzi bezpośrednio do sklepu przez <strong>?store=slug</strong>, widzi bestsellery, badge i prosty checkout.</p>
+        </div>
+        <div class="feature">
+          <h3>Zaplecze systemu</h3>
+          <p>Import CSV, ranking hurtowni, panel zamówień, dashboard i gotowe mechanizmy zwiększające sprzedaż.</p>
+        </div>
+        <a class="btn btn-primary" href="./sklep.html">Otwórz sklep</a>
+      </aside>
+    </section>
+
+    <section class="section section-grid">
+      <article class="card tile">
+        <h3>Start sklepu</h3>
+        <p>Wejście do generatora sklepu i szybkie ustawienie motywu, nazwy, logo oraz domyślnej marży.</p>
+        <a href="./generator-sklepu.html">Przejdź dalej →</a>
+      </article>
+      <article class="card tile">
+        <h3>Panel sprzedawcy</h3>
+        <p>Zarządzanie motywami, marżą, KPI, eksportem oraz statusem zamówień na telefonie i desktopie.</p>
+        <a href="./panel-sklepu.html">Otwórz panel →</a>
+      </article>
+      <article class="card tile">
+        <h3>Import CSV</h3>
+        <p>Wrzuć plik z hurtowni, a produkty zostaną zamienione na listę gotową do publikacji i sprzedaży.</p>
+        <a href="./hurtownie.html">Importuj hurtownie →</a>
+      </article>
+      <article class="card tile">
+        <h3>Dashboard</h3>
+        <p>Przegląd narzędzi, rankingów i modułów, które pchają użytkownika do kolejnych kroków i wyższego planu.</p>
+        <a href="./dashboard.html">Zobacz dashboard →</a>
+      </article>
+    </section>
+
+    <section class="card pricing-banner">
+      <div>
+        <strong>Model planów: wejście niskim kosztem, później naturalny upgrade.</strong>
+        <span>BASIC ma być prostym startem. PRO ma być głównym planem sprzedażowym. ELITE ma dawać skalę, wyższą marżę i mocniejszy status.</span>
+      </div>
+      <a class="btn btn-primary" href="./cennik.html">Zobacz plany</a>
+    </section>
+
+    <section class="trust">
+      <div class="card">
+        <h3>Co już działa</h3>
+        <p class="muted">Marketplace multi-store, sklep przez <strong>?store=slug</strong>, panel sprzedawcy, koszyk, checkout, import CSV i system marży.</p>
+      </div>
+      <div class="card">
+        <h3>Co pcha sprzedaż</h3>
+        <p class="muted">Bestsellery, badge HIT / NOWOŚĆ / PROMOCJA, hurtownie premium, próg koszyka i live social proof.</p>
+      </div>
+      <div class="card">
+        <h3>Jak zarabia platforma</h3>
+        <p class="muted">Subskrypcje za kolejne etapy uproszczenia: wejście, panel, premium supplierzy, skalowanie i automatyzacja.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="./js/subscriptions.js"></script>
+  <script>
+    (function(){
+      const plan = (window.QM_SUBS && QM_SUBS.getPlan()) || { id: 'basic', label: 'BASIC' };
+      const node = document.getElementById('qmPlanLabel');
+      if (node) node.textContent = plan.label;
+    })();
+  </script>
+</body>
+</html>
