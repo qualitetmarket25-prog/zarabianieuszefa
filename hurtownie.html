@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>QualitetMarket — hurtownie</title>
+  <title>QualitetMarket — Hurtownie</title>
   <meta name="description" content="Hurtownie standardowe i premium w QualitetMarket." />
+
   <link rel="stylesheet" href="./styles.css" />
   <script defer src="./js/subscriptions.js"></script>
   <script defer src="./js/planGuard.js"></script>
@@ -13,122 +14,439 @@
     :root{
       color-scheme:dark;
       --bg:#08111f;
+      --bg2:#0c1728;
       --stroke:rgba(255,255,255,.08);
+      --stroke-strong:rgba(255,255,255,.14);
       --text:#eef4ff;
       --muted:#9db0cf;
       --brand:#55e7a7;
       --brand2:#66b6ff;
       --warn:#ffd166;
+      --danger:#ff8f8f;
       --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:26px;
+      --radius-sm:18px;
+      --max:1180px;
     }
+
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
     body{
-      margin:0;color:var(--text);
+      margin:0;
+      color:var(--text);
       font-family:Inter,ui-sans-serif,system-ui,sans-serif;
       background:
         radial-gradient(circle at top right, rgba(102,182,255,.14), transparent 28%),
         radial-gradient(circle at top left, rgba(85,231,167,.12), transparent 24%),
         linear-gradient(180deg,#08111f,#050a12);
+      min-height:100vh;
     }
+
     a{text-decoration:none;color:inherit}
-    .wrap{max-width:1180px;margin:0 auto;padding:18px}
-    .back{display:inline-flex;align-items:center;gap:8px;color:#b9ddff;font-weight:900;margin-bottom:16px}
+    button{font:inherit}
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:#b9ddff;
+      font-weight:900;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     .hero{
-      padding:24px;border-radius:28px;border:1px solid var(--stroke);
+      padding:24px;
+      border-radius:28px;
+      border:1px solid var(--stroke);
       background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
       box-shadow:var(--shadow);
     }
+
     .eyebrow{
-      display:inline-flex;padding:8px 12px;border-radius:999px;
-      background:rgba(85,231,167,.12);color:#98f0c9;
-      font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+      display:inline-flex;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(85,231,167,.12);
+      color:#98f0c9;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
     }
+
     h1{
       margin:16px 0 10px;
       font-size:clamp(34px,6vw,52px);
-      line-height:1.02;letter-spacing:-.03em;
-    }
-    .lead{margin:0;color:var(--muted);line-height:1.8;max-width:860px}
-    .statusbar{
-      margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;
-    }
-    .pill{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:38px;padding:8px 12px;border-radius:999px;
-      border:1px solid var(--stroke);background:rgba(255,255,255,.05);font-weight:900;
+      line-height:1.02;
+      letter-spacing:-.03em;
     }
 
-    .section{margin-top:18px}
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:860px;
+    }
+
+    .hero-actions{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .statusbar{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:40px;
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.05);
+      font-weight:900;
+      color:#f3f7ff;
+    }
+
+    .pill strong{margin-left:6px}
+    .pill.basic strong{color:#ffffff}
+    .pill.pro strong{color:#9fd0ff}
+    .pill.elite strong{color:#ffe29a}
+
+    .section{margin-top:20px}
+
     .head{
-      display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
       margin-bottom:12px;
     }
-    .head h2{margin:0;font-size:28px;letter-spacing:-.02em}
-    .head p{margin:0;color:var(--muted);line-height:1.7}
+
+    .head h2{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.02em;
+    }
+
+    .head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+      max-width:760px;
+    }
 
     .grid{
-      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
     }
+
     .card{
-      padding:20px;border-radius:24px;border:1px solid var(--stroke);
+      position:relative;
+      padding:20px;
+      border-radius:24px;
+      border:1px solid var(--stroke);
       background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
       min-height:100%;
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      width:180px;
+      height:180px;
+      right:-50px;
+      bottom:-70px;
+      background:radial-gradient(circle, rgba(102,182,255,.12), transparent 68%);
+      pointer-events:none;
+    }
+
     .badge{
-      display:inline-flex;padding:7px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);border:1px solid var(--stroke);
-      font-size:12px;font-weight:900;color:var(--muted);
+      display:inline-flex;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
     }
-    .title{margin:14px 0 8px;font-size:22px;font-weight:1000}
-    .desc{margin:0;color:var(--muted);line-height:1.7}
+
+    .badge.start{color:#d9ffee;background:rgba(85,231,167,.10)}
+    .badge.pro{color:#cfe7ff;background:rgba(102,182,255,.11)}
+    .badge.elite{color:#ffe8af;background:rgba(255,209,102,.12)}
+
+    .title{
+      margin:14px 0 8px;
+      font-size:22px;
+      font-weight:1000;
+      line-height:1.15;
+    }
+
+    .desc{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
     .list{
-      margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;
+      margin:14px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:10px;
     }
+
     .list li{
-      position:relative;padding-left:18px;color:var(--muted);line-height:1.55;
+      position:relative;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.55;
     }
+
     .list li::before{
-      content:"•";position:absolute;left:0;top:0;color:var(--brand);font-weight:1000;
+      content:"•";
+      position:absolute;
+      left:0;
+      top:0;
+      color:var(--brand);
+      font-weight:1000;
     }
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
     .btn{
-      min-height:48px;padding:12px 15px;border-radius:16px;
-      display:inline-flex;align-items:center;justify-content:center;
-      border:1px solid transparent;font-weight:900;
+      min-height:48px;
+      padding:12px 15px;
+      border-radius:16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid transparent;
+      font-weight:900;
+      transition:.18s ease;
+      cursor:pointer;
     }
-    .btn-main{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}
-    .btn-ghost{background:#131f34;border-color:var(--stroke)}
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+
+    .btn-main{
+      background:linear-gradient(135deg,var(--brand),#71ffd1);
+      color:#032317;
+    }
+
+    .btn-blue{
+      background:linear-gradient(135deg,var(--brand2),#8ecbff);
+      color:#041a30;
+    }
+
+    .btn-ghost{
+      background:#131f34;
+      border-color:var(--stroke);
+      color:#eef4ff;
+    }
+
+    .btn-warn{
+      background:linear-gradient(135deg,#ffd166,#ffe29a);
+      color:#2d2100;
+    }
+
     .locked{
-      position:relative;overflow:hidden;
+      border-color:rgba(255,209,102,.18);
     }
+
     .locked::after{
       content:"Wymaga PRO lub ELITE";
-      position:absolute;inset:auto 14px 14px auto;
-      padding:8px 12px;border-radius:999px;background:rgba(255,209,102,.16);
-      color:#ffe29a;border:1px solid rgba(255,209,102,.25);font-size:12px;font-weight:1000;
+      position:absolute;
+      inset:auto 14px 14px auto;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,209,102,.16);
+      color:#ffe29a;
+      border:1px solid rgba(255,209,102,.25);
+      font-size:12px;
+      font-weight:1000;
+    }
+
+    .locked.elite-only::after{
+      content:"Wymaga ELITE";
+    }
+
+    .lock-note{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,209,102,.18);
+      background:rgba(255,209,102,.08);
+      color:#ffe4a7;
+      line-height:1.6;
+      font-size:13px;
     }
 
     .upgrade{
-      margin-top:18px;padding:22px;border-radius:24px;border:1px solid rgba(255,209,102,.22);
+      margin-top:18px;
+      padding:22px;
+      border-radius:24px;
+      border:1px solid rgba(255,209,102,.22);
       background:linear-gradient(180deg,rgba(255,209,102,.08),rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
     }
-    .upgrade h3{margin:0 0 10px;font-size:24px}
-    .upgrade p{margin:0;color:var(--muted);line-height:1.75}
-    .upgrade .actions{margin-top:16px}
+
+    .upgrade h3{
+      margin:0 0 10px;
+      font-size:24px;
+      line-height:1.15;
+    }
+
+    .upgrade p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:860px;
+    }
+
+    .plans{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .plan{
+      padding:20px;
+      border-radius:22px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
+    }
+
+    .plan.recommended{
+      border-color:rgba(102,182,255,.25);
+      box-shadow:0 0 0 1px rgba(102,182,255,.12) inset;
+    }
+
+    .plan .name{
+      font-size:13px;
+      font-weight:1000;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .plan .price{
+      margin:10px 0 8px;
+      font-size:34px;
+      font-weight:1000;
+      line-height:1;
+      letter-spacing:-.03em;
+    }
+
+    .plan .price small{
+      font-size:14px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .plan p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+    }
+
+    .mini{
+      margin-top:10px;
+      font-size:13px;
+      color:#dbe8ff;
+      line-height:1.6;
+    }
+
+    .mobilebar{
+      display:none;
+      position:fixed;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      z-index:50;
+      padding:10px;
+      border-radius:20px;
+      border:1px solid var(--stroke-strong);
+      background:rgba(6,11,19,.86);
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow);
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .hide{display:none !important}
 
     @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
+      .grid,
+      .plans{
+        grid-template-columns:1fr;
+      }
     }
+
     @media (max-width: 640px){
       .wrap{padding:14px}
-      .hero,.card,.upgrade{padding:18px}
-      .actions .btn{width:100%}
+      .hero,.card,.upgrade,.plan{padding:18px}
+      .actions .btn,
+      .top-actions .btn,
+      .hero-actions .btn{width:100%}
+      .mobilebar{
+        display:grid;
+      }
+      body{
+        padding-bottom:92px;
+      }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <a class="back" href="./index.html">← Wróć do startu</a>
+    <div class="topline">
+      <a class="back" href="./index.html">← Wróć do startu</a>
+
+      <div class="top-actions">
+        <a class="btn btn-ghost" href="./platforma.html">Platforma</a>
+        <a class="btn btn-ghost" href="./sklep.html">Sklep</a>
+      </div>
+    </div>
 
     <section class="hero">
       <div class="eyebrow">hurtownie • premium • prosty wybór</div>
@@ -138,9 +456,15 @@
         są dostępne na wejście, a premium mają motywować do przejścia na PRO albo ELITE.
       </p>
 
+      <div class="hero-actions">
+        <a class="btn btn-main" href="#premium">Zobacz premium</a>
+        <a class="btn btn-ghost" href="./platforma.html">Wróć do platformy</a>
+      </div>
+
       <div class="statusbar">
-        <span class="pill">Aktualny plan: <strong style="margin-left:6px" data-plan-label>BASIC</strong></span>
-        <span class="pill">Premium hurtownie: <strong style="margin-left:6px" data-premium-status>Zablokowane</strong></span>
+        <span class="pill basic">Aktualny plan: <strong data-plan-label>BASIC</strong></span>
+        <span class="pill">Premium hurtownie: <strong data-premium-status>Zablokowane</strong></span>
+        <span class="pill">Status subskrypcji: <strong data-sub-status>Nieaktywna</strong></span>
       </div>
     </section>
 
@@ -154,7 +478,7 @@
 
       <div class="grid">
         <article class="card">
-          <span class="badge">START</span>
+          <span class="badge start">START</span>
           <div class="title">Hurtownia ogólna</div>
           <p class="desc">Produkty bazowe do pierwszego importu i testów sklepu.</p>
           <ul class="list">
@@ -168,7 +492,7 @@
         </article>
 
         <article class="card">
-          <span class="badge">MOBILE</span>
+          <span class="badge start">MOBILE</span>
           <div class="title">Produkty szybkie do wdrożenia</div>
           <p class="desc">Sekcja pod prostą sprzedaż i szybkie wrzucanie oferty z telefonu.</p>
           <ul class="list">
@@ -182,7 +506,7 @@
         </article>
 
         <article class="card">
-          <span class="badge">FLOW</span>
+          <span class="badge start">FLOW</span>
           <div class="title">Import i pierwsza marża</div>
           <p class="desc">Podstawowe wejście do dalszego działania i nauki systemu.</p>
           <ul class="list">
@@ -197,7 +521,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section id="premium" class="section">
       <div class="head">
         <div>
           <h2>Hurtownie premium</h2>
@@ -206,8 +530,8 @@
       </div>
 
       <div class="grid">
-        <article class="card locked" data-require="pro">
-          <span class="badge">PREMIUM</span>
+        <article class="card locked" data-require="pro" data-upsell="pro">
+          <span class="badge pro">PREMIUM</span>
           <div class="title">Premium supplierzy</div>
           <p class="desc">Lepsze źródła pod mocniejszy sklep i lepszą ofertę sprzedażową.</p>
           <ul class="list">
@@ -215,13 +539,16 @@
             <li>Mocniejszy argument dla planu PRO</li>
             <li>Dostęp po aktywacji planu</li>
           </ul>
+          <div class="lock-note">
+            Ten moduł ma być widoczny dla wszystkich, ale wejście ma odblokowywać się dopiero od planu PRO.
+          </div>
           <div class="actions">
-            <a class="btn btn-ghost" href="./cennik.html">Odblokuj</a>
+            <a class="btn btn-ghost premium-link" data-live-href="./platforma.html" href="#upgrade">Odblokuj</a>
           </div>
         </article>
 
-        <article class="card locked" data-require="pro">
-          <span class="badge">B2B</span>
+        <article class="card locked" data-require="pro" data-upsell="pro">
+          <span class="badge pro">B2B</span>
           <div class="title">Lepsze źródła marży</div>
           <p class="desc">Sekcja dla tych, którzy chcą lepiej ustawiać ofertę i szybciej zarabiać.</p>
           <ul class="list">
@@ -229,13 +556,16 @@
             <li>Naturalny upsell z BASIC do PRO</li>
             <li>Pod lepsze oferty i większą sprzedażowość</li>
           </ul>
+          <div class="lock-note">
+            Użytkownik na BASIC ma od razu widzieć, że tu zaczyna się prawdziwa wartość planu PRO.
+          </div>
           <div class="actions">
-            <a class="btn btn-ghost" href="./cennik.html">Aktywuj PRO</a>
+            <a class="btn btn-ghost premium-link" data-live-href="./platforma.html" href="#upgrade">Aktywuj PRO</a>
           </div>
         </article>
 
-        <article class="card locked" data-require="elite">
-          <span class="badge">ELITE</span>
+        <article class="card locked elite-only" data-require="elite" data-upsell="elite">
+          <span class="badge elite">ELITE</span>
           <div class="title">Najmocniejsze premium</div>
           <p class="desc">Najwyższy poziom dostępu dla użytkowników, którzy chcą iść w skalę.</p>
           <ul class="list">
@@ -243,29 +573,69 @@
             <li>Pod najbardziej zdecydowanych użytkowników</li>
             <li>Powód do wejścia na ELITE</li>
           </ul>
+          <div class="lock-note">
+            To moduł premium najwyższego poziomu, który ma ciągnąć użytkownika do ELITE.
+          </div>
           <div class="actions">
-            <a class="btn btn-ghost" href="./cennik.html">Aktywuj ELITE</a>
+            <a class="btn btn-ghost premium-link" data-live-href="./intelligence.html" href="#upgrade">Aktywuj ELITE</a>
           </div>
         </article>
       </div>
     </section>
 
-    <section class="upgrade">
+    <section id="upgrade" class="upgrade">
       <h3>Chcesz odblokować premium?</h3>
       <p>
         PRO odblokowuje panel sprzedawcy i hurtownie premium.
         ELITE daje wszystko z PRO plus AI pomocnika i najmocniejszy poziom systemu.
       </p>
-      <div class="actions">
-        <a class="btn btn-main" href="./aktywuj-pro.html?plan=pro">Wejdź w PRO</a>
-        <a class="btn btn-ghost" href="./aktywuj-pro.html?plan=elite">Wejdź w ELITE</a>
+
+      <div class="plans">
+        <article class="plan">
+          <div class="name">BASIC</div>
+          <div class="price">49 zł <small>/ mies.</small></div>
+          <p>Plan wejściowy do poznania systemu i pierwszych ruchów.</p>
+          <div class="mini">Dobry na start, ale premium pozostaje zablokowane.</div>
+          <div class="actions">
+            <a class="btn btn-ghost" href="https://buy.stripe.com/test_eVq5kF1uZdRk7QXcLQ5J603">Aktywuj BASIC</a>
+          </div>
+        </article>
+
+        <article class="plan recommended">
+          <div class="name">PRO</div>
+          <div class="price">149 zł <small>/ mies.</small></div>
+          <p>Główny plan do realnej sprzedaży, panelu sprzedawcy i hurtowni premium.</p>
+          <div class="mini">Najważniejszy upgrade z punktu widzenia zarabiania.</div>
+          <div class="actions">
+            <a class="btn btn-blue" href="https://buy.stripe.com/test_5kQdrb1uZ7sW7QXbHM5J604">Wejdź w PRO</a>
+          </div>
+        </article>
+
+        <article class="plan">
+          <div class="name">ELITE</div>
+          <div class="price">299 zł <small>/ mies.</small></div>
+          <p>Wszystko z PRO plus AI pomocnik i najwyższy poziom systemu.</p>
+          <div class="mini">Plan pod skalę, automatyzację i najmocniejsze moduły.</div>
+          <div class="actions">
+            <a class="btn btn-warn" href="https://buy.stripe.com/test_28E4gBddHcNg9Z51385J605">Wejdź w ELITE</a>
+          </div>
+        </article>
       </div>
     </section>
   </main>
 
+  <div class="mobilebar">
+    <a class="btn btn-ghost" href="./platforma.html">Platforma</a>
+    <a class="btn btn-main" href="#upgrade">Odblokuj premium</a>
+  </div>
+
   <script>
     (function(){
       "use strict";
+
+      var LS_PLAN = "qm_user_plan_v1";
+      var LS_SUB = "qm_subscription_status_v1";
+      var LS_MARGIN = "qm_store_margin_pct";
 
       function read(key, fallback){
         try{
@@ -276,13 +646,80 @@
         }
       }
 
-      var plan = String(read("qm_user_plan_v1","basic") || "basic").toLowerCase();
-      if(!["basic","pro","elite"].includes(plan)) plan = "basic";
+      function normalizePlan(v){
+        v = String(v || "").trim().toLowerCase();
+        if(v === "elite") return "elite";
+        if(v === "pro") return "pro";
+        return "basic";
+      }
 
+      function planRank(v){
+        if(v === "elite") return 2;
+        if(v === "pro") return 1;
+        return 0;
+      }
+
+      var plan = normalizePlan(read(LS_PLAN, "basic"));
+      var sub = String(read(LS_SUB, "") || "").trim().toLowerCase();
+      var marginRaw = read(LS_MARGIN, "0.12");
+      var marginNum = Number(marginRaw);
+
+      var planLabelMap = {
+        basic: "BASIC",
+        pro: "PRO",
+        elite: "ELITE"
+      };
+
+      var planPill = document.querySelector("[data-plan-label]");
       var premium = document.querySelector("[data-premium-status]");
+      var subStatus = document.querySelector("[data-sub-status]");
+
+      if(planPill){
+        planPill.textContent = planLabelMap[plan] || "BASIC";
+        var pillWrap = planPill.closest(".pill");
+        if(pillWrap){
+          pillWrap.classList.remove("basic","pro","elite");
+          pillWrap.classList.add(plan);
+        }
+      }
+
       if(premium){
         premium.textContent = (plan === "pro" || plan === "elite") ? "Odblokowane" : "Zablokowane";
       }
+
+      if(subStatus){
+        var activeValues = ["active","paid","trialing","ok","1","true"];
+        subStatus.textContent = activeValues.includes(sub) ? "Aktywna" : "Nieaktywna";
+      }
+
+      var cards = document.querySelectorAll("[data-require]");
+      cards.forEach(function(card){
+        var required = normalizePlan(card.getAttribute("data-require"));
+        var unlocked = planRank(plan) >= planRank(required);
+        var link = card.querySelector(".premium-link");
+
+        if(unlocked){
+          card.classList.remove("locked","elite-only");
+          if(link && link.dataset.liveHref){
+            link.setAttribute("href", link.dataset.liveHref);
+          }
+          return;
+        }
+
+        if(required === "elite"){
+          card.classList.add("elite-only");
+        }
+
+        if(link){
+          link.addEventListener("click", function(e){
+            e.preventDefault();
+            var upgrade = document.getElementById("upgrade");
+            if(upgrade){
+              upgrade.scrollIntoView({behavior:"smooth", block:"start"});
+            }
+          });
+        }
+      });
     })();
   </script>
 </body>
