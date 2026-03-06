@@ -590,3 +590,22 @@ img{max-width:100%}
 .qm-bp-top{ display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
 .qm-bp-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 .qm-bp-btn{ width:100%; }
+/* ===== FIX INPUT TEXT VISIBILITY ===== */
+
+input,
+select,
+textarea {
+  color: #ffffff !important;
+  background: rgba(15,23,42,0.85) !important;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* pole wyszukiwarki sklepu */
+.shop-search input {
+  color: #ffffff !important;
+}
