@@ -1,755 +1,100 @@
+
 <!doctype html>
 <html lang="pl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sklep B2B – QualitetMarket</title>
-
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./shop.css" />
-
-  <script>
-    (() => {
-      "use strict";
-
-      const LS_STORES = "qm_stores_v1";
-      const LS_ACTIVE = "qm_active_store_v1";
-
-      const slugify = (s) => String(s || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[ąćęłńóśźż]/g, (m) => ({
-          "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"
-        }[m] || m))
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-
-      const readJSON = (k, fallback) => {
-        try { return JSON.parse(localStorage.getItem(k) || ""); }
-        catch { return fallback; }
-      };
-
-      const getActiveStoreSlug = () => {
-        try {
-          const u = new URL(window.location.href);
-          const s = slugify(u.searchParams.get("store") || "");
-          if (s) return s;
-        } catch {}
-        return slugify(localStorage.getItem(LS_ACTIVE) || "") || slugify(localStorage.getItem("qm_store_slug") || "") || "";
-      };
-
-      const slug = getActiveStoreSlug();
-      const stores = readJSON(LS_STORES, {});
-      const store = (slug && stores && stores[slug]) ? stores[slug] : {};
-
-      const theme = String(store.theme || "default").trim() || "default";
-      const accent = String(store.accent || "#6ee7ff").trim() || "#6ee7ff";
-      const title = String(store.title || "Sklep dropshipping – Gastronomia / Masarnie").trim();
-      const hero = String(store.hero || "").trim();
-      const logo = String(store.logo || "").trim();
-
-      document.documentElement.style.setProperty("--store-accent", accent);
-
-      const themeMap = {
-        "default": { bg1:"#101826", bg2:"#0a101a", text:"#eaf0ff", card:"rgba(16,24,38,.92)" },
-        "dark":    { bg1:"#0b1220", bg2:"#050814", text:"#eaf0ff", card:"rgba(8,14,24,.94)" },
-        "light":   { bg1:"#f8fafc", bg2:"#e2e8f0", text:"#0f172a", card:"rgba(255,255,255,.86)" },
-        "neon":    { bg1:"#12051d", bg2:"#050816", text:"#ecfeff", card:"rgba(18,5,29,.86)" },
-        "gastro":  { bg1:"#2a1707", bg2:"#120b06", text:"#fff7ed", card:"rgba(42,23,7,.90)" },
-        "premium": { bg1:"#1a2030", bg2:"#0a0f19", text:"#f8fafc", card:"rgba(20,25,39,.92)" },
-        "gold":    { bg1:"#332300", bg2:"#120d04", text:"#fff8e1", card:"rgba(36,25,0,.90)" }
-      };
-
-      const cfg = themeMap[theme] || themeMap.default;
-
-      document.documentElement.style.setProperty("--store-bg-1", cfg.bg1);
-      document.documentElement.style.setProperty("--store-bg-2", cfg.bg2);
-      document.documentElement.style.setProperty("--store-text", cfg.text);
-      document.documentElement.style.setProperty("--store-card", cfg.card);
-
-      window.QM_STORE_VIEW = {
-        slug,
-        title,
-        theme,
-        accent,
-        hero,
-        logo
-      };
-    })();
-  </script>
-
-  <script type="module">
-    try {
-      const [{ QM_CONFIG }, pricing] = await Promise.all([
-        import("./js/config.js"),
-        import("./js/pricing.js")
-      ]);
-
-      const { priceFromBuy, priceFromProduct, formatPLN, round2 } = pricing;
-
-      window.QM_CONFIG = QM_CONFIG;
-      window.QM_PRICE = { priceFromBuy, priceFromProduct, formatPLN, round2 };
-
-      try {
-        const mode = (localStorage.getItem("qm_shop_mode_v1") || "retail").toLowerCase();
-        window.QM_MODE = (mode === "b2b") ? "hurt" : "detal";
-      } catch {
-        window.QM_MODE = "detal";
-      }
-
-      window.dispatchEvent(new CustomEvent("qm:pricing-ready"));
-    } catch (e) {
-      console.error("QM pricing load failed:", e);
-      window.QM_PRICING_ERROR = true;
-      window.dispatchEvent(new CustomEvent("qm:pricing-error"));
-    }
-  </script>
-
-  <script defer src="./js/shopCart.js"></script>
-  <script defer src="./js/shop.js"></script>
-
-  <style>
-    :root{
-      --store-accent:#6ee7ff;
-      --store-bg-1:#101826;
-      --store-bg-2:#0a101a;
-      --store-text:#eaf0ff;
-      --store-card:rgba(16,24,38,.92);
-
-      --brand:var(--store-accent);
-      --brand2:color-mix(in srgb, var(--store-accent) 65%, white 35%);
-    }
-
-    body[data-noShell="1"]{
-      background:
-        radial-gradient(1200px 600px at 0% 0%, color-mix(in srgb, var(--store-accent) 12%, transparent 88%), transparent 60%),
-        linear-gradient(180deg, var(--store-bg-1), var(--store-bg-2));
-      color:var(--store-text);
-      min-height:100vh;
-    }
-
-    .wrap{
-      max-width:1440px;
-      margin:0 auto;
-      padding:22px 16px 36px;
-    }
-
-    .muted-xs{
-      font-size:12px;
-      color:color-mix(in srgb, var(--store-text) 76%, transparent 24%);
-      line-height:1.4;
-    }
-
-    .layout-3col{
-      display:grid;
-      grid-template-columns:280px minmax(0,1fr) 280px;
-      gap:16px;
-      align-items:start;
-      margin-top:16px;
-    }
-
-    @media (max-width:1100px){
-      .layout-3col{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .hero-card{
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      background:linear-gradient(180deg, color-mix(in srgb, var(--store-card) 92%, transparent 8%), color-mix(in srgb, var(--store-bg-2) 94%, transparent 6%));
-      box-shadow:0 20px 60px rgba(0,0,0,.32);
-      backdrop-filter:blur(8px);
-    }
-
-    .store-hero{
-      position:relative;
-      min-height:210px;
-      background:
-        radial-gradient(700px 220px at 15% 0%, color-mix(in srgb, var(--store-accent) 26%, transparent 74%), transparent 65%),
-        linear-gradient(180deg, var(--store-bg-1), var(--store-bg-2));
-      background-size:cover;
-      background-position:center;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-
-    .store-hero::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.38));
-      pointer-events:none;
-    }
-
-    .store-hero-inner{
-      position:relative;
-      z-index:2;
-      padding:22px;
-      display:flex;
-      justify-content:space-between;
-      gap:18px;
-      align-items:flex-start;
-      flex-wrap:wrap;
-    }
-
-    .brand-box{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      max-width:780px;
-    }
-
-    .brand-logo{
-      width:72px;
-      height:72px;
-      border-radius:18px;
-      object-fit:cover;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      box-shadow:0 10px 26px rgba(0,0,0,.25);
-      flex:0 0 auto;
-    }
-
-    .brand-copy{
-      min-width:0;
-    }
-
-    .brand-kicker{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-bottom:8px;
-    }
-
-    .brand-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:5px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.16);
-      color:#fff;
-      font-size:12px;
-      font-weight:800;
-    }
-
-    .store-title{
-      margin:0;
-      font-size:34px;
-      line-height:1.06;
-      font-weight:950;
-      color:#fff;
-      text-wrap:balance;
-    }
-
-    .store-subtitle{
-      margin:10px 0 0;
-      max-width:820px;
-      color:rgba(255,255,255,.92);
-      font-size:14px;
-      line-height:1.55;
-    }
-
-    .shop-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      flex-wrap:wrap;
-      padding:18px 22px;
-    }
-
-    .shop-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .shop-toolbar{
-      display:grid;
-      grid-template-columns:1.2fr .9fr .95fr .9fr;
-      gap:12px;
-      align-items:start;
-      padding:0 22px 22px;
-    }
-
-    @media (max-width:980px){
-      .shop-toolbar{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .field{ min-width:0; }
-
-    .seg{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .seg-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding:12px 14px;
-      min-height:46px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.05);
-      color:var(--store-text);
-      font-weight:800;
-      cursor:pointer;
-      transition:none !important;
-      box-shadow:0 10px 24px rgba(0,0,0,.16);
-    }
-
-    .seg-btn:hover{
-      transform:none !important;
-      filter:none !important;
-      background:rgba(255,255,255,.05) !important;
-      border-color:rgba(255,255,255,.14) !important;
-    }
-
-    .seg-btn.active{
-      background:linear-gradient(135deg, var(--store-accent), color-mix(in srgb, var(--store-accent) 64%, white 36%));
-      border-color:transparent;
-      color:#06110a;
-      box-shadow:0 16px 40px color-mix(in srgb, var(--store-accent) 22%, transparent 78%);
-    }
-
-    .kpi-row{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-    }
-
-    @media (max-width:700px){
-      .kpi-row{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .kpi{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      padding:16px 18px;
-      box-shadow:0 12px 30px rgba(0,0,0,.18);
-      color:var(--store-text);
-    }
-
-    .kpi strong{
-      font-size:16px;
-      color:var(--store-text);
-    }
-
-    .kpi span{
-      font-size:16px;
-      font-weight:800;
-      color:var(--store-text);
-    }
-
-    .sidecard{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background:rgba(255,255,255,.06);
-      box-shadow:0 12px 30px rgba(0,0,0,.22);
-      padding:16px;
-      position:sticky;
-      top:14px;
-      color:var(--store-text);
-      backdrop-filter:blur(6px);
-    }
-
-    @media (max-width:1100px){
-      .sidecard{
-        position:static;
-      }
-    }
-
-    .sidecard h3{
-      margin:0 0 10px;
-      font-size:15px;
-      font-weight:900;
-      letter-spacing:.2px;
-      color:var(--store-text);
-    }
-
-    .sidecard .p{
-      margin:0 0 10px;
-      font-size:13px;
-      line-height:1.55;
-      color:color-mix(in srgb, var(--store-text) 92%, transparent 8%);
-      opacity:1;
-    }
-
-    .sidecard ul{
-      margin:0;
-      padding-left:18px;
-      font-size:13px;
-      line-height:1.55;
-      color:color-mix(in srgb, var(--store-text) 88%, transparent 12%);
-      opacity:1;
-    }
-
-    .sidecard li{
-      margin:6px 0;
-    }
-
-    .smallmuted{
-      font-size:12px;
-      color:color-mix(in srgb, var(--store-text) 84%, transparent 16%);
-      opacity:1;
-      line-height:1.45;
-    }
-
-    .callout{
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,.18);
-      padding:10px;
-      background:rgba(255,255,255,.05);
-      margin-top:10px;
-    }
-
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      padding:4px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.07);
-      color:var(--store-text);
-      font-size:12px;
-      gap:6px;
-      margin-right:6px;
-      margin-top:6px;
-      white-space:nowrap;
-    }
-
-    .sidebtns{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .soft{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow:none;
-    }
-
-    code{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      padding:2px 6px;
-      border-radius:8px;
-      color:var(--store-text);
-    }
-
-    .section{
-      margin-bottom:16px;
-    }
-
-    .footer{
-      padding:12px 4px 0;
-      font-size:12px;
-      color:color-mix(in srgb, var(--store-text) 68%, transparent 32%);
-    }
-
-    body.theme-light .store-title,
-    body.theme-light .brand-pill,
-    body.theme-light .store-subtitle{
-      color:#0f172a;
-    }
-
-    body.theme-light .store-hero::after{
-      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.34));
-    }
-
-    body.theme-light .brand-pill{
-      background:rgba(255,255,255,.68);
-      border-color:rgba(15,23,42,.10);
-    }
-
-    body.theme-light .sidecard,
-    body.theme-light .kpi,
-    body.theme-light .hero-card{
-      border-color:rgba(15,23,42,.08);
-    }
-
-    body.theme-light .shop-actions .btn,
-    body.theme-light .sidebtns .btn{
-      color:#0f172a !important;
-    }
-  </style>
 </head>
-
-<body data-noShell="1">
-  <div class="wrap">
-
-    <div class="hero-card">
-      <div id="storeHero" class="store-hero">
-        <div class="store-hero-inner">
-          <div class="brand-box">
-            <img id="storeLogo" class="brand-logo" src="./produkt_1.png" alt="Logo sklepu" />
-            <div class="brand-copy">
-              <div class="brand-kicker">
-                <span class="brand-pill" id="activeStoreBadge">store</span>
-                <span class="brand-pill" id="storeThemeBadge">theme</span>
-              </div>
-              <h1 id="storeTitle" class="store-title">Sklep dropshipping – Gastronomia / Masarnie</h1>
-              <p class="store-subtitle">
-                Produkty z importu CSV hurtowni + fallback z <code>./products.json</code>. Każdy sprzedawca może mieć własny motyw, kolor, logo i marżę.
-              </p>
-            </div>
-          </div>
-
-          <div class="shop-actions">
-            <a class="btn btn-sm" href="./dashboard.html">Dashboard</a>
-            <a class="btn btn-sm" href="./hurtownie.html">Import CSV</a>
-            <a class="btn btn-sm" href="./suppliers.html">Hurtownie (system)</a>
-            <a class="btn btn-sm" href="./zamowienia.html">Moje zamówienia</a>
-            <a class="btn btn-primary btn-sm" href="./koszyk.html">
-              Koszyk <span class="pill" id="cartCount">0</span>
-            </a>
-          </div>
+<body>
+  <main class="shop-wrap">
+    <section class="shop-hero qm-card">
+      <div class="shop-hero__left">
+        <div class="shop-kicker">Marketplace dropshipping B2B / B2C</div>
+        <h1 id="qmStoreTitle">Sklep dropshipping – Gastronomia / Masarnie</h1>
+        <p class="shop-lead">Produkty z importu CSV hurtowni + fallback z <code>./products.json</code>. Każdy sprzedawca może mieć własny motyw, kolor, logo i marżę. System dobiera bestsellery, pokazuje badge i podpowiada co promować.</p>
+        <div class="shop-hero__actions">
+          <a class="qm-btn qm-btn--primary" href="./panel-sklepu.html">Panel sklepu</a>
+          <a class="qm-btn qm-btn--ghost" href="./zamowienia.html">Zamówienia</a>
+          <a class="qm-btn qm-btn--ghost" href="./koszyk.html">Koszyk</a>
         </div>
       </div>
+      <div class="shop-hero__right">
+        <div class="shop-stat"><strong id="qmProductsCount">0</strong><span>Produkty</span></div>
+        <div class="shop-stat"><strong id="qmCategoriesCount">0</strong><span>Kategorie</span></div>
+        <div class="shop-stat"><strong id="qmModeLabel">DETAL</strong><span>Tryb</span></div>
+      </div>
+    </section>
 
-      <div class="shop-top">
+    <section class="shop-toolbar qm-card">
+      <label class="qm-field">
+        <span>Szukaj</span>
+        <input id="qmSearch" type="search" placeholder="np. opakowania, zgrzewarka, kubki" />
+      </label>
+      <label class="qm-field">
+        <span>Kategoria</span>
+        <select id="qmCategory"><option value="">Wszystkie</option></select>
+      </label>
+      <label class="qm-field">
+        <span>Tryb ceny</span>
+        <select id="qmMode">
+          <option value="detal">Detal</option>
+          <option value="hurt">Hurt (B2B)</option>
+        </select>
+      </label>
+      <label class="qm-field">
+        <span>Sortowanie</span>
+        <select id="qmSort">
+          <option value="ranking">Ranking ↓</option>
+          <option value="price-asc">Cena ↑</option>
+          <option value="price-desc">Cena ↓</option>
+          <option value="name">Nazwa A→Z</option>
+        </select>
+      </label>
+    </section>
+
+    <section id="qmEnhancer"></section>
+
+    <section class="qm-card shop-products-section">
+      <div class="section-head">
         <div>
-          <div class="muted-xs">Marketplace dropshipping B2B / B2C</div>
-
-          <div id="pricingWarn" class="card soft" style="display:none; margin-top:12px;">
-            <strong>Uwaga:</strong>
-            <div class="p" style="margin-top:6px;">
-              Nie udało się załadować modułu marży (<code>config.js</code>/<code>pricing.js</code>).
-              Sprawdź, czy pliki istnieją w folderze <code>/js</code> i odśwież <strong>CTRL+F5</strong>.
-            </div>
-          </div>
+          <div class="shop-kicker">Oferta sklepu</div>
+          <h2>Produkty gotowe do sprzedaży</h2>
         </div>
-
-        <div class="shop-actions">
-          <a class="btn btn-sm" href="./panel-sklepu.html">Panel sklepu</a>
-          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
-          <a class="btn btn-sm btn-primary" href="./koszyk.html">
-            Koszyk <span class="pill" id="cartCountTop">0</span>
-          </a>
-        </div>
+        <div class="shop-hint">Jeśli nic tu nie ma, zrób import CSV w module Hurtownie albo dodaj wpisy do <code>./products.json</code>.</div>
       </div>
-
-      <div class="hr"></div>
-
-      <div class="shop-toolbar">
-        <div class="field">
-          <label class="muted-xs">Szukaj</label>
-          <input id="q" class="input" placeholder="np. folie, pojemniki, rękawice, masarnie..." />
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Kategoria</label>
-          <select id="cat" class="input">
-            <option value="">Wszystkie</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Tryb ceny</label>
-          <div class="seg">
-            <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
-            <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
-          </div>
-          <div class="muted-xs" style="margin-top:6px;">
-            B2B pokazuje ceny hurtowe i MOQ (minimum).
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Sortowanie</label>
-          <select id="sort" class="input">
-            <option value="rank_desc">Ranking ↓</option>
-            <option value="price_asc">Cena ↑</option>
-            <option value="price_desc">Cena ↓</option>
-            <option value="name_asc">Nazwa A→Z</option>
-          </select>
-        </div>
+      <div id="qmProducts" class="shop-grid"></div>
+      <div id="qmEmpty" class="qm-empty" hidden>
+        <strong>Brak produktów</strong>
+        <span>Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>./products.json</code>.</span>
       </div>
-    </div>
+    </section>
 
-    <div class="layout-3col">
-
-      <aside class="sidecard">
+    <section class="qm-card shop-info-grid">
+      <article>
         <h3>Jak działa ten marketplace?</h3>
-        <p class="p">
-          To jest marketplace dropshipping: Ty kupujesz w hurtowni, a klient dostaje towar bez Twojego magazynu.
-          System rozbija koszyk na hurtownie i zapisuje zamówienia w platformie.
-        </p>
-
-        <div class="tag">✅ Split per hurtownia</div>
-        <div class="tag">✅ Statusy zamówień</div>
-        <div class="tag">✅ B2B + B2C</div>
-
-        <div class="callout">
-          <div class="smallmuted"><b>Flow:</b></div>
-          <ul>
-            <li>Klient wybiera produkty</li>
-            <li>Koszyk rozbija na hurtownie</li>
-            <li>Checkout zbiera dane dostawy</li>
-            <li>Zamówienie dostaje status <b>NEW</b></li>
-          </ul>
-        </div>
-
-        <div class="callout">
-          <div class="smallmuted"><b>Statusy:</b></div>
-          <ul>
-            <li><b>NEW</b> – nowe, do potwierdzenia</li>
-            <li><b>CONFIRMED</b> – potwierdzone</li>
-            <li><b>SENT</b> – wysłane</li>
-            <li><b>DONE</b> – zakończone</li>
-          </ul>
-        </div>
-      </aside>
-
-      <main>
-        <div class="section">
-          <div class="kpi-row">
-            <div class="kpi"><strong>Produkty</strong><span id="kpiProducts">0</span></div>
-            <div class="kpi"><strong>Kategorie</strong><span id="kpiCats">0</span></div>
-            <div class="kpi"><strong>Tryb</strong><span id="kpiMode">DETAL</span></div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div id="grid" class="shop-grid"></div>
-
-          <div id="empty" class="card soft" style="display:none; margin-top:14px;">
-            <strong>Brak produktów</strong>
-            <p class="p" style="margin-top:6px;">
-              Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>./products.json</code>.
-            </p>
-          </div>
-        </div>
-
-        <div class="footer">
-          QualitetMarket • sklep B2B/B2C • multi-store • motywy sprzedawców
-        </div>
-      </main>
-
-      <aside class="sidecard">
+        <p>To jest marketplace dropshipping: Ty kupujesz w hurtowni, a klient dostaje towar bez Twojego magazynu. System rozbija koszyk na hurtownie i zapisuje zamówienia w platformie.</p>
+      </article>
+      <article>
+        <h3>Split per hurtownia</h3>
+        <p>Koszyk może rozbić zamówienie na kilka źródeł towaru, żeby sprzedawca wiedział skąd ma iść realizacja.</p>
+      </article>
+      <article>
         <h3>Detal vs Hurt (B2B)</h3>
-        <p class="p">
-          W DETAL klient widzi cenę detaliczną.
-          W B2B pokazujemy cenę hurtową i <b>MOQ</b> (minimalne zamówienie).
-        </p>
+        <p>W DETAL klient widzi cenę detaliczną. W B2B pokazujemy cenę hurtową i MOQ, czyli minimalne zamówienie.</p>
+      </article>
+      <article>
+        <h3>Jak zwiększyć sprzedaż</h3>
+        <p>Ustaw niską marżę na start, promuj bestsellery, użyj badge i progów koszyka. To daje większy CTR i większy koszyk bez większego budżetu.</p>
+      </article>
+    </section>
+  </main>
 
-        <div class="callout">
-          <div class="smallmuted"><b>MOQ</b> = minimum sztuk</div>
-          <div class="smallmuted" style="margin-top:6px;">
-            Jeśli w B2B dasz mniej niż MOQ, koszyk pokaże ostrzeżenie i nie puści do checkout.
-          </div>
-        </div>
-
-        <div class="callout">
-          <div class="smallmuted"><b>Jak zwiększyć sprzedaż:</b></div>
-          <ul>
-            <li>Ustaw niską marżę na start</li>
-            <li>Dodaj produkty „core”</li>
-            <li>Użyj B2B do większych koszyków</li>
-          </ul>
-        </div>
-
-        <div class="sidebtns">
-          <a class="btn btn-sm" href="./panel-sklepu.html">Panel sklepu</a>
-          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
-          <a class="btn btn-sm btn-primary" href="./koszyk.html">Koszyk</a>
-        </div>
-
-        <div class="smallmuted" style="margin-top:10px;">
-          Tip: Import CSV → produkty pojawią się od razu z localStorage.
-        </div>
-      </aside>
-
-    </div>
-  </div>
-
-  <script>
-    (() => {
-      const box = document.getElementById("pricingWarn");
-      const show = () => { if (box) box.style.display = ""; };
-      if (window.QM_PRICING_ERROR) show();
-      window.addEventListener("qm:pricing-error", show);
-    })();
-  </script>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const view = window.QM_STORE_VIEW || {};
-      const titleEl = document.getElementById("storeTitle");
-      const logoEl = document.getElementById("storeLogo");
-      const heroEl = document.getElementById("storeHero");
-      const badgeEl = document.getElementById("activeStoreBadge");
-      const themeBadgeEl = document.getElementById("storeThemeBadge");
-
-      if (view.title && titleEl) {
-        titleEl.textContent = view.title;
-        document.title = `${view.title} – QualitetMarket`;
-      }
-
-      if (view.slug && badgeEl) {
-        badgeEl.textContent = `store: ${view.slug}`;
-      } else if (badgeEl) {
-        badgeEl.textContent = "store";
-      }
-
-      if (themeBadgeEl) {
-        themeBadgeEl.textContent = `theme: ${view.theme || "default"}`;
-      }
-
-      if (view.logo && logoEl) {
-        logoEl.src = view.logo;
-        logoEl.onerror = function(){
-          this.onerror = null;
-          this.src = "./produkt_1.png";
-        };
-      }
-
-      if (view.hero && heroEl) {
-        heroEl.style.backgroundImage = `url("${String(view.hero).replace(/"/g, '\\"')}")`;
-      }
-
-      document.body.classList.add(`theme-${view.theme || "default"}`);
-    })();
-  </script>
-
-  <script>
-    (() => {
-      const syncBothCartBadges = () => {
-        const a = document.getElementById("cartCount");
-        const b = document.getElementById("cartCountTop");
-        if (!a || !b) return;
-        b.textContent = a.textContent || "0";
-      };
-
-      syncBothCartBadges();
-      window.addEventListener("qm:cart", syncBothCartBadges);
-
-      const mo = new MutationObserver(syncBothCartBadges);
-      const a = document.getElementById("cartCount");
-      if (a) mo.observe(a, { childList: true, subtree: true, characterData: true });
-    })();
-  </script>
+  <script src="./js/subscriptions.js"></script>
+  <script src="./js/pricing.js"></script>
+  <script src="./js/shop.js"></script>
+  <script src="./js/live.js"></script>
 </body>
 </html>
