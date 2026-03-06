@@ -1,107 +1,62 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Plany</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plany – QualitetMarket</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body{background:#0b1020;color:#eef3ff;font-family:Inter,Arial,sans-serif;margin:0}
+    .wrap{max-width:1180px;margin:0 auto;padding:22px}.hero{margin:18px 0 22px}.hero h1{font-size:2rem;margin:8px 0}.muted{color:#aab6d3}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card{background:#131a2b;border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:20px;box-shadow:0 18px 45px rgba(0,0,0,.25);position:relative}
+    .best{outline:2px solid #7c9cff;transform:translateY(-4px)}
+    .tag{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(124,156,255,.18);font-size:12px;font-weight:800}
+    .price{font-size:2rem;font-weight:900;margin:16px 0 4px}.year{color:#8ef5bd;font-size:.95rem}
+    ul{padding-left:18px;line-height:1.6}.btn{display:inline-flex;width:100%;justify-content:center;padding:13px 14px;border-radius:14px;text-decoration:none;font-weight:800;margin-top:14px}
+    .btn-primary{background:linear-gradient(135deg,#7c9cff,#a8baff);color:#081224}.btn-secondary{background:#1b2540;color:#eef3ff}
+    .mini{margin-top:18px;background:#10172a;border:1px solid rgba(255,255,255,.08);padding:16px;border-radius:18px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.hero h1{font-size:1.6rem}.best{transform:none}}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <a href="./platforma.html" class="muted">← Wróć do platformy</a>
+      <h1>Plany dostępu</h1>
+      <p class="muted">BASIC zostaje bez panelu sprzedaży. PRO i ELITE mają dostęp do panelu Webkul. Cennik jest ustawiony tak, żeby użytkownik miał wybór na start, ale też widział realny sens wejścia wyżej.</p>
+    </section>
 
-<div class="nav">
-  <div class="nav-inner" data-nav>
-    <div class="brand">
-      <div class="logo"></div>
-      <div>Zarabianie u Szefa</div>
-      <span data-qm-plan style="margin-left:10px"></span>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Start</a>
-      <a href="cennik.html">Plany</a>
-      <a href="qualitetmarket.html">QualitetMarket</a>
-      <a href="dashboard.html">Dashboard</a>
-    </div>
-    <div class="nav-cta">
-      <a class="btn btn-sm btn-primary" href="login.html">Logowanie</a>
-    </div>
+    <div class="grid" id="plansGrid"></div>
+
+    <section class="mini">
+      <strong>Model sprzedażowy planów:</strong>
+      <div class="muted" style="margin-top:8px">
+        BASIC ma wejście niskim kosztem, PRO robi realną robotę i powinien być głównym planem konwersji, a ELITE jest planem do skalowania i wyższej marży. Dzięki temu użytkownik nie odbija się od ceny, ale ma wyraźny powód, żeby przechodzić wyżej.
+      </div>
+    </section>
   </div>
-</div>
 
-<div class="wrap">
-  <div class="hero-card reveal">
-    <span class="badge"><span class="dot"></span> Plany dostępu</span>
-    <div class="h1" style="font-size:34px">Wybierz poziom</div>
-    <div class="p">
-      BASIC bez panelu sprzedaży. PRO i ELITE z dostępem do panelu Webkul (seller).
-      To było naszym założeniem — i tak zostaje.
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="grid-3">
-
-      <div class="card reveal d2">
-        <h3>BASIC</h3>
-        <p>Start i system, ale bez panelu sprzedaży.</p>
-        <div class="hr"></div>
-        <div class="kpi"><strong>49 zł</strong><span>/ mies.</span></div>
-        <div style="height:12px"></div>
-        <button class="btn" type="button" onclick="pickPlan('BASIC')">Wybieram BASIC</button>
-      </div>
-
-      <div class="card reveal d3" style="border-color:rgba(79,124,255,.35); background:rgba(79,124,255,.08)">
-        <h3>PRO</h3>
-        <p>Dostęp + QualitetMarket + panel sprzedaży (Webkul).</p>
-        <div class="hr"></div>
-        <div class="kpi"><strong>149 zł</strong><span>/ mies.</span></div>
-        <div style="height:12px"></div>
-        <button class="btn btn-primary" type="button" onclick="pickPlan('PRO')">Wybieram PRO</button>
-      </div>
-
-      <div class="card reveal d4">
-        <h3>ELITE</h3>
-        <p>Najwyższy poziom + priorytet + rozbudowane wsparcie.</p>
-        <div class="hr"></div>
-        <div class="kpi"><strong>299 zł</strong><span>/ mies.</span></div>
-        <div style="height:12px"></div>
-        <button class="btn btn-primary" type="button" onclick="pickPlan('ELITE')">Wybieram ELITE</button>
-      </div>
-
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="note">
-      Demo: wybór planu zapisuje się lokalnie. Docelowo podepniemy płatność (Shopify/Stripe) i automatyczne role.
-    </div>
-
-  </div>
-</div>
-
-<div class="footer">© 2026 Zarabianie u Szefa</div>
-
-<script src="assets/app.js"></script>
-<script>
-  // wybór planu + flow:
-  // - jeśli nie zalogowany -> login.html?back=dashboard.html
-  // - jeśli zalogowany -> dashboard.html
-  function pickPlan(plan){
-    if (window.QM && typeof QM.setPlan === "function") {
-      QM.setPlan(plan);
-    } else {
-      localStorage.setItem("qm_plan", plan);
-    }
-
-    // back param jeśli ktoś został przekierowany tu z PRO strony
-    const back = new URLSearchParams(location.search).get("back");
-    const target = back ? decodeURIComponent(back) : "dashboard.html";
-
-    if (!(window.QM && QM.isLogged && QM.isLogged())) {
-      location.href = "login.html?back=" + encodeURIComponent(target);
-      return;
-    }
-    location.href = target;
-  }
-</script>
+  <script src="./js/subscriptions.js"></script>
+  <script>
+    (() => {
+      const plans = window.QM_SUBS ? window.QM_SUBS.getAllPlans() : [];
+      const grid = document.getElementById('plansGrid');
+      const bestId = 'pro';
+      grid.innerHTML = plans.map(plan => `
+        <article class="card ${plan.id === bestId ? 'best' : ''}">
+          <span class="tag">${plan.badge}</span>
+          <h2>${plan.name}</h2>
+          <div class="muted">${plan.description}</div>
+          <div class="price">${plan.priceMonthly} zł<span style="font-size:1rem;font-weight:600"> / mies.</span></div>
+          <div class="year">Rocznie: ${plan.priceYearly} zł</div>
+          <ul>${plan.bullets.map(x => `<li>${x}</li>`).join('')}</ul>
+          <div class="muted">Domyślna marża sklepu: ${Math.round(plan.defaultStoreMarginPct * 100)}%</div>
+          <a class="btn ${plan.id === bestId ? 'btn-primary' : 'btn-secondary'}" href="./aktywuj-pro.html?plan=${plan.id}">${plan.cta}</a>
+        </article>
+      `).join('');
+    })();
+  </script>
 </body>
 </html>
