@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Panel sklepu – QualitetMarket</title>
 
-  <!-- ✅ GitHub Pages: używamy relatywnie -->
   <link rel="stylesheet" href="./styles.css">
 
   <style>
     :root { color-scheme: dark; }
+
     .wrap{max-width:1080px;margin:42px auto;padding:0 16px}
     .card{
       border-radius:18px;
@@ -17,9 +17,9 @@
       background:rgba(17,24,39,.82);
       border:1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(10px);
-      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+      box-shadow:0 30px 80px rgba(0,0,0,.35);
     }
-    .card, .card *{ color:#eaf0ff !important; }
+    .card,.card *{ color:#eaf0ff !important; }
     .muted{ opacity:1 !important; color:rgba(234,240,255,.72) !important; }
     .h{font-size:30px;font-weight:950;margin:0 0 10px}
 
@@ -30,19 +30,19 @@
       appearance:none;border:0;border-radius:12px;padding:12px 14px;
       font-weight:950;cursor:pointer;text-decoration:none !important;
       display:inline-flex;align-items:center;justify-content:center;line-height:1;
-      transition: transform .12s ease, filter .12s ease;
+      transition:transform .12s ease, filter .12s ease;
     }
-    .btn:active{ transform: translateY(1px); }
+    .btn:active{ transform:translateY(1px); }
     .btn-primary{ background:#22c55e !important; color:#06110a !important; }
     .btn-ghost{ background:rgba(255,255,255,.10) !important; color:#eaf0ff !important; border:1px solid rgba(255,255,255,.12); }
     .btn-danger{ background:rgba(239,68,68,.92) !important; color:#190707 !important; }
-    .btn-primary:hover, .btn-ghost:hover, .btn-danger:hover{ filter:brightness(1.08); }
+    .btn-primary:hover,.btn-ghost:hover,.btn-danger:hover{ filter:brightness(1.08); }
 
     table{width:100%;border-collapse:collapse;margin-top:12px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);text-align:left;vertical-align:top}
     code{background:rgba(255,255,255,.10);padding:2px 6px;border-radius:8px}
 
-    input, select{
+    input,select{
       padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       width:100%;background:rgba(255,255,255,.92); color:#0b1220 !important;
     }
@@ -51,7 +51,7 @@
     .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
     .box{margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
-    a{ color:#bfe1ff !important; text-decoration: underline !important; }
+    a{ color:#bfe1ff !important; text-decoration:underline !important; }
 
     .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);font-size:12px}
     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
@@ -64,6 +64,64 @@
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
     .right{text-align:right}
     .divider{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+
+    .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    @media(max-width:860px){.theme-grid{grid-template-columns:1fr}}
+    .theme-card{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      background:rgba(255,255,255,.04);
+    }
+    .theme-preview{
+      height:80px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .theme-meta{padding:10px}
+    .theme-meta b{display:block;margin-bottom:4px}
+    .mini{
+      font-size:12px;
+      color:rgba(234,240,255,.70) !important;
+    }
+    .preview-box{
+      margin-top:12px;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0f172a;
+    }
+    .preview-hero{
+      height:120px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .preview-overlay{
+      position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.45));
+    }
+    .preview-content{
+      padding:14px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .preview-brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .preview-logo{
+      width:56px;height:56px;border-radius:14px;object-fit:cover;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+    }
+    .preview-dot{
+      width:14px;height:14px;border-radius:999px;border:2px solid rgba(255,255,255,.35);
+      display:inline-block; vertical-align:middle; margin-left:8px;
+    }
   </style>
 </head>
 
@@ -71,7 +129,7 @@
   <div class="wrap">
     <div class="card">
       <div class="h">Panel sklepu (sprzedawca)</div>
-      <div class="muted">Zarządzanie sklepem + zamówieniami (statusy, eksport). Źródło: localStorage.</div>
+      <div class="muted">Zarządzanie sklepem, motywem i zamówieniami. Źródło: localStorage.</div>
 
       <div id="box" class="box"></div>
 
@@ -85,6 +143,7 @@
 
       <div style="margin-top:16px">
         <div style="font-weight:950">Edytuj aktywny sklep</div>
+
         <div class="grid">
           <div>
             <div class="muted" style="font-weight:900;margin:8px 0 6px">Nazwa</div>
@@ -99,8 +158,96 @@
             <input id="eEmail" type="email" placeholder="np. kontakt@twojsklep.pl">
           </div>
         </div>
+
+        <div class="grid">
+          <div>
+            <div class="muted" style="font-weight:900;margin:8px 0 6px">Motyw</div>
+            <select id="eTheme">
+              <option value="default">default</option>
+              <option value="dark">dark</option>
+              <option value="light">light</option>
+              <option value="neon">neon</option>
+              <option value="gastro">gastro</option>
+              <option value="premium">premium</option>
+              <option value="gold">gold</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted" style="font-weight:900;margin:8px 0 6px">Kolor akcentu</div>
+            <input id="eAccent" type="color" value="#6ee7ff">
+          </div>
+          <div>
+            <div class="muted" style="font-weight:900;margin:8px 0 6px">Logo URL</div>
+            <input id="eLogo" placeholder="np. ./logo-sklepu.png albo https://...">
+          </div>
+        </div>
+
+        <div class="grid">
+          <div style="grid-column:1 / -1">
+            <div class="muted" style="font-weight:900;margin:8px 0 6px">Baner URL</div>
+            <input id="eHero" placeholder="np. ./baner.jpg albo https://...">
+          </div>
+        </div>
+
+        <div class="preview-box">
+          <div id="previewHero" class="preview-hero">
+            <div class="preview-overlay"></div>
+          </div>
+          <div class="preview-content">
+            <div class="preview-brand">
+              <img id="previewLogo" class="preview-logo" alt="" src="./produkt_1.png">
+              <div>
+                <div style="font-size:18px;font-weight:950">
+                  <span id="previewTitle">Sklep Szefa</span>
+                  <span id="previewAccent" class="preview-dot"></span>
+                </div>
+                <div class="mini">
+                  Motyw: <span id="previewThemeText">default</span>
+                </div>
+              </div>
+            </div>
+            <div class="mini">
+              Podgląd stylu sklepu
+            </div>
+          </div>
+        </div>
+
         <div class="row" style="margin-top:10px">
           <button class="btn btn-primary" id="saveActive">Zapisz zmiany</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <div style="font-weight:950">Dostępne motywy</div>
+        <div class="theme-grid">
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#101826,#0a101a)"></div>
+            <div class="theme-meta"><b>default</b><div class="mini">ciemny, uniwersalny</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#0b1220,#050814)"></div>
+            <div class="theme-meta"><b>dark</b><div class="mini">mocny ciemny styl</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#f8fafc,#e2e8f0)"></div>
+            <div class="theme-meta"><b>light</b><div class="mini">jasny i czysty</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#12051d,#050816)"></div>
+            <div class="theme-meta"><b>neon</b><div class="mini">cyber / nowoczesny</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#2a1707,#120b06)"></div>
+            <div class="theme-meta"><b>gastro</b><div class="mini">ciepły dla gastro</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#1a2030,#0a0f19)"></div>
+            <div class="theme-meta"><b>premium</b><div class="mini">elegancki premium</div></div>
+          </div>
+          <div class="theme-card">
+            <div class="theme-preview" style="background:linear-gradient(180deg,#332300,#120d04)"></div>
+            <div class="theme-meta"><b>gold</b><div class="mini">złoty / luksus</div></div>
+          </div>
         </div>
       </div>
 
@@ -177,6 +324,9 @@
   const LS_ORDERS = "qm_orders_v1";
 
   const STATUSES = ["NEW","CONFIRMED","SENT","DONE","CANCELLED"];
+  const DEFAULT_LOGO = "./produkt_1.png";
+  const DEFAULT_ACCENT = "#6ee7ff";
+  const DEFAULT_THEME = "default";
 
   const $ = (id) => document.getElementById(id);
 
@@ -187,10 +337,13 @@
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
-  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
+  const readJSON = (k, fallback) => {
+    try { return JSON.parse(localStorage.getItem(k) || ""); }
+    catch { return fallback; }
+  };
+
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  // ✅ bezpieczny URL sklepu na GitHub Pages (relatywnie)
   const makeShopUrl = (slug) => `./sklep.html?store=${encodeURIComponent(slug)}`;
 
   const money = (n) => {
@@ -206,15 +359,22 @@
 
   const getActiveSlug = () => slugify(localStorage.getItem(LS_ACTIVE) || "") || "default";
 
+  const clampMargin01 = (v) => {
+    const n = Number(String(v ?? "").replace(",", "."));
+    if (!isFinite(n)) return 0;
+    return Math.max(0, Math.min(1, n));
+  };
+
   const setActive = (slug) => {
     const s = slugify(slug);
     if (!s) return;
     const map = loadMap();
     const e = map[s] || {};
+
     localStorage.setItem(LS_ACTIVE, s);
 
-    const m01 = (typeof e.marginPct !== "undefined") ? Number(e.marginPct) : 0;
-    localStorage.setItem(LS_MARGIN, String(Math.max(0, Math.min(1, isFinite(m01)?m01:0))));
+    const m01 = clampMargin01(typeof e.marginPct !== "undefined" ? e.marginPct : 0);
+    localStorage.setItem(LS_MARGIN, String(m01));
     localStorage.setItem("qm_store_slug", s);
   };
 
@@ -223,16 +383,59 @@
     $("openCart").href = `./koszyk.html?store=${encodeURIComponent(store)}`;
   };
 
-  // ----- ORDERS
+  const themeLabel = (theme) => {
+    const x = String(theme || DEFAULT_THEME);
+    return x;
+  };
+
+  const fillPreview = () => {
+    const title = String($("eTitle").value || "").trim() || "Sklep Szefa";
+    const theme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
+    const accent = String($("eAccent").value || DEFAULT_ACCENT).trim() || DEFAULT_ACCENT;
+    const logo = String($("eLogo").value || "").trim() || DEFAULT_LOGO;
+    const hero = String($("eHero").value || "").trim();
+
+    $("previewTitle").textContent = title;
+    $("previewThemeText").textContent = themeLabel(theme);
+    $("previewAccent").style.background = accent;
+
+    $("previewLogo").src = logo;
+    $("previewLogo").onerror = function(){
+      this.onerror = null;
+      this.src = DEFAULT_LOGO;
+    };
+
+    const heroEl = $("previewHero");
+    heroEl.style.backgroundImage = hero ? `url("${hero.replace(/"/g, '\\"')}")` : themeHero(theme);
+  };
+
+  const themeHero = (theme) => {
+    switch(String(theme || DEFAULT_THEME)) {
+      case "dark":
+        return "linear-gradient(180deg,#0b1220,#050814)";
+      case "light":
+        return "linear-gradient(180deg,#f8fafc,#e2e8f0)";
+      case "neon":
+        return "radial-gradient(circle at 20% 20%, rgba(110,231,255,.35), transparent 30%), linear-gradient(180deg,#12051d,#050816)";
+      case "gastro":
+        return "linear-gradient(180deg,#2a1707,#120b06)";
+      case "premium":
+        return "linear-gradient(180deg,#1a2030,#0a0f19)";
+      case "gold":
+        return "linear-gradient(180deg,#332300,#120d04)";
+      default:
+        return "linear-gradient(180deg,#101826,#0a101a)";
+    }
+  };
+
   const readOrdersRaw = () => {
     const arr = readJSON(LS_ORDERS, []);
     return Array.isArray(arr) ? arr : [];
   };
+
   const writeOrdersRaw = (arr) => writeJSON(LS_ORDERS, Array.isArray(arr) ? arr : []);
 
-  // liczenie hurtowni z items[] (nowe) lub supplierBreakdown (stare)
   const suppliersFromOrder = (o) => {
-    // nowe zamówienie: items[]
     if (Array.isArray(o?.items)) {
       const by = new Map();
       for (const it of o.items) {
@@ -243,6 +446,7 @@
           ? (Number(it?.priceB2B || 0) || Number(it?.priceRetail || 0) || 0)
           : (Number(it?.priceRetail || 0) || 0);
         const gross = qty * price;
+
         if (!by.has(sup)) by.set(sup, { supplier: sup, gross: 0, items: 0 });
         const row = by.get(sup);
         row.gross += gross;
@@ -251,15 +455,14 @@
       return Array.from(by.values()).sort((a,b)=> b.gross - a.gross);
     }
 
-    // stare: supplierBreakdown
     const bd = o?.supplierBreakdown || o?.supplier_breakdown;
     if (bd && typeof bd === "object") {
       const out = [];
       for (const [supplier, v] of Object.entries(bd)) {
         out.push({
           supplier,
-          items: Number(v?.items||0),
-          gross: Number(v?.gross||0)
+          items: Number(v?.items || 0),
+          gross: Number(v?.gross || 0)
         });
       }
       return out.sort((a,b)=> b.gross - a.gross);
@@ -280,12 +483,9 @@
     const status = STATUSES.includes(statusRaw) ? statusRaw : "NEW";
 
     const mode = String(o.mode || o.totals?.mode || "").trim() || "—";
-
     const totals = o.totals || {};
     const gross = Number(totals.gross ?? o.gross ?? 0) || 0;
     const itemsCount = Number(totals.items ?? o.itemsCount ?? 0) || 0;
-
-    // MVP: jeśli brak fee/margin, liczymy fee=2% od gross
     const platformFee = Number(o.fees?.platformFee ?? (gross * 0.02)) || 0;
     const sellerMargin = Number(o.fees?.sellerMargin ?? 0) || 0;
 
@@ -298,16 +498,20 @@
 
     const hay = JSON.stringify({
       id, storeSlug, status, mode,
-      suppliers: sups.map(x=>x.supplier),
+      suppliers: sups.map(x => x.supplier),
       email,
       note: o.note || ""
     }).toLowerCase();
 
-    return { __raw:o, id, createdAtISO, ts, storeSlug, status, mode:String(mode).toUpperCase(), itemsCount, gross, platformFee, sellerMargin, suppliers:sups, hay };
+    return {
+      __raw:o, id, createdAtISO, ts, storeSlug, status,
+      mode:String(mode).toUpperCase(), itemsCount, gross,
+      platformFee, sellerMargin, suppliers:sups, hay
+    };
   };
 
   const updateOrderStatus = (orderId, nextStatus) => {
-    const status = String(nextStatus||"").toUpperCase().trim();
+    const status = String(nextStatus || "").toUpperCase().trim();
     if (!STATUSES.includes(status)) return;
 
     const raw = readOrdersRaw();
@@ -351,7 +555,7 @@
   const exportOrdersJSON = (list, storeSlug) => {
     const payload = (list || []).map(o => ({
       order_id: o.id,
-      created_at: o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
+      created_at: o.createdAtISO || new Date(o.ts || Date.now()).toISOString(),
       store_slug: o.storeSlug,
       status: o.status,
       mode: o.mode,
@@ -370,14 +574,14 @@
   const exportOrdersCSV = (list, storeSlug) => {
     const head = ["created_at","order_id","store_slug","status","mode","items","gross","platform_fee","seller_margin","suppliers"];
     const rows = (list || []).map(o => {
-      const sups = (o.suppliers || []).map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`).join("|");
+      const sups = (o.suppliers || []).map(s => `${s.supplier}:${Number(s.gross || 0).toFixed(2)}`).join("|");
       return [
-        o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
+        o.createdAtISO || new Date(o.ts || Date.now()).toISOString(),
         o.id, o.storeSlug, o.status, o.mode,
-        Number(o.itemsCount||0),
-        Number(o.gross||0).toFixed(2),
-        Number(o.platformFee||0).toFixed(2),
-        Number(o.sellerMargin||0).toFixed(2),
+        Number(o.itemsCount || 0),
+        Number(o.gross || 0).toFixed(2),
+        Number(o.platformFee || 0).toFixed(2),
+        Number(o.sellerMargin || 0).toFixed(2),
         sups
       ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
     });
@@ -397,11 +601,11 @@
 
     const raw = readOrdersRaw();
     const norm = raw.map(normOrder).filter(Boolean);
-    const list = applyOrderFilters(norm, active).sort((a,b)=> (Number(b.ts||0)-Number(a.ts||0)));
+    const list = applyOrderFilters(norm, active).sort((a,b)=> Number(b.ts || 0) - Number(a.ts || 0));
 
-    const sumGross = list.reduce((a,o)=>a + (Number(o.gross)||0), 0);
-    const sumFee = list.reduce((a,o)=>a + (Number(o.platformFee)||0), 0);
-    const sumMargin = list.reduce((a,o)=>a + (Number(o.sellerMargin)||0), 0);
+    const sumGross = list.reduce((a,o)=> a + (Number(o.gross) || 0), 0);
+    const sumFee = list.reduce((a,o)=> a + (Number(o.platformFee) || 0), 0);
+    const sumMargin = list.reduce((a,o)=> a + (Number(o.sellerMargin) || 0), 0);
 
     $("kpiOrders").textContent = String(list.length);
     $("kpiGross").textContent = money(sumGross);
@@ -423,7 +627,7 @@
 
       const sups = o.suppliers || [];
       const supsHtml = sups.slice(0,2).map(x => `${x.supplier}: ${money(x.gross)}`).join("<br>")
-        + (sups.length>2 ? `<br><span class="muted">+${sups.length-2} więcej</span>` : "");
+        + (sups.length > 2 ? `<br><span class="muted">+${sups.length - 2} więcej</span>` : "");
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -431,14 +635,14 @@
         <td class="mono">${o.id}</td>
         <td><span class="pill">${o.status}</span></td>
         <td>${o.mode}</td>
-        <td class="right">${Number(o.itemsCount||0)}</td>
-        <td class="right"><b>${money(o.gross||0)}</b></td>
-        <td class="right">${money(o.platformFee||0)}</td>
+        <td class="right">${Number(o.itemsCount || 0)}</td>
+        <td class="right"><b>${money(o.gross || 0)}</b></td>
+        <td class="right">${money(o.platformFee || 0)}</td>
         <td>${supsHtml || "—"}</td>
         <td class="right">
           <div class="row-actions" style="justify-content:flex-end">
             <select data-status="${o.id}">
-              ${STATUSES.map(s => `<option value="${s}" ${s===o.status?"selected":""}>${s}</option>`).join("")}
+              ${STATUSES.map(s => `<option value="${s}" ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}
             </select>
             <button class="btn btn-ghost btn-xs" data-next="${o.id}" title="Następny status">➡️</button>
             <button class="btn btn-ghost btn-xs" data-json="${o.id}">JSON</button>
@@ -460,7 +664,7 @@
         const found = raw.find(x => String(x?.id || x?.order_id || x?.orderNo || "").trim() === id);
         const cur = String(found?.status || "NEW").toUpperCase().trim();
         const idx = Math.max(0, STATUSES.indexOf(cur));
-        updateOrderStatus(id, STATUSES[Math.min(STATUSES.length-1, idx+1)]);
+        updateOrderStatus(id, STATUSES[Math.min(STATUSES.length - 1, idx + 1)]);
       });
     });
 
@@ -499,38 +703,55 @@
 
     const active = getActiveSlug();
     const e = map[active] || map[slugs[0]] || {};
+
     const title = String(e.title || active.replaceAll("-", " "));
     const m01 = Number(e.marginPct || 0) || 0;
     const mPct = Math.round(m01 * 1000) / 10;
+    const email = String(e.email || "-");
+    const theme = String(e.theme || DEFAULT_THEME);
+    const accent = String(e.accent || DEFAULT_ACCENT);
+    const logo = String(e.logo || "");
+    const hero = String(e.hero || "");
 
     $("box").innerHTML = `
       <div><b>Aktywny sklep:</b> ${title} (<code>${active}</code>)</div>
       <div><b>Marża:</b> ${mPct}%</div>
-      <div><b>Email:</b> ${String(e.email || "-")}</div>
+      <div><b>Email:</b> ${email}</div>
+      <div><b>Motyw:</b> ${theme}</div>
+      <div><b>Akcent:</b> <span class="pill">${accent}</span></div>
+      <div><b>Logo:</b> ${logo || "-"}</div>
+      <div><b>Baner:</b> ${hero || "-"}</div>
       <div style="margin-top:8px"><b>Link sklepu:</b> <a href="${makeShopUrl(active)}" target="_blank" rel="noopener">${makeShopUrl(active)}</a></div>
     `;
 
     $("eTitle").value = title;
     $("eMargin").value = String(mPct);
-    $("eEmail").value = String(e.email || "");
+    $("eEmail").value = email === "-" ? "" : email;
+    $("eTheme").value = theme;
+    $("eAccent").value = accent || DEFAULT_ACCENT;
+    $("eLogo").value = logo;
+    $("eHero").value = hero;
 
+    fillPreview();
     syncTopLinks(active);
 
     $("list").innerHTML = `
       <div class="muted" style="margin-top:10px">Twoje sklepy:</div>
       <table>
-        <thead><tr><th>Sklep</th><th>Slug</th><th>Marża</th><th>Akcja</th></tr></thead>
+        <thead><tr><th>Sklep</th><th>Slug</th><th>Marża</th><th>Motyw</th><th>Akcja</th></tr></thead>
         <tbody>
           ${slugs.map(s => {
             const x = map[s] || {};
             const t = String(x.title || s.replaceAll("-", " "));
             const mm01 = Number(x.marginPct || 0) || 0;
             const mp = Math.round(mm01 * 1000) / 10;
+            const th = String(x.theme || DEFAULT_THEME);
             return `
               <tr>
                 <td><b>${t}</b></td>
                 <td><code>${s}</code></td>
                 <td>${mp}%</td>
+                <td>${th}</td>
                 <td>
                   <button class="btn btn-ghost btn-xs" data-set="${s}">Ustaw aktywny</button>
                   <a class="btn btn-ghost btn-xs" href="${makeShopUrl(s)}" target="_blank">Otwórz</a>
@@ -551,7 +772,7 @@
     });
   };
 
-  $("saveActive").addEventListener("click", () => {
+  const saveActiveStore = () => {
     const active = getActiveSlug();
     const map = loadMap();
     const cur = map[active] || {};
@@ -559,15 +780,31 @@
     const title = String($("eTitle").value || "").trim() || active.replaceAll("-", " ");
     const m = Number(String($("eMargin").value || "0").replace(",", "."));
     const email = String($("eEmail").value || "").trim();
+    const theme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
+    const accent = String($("eAccent").value || DEFAULT_ACCENT).trim() || DEFAULT_ACCENT;
+    const logo = String($("eLogo").value || "").trim();
+    const hero = String($("eHero").value || "").trim();
     const m01 = Math.max(0, Math.min(1, (isFinite(m) ? m : 0) / 100));
 
-    map[active] = { ...cur, title, email, marginPct: m01, theme: cur.theme || "default" };
+    map[active] = {
+      ...cur,
+      title,
+      email,
+      marginPct: m01,
+      theme,
+      accent,
+      logo,
+      hero
+    };
+
     writeJSON(LS_STORES, map);
     setActive(active);
-
+    fillPreview();
     renderStores();
     renderOrders();
-  });
+  };
+
+  $("saveActive").addEventListener("click", saveActiveStore);
 
   $("openShop").addEventListener("click", () => {
     const active = getActiveSlug();
@@ -578,6 +815,11 @@
   $("q").addEventListener("input", renderOrders);
   $("statusFilter").addEventListener("change", renderOrders);
   window.addEventListener("qm:orders", renderOrders);
+
+  ["eTitle","eTheme","eAccent","eLogo","eHero"].forEach(id => {
+    $(id).addEventListener("input", fillPreview);
+    $(id).addEventListener("change", fillPreview);
+  });
 
   renderStores();
   renderOrders();
