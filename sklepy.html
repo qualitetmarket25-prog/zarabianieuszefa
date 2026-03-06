@@ -13,9 +13,36 @@
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
     .row .field{flex:1;min-width:220px}
     table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{border-bottom:1px solid rgba(0,0,0,.08);padding:10px 8px;text-align:left;font-size:13px;vertical-align:top}
-    .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.12);font-size:12px}
+    th,td{
+      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:10px 8px;
+      text-align:left;
+      font-size:13px;
+      vertical-align:top;
+    }
+    th{
+      color:rgba(234,240,255,.78);
+      font-weight:800;
+    }
+    td{
+      color:var(--text);
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+    }
     .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .soft{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:none;
+    }
   </style>
 </head>
 
@@ -84,6 +111,7 @@
   const LS_STORE_MARGIN = "qm_store_margin_pct";
 
   const $ = (id) => document.getElementById(id);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
   const slugify = (s) => String(s || "")
     .trim()
@@ -101,7 +129,7 @@
   const pctFromInput = (raw) => {
     let n = Number(String(raw || "").replace(",", "."));
     if (!isFinite(n) || n < 0) n = 0;
-    const pct = n > 1 ? (n / 100) : n; // 12 => 0.12
+    const pct = n > 1 ? (n / 100) : n;
     return Math.max(0, Math.min(1, pct));
   };
 
@@ -146,18 +174,18 @@
           ${keys.map(k => {
             const st = reg[k] || {};
             const m = Number(st.marginPct || 0) || 0;
-            const pct = Math.round(m * 10000) / 100; // 2 miejsca
-            const link = `${base}?store=${encodeURIComponent(k)}`;
+            const pct = Math.round(m * 10000) / 100;
+            const link = \`${base}?store=\${encodeURIComponent(k)}\`;
             const isActive = (k === active);
             return `
               <tr>
                 <td>
                   <strong>${k}</strong>
-                  ${isActive ? `<div class="muted-xs"><span class="pill">aktywny</span></div>` : ``}
+                  ${isActive ? `<div class="muted-xs" style="margin-top:6px;"><span class="pill">aktywny</span></div>` : ``}
                 </td>
                 <td>
                   <input class="input" style="max-width:140px" data-margin="${k}" value="${pct}" inputmode="decimal" />
-                  <div class="muted-xs">%</div>
+                  <div class="muted-xs" style="margin-top:4px;">%</div>
                 </td>
                 <td>
                   <input class="input mono" data-link="${k}" value="${link}" readonly />
@@ -177,18 +205,16 @@
       </table>
     `;
 
-    // bind save margin
     $$("[data-save]").forEach(btn => {
       btn.addEventListener("click", () => {
         const k = btn.getAttribute("data-save");
-        const inp = document.querySelector(`[data-margin="${CSS.escape(k)}"]`);
+        const inp = document.querySelector(\`[data-margin="\${CSS.escape(k)}"]\`);
         const pct = pctFromInput(inp?.value || "");
         const reg2 = readJSON(LS_STORES, {});
         reg2[k] = reg2[k] || { title: k.replaceAll("-"," "), theme:"default" };
         reg2[k].marginPct = pct;
         writeJSON(LS_STORES, reg2);
 
-        // jeśli to aktywny -> od razu aktualizujemy runtime margin
         const activeNow = slugify(localStorage.getItem(LS_ACTIVE) || "");
         if (activeNow === k) {
           localStorage.setItem(LS_STORE_MARGIN, String(pct));
@@ -199,7 +225,6 @@
       });
     });
 
-    // bind set active
     $$("[data-active]").forEach(btn => {
       btn.addEventListener("click", () => {
         const k = btn.getAttribute("data-active");
@@ -209,7 +234,6 @@
       });
     });
 
-    // bind delete
     $$("[data-del]").forEach(btn => {
       btn.addEventListener("click", () => {
         const k = btn.getAttribute("data-del");
@@ -227,8 +251,6 @@
     });
   };
 
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
   $("addBtn").addEventListener("click", () => {
     const slug = slugify($("newSlug").value);
     const pct = pctFromInput($("newMargin").value);
@@ -244,7 +266,7 @@
 
     writeJSON(LS_STORES, reg);
 
-    $("addStatus").innerHTML = `Dodano/zaktualizowano: <span class="mono">${slug}</span> (marża: ${(pct*100).toFixed(2)}%)`;
+    $("addStatus").innerHTML = \`Dodano/zaktualizowano: <span class="mono">\${slug}</span> (marża: \${(pct*100).toFixed(2)}%)\`;
     $("newSlug").value = "";
     $("newMargin").value = "";
 
