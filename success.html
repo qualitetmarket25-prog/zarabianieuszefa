@@ -1,73 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Płatność zakończona</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>QualitetMarket — płatność przyjęta</title>
+  <meta name="description" content="Płatność przyjęta — aktywacja planu QualitetMarket." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./js/subscriptions.js"></script>
+
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#08111f;
+      --stroke:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#9db0cf;
+      --brand:#55e7a7;
+      --brand2:#66b6ff;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100svh;
+      color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(102,182,255,.14), transparent 26%),
+        radial-gradient(circle at top left, rgba(85,231,167,.12), transparent 24%),
+        linear-gradient(180deg,#08111f,#050a12);
+    }
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:860px;margin:0 auto;padding:18px}
+    .card{
+      padding:28px;border-radius:28px;border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
+      box-shadow:var(--shadow);
+      margin-top:34px;
+    }
+    .eyebrow{
+      display:inline-flex;padding:8px 12px;border-radius:999px;
+      background:rgba(85,231,167,.12);color:#98f0c9;
+      font-weight:900;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    }
+    h1{
+      margin:16px 0 8px;
+      font-size:clamp(32px,6vw,50px);
+      line-height:1.02;
+      letter-spacing:-.03em;
+    }
+    .lead{color:var(--muted);line-height:1.8;margin:0}
+    .box{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.04);
+      line-height:1.7;
+    }
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+    .btn{
+      min-height:52px;
+      padding:14px 18px;
+      border-radius:16px;
+      font-weight:900;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid transparent;
+    }
+    .btn-main{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}
+    .btn-ghost{background:#131f34;border-color:var(--stroke)}
+    .ok{color:#9cf1cd}
+    .warn{color:#ffe29a}
+    .meta{font-size:14px;color:var(--muted)}
+    @media (max-width:760px){
+      .wrap{padding:14px}
+      .card{padding:18px}
+      .btn{width:100%}
+    }
+  </style>
 </head>
 <body>
+  <main class="wrap">
+    <section class="card">
+      <div class="eyebrow">płatność przyjęta</div>
+      <h1 id="title">Aktywujemy Twój plan…</h1>
+      <p class="lead" id="lead">
+        Trwa zapis planu i przygotowanie dostępu do platformy.
+      </p>
 
-<section class="section">
-  <div class="container">
-    <div class="card highlight" id="box">
-      <h2>⏳ Weryfikacja płatności...</h2>
-      <p style="margin-top:10px;color:#cbd5e1;">Proszę czekać.</p>
-    </div>
-  </div>
-</section>
+      <div class="box" id="statusBox">
+        Ładowanie statusu…
+      </div>
 
-<script>
-function getParam(name){
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
+      <div class="box meta" id="metaBox" hidden></div>
 
-const plan = (getParam("plan") || "").toUpperCase();
-const token = getParam("token");
-const box = document.getElementById("box");
+      <div class="actions">
+        <a class="btn btn-main" href="./platforma.html">Wejdź do platformy</a>
+        <a class="btn btn-ghost" href="./index.html">Wróć na start</a>
+      </div>
+    </section>
+  </main>
 
-/* ====== PROSTE TOKENY ====== */
-const VALID_TOKENS = {
-  PRO: "PRO2026SZEF",
-  ELITE: "ELITE2026SZEF"
-};
+  <script>
+    (function(){
+      "use strict";
 
-if (
-  (plan === "PRO" || plan === "ELITE") &&
-  token === VALID_TOKENS[plan]
-) {
+      function getParam(name, fallback){
+        try{
+          var url = new URL(window.location.href);
+          var val = url.searchParams.get(name);
+          return val == null || val === "" ? fallback : val;
+        }catch(e){
+          return fallback;
+        }
+      }
 
-  localStorage.setItem("status", plan);
-  localStorage.setItem("paid_at", new Date().toISOString());
+      function normalizePlan(plan){
+        var p = String(plan || "basic").toLowerCase().trim();
+        return ["basic","pro","elite"].includes(p) ? p : "basic";
+      }
 
-  box.innerHTML = `
-    <h2>✅ Płatność zakończona</h2>
-    <p style="margin-top:10px;color:#cbd5e1;">
-      Aktywowano plan: <strong style="color:#fff;">${plan}</strong>
-    </p>
-    <div style="margin-top:20px;">
-      <a href="dashboard.html" class="btn-primary">
-        Przejdź do dashboardu
-      </a>
-    </div>
-  `;
+      var planId = normalizePlan(getParam("plan", "basic"));
+      var source = String(getParam("source", "stripe") || "stripe");
+      var sessionId = String(getParam("session_id", "") || "");
 
-} else {
+      var title = document.getElementById("title");
+      var lead = document.getElementById("lead");
+      var statusBox = document.getElementById("statusBox");
+      var metaBox = document.getElementById("metaBox");
 
-  box.innerHTML = `
-    <h2>❌ Weryfikacja nieudana</h2>
-    <p style="margin-top:10px;color:#cbd5e1;">
-      Link nieprawidłowy lub wygasły.
-    </p>
-    <div style="margin-top:20px;">
-      <a href="cennik.html" class="btn-primary">
-        Wróć do cennika
-      </a>
-    </div>
-  `;
-}
-</script>
+      if (!window.QM_SUBS || typeof window.QM_SUBS.activatePlan !== "function") {
+        title.textContent = "Nie udało się zapisać planu";
+        lead.textContent = "Brakuje modułu subskrypcji na stronie.";
+        statusBox.innerHTML = '<span class="warn">Sprawdź, czy plik js/subscriptions.js jest wgrany poprawnie.</span>';
+        return;
+      }
 
+      var plan = window.QM_SUBS.activatePlan(planId, {
+        source: source,
+        status: "active",
+        sessionId: sessionId
+      });
+
+      if (window.QM_SUBS.applyPlanToDom) {
+        window.QM_SUBS.applyPlanToDom();
+      }
+
+      title.textContent = "Plan " + plan.label + " aktywny";
+      lead.textContent = "Dostęp został zapisany. Możesz wejść do platformy i działać dalej.";
+
+      statusBox.innerHTML =
+        '<span class="ok">Aktywacja zakończona sukcesem.</span><br>' +
+        'Plan: <strong>' + plan.label + '</strong><br>' +
+        'Domyślna marża: <strong>' + Math.round(plan.defaultMargin * 100) + '%</strong>';
+
+      if (sessionId) {
+        metaBox.hidden = false;
+        metaBox.innerHTML =
+          'Źródło aktywacji: <strong>' + source + '</strong><br>' +
+          'Session ID: <strong>' + sessionId + '</strong>';
+      }
+
+      setTimeout(function(){
+        window.location.href = "./platforma.html";
+      }, 2500);
+    })();
+  </script>
 </body>
 </html>
