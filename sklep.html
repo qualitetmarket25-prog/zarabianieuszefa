@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="./shop.css" />
 
-  <!-- ✅ Marża / config (ESM) -> wystawiamy jako global do window dla shop.js -->
   <script type="module">
     try {
       const [{ QM_CONFIG }, pricing] = await Promise.all([
@@ -40,99 +39,24 @@
   <script defer src="./js/shop.js"></script>
 
   <style>
-    /* ✅ layout 3-kolumny: lewy opis / sklep / prawy opis */
+    .muted-xs{
+      font-size:12px;
+      color:rgba(255,255,255,.76);
+      line-height:1.4;
+    }
+
     .layout-3col{
       display:grid;
-      grid-template-columns: 280px minmax(0,1fr) 280px;
+      grid-template-columns:280px minmax(0,1fr) 280px;
       gap:16px;
       align-items:start;
       margin-top:16px;
     }
 
-    @media (max-width: 1100px){
-      .layout-3col{
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .sidecard{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background:rgba(255,255,255,.05);
-      box-shadow:0 12px 30px rgba(0,0,0,.22);
-      padding:14px;
-      position:sticky;
-      top:14px;
-      color:var(--text);
-      backdrop-filter: blur(6px);
-    }
-
     @media (max-width:1100px){
-      .sidecard{ position:static; }
-    }
-
-    .sidecard h3{
-      margin:0 0 10px;
-      font-size:14px;
-      font-weight:900;
-      letter-spacing:.2px;
-      color:var(--text);
-    }
-
-    .sidecard .p{
-      margin:0 0 10px;
-      font-size:13px;
-      opacity:.9;
-      line-height:1.5;
-      color:var(--muted);
-    }
-
-    .sidecard ul{
-      margin:0;
-      padding-left:18px;
-      font-size:13px;
-      line-height:1.5;
-      color:var(--muted);
-    }
-
-    .sidecard li{ margin:6px 0; }
-
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      padding:4px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      font-size:12px;
-      opacity:.96;
-      gap:6px;
-      margin-right:6px;
-      margin-top:6px;
-      white-space:nowrap;
-    }
-
-    .smallmuted{
-      font-size:12px;
-      opacity:.8;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .callout{
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,.16);
-      padding:10px;
-      background:rgba(255,255,255,.04);
-      margin-top:10px;
-    }
-
-    .sidebtns{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
+      .layout-3col{
+        grid-template-columns:1fr;
+      }
     }
 
     .shop-top{
@@ -152,26 +76,18 @@
 
     .shop-toolbar{
       display:grid;
-      grid-template-columns: 1.2fr .9fr .9fr .9fr;
+      grid-template-columns:1.2fr .9fr .95fr .9fr;
       gap:12px;
       align-items:start;
     }
 
-    @media (max-width: 980px){
+    @media (max-width:980px){
       .shop-toolbar{
         grid-template-columns:1fr;
       }
     }
 
-    .field{
-      min-width:0;
-    }
-
-    .muted-xs{
-      opacity:.75;
-      font-size:12px;
-      color:var(--muted);
-    }
+    .field{ min-width:0; }
 
     .seg{
       display:flex;
@@ -189,7 +105,7 @@
       border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.05);
-      color:var(--text);
+      color:#ffffff;
       font-weight:800;
       cursor:pointer;
       transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
@@ -211,11 +127,11 @@
 
     .kpi-row{
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns:repeat(3,1fr);
       gap:12px;
     }
 
-    @media (max-width: 700px){
+    @media (max-width:700px){
       .kpi-row{
         grid-template-columns:1fr;
       }
@@ -235,13 +151,97 @@
 
     .kpi strong{
       font-size:16px;
-      color:var(--text);
+      color:#ffffff;
     }
 
     .kpi span{
       font-size:16px;
       font-weight:800;
-      color:var(--text);
+      color:#ffffff;
+    }
+
+    .sidecard{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(255,255,255,.06);
+      box-shadow:0 12px 30px rgba(0,0,0,.22);
+      padding:16px;
+      position:sticky;
+      top:14px;
+      color:#ffffff;
+      backdrop-filter:blur(6px);
+    }
+
+    @media (max-width:1100px){
+      .sidecard{
+        position:static;
+      }
+    }
+
+    .sidecard h3{
+      margin:0 0 10px;
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:#ffffff;
+    }
+
+    .sidecard .p{
+      margin:0 0 10px;
+      font-size:13px;
+      line-height:1.55;
+      color:rgba(255,255,255,.92);
+      opacity:1;
+    }
+
+    .sidecard ul{
+      margin:0;
+      padding-left:18px;
+      font-size:13px;
+      line-height:1.55;
+      color:rgba(255,255,255,.88);
+      opacity:1;
+    }
+
+    .sidecard li{
+      margin:6px 0;
+    }
+
+    .smallmuted{
+      font-size:12px;
+      color:rgba(255,255,255,.84);
+      opacity:1;
+      line-height:1.45;
+    }
+
+    .callout{
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.18);
+      padding:10px;
+      background:rgba(255,255,255,.05);
+      margin-top:10px;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      color:#ffffff;
+      font-size:12px;
+      gap:6px;
+      margin-right:6px;
+      margin-top:6px;
+      white-space:nowrap;
+    }
+
+    .sidebtns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
     }
 
     .soft{
@@ -255,7 +255,7 @@
       border:1px solid rgba(255,255,255,.12);
       padding:2px 6px;
       border-radius:8px;
-      color:var(--text);
+      color:#ffffff;
     }
   </style>
 </head>
@@ -263,12 +263,12 @@
 <body data-noShell="1">
   <div class="wrap">
 
-    <!-- ✅ główny header sklepu zostaje -->
     <div class="hero-card">
       <div class="shop-top">
         <div>
           <h1 class="h1">Sklep dropshipping – Gastronomia / Masarnie</h1>
           <p class="p">Źródło: Twoje produkty z importu CSV (hurtownie) + fallback z <code>/products.json</code>.</p>
+
           <div id="pricingWarn" class="card soft" style="display:none; margin-top:12px;">
             <strong>Uwaga:</strong>
             <div class="p" style="margin-top:6px;">
@@ -310,7 +310,7 @@
             <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
             <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
           </div>
-          <div class="muted-xs" style="margin-top:6px">
+          <div class="muted-xs" style="margin-top:6px;">
             B2B pokazuje ceny hurtowe i MOQ (minimum).
           </div>
         </div>
@@ -327,10 +327,8 @@
       </div>
     </div>
 
-    <!-- ✅ 3 kolumny -->
     <div class="layout-3col">
 
-      <!-- LEWA: jak to działa -->
       <aside class="sidecard">
         <h3>Jak działa ten marketplace?</h3>
         <p class="p">
@@ -363,7 +361,6 @@
         </div>
       </aside>
 
-      <!-- ŚRODEK: sklep -->
       <main>
         <div class="section">
           <div class="kpi-row">
@@ -375,9 +372,12 @@
 
         <div class="section">
           <div id="grid" class="shop-grid"></div>
+
           <div id="empty" class="card soft" style="display:none; margin-top:14px;">
             <strong>Brak produktów</strong>
-            <p class="p" style="margin-top:6px;">Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>/products.json</code>.</p>
+            <p class="p" style="margin-top:6px;">
+              Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>/products.json</code>.
+            </p>
           </div>
         </div>
 
@@ -386,7 +386,6 @@
         </div>
       </main>
 
-      <!-- PRAWA: B2B / MOQ / tipy -->
       <aside class="sidecard">
         <h3>Detal vs Hurt (B2B)</h3>
         <p class="p">
@@ -396,7 +395,7 @@
 
         <div class="callout">
           <div class="smallmuted"><b>MOQ</b> = minimum sztuk</div>
-          <div class="smallmuted" style="margin-top:6px">
+          <div class="smallmuted" style="margin-top:6px;">
             Jeśli w B2B dasz mniej niż MOQ, koszyk pokaże ostrzeżenie i nie puści do checkout.
           </div>
         </div>
@@ -422,7 +421,6 @@
       </aside>
 
     </div>
-
   </div>
 
   <script>
