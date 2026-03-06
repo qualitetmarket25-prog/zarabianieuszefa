@@ -1,127 +1,1243 @@
-
 <!doctype html>
 <html lang="pl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>QualitetMarket – Platforma</title>
-  <meta name="description" content="QualitetMarket – marketplace multi-store do sprzedaży bez magazynu. Sklep, marża, hurtownie, zamówienia i subskrypcje w jednym miejscu." />
+  <meta name="description" content="Centrum działania użytkownika: sklep, panel sprzedawcy, hurtownie, AI i plany subskrypcyjne." />
+
   <link rel="stylesheet" href="./styles.css" />
+
   <style>
-    :root{color-scheme:dark;--bg:#08111f;--panel:#101b2e;--panel2:#0d1728;--stroke:rgba(255,255,255,.08);--text:#eef4ff;--muted:#9db0cf;--brand:#55e7a7;--brand2:#66b6ff;--warn:#ffd166;--danger:#ff7b89;--shadow:0 20px 50px rgba(0,0,0,.35)}
-    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top,rgba(102,182,255,.16),transparent 28%),linear-gradient(180deg,#08111f,#060c16 55%,#040810);color:var(--text)}
-    a{text-decoration:none;color:inherit}.wrap{max-width:1180px;margin:0 auto;padding:24px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-    .logo{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}.logo-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:var(--shadow)}
-    .plan-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted);font-weight:700}
-    .hero{display:grid;grid-template-columns:1.25fr .9fr;gap:18px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--stroke);border-radius:28px;box-shadow:var(--shadow)}
-    .hero-main{padding:34px}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(85,231,167,.12);color:#98f0c9;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(34px,6vw,60px);line-height:.98;margin:16px 0 12px}.lead{font-size:18px;line-height:1.65;color:var(--muted);max-width:840px}
-    .hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.mini{padding:16px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid var(--stroke)}.mini strong{display:block;font-size:26px;margin-bottom:4px}.mini span{color:var(--muted);font-size:14px}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;font-weight:900;border:1px solid transparent;cursor:pointer;min-height:50px}.btn-primary{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}.btn-secondary{background:#131f34;border-color:var(--stroke);color:var(--text)}
-    .hero-side{padding:24px;display:flex;flex-direction:column;gap:14px}.feature{padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--stroke)}.feature h3{margin:0 0 8px;font-size:16px}.feature p{margin:0;color:var(--muted);line-height:1.55}
-    .section{margin-top:18px}.section-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.tile{padding:22px}.tile h3{margin:0 0 10px;font-size:18px}.tile p{margin:0 0 14px;color:var(--muted);line-height:1.55}.tile a{display:inline-flex;align-items:center;gap:8px;color:#a7d9ff;font-weight:800}
-    .pricing-banner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 22px;margin-top:18px}.pricing-banner strong{font-size:20px}.pricing-banner span{display:block;color:var(--muted);margin-top:4px}
-    .trust{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.trust .card{padding:20px}
-    .muted{color:var(--muted)}
-    @media (max-width: 980px){.hero,.section-grid,.trust{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr 1fr}.wrap{padding:16px}.hero-main,.hero-side{padding:22px}}
-    @media (max-width: 640px){.hero-grid{grid-template-columns:1fr}.btn{width:100%}.topbar{align-items:flex-start}}
+    :root{
+      --bg:#0b1020;
+      --bg2:#121936;
+      --card:#121a30;
+      --card2:#0f172a;
+      --line:rgba(255,255,255,.10);
+      --text:#eef2ff;
+      --muted:#9fb0d1;
+      --green:#22c55e;
+      --blue:#3b82f6;
+      --gold:#f59e0b;
+      --red:#ef4444;
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(59,130,246,.18), transparent 30%),
+        radial-gradient(circle at top left, rgba(34,197,94,.12), transparent 25%),
+        linear-gradient(180deg, #0a1020 0%, #0d1326 100%);
+      min-height:100vh;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+
+    .container{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(14px);
+      background:rgba(8,12,24,.74);
+      border-bottom:1px solid var(--line);
+    }
+
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      background:linear-gradient(135deg, var(--blue), #7c3aed);
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+
+    .brand-text{min-width:0}
+    .brand-title{
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:.02em;
+      line-height:1.1;
+    }
+    .brand-sub{
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:700;
+      line-height:1;
+      transition:.18s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:44px;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--blue), #2563eb);
+      color:#fff;
+      box-shadow:0 10px 26px rgba(37,99,235,.28);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .btn-success{
+      background:linear-gradient(135deg, #16a34a, var(--green));
+      color:#03130a;
+      box-shadow:0 10px 26px rgba(34,197,94,.22);
+    }
+
+    .hero{
+      padding:26px 0 16px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.18fr .82fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(18,26,48,.9), rgba(10,16,32,.96));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-main{
+      padding:24px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(59,130,246,.12);
+      border:1px solid rgba(59,130,246,.28);
+      color:#dbeafe;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
+    h1{
+      margin:16px 0 12px;
+      font-size:clamp(28px, 5vw, 50px);
+      line-height:1.02;
+      letter-spacing:-.03em;
+    }
+
+    .lead{
+      margin:0;
+      color:#d9e4ff;
+      font-size:16px;
+      line-height:1.65;
+      max-width:62ch;
+    }
+
+    .hero-cta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .hero-points{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .point{
+      background:rgba(255,255,255,.045);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .point strong{
+      display:block;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .point span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .hero-side{
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .status-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .status-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .status-title{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .pill-basic{background:rgba(255,255,255,.06); border-color:var(--line); color:#fff;}
+    .pill-pro{background:rgba(59,130,246,.14); border-color:rgba(59,130,246,.28); color:#dbeafe;}
+    .pill-elite{background:rgba(245,158,11,.16); border-color:rgba(245,158,11,.30); color:#ffedd5;}
+    .pill-on{background:rgba(34,197,94,.14); border-color:rgba(34,197,94,.28); color:#dcfce7;}
+    .pill-off{background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.24); color:#fee2e2;}
+
+    .status-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .status-row:last-child{border-bottom:none;padding-bottom:0}
+    .status-row:first-child{padding-top:0}
+
+    .status-label{
+      font-size:14px;
+      color:#dbe4fb;
+      font-weight:600;
+    }
+
+    .status-value{
+      font-size:14px;
+      color:#fff;
+      font-weight:800;
+      text-align:right;
+    }
+
+    .mini-note{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+      margin-top:10px;
+    }
+
+    .section{
+      padding:14px 0;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .section-title{
+      margin:0;
+      font-size:clamp(22px, 3vw, 32px);
+      line-height:1.08;
+      letter-spacing:-.02em;
+    }
+
+    .section-sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width:70ch;
+      line-height:1.6;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:16px;
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(17,24,39,.9), rgba(9,14,28,.97));
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      min-height:250px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -40% auto;
+      width:180px;
+      height:180px;
+      background:radial-gradient(circle, rgba(59,130,246,.15), transparent 64%);
+      pointer-events:none;
+    }
+
+    .card-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .icon{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-size:22px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .req-badge{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      border-radius:999px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:#fff;
+    }
+
+    .req-pro{
+      background:rgba(59,130,246,.13);
+      border-color:rgba(59,130,246,.26);
+      color:#dbeafe;
+    }
+
+    .req-elite{
+      background:rgba(245,158,11,.15);
+      border-color:rgba(245,158,11,.28);
+      color:#ffedd5;
+    }
+
+    .card h3{
+      margin:0 0 8px;
+      font-size:20px;
+      line-height:1.15;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.58;
+      font-size:14px;
+    }
+
+    .features{
+      margin:14px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:8px;
+    }
+
+    .features li{
+      position:relative;
+      padding-left:18px;
+      color:#deebff;
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .features li::before{
+      content:"•";
+      position:absolute;
+      left:0;
+      top:0;
+      color:var(--green);
+      font-weight:900;
+    }
+
+    .card-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:auto;
+      padding-top:18px;
+    }
+
+    .btn-card{
+      flex:1 1 150px;
+    }
+
+    .locked{
+      opacity:.8;
+    }
+
+    .locked .icon{
+      background:rgba(239,68,68,.10);
+      border-color:rgba(239,68,68,.18);
+    }
+
+    .lock-overlay{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(239,68,68,.08);
+      border:1px solid rgba(239,68,68,.18);
+      color:#ffe4e6;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .locked.is-locked .lock-overlay{
+      display:block;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .flow{
+      display:grid;
+      gap:12px;
+    }
+
+    .flow-step{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:18px;
+    }
+
+    .flow-num{
+      flex:0 0 auto;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color:#fff;
+      background:linear-gradient(135deg, var(--blue), #1d4ed8);
+    }
+
+    .flow-step strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:15px;
+    }
+
+    .flow-step span{
+      display:block;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .plans{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:16px;
+    }
+
+    .plan{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(17,24,39,.92), rgba(10,16,32,.98));
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .plan.recommended{
+      border-color:rgba(59,130,246,.36);
+      transform:translateY(-2px);
+    }
+
+    .plan.recommended::before{
+      content:"Najczęściej wybierany";
+      position:absolute;
+      top:14px;
+      right:14px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      color:#dbeafe;
+      background:rgba(59,130,246,.16);
+      border:1px solid rgba(59,130,246,.24);
+      border-radius:999px;
+      padding:8px 10px;
+    }
+
+    .plan-name{
+      font-size:14px;
+      color:var(--muted);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .price{
+      margin:10px 0 6px;
+      font-size:36px;
+      font-weight:900;
+      line-height:1;
+      letter-spacing:-.03em;
+    }
+
+    .price small{
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .plan-desc{
+      color:#dbe4fb;
+      line-height:1.5;
+      font-size:14px;
+      margin:0 0 14px;
+    }
+
+    .plan ul{
+      margin:0 0 18px;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:9px;
+    }
+
+    .plan li{
+      padding-left:18px;
+      position:relative;
+      color:#dbeafe;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .plan li::before{
+      content:"•";
+      position:absolute;
+      left:0;
+      top:0;
+      color:var(--green);
+      font-weight:900;
+    }
+
+    .mobile-bar{
+      display:none;
+      position:fixed;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      z-index:60;
+      background:rgba(8,12,24,.88);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:10px;
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .center{
+      text-align:center;
+    }
+
+    .space-top{
+      margin-top:10px;
+    }
+
+    .hide{display:none !important}
+
+    @media (max-width: 1080px){
+      .hero-grid,
+      .cards,
+      .plans,
+      .grid-2{
+        grid-template-columns:1fr;
+      }
+
+      .hero-points{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 720px){
+      .container{
+        width:min(100% - 18px, var(--max));
+      }
+
+      .topbar-inner{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .top-actions{
+        width:100%;
+      }
+
+      .top-actions .btn{
+        flex:1 1 0;
+      }
+
+      .hero{
+        padding-top:18px;
+      }
+
+      .hero-main,
+      .hero-side,
+      .card,
+      .plan{
+        padding:16px;
+      }
+
+      .section{
+        padding:10px 0;
+      }
+
+      .section-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .card-actions{
+        flex-direction:column;
+      }
+
+      .btn-card{
+        width:100%;
+      }
+
+      .mobile-bar{
+        display:grid;
+      }
+
+      body{
+        padding-bottom:88px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="logo"><div class="logo-badge"></div><div>QualitetMarket</div></div>
-      <div class="plan-pill">Aktywny plan: <strong id="qmPlanLabel">BASIC</strong></div>
-    </header>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="./index.html">
+        <div class="brand-mark">Q</div>
+        <div class="brand-text">
+          <div class="brand-title">QualitetMarket / Zarabianie u Szefa</div>
+          <div class="brand-sub">centrum działania użytkownika • sprzedaż • automatyzacja</div>
+        </div>
+      </a>
 
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="./index.html">Start</a>
+        <a class="btn btn-secondary" href="./sklep.html">Sklep LIVE</a>
+        <a class="btn btn-primary" href="#plany">Odblokuj więcej</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
     <section class="hero">
-      <div class="card hero-main">
-        <div class="eyebrow">Marketplace multi-store</div>
-        <h1>Sklep, marża, hurtownie i sprzedaż w jednym miejscu.</h1>
-        <p class="lead">Użytkownik tworzy sklep, wybiera produkty z hurtowni, system dolicza marżę automatycznie, a zamówienia wpadają do panelu. Całość ma działać szybko na telefonie i prowadzić do prostego modelu: kilka kliknięć i start sprzedaży bez magazynu.</p>
-        <div class="hero-grid">
-          <div class="mini"><strong>1 link</strong><span>do sklepu sprzedawcy</span></div>
-          <div class="mini"><strong>Auto marża</strong><span>zależna od planu i sklepu</span></div>
-          <div class="mini"><strong>CSV → sklep</strong><span>import i publikacja produktów</span></div>
+      <div class="hero-grid">
+        <div class="panel hero-main">
+          <div class="eyebrow">Platforma użytkownika</div>
+          <h1>Jedno miejsce do uruchomienia sprzedaży bez chaosu.</h1>
+          <p class="lead">
+            Tu użytkownik ma od razu widzieć co kliknąć dalej: sklep, panel sprzedawcy, hurtownie,
+            AI i rozwój planu. Bez szukania po linkach. Bez zbędnego myślenia. Najpierw działanie,
+            potem upgrade.
+          </p>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#moduly">Wejdź do modułów</a>
+            <a class="btn btn-secondary" href="./cennik.html">Zobacz plany</a>
+          </div>
+
+          <div class="hero-points">
+            <div class="point">
+              <strong>Prosty start</strong>
+              <span>Najważniejsze moduły są podane w kolejności, która prowadzi do działania i sprzedaży.</span>
+            </div>
+            <div class="point">
+              <strong>Mobile-first</strong>
+              <span>Duże przyciski, krótki tekst i układ pod telefon, żeby dało się działać od razu.</span>
+            </div>
+            <div class="point">
+              <strong>Naturalny upsell</strong>
+              <span>Moduły premium są widoczne, ale blokowane zgodnie z planem, żeby pchały do upgrade’u.</span>
+            </div>
+          </div>
         </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="./generator-sklepu.html">Utwórz sklep</a>
-          <a class="btn btn-secondary" href="./panel-sklepu.html">Panel sklepu</a>
-          <a class="btn btn-secondary" href="./zamowienia.html">Zamówienia</a>
-          <a class="btn btn-secondary" href="./cennik.html">Plany i subskrypcje</a>
+
+        <aside class="panel hero-side">
+          <div class="status-card">
+            <div class="status-top">
+              <div class="status-title">Twój status</div>
+              <div id="planPill" class="pill pill-basic">BASIC</div>
+            </div>
+
+            <div class="status-list">
+              <div class="status-row">
+                <div class="status-label">Status subskrypcji</div>
+                <div id="subscriptionValue" class="status-value">nieaktywna</div>
+              </div>
+
+              <div class="status-row">
+                <div class="status-label">Hurtownie premium</div>
+                <div id="premiumWhValue" class="status-value">Nie</div>
+              </div>
+
+              <div class="status-row">
+                <div class="status-label">AI pomocnik</div>
+                <div id="aiValue" class="status-value">Nie</div>
+              </div>
+
+              <div class="status-row">
+                <div class="status-label">Domyślna marża</div>
+                <div id="marginValue" class="status-value">12%</div>
+              </div>
+            </div>
+
+            <div class="mini-note">
+              Status czyta dane z localStorage:
+              <strong>qm_user_plan_v1</strong>,
+              <strong>qm_subscription_status_v1</strong>,
+              <strong>qm_store_margin_pct</strong>.
+            </div>
+          </div>
+
+          <div class="status-card">
+            <div class="status-top">
+              <div class="status-title">Szybkie wejścia</div>
+            </div>
+
+            <div class="card-actions">
+              <a class="btn btn-secondary btn-card" href="./hurtownie.html">Hurtownie</a>
+              <a class="btn btn-secondary btn-card" href="./panel-sklepu.html">Panel</a>
+              <a class="btn btn-secondary btn-card" href="./intelligence.html">AI</a>
+            </div>
+
+            <div class="mini-note">
+              Gdy moduł jest zablokowany dla danego planu, użytkownik dostaje czytelny komunikat
+              i skrót do planów.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="moduly" class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Najważniejsze moduły</h2>
+          <p class="section-sub">
+            Najpierw rzeczy, które użytkownik ma kliknąć najszybciej. Każdy moduł ma jasny cel:
+            uruchomić sprzedaż, dodać produkty, ustawić marżę albo wejść poziom wyżej.
+          </p>
         </div>
       </div>
 
-      <aside class="card hero-side">
-        <div class="feature">
-          <h3>Wejście dla sprzedawcy</h3>
-          <p>Tworzy sklep, ustawia marżę, wybiera motyw, importuje produkty i od razu sprzedaje pod własnym linkiem.</p>
-        </div>
-        <div class="feature">
-          <h3>Wejście dla klienta</h3>
-          <p>Klient wchodzi bezpośrednio do sklepu przez <strong>?store=slug</strong>, widzi bestsellery, badge i prosty checkout.</p>
-        </div>
-        <div class="feature">
-          <h3>Zaplecze systemu</h3>
-          <p>Import CSV, ranking hurtowni, panel zamówień, dashboard i gotowe mechanizmy zwiększające sprzedaż.</p>
-        </div>
-        <a class="btn btn-primary" href="./sklep.html">Otwórz sklep</a>
-      </aside>
+      <div class="cards">
+        <article class="card">
+          <div class="card-top">
+            <div class="icon">🛒</div>
+            <div class="req-badge">BASIC</div>
+          </div>
+          <h3>Sklep LIVE</h3>
+          <p>
+            Gotowy sklep do podglądu i sprzedaży. Użytkownik widzi jak wygląda oferta,
+            katalog i ścieżka zakupowa.
+          </p>
+          <ul class="features">
+            <li>wejście bez bariery</li>
+            <li>dobry punkt startu do sprzedaży</li>
+            <li>czytelny pokaz wartości systemu</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card" href="./sklep.html">Otwórz sklep</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="pro" data-upsell="pro">
+          <div class="card-top">
+            <div class="icon">🏪</div>
+            <div class="req-badge req-pro">PRO</div>
+          </div>
+          <h3>Panel sprzedawcy</h3>
+          <p>
+            Miejsce do budowy własnego sklepu użytkownika, kontroli oferty, marży i sprzedaży.
+          </p>
+          <ul class="features">
+            <li>własny sklep użytkownika</li>
+            <li>większa wartość planu PRO</li>
+            <li>sprzedaż bez ręcznego kombinowania</li>
+          </ul>
+          <div class="lock-overlay">
+            Ten moduł jest dostępny od planu <strong>PRO</strong>. Odblokuj panel sprzedawcy i rozwijaj własny sklep.
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card module-link" data-href="./panel-sklepu.html" href="./cennik.html#pro">Wejdź do panelu</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="pro" data-upsell="pro">
+          <div class="card-top">
+            <div class="icon">📦</div>
+            <div class="req-badge req-pro">PRO</div>
+          </div>
+          <h3>Hurtownie premium</h3>
+          <p>
+            Dostęp do mocniejszych źródeł produktów i zaplecza do importu ofert, szczególnie pod sprzedaż i skalę.
+          </p>
+          <ul class="features">
+            <li>hurtownie standardowe + premium</li>
+            <li>lepszy argument do upgrade’u</li>
+            <li>podstawa pod ofertę użytkownika</li>
+          </ul>
+          <div class="lock-overlay">
+            Ten moduł jest dostępny od planu <strong>PRO</strong>. Użytkownik na BASIC widzi wartość, ale nie wejdzie bez upgrade’u.
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card module-link" data-href="./hurtownie.html" href="./cennik.html#pro">Przejdź do hurtowni</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="elite" data-upsell="elite">
+          <div class="card-top">
+            <div class="icon">🤖</div>
+            <div class="req-badge req-elite">ELITE</div>
+          </div>
+          <h3>AI pomocnik</h3>
+          <p>
+            Moduł premium do szybszej pracy użytkownika: pomysły, pomoc sprzedażowa, skracanie oporu i automatyzacja.
+          </p>
+          <ul class="features">
+            <li>najmocniejszy argument dla ELITE</li>
+            <li>większa szybkość działania</li>
+            <li>mniej blokad po stronie użytkownika</li>
+          </ul>
+          <div class="lock-overlay">
+            Ten moduł jest dostępny od planu <strong>ELITE</strong>. To plan do skali, automatyzacji i pracy z AI.
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card module-link" data-href="./intelligence.html" href="./cennik.html#elite">Uruchom AI</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="pro" data-upsell="pro">
+          <div class="card-top">
+            <div class="icon">⚙️</div>
+            <div class="req-badge req-pro">PRO</div>
+          </div>
+          <h3>Generator sklepu</h3>
+          <p>
+            Wejście do budowy sklepu użytkownika i jego konfiguracji. To ma bezpośrednio prowadzić do sprzedaży.
+          </p>
+          <ul class="features">
+            <li>krótsza droga do uruchomienia sklepu</li>
+            <li>większa wartość subskrypcji</li>
+            <li>spójne przejście do panelu sprzedawcy</li>
+          </ul>
+          <div class="lock-overlay">
+            Generator sklepu jest częścią planu <strong>PRO</strong> i wyżej.
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card module-link" data-href="./generator-sklepu.html" href="./cennik.html#pro">Otwórz generator</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="icon">📊</div>
+            <div class="req-badge">BASIC</div>
+          </div>
+          <h3>Dashboard / zaplecze</h3>
+          <p>
+            Zaplecze danych i dalszego rozwoju. Dobre miejsce do późniejszego rozbudowania o CRM i follow-up.
+          </p>
+          <ul class="features">
+            <li>praca na danych</li>
+            <li>centrum dalszych procesów</li>
+            <li>podstawa pod skalowanie</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-card" href="./dashboard.html">Wejdź do dashboardu</a>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="section section-grid">
-      <article class="card tile">
-        <h3>Start sklepu</h3>
-        <p>Wejście do generatora sklepu i szybkie ustawienie motywu, nazwy, logo oraz domyślnej marży.</p>
-        <a href="./generator-sklepu.html">Przejdź dalej →</a>
-      </article>
-      <article class="card tile">
-        <h3>Panel sprzedawcy</h3>
-        <p>Zarządzanie motywami, marżą, KPI, eksportem oraz statusem zamówień na telefonie i desktopie.</p>
-        <a href="./panel-sklepu.html">Otwórz panel →</a>
-      </article>
-      <article class="card tile">
-        <h3>Import CSV</h3>
-        <p>Wrzuć plik z hurtowni, a produkty zostaną zamienione na listę gotową do publikacji i sprzedaży.</p>
-        <a href="./hurtownie.html">Importuj hurtownie →</a>
-      </article>
-      <article class="card tile">
-        <h3>Dashboard</h3>
-        <p>Przegląd narzędzi, rankingów i modułów, które pchają użytkownika do kolejnych kroków i wyższego planu.</p>
-        <a href="./dashboard.html">Zobacz dashboard →</a>
-      </article>
+    <section class="section">
+      <div class="grid-2">
+        <div class="panel" style="padding:20px">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Flow użytkownika</h2>
+              <p class="section-sub">
+                Platforma ma prowadzić użytkownika po prostej ścieżce: wejście → plan → oferta → sklep → rozwój.
+              </p>
+            </div>
+          </div>
+
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-num">1</div>
+              <div>
+                <strong>Użytkownik wchodzi na start</strong>
+                <span>Widzi główne moduły, swój plan i od razu wie gdzie kliknąć bez szukania po stronie.</span>
+              </div>
+            </div>
+
+            <div class="flow-step">
+              <div class="flow-num">2</div>
+              <div>
+                <strong>Wybiera lub aktywuje plan</strong>
+                <span>BASIC na wejście, PRO do realnej sprzedaży, ELITE do skali i AI.</span>
+              </div>
+            </div>
+
+            <div class="flow-step">
+              <div class="flow-num">3</div>
+              <div>
+                <strong>Pracuje na ofercie i sklepie</strong>
+                <span>Wchodzi do panelu, hurtowni, generatora sklepu i odpala sprzedaż z telefonu.</span>
+              </div>
+            </div>
+
+            <div class="flow-step">
+              <div class="flow-num">4</div>
+              <div>
+                <strong>Upgrade robi się naturalnie</strong>
+                <span>Widziane, ale zablokowane moduły premium pchają do przejścia na wyższy plan.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="plany" class="panel" style="padding:20px">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Plany, które mają sprzedawać</h2>
+              <p class="section-sub">
+                Celem nie jest tylko informacja. Celem jest przejście z BASIC do PRO, a potem do ELITE.
+              </p>
+            </div>
+          </div>
+
+          <div class="plans">
+            <article class="plan">
+              <div class="plan-name">BASIC</div>
+              <div class="price">49 zł <small>/ mies.</small></div>
+              <p class="plan-desc">Plan wejściowy dla pierwszych kliknięć i poznania systemu.</p>
+              <ul>
+                <li>wejście do systemu</li>
+                <li>podgląd modułów i sklepu</li>
+                <li>plan startowy na telefon</li>
+              </ul>
+              <a class="btn btn-secondary" href="https://buy.stripe.com/test_eVq5kF1uZdRk7QXcLQ5J603">Aktywuj BASIC</a>
+            </article>
+
+            <article class="plan recommended">
+              <div class="plan-name">PRO</div>
+              <div class="price">149 zł <small>/ mies.</small></div>
+              <p class="plan-desc">Główny plan do sprzedaży i realnego działania użytkownika.</p>
+              <ul>
+                <li>panel sprzedawcy</li>
+                <li>hurtownie premium</li>
+                <li>generator sklepu</li>
+                <li>lepsza sprzedażowość i większa wartość</li>
+              </ul>
+              <a class="btn btn-primary" href="https://buy.stripe.com/test_5kQdrb1uZ7sW7QXbHM5J604">Aktywuj PRO</a>
+            </article>
+
+            <article class="plan">
+              <div class="plan-name">ELITE</div>
+              <div class="price">299 zł <small>/ mies.</small></div>
+              <p class="plan-desc">Plan do skali, automatyzacji i najszybszej pracy z pomocą AI.</p>
+              <ul>
+                <li>wszystko z PRO</li>
+                <li>AI pomocnik</li>
+                <li>najmocniejszy plan do skalowania</li>
+              </ul>
+              <a class="btn btn-secondary" href="https://buy.stripe.com/test_28E4gBddHcNg9Z51385J605">Aktywuj ELITE</a>
+            </article>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="card pricing-banner">
-      <div>
-        <strong>Model planów: wejście niskim kosztem, później naturalny upgrade.</strong>
-        <span>BASIC ma być prostym startem. PRO ma być głównym planem sprzedażowym. ELITE ma dawać skalę, wyższą marżę i mocniejszy status.</span>
+    <section class="section center">
+      <div class="panel" style="padding:22px">
+        <h2 class="section-title">Ta strona ma robić dwie rzeczy</h2>
+        <p class="section-sub" style="margin-left:auto;margin-right:auto">
+          Po pierwsze: prowadzić użytkownika do działania bez chaosu. Po drugie: naturalnie pchać go do planu,
+          który faktycznie daje mu sprzedaż, czyli przede wszystkim <strong>PRO</strong>. To jest spójne z tym,
+          jak już teraz komunikujesz wartość planów na stronie startowej. :contentReference[oaicite:1]{index=1}
+        </p>
+        <div class="hero-cta" style="justify-content:center">
+          <a class="btn btn-primary" href="./index.html">Wróć na start</a>
+          <a class="btn btn-secondary" href="./success.html">Sprawdź aktywację</a>
+        </div>
       </div>
-      <a class="btn btn-primary" href="./cennik.html">Zobacz plany</a>
     </section>
+  </main>
 
-    <section class="trust">
-      <div class="card">
-        <h3>Co już działa</h3>
-        <p class="muted">Marketplace multi-store, sklep przez <strong>?store=slug</strong>, panel sprzedawcy, koszyk, checkout, import CSV i system marży.</p>
-      </div>
-      <div class="card">
-        <h3>Co pcha sprzedaż</h3>
-        <p class="muted">Bestsellery, badge HIT / NOWOŚĆ / PROMOCJA, hurtownie premium, próg koszyka i live social proof.</p>
-      </div>
-      <div class="card">
-        <h3>Jak zarabia platforma</h3>
-        <p class="muted">Subskrypcje za kolejne etapy uproszczenia: wejście, panel, premium supplierzy, skalowanie i automatyzacja.</p>
-      </div>
-    </section>
+  <div class="mobile-bar">
+    <a class="btn btn-secondary" href="./sklep.html">Sklep LIVE</a>
+    <a class="btn btn-primary" href="#plany">Odblokuj PRO / ELITE</a>
   </div>
 
-  <script src="./js/subscriptions.js"></script>
   <script>
-    (function(){
-      const plan = (window.QM_SUBS && QM_SUBS.getPlan()) || { id: 'basic', label: 'BASIC' };
-      const node = document.getElementById('qmPlanLabel');
-      if (node) node.textContent = plan.label;
+    (() => {
+      "use strict";
+
+      const LS_PLAN = "qm_user_plan_v1";
+      const LS_MARGIN = "qm_store_margin_pct";
+      const LS_SUB = "qm_subscription_status_v1";
+
+      const DEFAULT_MARGIN = 0.12;
+
+      const planOrder = { basic: 0, pro: 1, elite: 2 };
+
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+      const normalizePlan = (value) => {
+        const v = String(value || "").trim().toLowerCase();
+        if (v === "elite") return "elite";
+        if (v === "pro") return "pro";
+        return "basic";
+      };
+
+      const readPlan = () => normalizePlan(localStorage.getItem(LS_PLAN));
+      const readSub = () => String(localStorage.getItem(LS_SUB) || "").trim().toLowerCase();
+      const readMargin = () => {
+        const raw = localStorage.getItem(LS_MARGIN);
+        const n = Number(raw);
+        if (Number.isFinite(n) && n >= 0) {
+          return n <= 1 ? n : (n / 100);
+        }
+        return DEFAULT_MARGIN;
+      };
+
+      const plan = readPlan();
+      const sub = readSub();
+      const margin = readMargin();
+
+      const hasAccess = (required) => {
+        const need = normalizePlan(required);
+        return planOrder[plan] >= planOrder[need];
+      };
+
+      const planPill = $("#planPill");
+      const subscriptionValue = $("#subscriptionValue");
+      const premiumWhValue = $("#premiumWhValue");
+      const aiValue = $("#aiValue");
+      const marginValue = $("#marginValue");
+
+      const planLabel = {
+        basic: "BASIC",
+        pro: "PRO",
+        elite: "ELITE"
+      }[plan];
+
+      planPill.textContent = planLabel;
+      planPill.className = "pill " + (
+        plan === "elite" ? "pill-elite" :
+        plan === "pro" ? "pill-pro" : "pill-basic"
+      );
+
+      const subActive = ["active", "paid", "trialing", "ok", "1", "true"].includes(sub);
+      subscriptionValue.textContent = subActive ? "aktywna" : "nieaktywna";
+      subscriptionValue.className = "status-value " + (subActive ? "" : "");
+
+      premiumWhValue.textContent = hasAccess("pro") ? "Tak" : "Nie";
+      aiValue.textContent = hasAccess("elite") ? "Tak" : "Nie";
+      marginValue.textContent = Math.round(margin * 100) + "%";
+
+      $$("[data-require]").forEach((card) => {
+        const need = normalizePlan(card.getAttribute("data-require"));
+        const ok = hasAccess(need);
+
+        if (ok) {
+          card.classList.remove("is-locked");
+          const link = $(".module-link", card);
+          if (link && link.dataset.href) link.href = link.dataset.href;
+          return;
+        }
+
+        card.classList.add("is-locked");
+
+        const link = $(".module-link", card);
+        if (!link) return;
+
+        const upsell = card.getAttribute("data-upsell") || need;
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const target = $("#plany");
+          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+          setTimeout(() => {
+            const preferred = upsell === "elite"
+              ? document.querySelector('.plan:last-child')
+              : document.querySelector('.plan.recommended') || document.querySelector('.plan:nth-child(2)');
+            if (preferred) preferred.style.outline = "2px solid rgba(59,130,246,.65)";
+            setTimeout(() => {
+              if (preferred) preferred.style.outline = "";
+            }, 1600);
+          }, 120);
+        });
+      });
+
+      // linki szybkich wejść w górnym statusie też respektują plany
+      const safeOpen = (selector, requiredPlan, targetHref) => {
+        const el = document.querySelector(selector);
+        if (!el) return;
+        el.addEventListener("click", (e) => {
+          if (hasAccess(requiredPlan)) {
+            el.href = targetHref;
+            return;
+          }
+          e.preventDefault();
+          const plans = document.querySelector("#plany");
+          if (plans) plans.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      };
+
+      const quickLinks = $$(".hero-side .card-actions a");
+      quickLinks.forEach((a) => {
+        const text = (a.textContent || "").toLowerCase();
+        if (text.includes("hurtownie")) {
+          a.addEventListener("click", (e) => {
+            if (!hasAccess("pro")) {
+              e.preventDefault();
+              document.querySelector("#plany")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        }
+        if (text.includes("panel")) {
+          a.addEventListener("click", (e) => {
+            if (!hasAccess("pro")) {
+              e.preventDefault();
+              document.querySelector("#plany")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        }
+        if (text.includes("ai")) {
+          a.addEventListener("click", (e) => {
+            if (!hasAccess("elite")) {
+              e.preventDefault();
+              document.querySelector("#plany")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        }
+      });
     })();
   </script>
 </body>
