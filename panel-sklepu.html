@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Panel sklepu – QualitetMarket</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- ✅ GitHub Pages: używamy relatywnie -->
+  <link rel="stylesheet" href="./styles.css">
+
   <style>
     :root { color-scheme: dark; }
     .wrap{max-width:1080px;margin:42px auto;padding:0 16px}
@@ -63,6 +66,7 @@
     .divider{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
@@ -73,10 +77,10 @@
 
       <div class="row" style="margin-top:14px">
         <button class="btn btn-primary" id="openShop">Otwórz aktywny sklep</button>
-        <a class="btn btn-ghost" id="openOrders" href="zamowienia.html">Zamówienia</a>
-        <a class="btn btn-ghost" id="openCart" href="koszyk.html">Koszyk</a>
-        <a class="btn btn-ghost" href="generator-sklepu.html">Generator sklepów</a>
-        <a class="btn btn-ghost" href="platforma.html">Wejście do platformy</a>
+        <a class="btn btn-ghost" id="openOrders" href="./zamowienia.html">Zamówienia</a>
+        <a class="btn btn-ghost" id="openCart" href="./koszyk.html">Koszyk</a>
+        <a class="btn btn-ghost" href="./generator-sklepu.html">Generator sklepów</a>
+        <a class="btn btn-ghost" href="./platforma.html">Wejście do platformy</a>
       </div>
 
       <div style="margin-top:16px">
@@ -104,16 +108,15 @@
 
       <div class="divider"></div>
 
-      <!-- ✅ NOWE: panel zamówień sprzedawcy -->
       <div style="font-weight:950;font-size:18px">Zamówienia tego sklepu</div>
-      <div class="muted" style="margin-top:6px">Widzisz tylko zamówienia, gdzie <span class="mono">store_slug / storeSlug</span> = aktywny sklep.</div>
+      <div class="muted" style="margin-top:6px">Widzisz tylko zamówienia, gdzie <span class="mono">storeSlug</span> = aktywny sklep.</div>
 
       <div class="row" style="margin-top:12px">
         <div style="flex:1;min-width:240px">
           <div class="muted" style="font-weight:900;margin:0 0 6px">Szukaj</div>
           <input id="q" placeholder="np. QM- / hurtownia / @mail">
         </div>
-        <div style="min-width:200px">
+        <div style="min-width:220px">
           <div class="muted" style="font-weight:900;margin:0 0 6px">Status</div>
           <select id="statusFilter">
             <option value="">Wszystkie</option>
@@ -121,9 +124,10 @@
             <option value="CONFIRMED">CONFIRMED</option>
             <option value="SENT">SENT</option>
             <option value="DONE">DONE</option>
+            <option value="CANCELLED">CANCELLED</option>
           </select>
         </div>
-        <div style="min-width:260px">
+        <div style="min-width:320px">
           <div class="muted" style="font-weight:900;margin:0 0 6px">Eksport</div>
           <div class="row-actions">
             <button class="btn btn-ghost btn-xs" id="exportJson" type="button">JSON</button>
@@ -134,22 +138,10 @@
       </div>
 
       <div class="kpi-grid">
-        <div class="kpi">
-          <div class="label">Zamówienia</div>
-          <div class="val" id="kpiOrders">0</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Obrót brutto</div>
-          <div class="val" id="kpiGross">0 zł</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Prowizja platformy</div>
-          <div class="val" id="kpiFee">0 zł</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Marża sprzedawcy</div>
-          <div class="val" id="kpiMargin">0 zł</div>
-        </div>
+        <div class="kpi"><div class="label">Zamówienia</div><div class="val" id="kpiOrders">0</div></div>
+        <div class="kpi"><div class="label">Obrót brutto</div><div class="val" id="kpiGross">0 zł</div></div>
+        <div class="kpi"><div class="label">Prowizja platformy (MVP)</div><div class="val" id="kpiFee">0 zł</div></div>
+        <div class="kpi"><div class="label">Marża sprzedawcy (MVP)</div><div class="val" id="kpiMargin">0 zł</div></div>
       </div>
 
       <div class="box" style="margin-top:12px;overflow:auto">
@@ -184,7 +176,7 @@
   const LS_MARGIN = "qm_store_margin_pct";
   const LS_ORDERS = "qm_orders_v1";
 
-  const STATUSES = ["NEW","CONFIRMED","SENT","DONE"];
+  const STATUSES = ["NEW","CONFIRMED","SENT","DONE","CANCELLED"];
 
   const $ = (id) => document.getElementById(id);
 
@@ -198,7 +190,8 @@
   const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
   const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
+  // ✅ bezpieczny URL sklepu na GitHub Pages (relatywnie)
+  const makeShopUrl = (slug) => `./sklep.html?store=${encodeURIComponent(slug)}`;
 
   const money = (n) => {
     const v = Number(n || 0);
@@ -211,7 +204,7 @@
     return {};
   };
 
-  const getActiveSlug = () => slugify(localStorage.getItem(LS_ACTIVE) || "");
+  const getActiveSlug = () => slugify(localStorage.getItem(LS_ACTIVE) || "") || "default";
 
   const setActive = (slug) => {
     const s = slugify(slug);
@@ -225,58 +218,81 @@
     localStorage.setItem("qm_store_slug", s);
   };
 
-  // ----- ORDERS (v1 + v2)
+  const syncTopLinks = (store) => {
+    $("openOrders").href = `./zamowienia.html?store=${encodeURIComponent(store)}`;
+    $("openCart").href = `./koszyk.html?store=${encodeURIComponent(store)}`;
+  };
+
+  // ----- ORDERS
   const readOrdersRaw = () => {
     const arr = readJSON(LS_ORDERS, []);
     return Array.isArray(arr) ? arr : [];
   };
   const writeOrdersRaw = (arr) => writeJSON(LS_ORDERS, Array.isArray(arr) ? arr : []);
 
-  const normalizeSuppliers = (supplierBreakdown) => {
-    if (!supplierBreakdown) return [];
-    if (Array.isArray(supplierBreakdown)) return supplierBreakdown;
-
-    const out = [];
-    for (const [supplier, v] of Object.entries(supplierBreakdown)) {
-      out.push({
-        supplier,
-        items: Number(v?.items||0),
-        net: Number(v?.net||0),
-        gross: Number(v?.gross||0)
-      });
+  // liczenie hurtowni z items[] (nowe) lub supplierBreakdown (stare)
+  const suppliersFromOrder = (o) => {
+    // nowe zamówienie: items[]
+    if (Array.isArray(o?.items)) {
+      const by = new Map();
+      for (const it of o.items) {
+        const sup = String(it?.supplier || "brak").trim() || "brak";
+        const qty = Number(it?.qty || 0) || 0;
+        const mode = String(o?.mode || "").toLowerCase() === "b2b" ? "b2b" : "retail";
+        const price = mode === "b2b"
+          ? (Number(it?.priceB2B || 0) || Number(it?.priceRetail || 0) || 0)
+          : (Number(it?.priceRetail || 0) || 0);
+        const gross = qty * price;
+        if (!by.has(sup)) by.set(sup, { supplier: sup, gross: 0, items: 0 });
+        const row = by.get(sup);
+        row.gross += gross;
+        row.items += qty;
+      }
+      return Array.from(by.values()).sort((a,b)=> b.gross - a.gross);
     }
-    out.sort((a,b)=> (b.gross - a.gross));
-    return out;
+
+    // stare: supplierBreakdown
+    const bd = o?.supplierBreakdown || o?.supplier_breakdown;
+    if (bd && typeof bd === "object") {
+      const out = [];
+      for (const [supplier, v] of Object.entries(bd)) {
+        out.push({
+          supplier,
+          items: Number(v?.items||0),
+          gross: Number(v?.gross||0)
+        });
+      }
+      return out.sort((a,b)=> b.gross - a.gross);
+    }
+
+    return [];
   };
 
   const normOrder = (o) => {
     if (!o || typeof o !== "object") return null;
 
-    const id = String(o.order_id || o.id || "").trim() || "—";
-    const createdAtISO =
-      o.created_at ||
-      o.createdAt ||
-      (o.ts ? new Date(o.ts).toISOString() : null);
-
-    const ts = o.ts || (createdAtISO ? Date.parse(createdAtISO) : Date.now());
-    const storeSlug = String(o.store_slug || o.storeSlug || "").trim() || "default";
-    const mode = String(o.mode || o.totals?.mode || "").trim() || "—";
+    const id = String(o.id || o.order_id || o.orderNo || "").trim() || "—";
+    const createdAtISO = o.createdAt || o.created_at || "";
+    const ts = createdAtISO ? Date.parse(createdAtISO) : (o.ts || Date.now());
+    const storeSlug = String(o.storeSlug || o.store_slug || "default").trim() || "default";
 
     const statusRaw = String(o.status || "NEW").toUpperCase().trim();
     const status = STATUSES.includes(statusRaw) ? statusRaw : "NEW";
 
+    const mode = String(o.mode || o.totals?.mode || "").trim() || "—";
+
     const totals = o.totals || {};
-    const gross = Number(totals.gross ?? 0) || 0;
-    const itemsCount = Number(totals.items ?? 0) || 0;
+    const gross = Number(totals.gross ?? o.gross ?? 0) || 0;
+    const itemsCount = Number(totals.items ?? o.itemsCount ?? 0) || 0;
 
-    const fees = o.fees || {};
-    const platformFee = Number(fees.platformFee ?? 0) || 0;
-    const sellerMargin = Number(fees.sellerMargin ?? 0) || 0;
+    // MVP: jeśli brak fee/margin, liczymy fee=2% od gross
+    const platformFee = Number(o.fees?.platformFee ?? (gross * 0.02)) || 0;
+    const sellerMargin = Number(o.fees?.sellerMargin ?? 0) || 0;
 
-    const sups = normalizeSuppliers(o.supplierBreakdown || o.supplier_breakdown || null);
+    const sups = suppliersFromOrder(o);
 
     const email =
-      (o.customer && (o.customer.email || o.customer.shipping?.email)) ||
+      (o.customer && (o.customer.email || "")) ||
       (o.b2bProfile && o.b2bProfile.contact) ||
       "";
 
@@ -287,21 +303,7 @@
       note: o.note || ""
     }).toLowerCase();
 
-    return {
-      __raw: o,
-      id,
-      createdAtISO,
-      ts,
-      storeSlug,
-      status,
-      mode: String(mode).toUpperCase(),
-      itemsCount,
-      gross,
-      platformFee,
-      sellerMargin,
-      suppliers: sups,
-      hay
-    };
+    return { __raw:o, id, createdAtISO, ts, storeSlug, status, mode:String(mode).toUpperCase(), itemsCount, gross, platformFee, sellerMargin, suppliers:sups, hay };
   };
 
   const updateOrderStatus = (orderId, nextStatus) => {
@@ -312,9 +314,10 @@
     let changed = false;
 
     const updated = raw.map(o => {
-      const id = String(o?.order_id || o?.id || "").trim();
+      const id = String(o?.id || o?.order_id || o?.orderNo || "").trim();
       if (id !== orderId) return o;
-      o.status = status; // zapis w raw
+      o.status = status;
+      o.updatedAt = new Date().toISOString();
       changed = true;
       return o;
     });
@@ -327,7 +330,7 @@
 
   const deleteOrder = (orderId) => {
     const raw = readOrdersRaw();
-    const filtered = raw.filter(o => String(o?.order_id || o?.id || "").trim() !== orderId);
+    const filtered = raw.filter(o => String(o?.id || o?.order_id || o?.orderNo || "").trim() !== orderId);
     writeOrdersRaw(filtered);
     window.dispatchEvent(new CustomEvent("qm:orders"));
   };
@@ -348,7 +351,7 @@
   const exportOrdersJSON = (list, storeSlug) => {
     const payload = (list || []).map(o => ({
       order_id: o.id,
-      created_at: o.createdAtISO,
+      created_at: o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
       store_slug: o.storeSlug,
       status: o.status,
       mode: o.mode,
@@ -365,22 +368,12 @@
   };
 
   const exportOrdersCSV = (list, storeSlug) => {
-    const head = [
-      "created_at","order_id","store_slug","status","mode",
-      "items","gross","platform_fee","seller_margin","suppliers"
-    ];
-
+    const head = ["created_at","order_id","store_slug","status","mode","items","gross","platform_fee","seller_margin","suppliers"];
     const rows = (list || []).map(o => {
-      const sups = (o.suppliers || [])
-        .map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`)
-        .join("|");
-
+      const sups = (o.suppliers || []).map(s => `${s.supplier}:${Number(s.gross||0).toFixed(2)}`).join("|");
       return [
         o.createdAtISO || new Date(o.ts||Date.now()).toISOString(),
-        o.id,
-        o.storeSlug,
-        o.status,
-        o.mode,
+        o.id, o.storeSlug, o.status, o.mode,
         Number(o.itemsCount||0),
         Number(o.gross||0).toFixed(2),
         Number(o.platformFee||0).toFixed(2),
@@ -388,7 +381,6 @@
         sups
       ].map(v => `"${String(v).replaceAll('"','""')}"`).join(",");
     });
-
     const csv = [head.join(","), ...rows].join("\n");
     const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
     const a = document.createElement("a");
@@ -403,38 +395,29 @@
     const tbody = $("orderRows");
     tbody.innerHTML = "";
 
-    if (!active) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="9" class="muted">Brak aktywnego sklepu.</td>`;
-      tbody.appendChild(tr);
-      return;
-    }
-
     const raw = readOrdersRaw();
     const norm = raw.map(normOrder).filter(Boolean);
+    const list = applyOrderFilters(norm, active).sort((a,b)=> (Number(b.ts||0)-Number(a.ts||0)));
 
-    const list = applyOrderFilters(norm, active);
-    const sorted = list.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0)));
+    const sumGross = list.reduce((a,o)=>a + (Number(o.gross)||0), 0);
+    const sumFee = list.reduce((a,o)=>a + (Number(o.platformFee)||0), 0);
+    const sumMargin = list.reduce((a,o)=>a + (Number(o.sellerMargin)||0), 0);
 
-    const sumGross = sorted.reduce((a,o)=>a + (Number(o.gross)||0), 0);
-    const sumFee = sorted.reduce((a,o)=>a + (Number(o.platformFee)||0), 0);
-    const sumMargin = sorted.reduce((a,o)=>a + (Number(o.sellerMargin)||0), 0);
-
-    $("kpiOrders").textContent = String(sorted.length);
+    $("kpiOrders").textContent = String(list.length);
     $("kpiGross").textContent = money(sumGross);
     $("kpiFee").textContent = money(sumFee);
     $("kpiMargin").textContent = money(sumMargin);
 
-    if (!sorted.length) {
+    if (!list.length) {
       const tr = document.createElement("tr");
       tr.innerHTML = `<td colspan="9" class="muted">Brak zamówień dla tego sklepu.</td>`;
       tbody.appendChild(tr);
-      $("exportJson").onclick = () => exportOrdersJSON(sorted, active);
-      $("exportCsv").onclick = () => exportOrdersCSV(sorted, active);
+      $("exportJson").onclick = () => exportOrdersJSON(list, active);
+      $("exportCsv").onclick = () => exportOrdersCSV(list, active);
       return;
     }
 
-    for (const o of sorted) {
+    for (const o of list) {
       const dt = o.createdAtISO ? new Date(o.createdAtISO) : new Date(o.ts || Date.now());
       const dts = dt.toLocaleString("pl-PL");
 
@@ -467,36 +450,29 @@
     }
 
     tbody.querySelectorAll("select[data-status]").forEach(sel => {
-      sel.addEventListener("change", () => {
-        const id = sel.getAttribute("data-status");
-        updateOrderStatus(id, sel.value);
-      });
+      sel.addEventListener("change", () => updateOrderStatus(sel.getAttribute("data-status"), sel.value));
     });
 
     tbody.querySelectorAll("[data-next]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-next");
         const raw = readOrdersRaw();
-        const foundRaw = raw.find(x => String(x?.order_id || x?.id || "").trim() === id);
-        const cur = String(foundRaw?.status || "NEW").toUpperCase().trim();
+        const found = raw.find(x => String(x?.id || x?.order_id || x?.orderNo || "").trim() === id);
+        const cur = String(found?.status || "NEW").toUpperCase().trim();
         const idx = Math.max(0, STATUSES.indexOf(cur));
-        const next = STATUSES[Math.min(STATUSES.length-1, idx+1)];
-        updateOrderStatus(id, next);
+        updateOrderStatus(id, STATUSES[Math.min(STATUSES.length-1, idx+1)]);
       });
     });
 
     tbody.querySelectorAll("[data-del]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-del");
-        deleteOrder(id);
-      });
+      btn.addEventListener("click", () => deleteOrder(btn.getAttribute("data-del")));
     });
 
     tbody.querySelectorAll("[data-json]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-json");
         const raw = readOrdersRaw();
-        const o = raw.find(x => String(x?.order_id || x?.id || "").trim() === id);
+        const o = raw.find(x => String(x?.id || x?.order_id || x?.orderNo || "").trim() === id);
         if (!o) return;
         const blob = new Blob([JSON.stringify(o, null, 2)], { type:"application/json" });
         const a = document.createElement("a");
@@ -507,45 +483,38 @@
       });
     });
 
-    $("exportJson").onclick = () => exportOrdersJSON(sorted, active);
-    $("exportCsv").onclick = () => exportOrdersCSV(sorted, active);
+    $("exportJson").onclick = () => exportOrdersJSON(list, active);
+    $("exportCsv").onclick = () => exportOrdersCSV(list, active);
   };
 
-  const render = () => {
+  const renderStores = () => {
     const map = loadMap();
     const slugs = Object.keys(map);
-    const active = getActiveSlug() || slugs[0] || "";
 
     if (!slugs.length) {
-      $("box").innerHTML = `Brak sklepów. Wejdź w <a href="generator-sklepu.html">generator</a> i utwórz pierwszy sklep.`;
+      $("box").innerHTML = `Brak sklepów. Wejdź w <a href="./generator-sklepu.html">generator</a> i utwórz pierwszy sklep.`;
       $("list").innerHTML = "";
-      $("openOrders").href = "zamowienia.html";
-      $("openCart").href = "koszyk.html";
       return;
     }
 
-    if (active && !getActiveSlug()) setActive(active);
-
-    const a = getActiveSlug() || active;
-    const e = map[a] || {};
-    const title = String(e.title || a.replaceAll("-", " "));
+    const active = getActiveSlug();
+    const e = map[active] || map[slugs[0]] || {};
+    const title = String(e.title || active.replaceAll("-", " "));
     const m01 = Number(e.marginPct || 0) || 0;
     const mPct = Math.round(m01 * 1000) / 10;
-    const url = makeUrl(a);
 
     $("box").innerHTML = `
-      <div><b>Aktywny sklep:</b> ${title} (<code>${a}</code>)</div>
+      <div><b>Aktywny sklep:</b> ${title} (<code>${active}</code>)</div>
       <div><b>Marża:</b> ${mPct}%</div>
       <div><b>Email:</b> ${String(e.email || "-")}</div>
-      <div style="margin-top:8px"><b>Link sklepu:</b> <a href="${url}" target="_blank" rel="noopener">${url}</a></div>
+      <div style="margin-top:8px"><b>Link sklepu:</b> <a href="${makeShopUrl(active)}" target="_blank" rel="noopener">${makeShopUrl(active)}</a></div>
     `;
 
     $("eTitle").value = title;
     $("eMargin").value = String(mPct);
     $("eEmail").value = String(e.email || "");
 
-    $("openOrders").href = `zamowienia.html?store=${encodeURIComponent(a)}`;
-    $("openCart").href = `koszyk.html?store=${encodeURIComponent(a)}`;
+    syncTopLinks(active);
 
     $("list").innerHTML = `
       <div class="muted" style="margin-top:10px">Twoje sklepy:</div>
@@ -564,7 +533,7 @@
                 <td>${mp}%</td>
                 <td>
                   <button class="btn btn-ghost btn-xs" data-set="${s}">Ustaw aktywny</button>
-                  <a class="btn btn-ghost btn-xs" href="${makeUrl(s)}" target="_blank">Otwórz</a>
+                  <a class="btn btn-ghost btn-xs" href="${makeShopUrl(s)}" target="_blank">Otwórz</a>
                 </td>
               </tr>
             `;
@@ -575,49 +544,43 @@
 
     $("list").querySelectorAll("[data-set]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const s = btn.getAttribute("data-set");
-        setActive(s);
-        render();
+        setActive(btn.getAttribute("data-set"));
+        renderStores();
         renderOrders();
       });
     });
-
-    renderOrders();
   };
 
   $("saveActive").addEventListener("click", () => {
-    const a = getActiveSlug();
-    if (!a) return;
-
+    const active = getActiveSlug();
     const map = loadMap();
-    const cur = map[a] || {};
+    const cur = map[active] || {};
 
-    const title = String($("eTitle").value || "").trim() || a.replaceAll("-", " ");
+    const title = String($("eTitle").value || "").trim() || active.replaceAll("-", " ");
     const m = Number(String($("eMargin").value || "0").replace(",", "."));
     const email = String($("eEmail").value || "").trim();
-
     const m01 = Math.max(0, Math.min(1, (isFinite(m) ? m : 0) / 100));
 
-    map[a] = { ...cur, title, email, marginPct: m01, theme: cur.theme || "default" };
+    map[active] = { ...cur, title, email, marginPct: m01, theme: cur.theme || "default" };
     writeJSON(LS_STORES, map);
-    setActive(a);
-    render();
+    setActive(active);
+
+    renderStores();
     renderOrders();
   });
 
   $("openShop").addEventListener("click", () => {
-    const a = getActiveSlug();
-    if (!a) return location.href = "generator-sklepu.html";
-    location.href = `sklep.html?store=${encodeURIComponent(a)}`;
+    const active = getActiveSlug();
+    location.href = makeShopUrl(active);
   });
 
   $("refreshOrders").addEventListener("click", renderOrders);
   $("q").addEventListener("input", renderOrders);
   $("statusFilter").addEventListener("change", renderOrders);
-
   window.addEventListener("qm:orders", renderOrders);
 
-  render();
+  renderStores();
+  renderOrders();
 })();
 </script>
 </body>
