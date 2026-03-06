@@ -1,150 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hurtownie – Zarabianie u Szefa</title>
-<link rel="stylesheet" href="styles.css">
-<script defer src="js/hurtownie.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>QualitetMarket — hurtownie</title>
+  <meta name="description" content="Hurtownie standardowe i premium w QualitetMarket." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./js/subscriptions.js"></script>
+  <script defer src="./js/planGuard.js"></script>
 
-<style>
-  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
-  .row .field { flex:1; min-width:240px; }
-  .muted-xs { opacity:.75; font-size:12px; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  .miniTable { width:100%; border-collapse: collapse; margin-top:10px; }
-  .miniTable th, .miniTable td { border-bottom:1px solid rgba(0,0,0,.08); padding:8px 6px; text-align:left; font-size:13px; }
-  .pill { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
-</style>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#08111f;
+      --stroke:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#9db0cf;
+      --brand:#55e7a7;
+      --brand2:#66b6ff;
+      --warn:#ffd166;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(102,182,255,.14), transparent 28%),
+        radial-gradient(circle at top left, rgba(85,231,167,.12), transparent 24%),
+        linear-gradient(180deg,#08111f,#050a12);
+    }
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px}
+    .back{display:inline-flex;align-items:center;gap:8px;color:#b9ddff;font-weight:900;margin-bottom:16px}
+    .hero{
+      padding:24px;border-radius:28px;border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
+      box-shadow:var(--shadow);
+    }
+    .eyebrow{
+      display:inline-flex;padding:8px 12px;border-radius:999px;
+      background:rgba(85,231,167,.12);color:#98f0c9;
+      font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+    }
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(34px,6vw,52px);
+      line-height:1.02;letter-spacing:-.03em;
+    }
+    .lead{margin:0;color:var(--muted);line-height:1.8;max-width:860px}
+    .statusbar{
+      margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:38px;padding:8px 12px;border-radius:999px;
+      border:1px solid var(--stroke);background:rgba(255,255,255,.05);font-weight:900;
+    }
+
+    .section{margin-top:18px}
+    .head{
+      display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .head h2{margin:0;font-size:28px;letter-spacing:-.02em}
+    .head p{margin:0;color:var(--muted);line-height:1.7}
+
+    .grid{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;
+    }
+    .card{
+      padding:20px;border-radius:24px;border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
+      min-height:100%;
+    }
+    .badge{
+      display:inline-flex;padding:7px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);border:1px solid var(--stroke);
+      font-size:12px;font-weight:900;color:var(--muted);
+    }
+    .title{margin:14px 0 8px;font-size:22px;font-weight:1000}
+    .desc{margin:0;color:var(--muted);line-height:1.7}
+    .list{
+      margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;
+    }
+    .list li{
+      position:relative;padding-left:18px;color:var(--muted);line-height:1.55;
+    }
+    .list li::before{
+      content:"•";position:absolute;left:0;top:0;color:var(--brand);font-weight:1000;
+    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .btn{
+      min-height:48px;padding:12px 15px;border-radius:16px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid transparent;font-weight:900;
+    }
+    .btn-main{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}
+    .btn-ghost{background:#131f34;border-color:var(--stroke)}
+    .locked{
+      position:relative;overflow:hidden;
+    }
+    .locked::after{
+      content:"Wymaga PRO lub ELITE";
+      position:absolute;inset:auto 14px 14px auto;
+      padding:8px 12px;border-radius:999px;background:rgba(255,209,102,.16);
+      color:#ffe29a;border:1px solid rgba(255,209,102,.25);font-size:12px;font-weight:1000;
+    }
+
+    .upgrade{
+      margin-top:18px;padding:22px;border-radius:24px;border:1px solid rgba(255,209,102,.22);
+      background:linear-gradient(180deg,rgba(255,209,102,.08),rgba(255,255,255,.03));
+    }
+    .upgrade h3{margin:0 0 10px;font-size:24px}
+    .upgrade p{margin:0;color:var(--muted);line-height:1.75}
+    .upgrade .actions{margin-top:16px}
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 640px){
+      .wrap{padding:14px}
+      .hero,.card,.upgrade{padding:18px}
+      .actions .btn{width:100%}
+    }
+  </style>
 </head>
 <body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← Wróć do startu</a>
 
-<div class="wrap">
-  <div class="card">
-    <span class="badge">QualitetMarket • Dostawcy</span>
-    <h1>System Hurtowni</h1>
-    <p class="muted">Importuj CSV dostawcy. System zapisze produkty do bazy (LS) i policzy ceny DETAL/HURT automatycznie.</p>
-    <div class="muted-xs" style="margin-top:6px;">
-      Po imporcie wejdź do <span class="mono">sklep.html</span> i zrób <strong>CTRL+F5</strong>.
-    </div>
-  </div>
+    <section class="hero">
+      <div class="eyebrow">hurtownie • premium • prosty wybór</div>
+      <h1>Hurtownie w jednym miejscu, bez chaosu.</h1>
+      <p class="lead">
+        Tu użytkownik ma od razu zobaczyć, że może działać od ręki. Standardowe hurtownie
+        są dostępne na wejście, a premium mają motywować do przejścia na PRO albo ELITE.
+      </p>
 
-  <div class="card">
-    <h2>Import CSV Hurtowni</h2>
+      <div class="statusbar">
+        <span class="pill">Aktualny plan: <strong style="margin-left:6px" data-plan-label>BASIC</strong></span>
+        <span class="pill">Premium hurtownie: <strong style="margin-left:6px" data-premium-status>Zablokowane</strong></span>
+      </div>
+    </section>
 
-    <div class="row">
-      <div class="field">
-        <label class="muted-xs">Nazwa hurtowni (żeby nie mieszać importów)</label>
-        <input class="input" id="supplierName" placeholder="np. GastroPRO / MasarniaX / NiemcyHurt" />
+    <section class="section">
+      <div class="head">
+        <div>
+          <h2>Hurtownie standardowe</h2>
+          <p>Dostępne od startu, żeby użytkownik mógł wejść i od razu robić pierwsze ruchy.</p>
+        </div>
       </div>
 
-      <div class="field">
-        <label class="muted-xs">Plik CSV</label>
-        <input type="file" id="csvFile" class="input" accept=".csv">
+      <div class="grid">
+        <article class="card">
+          <span class="badge">START</span>
+          <div class="title">Hurtownia ogólna</div>
+          <p class="desc">Produkty bazowe do pierwszego importu i testów sklepu.</p>
+          <ul class="list">
+            <li>Podstawowy start bez blokady</li>
+            <li>Dobry materiał do pierwszych listingów</li>
+            <li>Wejście w system bez ryzyka</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./platforma.html">Otwórz platformę</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="badge">MOBILE</span>
+          <div class="title">Produkty szybkie do wdrożenia</div>
+          <p class="desc">Sekcja pod prostą sprzedaż i szybkie wrzucanie oferty z telefonu.</p>
+          <ul class="list">
+            <li>Łatwy start dla nowych użytkowników</li>
+            <li>Prostszy wybór produktów</li>
+            <li>Lepszy pierwszy kontakt z systemem</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./sklep.html">Przejdź do sklepu</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="badge">FLOW</span>
+          <div class="title">Import i pierwsza marża</div>
+          <p class="desc">Podstawowe wejście do dalszego działania i nauki systemu.</p>
+          <ul class="list">
+            <li>Pod pierwszy import produktów</li>
+            <li>Pod pierwszy test cen i marży</li>
+            <li>Pod pierwszą sprzedaż</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./cennik.html">Zobacz plany</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="head">
+        <div>
+          <h2>Hurtownie premium</h2>
+          <p>Tu ma być realny powód do upgrade’u na PRO i ELITE.</p>
+        </div>
       </div>
 
-      <div class="field" style="flex:0; min-width:220px;">
-        <button class="btn-primary" style="width:100%" onclick="processCSV()">Analizuj hurtownię</button>
-        <div class="muted-xs" style="margin-top:6px;">Zapisze: <span class="pill">buyNet</span> <span class="pill">priceRetail</span> <span class="pill">priceB2B</span></div>
+      <div class="grid">
+        <article class="card locked" data-require="pro">
+          <span class="badge">PREMIUM</span>
+          <div class="title">Premium supplierzy</div>
+          <p class="desc">Lepsze źródła pod mocniejszy sklep i lepszą ofertę sprzedażową.</p>
+          <ul class="list">
+            <li>Lepszy potencjał na sprzedaż</li>
+            <li>Mocniejszy argument dla planu PRO</li>
+            <li>Dostęp po aktywacji planu</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./cennik.html">Odblokuj</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="pro">
+          <span class="badge">B2B</span>
+          <div class="title">Lepsze źródła marży</div>
+          <p class="desc">Sekcja dla tych, którzy chcą lepiej ustawiać ofertę i szybciej zarabiać.</p>
+          <ul class="list">
+            <li>Wyższa jakość wejścia dla użytkownika</li>
+            <li>Naturalny upsell z BASIC do PRO</li>
+            <li>Pod lepsze oferty i większą sprzedażowość</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./cennik.html">Aktywuj PRO</a>
+          </div>
+        </article>
+
+        <article class="card locked" data-require="elite">
+          <span class="badge">ELITE</span>
+          <div class="title">Najmocniejsze premium</div>
+          <p class="desc">Najwyższy poziom dostępu dla użytkowników, którzy chcą iść w skalę.</p>
+          <ul class="list">
+            <li>Najmocniejszy segment premium</li>
+            <li>Pod najbardziej zdecydowanych użytkowników</li>
+            <li>Powód do wejścia na ELITE</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-ghost" href="./cennik.html">Aktywuj ELITE</a>
+          </div>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <div class="hr"></div>
-    <div id="supplierSummary"></div>
+    <section class="upgrade">
+      <h3>Chcesz odblokować premium?</h3>
+      <p>
+        PRO odblokowuje panel sprzedawcy i hurtownie premium.
+        ELITE daje wszystko z PRO plus AI pomocnika i najmocniejszy poziom systemu.
+      </p>
+      <div class="actions">
+        <a class="btn btn-main" href="./aktywuj-pro.html?plan=pro">Wejdź w PRO</a>
+        <a class="btn btn-ghost" href="./aktywuj-pro.html?plan=elite">Wejdź w ELITE</a>
+      </div>
+    </section>
+  </main>
 
-    <!-- ✅ Podgląd próbek po imporcie -->
-    <div class="hr"></div>
-    <h3 style="margin:0 0 8px;">Szybki podgląd (5 szt.)</h3>
-    <div class="muted-xs">Pokazuje, czy import zapisał <span class="mono">buyNet</span> oraz czy policzył ceny DETAL/HURT.</div>
-    <button class="btn" style="margin-top:10px;" type="button" onclick="window.qmPreviewLastImport?.()">Pokaż próbkę</button>
-    <div id="previewBox" style="margin-top:10px;"></div>
-  </div>
+  <script>
+    (function(){
+      "use strict";
 
-  <div class="card">
-    <h2>Ranking Produktów</h2>
-    <div class="muted-xs" style="margin-top:-8px; margin-bottom:10px;">
-      (To miejsce możesz później spiąć z rankingiem — teraz najważniejsze jest, że import zapisuje buyNet i ceny z marżą.)
-    </div>
-    <table id="resultsTable">
-      <thead>
-        <tr>
-          <th>Produkt</th>
-          <th>Cena hurtowa</th>
-          <th>Cena rynkowa</th>
-          <th>Marża %</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2>Ranking Hurtowni</h2>
-    <div id="supplierRanking"></div>
-  </div>
-
-  <div class="footer">
-    Zarabianie u Szefa × QualitetMarket
-  </div>
-</div>
-
-<script>
-  // ✅ Preview: czytamy ostatnio importowaną hurtownię z pola supplierName
-  // i pokazujemy 5 pierwszych produktów z localStorage.
-  (function(){
-    const LS_PRODUCTS_BY_SUPPLIER = "qm_products_by_supplier_v1";
-    const money = (n) => {
-      const v = Number(n || 0);
-      return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
-    };
-
-    window.qmPreviewLastImport = function(){
-      const box = document.getElementById("previewBox");
-      if (!box) return;
-
-      let db = {};
-      try { db = JSON.parse(localStorage.getItem(LS_PRODUCTS_BY_SUPPLIER) || "{}"); } catch {}
-
-      const sup = (document.getElementById("supplierName")?.value || "GastroPRO").trim() || "GastroPRO";
-      const arr = Array.isArray(db[sup]) ? db[sup] : [];
-
-      if (!arr.length) {
-        box.innerHTML = `<div class="card soft"><strong>Brak danych</strong><div class="muted-xs" style="margin-top:6px;">Zrób import CSV dla hurtowni: <span class="mono">${sup}</span>.</div></div>`;
-        return;
+      function read(key, fallback){
+        try{
+          var v = localStorage.getItem(key);
+          return v == null ? fallback : v;
+        }catch(e){
+          return fallback;
+        }
       }
 
-      const sample = arr.slice(0, 5);
-      box.innerHTML = `
-        <table class="miniTable">
-          <thead>
-            <tr>
-              <th>Produkt</th>
-              <th>buyNet</th>
-              <th>DETAL</th>
-              <th>HURT</th>
-              <th>SKU/EAN</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${sample.map(p => `
-              <tr>
-                <td><strong>${String(p.name||"").slice(0,80)}</strong></td>
-                <td class="mono">${money(p.buyNet||0)}</td>
-                <td>${money(p.priceRetail||0)}</td>
-                <td>${money(p.priceB2B||0)}</td>
-                <td class="mono">${(p.sku||"")} ${(p.ean ? " • "+p.ean : "")}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-        <div class="muted-xs" style="margin-top:10px;">
-          Jeśli <span class="mono">buyNet</span> jest 0 albo ceny są 0 — w CSV brakuje ceny lub ma inny nagłówek.
-        </div>
-      `;
-    };
-  })();
-</script>
+      var plan = String(read("qm_user_plan_v1","basic") || "basic").toLowerCase();
+      if(!["basic","pro","elite"].includes(plan)) plan = "basic";
 
+      var premium = document.querySelector("[data-premium-status]");
+      if(premium){
+        premium.textContent = (plan === "pro" || plan === "elite") ? "Odblokowane" : "Zablokowane";
+      }
+    })();
+  </script>
 </body>
 </html>
