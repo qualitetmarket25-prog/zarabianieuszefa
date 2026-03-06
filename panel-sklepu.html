@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -79,6 +80,9 @@
     }
     .theme-meta{padding:10px}
     .theme-meta b{display:block;margin-bottom:4px}
+    .theme-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .theme-chip{font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
+    .theme-apply{margin-top:10px;width:100%;border-radius:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);color:#fff;font-weight:900;cursor:pointer}
     .mini{
       font-size:12px;
       color:rgba(234,240,255,.70) !important;
@@ -219,36 +223,37 @@
 
       <div class="box">
         <div style="font-weight:950">Dostępne motywy</div>
-        <div class="theme-grid">
-          <div class="theme-card">
+        <div class="theme-grid" id="themeGrid">
+          <div class="theme-card" data-theme-card="default">
             <div class="theme-preview" style="background:linear-gradient(180deg,#101826,#0a101a)"></div>
-            <div class="theme-meta"><b>default</b><div class="mini">ciemny, uniwersalny</div></div>
+            <div class="theme-meta"><b>default</b><div class="mini">ciemny, uniwersalny</div><div class="theme-tags"><span class="theme-chip">marketplace</span><span class="theme-chip">bezpieczny start</span></div><button class="theme-apply" type="button" data-theme-apply="default">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="dark">
             <div class="theme-preview" style="background:linear-gradient(180deg,#0b1220,#050814)"></div>
-            <div class="theme-meta"><b>dark</b><div class="mini">mocny ciemny styl</div></div>
+            <div class="theme-meta"><b>dark</b><div class="mini">mocny ciemny styl</div><div class="theme-tags"><span class="theme-chip">tech</span><span class="theme-chip">kontrast</span></div><button class="theme-apply" type="button" data-theme-apply="dark">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="light">
             <div class="theme-preview" style="background:linear-gradient(180deg,#f8fafc,#e2e8f0)"></div>
-            <div class="theme-meta"><b>light</b><div class="mini">jasny i czysty</div></div>
+            <div class="theme-meta"><b>light</b><div class="mini">jasny i czysty</div><div class="theme-tags"><span class="theme-chip">clean</span><span class="theme-chip">katalog</span></div><button class="theme-apply" type="button" data-theme-apply="light">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="neon">
             <div class="theme-preview" style="background:linear-gradient(180deg,#12051d,#050816)"></div>
-            <div class="theme-meta"><b>neon</b><div class="mini">cyber / nowoczesny</div></div>
+            <div class="theme-meta"><b>neon</b><div class="mini">cyber / nowoczesny</div><div class="theme-tags"><span class="theme-chip">nowoczesny</span><span class="theme-chip">mocny akcent</span></div><button class="theme-apply" type="button" data-theme-apply="neon">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="gastro">
             <div class="theme-preview" style="background:linear-gradient(180deg,#2a1707,#120b06)"></div>
-            <div class="theme-meta"><b>gastro</b><div class="mini">ciepły dla gastro</div></div>
+            <div class="theme-meta"><b>gastro</b><div class="mini">ciepły dla gastro</div><div class="theme-tags"><span class="theme-chip">resto</span><span class="theme-chip">food</span></div><button class="theme-apply" type="button" data-theme-apply="gastro">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="premium">
             <div class="theme-preview" style="background:linear-gradient(180deg,#1a2030,#0a0f19)"></div>
-            <div class="theme-meta"><b>premium</b><div class="mini">elegancki premium</div></div>
+            <div class="theme-meta"><b>premium</b><div class="mini">elegancki premium</div><div class="theme-tags"><span class="theme-chip">lux</span><span class="theme-chip">zaufanie</span></div><button class="theme-apply" type="button" data-theme-apply="premium">Użyj presetu</button></div>
           </div>
-          <div class="theme-card">
+          <div class="theme-card" data-theme-card="gold">
             <div class="theme-preview" style="background:linear-gradient(180deg,#332300,#120d04)"></div>
-            <div class="theme-meta"><b>gold</b><div class="mini">złoty / luksus</div></div>
+            <div class="theme-meta"><b>gold</b><div class="mini">złoty / luksus</div><div class="theme-tags"><span class="theme-chip">VIP</span><span class="theme-chip">mocny premium</span></div><button class="theme-apply" type="button" data-theme-apply="gold">Użyj presetu</button></div>
           </div>
         </div>
+      </div></div>
       </div>
 
       <div id="list" style="margin-top:18px"></div>
@@ -328,6 +333,34 @@
   const DEFAULT_ACCENT = "#6ee7ff";
   const DEFAULT_THEME = "default";
 
+  const svgToDataUri = (svg) => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+
+  const makeLogoSvg = (label, bg, fg) => `
+    <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="${bg}"/>
+          <stop offset="100%" stop-color="#0b1220"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="120" fill="url(#g)"/>
+      <rect x="64" y="96" width="384" height="320" rx="86" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="10"/>
+      <path d="M176 196c0-44 36-80 80-80s80 36 80 80" fill="none" stroke="${fg}" stroke-width="24" stroke-linecap="round"/>
+      <text x="256" y="322" text-anchor="middle" font-size="120" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="${fg}">${label}</text>
+    </svg>`;
+
+  const THEME_PRESETS = {
+    default: { label: "default", accent: "#6ee7ff", hero: "linear-gradient(180deg,#101826,#0a101a)", logo: svgToDataUri(makeLogoSvg("QM", "#0f172a", "#6ee7ff")) },
+    dark: { label: "dark", accent: "#7dd3fc", hero: "linear-gradient(180deg,#0b1220,#050814)", logo: svgToDataUri(makeLogoSvg("DK", "#020617", "#cbd5e1")) },
+    light: { label: "light", accent: "#2563eb", hero: "linear-gradient(180deg,#f8fafc,#e2e8f0)", logo: svgToDataUri(makeLogoSvg("LT", "#ffffff", "#2563eb")) },
+    neon: { label: "neon", accent: "#22d3ee", hero: "radial-gradient(circle at 20% 20%, rgba(110,231,255,.35), transparent 30%), linear-gradient(180deg,#12051d,#050816)", logo: svgToDataUri(makeLogoSvg("NX", "#12051d", "#67e8f9")) },
+    gastro: { label: "gastro", accent: "#fb923c", hero: "linear-gradient(180deg,#2a1707,#120b06)", logo: svgToDataUri(makeLogoSvg("GS", "#3b1d0b", "#fdba74")) },
+    premium: { label: "premium", accent: "#a78bfa", hero: "linear-gradient(180deg,#1a2030,#0a0f19)", logo: svgToDataUri(makeLogoSvg("PR", "#111827", "#c4b5fd")) },
+    gold: { label: "gold", accent: "#fbbf24", hero: "linear-gradient(180deg,#332300,#120d04)", logo: svgToDataUri(makeLogoSvg("GD", "#3b2a05", "#fde68a")) }
+  };
+
+  const getThemePreset = (theme) => THEME_PRESETS[String(theme || DEFAULT_THEME)] || THEME_PRESETS[DEFAULT_THEME];
+
   const $ = (id) => document.getElementById(id);
 
   const slugify = (s) => String(s || "")
@@ -383,9 +416,44 @@
     $("openCart").href = `./koszyk.html?store=${encodeURIComponent(store)}`;
   };
 
-  const themeLabel = (theme) => {
-    const x = String(theme || DEFAULT_THEME);
-    return x;
+  const themeLabel = (theme) => getThemePreset(theme).label;
+
+  const getEffectiveLogo = () => {
+    const theme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
+    const logo = String($("eLogo").value || "").trim();
+    return logo || getThemePreset(theme).logo || DEFAULT_LOGO;
+  };
+
+  const getEffectiveHero = () => {
+    const theme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
+    const hero = String($("eHero").value || "").trim();
+    return hero || getThemePreset(theme).hero || themeHero(theme);
+  };
+
+  const highlightActiveThemeCard = (theme, accent) => {
+    document.querySelectorAll("[data-theme-card]").forEach((card) => {
+      const on = card.getAttribute("data-theme-card") === String(theme || DEFAULT_THEME);
+      card.classList.toggle("active", on);
+      if (on) card.style.setProperty("--theme-active", accent || DEFAULT_ACCENT);
+    });
+  };
+
+  const applyPresetToForm = (theme, opts = {}) => {
+    const curTheme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
+    const curPreset = getThemePreset(curTheme);
+    const nextPreset = getThemePreset(theme);
+    const force = !!opts.force;
+
+    const currentAccent = String($("eAccent").value || "").trim();
+    const currentLogo = String($("eLogo").value || "").trim();
+    const currentHero = String($("eHero").value || "").trim();
+
+    $("eTheme").value = String(theme || DEFAULT_THEME);
+    if (force || !currentAccent || currentAccent === curPreset.accent) $("eAccent").value = nextPreset.accent;
+    if (force || !currentLogo || currentLogo === curPreset.logo || currentLogo === DEFAULT_LOGO) $("eLogo").value = nextPreset.logo;
+    if (force || !currentHero || currentHero === curPreset.hero || currentHero === themeHero(curTheme)) $("eHero").value = nextPreset.hero;
+
+    fillPreview();
   };
 
   const fillPreview = () => {
@@ -409,24 +477,7 @@
     heroEl.style.backgroundImage = hero ? `url("${hero.replace(/"/g, '\\"')}")` : themeHero(theme);
   };
 
-  const themeHero = (theme) => {
-    switch(String(theme || DEFAULT_THEME)) {
-      case "dark":
-        return "linear-gradient(180deg,#0b1220,#050814)";
-      case "light":
-        return "linear-gradient(180deg,#f8fafc,#e2e8f0)";
-      case "neon":
-        return "radial-gradient(circle at 20% 20%, rgba(110,231,255,.35), transparent 30%), linear-gradient(180deg,#12051d,#050816)";
-      case "gastro":
-        return "linear-gradient(180deg,#2a1707,#120b06)";
-      case "premium":
-        return "linear-gradient(180deg,#1a2030,#0a0f19)";
-      case "gold":
-        return "linear-gradient(180deg,#332300,#120d04)";
-      default:
-        return "linear-gradient(180deg,#101826,#0a101a)";
-    }
-  };
+  const themeHero = (theme) => getThemePreset(theme).hero || THEME_PRESETS.default.hero;
 
   const readOrdersRaw = () => {
     const arr = readJSON(LS_ORDERS, []);
@@ -709,7 +760,7 @@
     const mPct = Math.round(m01 * 1000) / 10;
     const email = String(e.email || "-");
     const theme = String(e.theme || DEFAULT_THEME);
-    const accent = String(e.accent || DEFAULT_ACCENT);
+    const accent = String(e.accent || getThemePreset(e.theme || DEFAULT_THEME).accent || DEFAULT_ACCENT);
     const logo = String(e.logo || "");
     const hero = String(e.hero || "");
 
@@ -728,9 +779,9 @@
     $("eMargin").value = String(mPct);
     $("eEmail").value = email === "-" ? "" : email;
     $("eTheme").value = theme;
-    $("eAccent").value = accent || DEFAULT_ACCENT;
-    $("eLogo").value = logo;
-    $("eHero").value = hero;
+    $("eAccent").value = accent || getThemePreset(theme).accent || DEFAULT_ACCENT;
+    $("eLogo").value = logo || getThemePreset(theme).logo || "";
+    $("eHero").value = hero || getThemePreset(theme).hero || "";
 
     fillPreview();
     syncTopLinks(active);
@@ -781,9 +832,10 @@
     const m = Number(String($("eMargin").value || "0").replace(",", "."));
     const email = String($("eEmail").value || "").trim();
     const theme = String($("eTheme").value || DEFAULT_THEME).trim() || DEFAULT_THEME;
-    const accent = String($("eAccent").value || DEFAULT_ACCENT).trim() || DEFAULT_ACCENT;
-    const logo = String($("eLogo").value || "").trim();
-    const hero = String($("eHero").value || "").trim();
+    const preset = getThemePreset(theme);
+    const accent = String($("eAccent").value || preset.accent || DEFAULT_ACCENT).trim() || preset.accent || DEFAULT_ACCENT;
+    const logo = String($("eLogo").value || "").trim() || preset.logo;
+    const hero = String($("eHero").value || "").trim() || preset.hero;
     const m01 = Math.max(0, Math.min(1, (isFinite(m) ? m : 0) / 100));
 
     map[active] = {
@@ -819,6 +871,20 @@
   ["eTitle","eTheme","eAccent","eLogo","eHero"].forEach(id => {
     $(id).addEventListener("input", fillPreview);
     $(id).addEventListener("change", fillPreview);
+  });
+
+  document.querySelectorAll("[data-theme-apply]").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      applyPresetToForm(btn.getAttribute("data-theme-apply"), { force: true });
+    });
+  });
+
+  document.querySelectorAll("[data-theme-card]").forEach((card) => {
+    card.addEventListener("click", () => {
+      applyPresetToForm(card.getAttribute("data-theme-card"), { force: true });
+    });
   });
 
   renderStores();
