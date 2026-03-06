@@ -57,6 +57,7 @@
 
   // ===== draft per store =====
   const LS_DRAFT = `qm_checkout_draft_v1__${STORE}`;
+  const LS_ORDERS = "qm_orders_v1";
 
   const readJSON = (k, fallback) => {
     try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
@@ -85,7 +86,12 @@
       .filter(Boolean)
       .join(" • ");
 
-    return { name, phone, email, address, city, zip, country: "PL" };
+    return {
+      name, phone, email,
+      address, street, city, zip,
+      country: "PL",
+      msg
+    };
   };
 
   const fillB2BFromCart = () => {
@@ -119,8 +125,8 @@
     $("#sumGross") && ($("#sumGross").textContent = money(t.gross));
   };
 
-  // ===== split per hurtownia =====
-  const buildSplit = () => {
+  // ===== split per hurtownia (do UI + do ordera) =====
+  const computeSplit = () => {
     const cart = Cart.read();
     const items = cart.items || [];
     const mode = Cart.getMode();
@@ -130,19 +136,28 @@
     for (const it of items) {
       const sup = String(it.supplier || "brak").trim() || "brak";
       const qty = Number(it.qty || 0) || 0;
-      const price = (mode === "b2b" ? (Number(it.priceB2B || 0) || 0) : (Number(it.priceRetail || 0) || 0));
-      const line = qty * price;
-      const buy = (Number(it.buyNet || 0) || 0) * qty;
 
-      if (!bySup.has(sup)) bySup.set(sup, { supplier: sup, lines: 0, net: 0, buyNet: 0, count: 0 });
+      const price = (mode === "b2b"
+        ? (Number(it.priceB2B || 0) || Number(it.priceRetail || 0) || 0)
+        : (Number(it.priceRetail || 0) || 0)
+      );
+
+      const lineGross = qty * price;
+      const buyNetLine = (Number(it.buyNet || 0) || 0) * qty;
+
+      if (!bySup.has(sup)) bySup.set(sup, { supplier: sup, lines: 0, items: 0, gross: 0, buyNet: 0 });
       const row = bySup.get(sup);
       row.lines += 1;
-      row.net += line;
-      row.buyNet += buy;
-      row.count += qty;
+      row.items += qty;
+      row.gross += lineGross;
+      row.buyNet += buyNetLine;
     }
 
-    const arr = Array.from(bySup.values()).sort((a,b)=> b.net - a.net);
+    return Array.from(bySup.values()).sort((a,b)=> b.gross - a.gross);
+  };
+
+  const buildSplitUI = () => {
+    const arr = computeSplit();
 
     const meta = $("#splitMeta");
     if (meta) meta.textContent = arr.length
@@ -161,7 +176,7 @@
             <th>Hurtownia</th>
             <th>Pozycje</th>
             <th>Szt.</th>
-            <th>Wartość (net)</th>
+            <th>Wartość (brutto)</th>
             <th>Zakup (net)</th>
           </tr>
         </thead>
@@ -170,8 +185,8 @@
             <tr>
               <td>${escapeHtml(r.supplier)}</td>
               <td>${r.lines}</td>
-              <td>${r.count}</td>
-              <td><strong>${money(r.net)}</strong></td>
+              <td>${r.items}</td>
+              <td><strong>${money(r.gross)}</strong></td>
               <td>${money(r.buyNet)}</td>
             </tr>
           `).join("")}
@@ -226,6 +241,38 @@
     $("#b2bContact") && ($("#b2bContact").value = d.b2b?.contact || "");
   };
 
+  // ===== helpers: order id/no =====
+  const pad2 = (n) => String(n).padStart(2,"0");
+  const genOrderId = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = pad2(d.getMonth()+1);
+    const da = pad2(d.getDate());
+    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
+    return `QM-${y}${m}${da}-${rnd}`;
+  };
+  const genOrderNo = () => {
+    const t = Date.now().toString(36).toUpperCase();
+    const rnd = Math.random().toString(36).slice(2,6).toUpperCase();
+    return `QM-${t}-${rnd}`;
+  };
+
+  // ===== write order (QM_ORDERS jeśli jest, fallback na LS) =====
+  const addOrder = (order) => {
+    try {
+      if (window.QM_ORDERS && typeof window.QM_ORDERS.add === "function") {
+        window.QM_ORDERS.add(order);
+        return;
+      }
+    } catch {}
+
+    const arr = readJSON(LS_ORDERS, []);
+    const list = Array.isArray(arr) ? arr : [];
+    list.unshift(order);
+    writeJSON(LS_ORDERS, list);
+    window.dispatchEvent(new CustomEvent("qm:orders"));
+  };
+
   // ===== place order =====
   const placeOrder = () => {
     setMsg("");
@@ -233,6 +280,13 @@
     const cart = Cart.read();
     if (!cart.items || !cart.items.length) {
       setMsg("Koszyk jest pusty. Wróć do koszyka i dodaj produkty.");
+      return;
+    }
+
+    // MOQ gate w B2B
+    const t = Cart.totals();
+    if (t.mode === "b2b" && !t.moqOk) {
+      setMsg("B2B: nie spełniasz MOQ dla części pozycji. Wróć do koszyka i zwiększ ilości.");
       return;
     }
 
@@ -249,15 +303,84 @@
     // notatka
     Cart.setNote($("#note")?.value || "");
 
-    const customer = getCustomerFromForm();
+    const shipping = getCustomerFromForm();
+    const note = Cart.getNote() || "";
+    const mode = Cart.getMode(); // retail | b2b
+    const b2bProfile = (mode === "b2b") ? Cart.getB2BProfile() : null;
 
-    // ✅ tworzymy zamówienie i zapisujemy do qm_orders_v1 (z storeSlug)
-    const order = Cart.checkoutCreateOrder(customer);
+    const items = (cart.items || []).map(it => ({
+      id: String(it.id || ""),
+      sku: String(it.sku || it.id || ""),
+      name: String(it.name || "Produkt"),
+      supplier: String(it.supplier || ""),
+      category: String(it.category || ""),
+      unit: String(it.unit || "szt"),
+      moq: Number(it.moq || 1) || 1,
+      qty: Number(it.qty || 0) || 0,
+      buyNet: Number(it.buyNet || 0) || 0,
+      priceRetail: Number(it.priceRetail || 0) || 0,
+      priceB2B: Number(it.priceB2B || 0) || 0,
+      image: String(it.image || "")
+    })).filter(x => x.qty > 0);
 
-    if (!order) {
-      setMsg("Nie udało się utworzyć zamówienia.");
-      return;
-    }
+    const split = computeSplit();
+    const buyNetTotal = split.reduce((a,r)=> a + (Number(r.buyNet||0)||0), 0);
+
+    const gross = Number(t.gross || 0) || 0;
+    const net = Number(t.net || 0) || 0;
+    const vat = Number(t.vat || 0) || 0;
+
+    // MVP: fee 2% brutto
+    const platformFee = Math.round((gross * 0.02 + Number.EPSILON) * 100) / 100;
+
+    // MVP marża sprzedawcy: (gross - fee - buyNetTotal) (orientacyjnie)
+    const sellerMargin = Math.round(((gross - platformFee - buyNetTotal) + Number.EPSILON) * 100) / 100;
+
+    const order = {
+      id: genOrderId(),
+      orderNo: genOrderNo(),
+      createdAt: new Date().toISOString(),
+
+      storeSlug: STORE,
+      status: "NEW",
+      mode: mode, // retail | b2b
+
+      shipping,
+      note,
+
+      b2bProfile: b2bProfile ? {
+        companyName: b2bProfile.companyName || "",
+        nip: b2bProfile.nip || "",
+        addr: b2bProfile.addr || "",
+        contact: b2bProfile.contact || ""
+      } : null,
+
+      items,
+
+      totals: {
+        mode: mode,
+        items: Number(t.items || 0) || 0,
+        net, vat, gross,
+        moqOk: !!t.moqOk,
+        discountPct: Number(t.discountPct || 0) || 0
+      },
+
+      fees: {
+        platformFee,
+        sellerMargin: isFinite(sellerMargin) ? sellerMargin : 0,
+        buyNetTotal
+      },
+
+      suppliers: split.map(r => ({
+        supplier: r.supplier,
+        lines: r.lines,
+        items: r.items,
+        gross: Math.round((Number(r.gross||0) + Number.EPSILON) * 100) / 100,
+        buyNet: Math.round((Number(r.buyNet||0) + Number.EPSILON) * 100) / 100
+      }))
+    };
+
+    addOrder(order);
 
     // zapisz "ostatnie zamówienie"
     try {
@@ -269,7 +392,10 @@
     // draft już niepotrzebny
     try { localStorage.removeItem(LS_DRAFT); } catch {}
 
-    // redirect do panelu zamówień
+    // ✅ czyść koszyk (per store) po złożeniu
+    try { Cart.clear(); } catch {}
+
+    // redirect do panelu zamówień + store + order
     const url = withStore(`./zamowienia.html?order=${encodeURIComponent(order.id)}`);
     window.location.href = url;
   };
@@ -281,7 +407,7 @@
     fillNote();
     loadDraft();
     fillTotals();
-    buildSplit();
+    buildSplitUI();
 
     $("#saveDraft")?.addEventListener("click", saveDraft);
     $("#placeOrderFinal")?.addEventListener("click", placeOrder);
@@ -290,7 +416,7 @@
     window.addEventListener("qm:cart", () => {
       fillB2BFromCart();
       fillTotals();
-      buildSplit();
+      buildSplitUI();
     });
 
     setMsg("");
