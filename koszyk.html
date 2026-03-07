@@ -1,601 +1,395 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Koszyk – QualitetMarket</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koszyk</title>
 
-  <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="./shop.css" />
-
-  <script defer src="./js/shopCart.js"></script>
-  <script defer src="./js/shop.js"></script>
-
-  <style>
-    .muted-xs { opacity:.75; font-size:12px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .pill { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
-    .row .field { flex:1; min-width:220px; }
-    .splitBox { margin-top:10px; }
-    .miniTable { width:100%; border-collapse: collapse; margin-top:10px; }
-    .miniTable th, .miniTable td { border-bottom:1px solid rgba(0,0,0,.08); padding:8px 6px; text-align:left; font-size:13px; }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+}
+header{
+  background:#111;
+  color:#fff;
+  padding:14px;
+  font-size:18px;
+  font-weight:bold;
+}
+.container{
+  max-width:700px;
+  margin:0 auto;
+  padding:12px;
+}
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+.item{
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+}
+.item-title{
+  font-size:17px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+.row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.qty-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+.qty-btn{
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:10px;
+  background:#111;
+  color:#fff;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.qty-number{
+  min-width:24px;
+  text-align:center;
+  font-size:16px;
+  font-weight:bold;
+}
+button,
+.btn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:10px;
+  padding:14px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  text-decoration:none;
+  text-align:center;
+  box-sizing:border-box;
+}
+.btn-black{
+  background:#111;
+  color:#fff;
+}
+.btn-white{
+  background:#fff;
+  color:#111;
+  border:1px solid #ddd;
+}
+.btn-red{
+  background:#d93025;
+  color:#fff;
+}
+.small{
+  font-size:13px;
+  color:#666;
+}
+.price{
+  font-size:18px;
+  font-weight:bold;
+  margin-top:8px;
+}
+.summary-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+  font-size:15px;
+}
+.summary-total{
+  font-size:20px;
+  font-weight:bold;
+  margin-top:12px;
+}
+.empty{
+  text-align:center;
+  color:#666;
+  padding:25px 10px;
+}
+.footer-space{
+  height:120px;
+}
+.sticky-bar{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  z-index:9999;
+}
+.sticky-inner{
+  background:#111;
+  color:#fff;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+}
+.sticky-total{
+  font-size:16px;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+.top-actions{
+  display:flex;
+  gap:10px;
+}
+.top-actions a,
+.top-actions button{
+  flex:1;
+}
+@media (min-width:768px){
+  .sticky-bar{
+    max-width:700px;
+    left:50%;
+    transform:translateX(-50%);
+  }
+}
+</style>
 </head>
+<body>
 
-<body data-noShell="1">
-  <div class="wrap">
-    <div class="hero-card">
-      <div class="shop-top">
-        <div>
-          <h1 class="h1">Koszyk</h1>
-          <p class="p">Zamówienia B2B: MOQ, dane firmy, NIP, notatki do hurtowni. Split per hurtownia + mailto.</p>
-        </div>
+<header>
+Koszyk
+</header>
 
-        <div class="shop-actions">
-          <a class="btn btn-sm" href="./sklep.html">← Sklep</a>
-          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
-          <a class="btn btn-sm" href="./platforma.html">Platforma</a>
-          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
-          <button class="btn btn-danger btn-sm" id="clearCart" type="button">Wyczyść</button>
-        </div>
-      </div>
+<div class="container">
 
-      <div class="hr"></div>
-
-      <div class="shop-toolbar">
-        <div class="field">
-          <label class="muted-xs">Tryb</label>
-          <div class="seg">
-            <button class="seg-btn active" id="modeRetail" type="button">Detal</button>
-            <button class="seg-btn" id="modeB2B" type="button">Hurt (B2B)</button>
-          </div>
-          <div class="muted-xs" style="margin-top:6px">
-            Tryb dotyczy wyliczenia sumy i wymagań MOQ.
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Rabat B2B (opcjonalnie)</label>
-          <input id="b2bDiscount" class="input" placeholder="np. 5 (%)" inputmode="decimal" />
-          <div class="muted-xs" style="margin-top:6px">To jest rabat globalny na koszyk (MVP).</div>
-        </div>
-
-        <div class="field">
-          <label class="muted-xs">Notatka</label>
-          <input id="orderNote" class="input" placeholder="np. dostawa rano, kontakt..." />
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div id="cartList" class="cart-list"></div>
-      <div id="cartEmpty" class="card soft" style="display:none; margin-top:14px;">
-        <strong>Pusto</strong>
-        <p class="p" style="margin-top:6px;">Wracaj do sklepu i dodaj produkty.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="grid-2">
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Dane B2B (faktura)</h2>
-
-          <div class="form-grid">
-            <div class="field">
-              <label class="muted-xs">Nazwa firmy</label>
-              <input id="companyName" class="input" placeholder="np. Bar u Szefa" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">NIP</label>
-              <input id="companyNip" class="input" placeholder="np. 1234567890" inputmode="numeric" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Adres</label>
-              <input id="companyAddr" class="input" placeholder="ul., miasto, kod" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Email / telefon</label>
-              <input id="companyContact" class="input" placeholder="kontakt do zamówienia" />
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="generateSplit" type="button">Generuj per hurtownia</button>
-            <button class="btn" id="copySplitAll" type="button">Kopiuj wszystko</button>
-          </div>
-
-          <textarea id="splitOut" class="input" style="margin-top:12px; min-height:220px; resize:vertical;" placeholder="Tu pojawią się zamówienia rozbite na hurtownie..."></textarea>
-
-          <div class="hr"></div>
-          <h3 style="margin:0 0 8px; font-size:16px;">Hurtownie (akcje)</h3>
-          <div class="muted-xs">Kliknij “Wyślij e-mail” — otworzy Twoją pocztę z gotową treścią (MVP dropshipping).</div>
-
-          <div id="supActions" style="margin-top:10px;"></div>
-          <div id="splitInfo" class="muted-xs" style="margin-top:10px;"></div>
-
-          <div class="hr"></div>
-
-          <h3 style="margin:0 0 8px; font-size:16px;">Checkout (marketplace)</h3>
-          <div class="muted-xs">Przechodzisz do formularza dostawy (Amazon-style). Zamówienie zapisze się dopiero po uzupełnieniu danych.</div>
-
-          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="goCheckout" type="button">Dalej: Dostawa</button>
-            <a class="btn" href="./zamowienia.html">Panel zamówień</a>
-          </div>
-
-          <div id="orderMsg" class="muted-xs" style="margin-top:10px;"></div>
-        </div>
-
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Podsumowanie</h2>
-
-          <div class="sum-row"><span class="muted">Pozycje</span><strong id="sumItems">0</strong></div>
-          <div class="sum-row"><span class="muted">Suma netto</span><strong id="sumNet">0,00 zł</strong></div>
-          <div class="sum-row"><span class="muted">VAT (23% – orientacyjnie)</span><strong id="sumVat">0,00 zł</strong></div>
-          <div class="sum-row"><span class="muted">Suma brutto</span><strong id="sumGross">0,00 zł</strong></div>
-
-          <div class="hr"></div>
-
-          <div class="muted-xs" id="moqWarn" style="display:none;">
-            Uwaga: w trybie B2B masz pozycje poniżej MOQ (minimum). Popraw ilości.
-          </div>
-
-          <div class="hr"></div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div class="card soft" style="margin:0;">
-              <div class="muted-xs">Prowizja platformy (MVP)</div>
-              <div style="font-weight:900; margin-top:4px;" id="feePlatform">0,00 zł</div>
-              <div class="muted-xs" id="feePlatformMeta" style="margin-top:4px;"></div>
-            </div>
-            <div class="card soft" style="margin:0;">
-              <div class="muted-xs">Marża sprzedawcy (MVP)</div>
-              <div style="font-weight:900; margin-top:4px;" id="feeSeller">0,00 zł</div>
-              <div class="muted-xs" id="feeSellerMeta" style="margin-top:4px;"></div>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-          <div class="muted-xs">
-            Następny etap: backend + webhook płatności + realne zamówienia dla hurtowni.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">QualitetMarket • koszyk B2B (MVP)</div>
+  <div class="card">
+    <div id="storeNameBox">Aktywny sklep: —</div>
+    <div class="small" id="itemsInfo">Produkty w koszyku: 0</div>
   </div>
 
+  <div class="card">
+    <div class="top-actions">
+      <a href="sklep.html" class="btn btn-white">Wróć do sklepu</a>
+      <a href="zamowienia.html" class="btn btn-white">Zamówienia</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="cartBox"></div>
+  </div>
+
+  <div class="card">
+    <div class="summary-line">
+      <span>Liczba sztuk</span>
+      <span id="summaryQty">0</span>
+    </div>
+    <div class="summary-line">
+      <span>Wartość</span>
+      <span id="summaryValue">0.00 zł</span>
+    </div>
+    <div class="summary-total" id="summaryTotal">
+      Razem: 0.00 zł
+    </div>
+  </div>
+
+  <div class="footer-space"></div>
+
+</div>
+
+<div class="sticky-bar">
+  <div class="sticky-inner">
+    <div class="sticky-total" id="stickyTotal">Razem: 0.00 zł</div>
+    <a href="checkout.html" class="btn btn-white">Przejdź do checkout</a>
+  </div>
+</div>
+
 <script>
-(function(){
-  const VAT_RATE = 0.23;
+const KEY_CART = "qm_cart_v1";
+const KEY_ACTIVE_STORE = "qm_active_store_v1";
 
-  const LS_PLATFORM_PCT = "qm_platform_fee_pct";
-  const DEFAULT_PLATFORM_FEE_PCT = 0.02;
+function safeParse(value, fallback){
+  try{
+    return JSON.parse(value);
+  }catch(e){
+    return fallback;
+  }
+}
 
-  const LS_STORE_MARGIN = "qm_store_margin_pct";
-  const LS_ORDERS = "qm_orders_v1";
+function getActiveStore(){
+  return safeParse(localStorage.getItem(KEY_ACTIVE_STORE), null);
+}
 
-  // ✅ multi-store (AUTO)
-  const LS_STORES = "qm_stores_v1";
-  const LS_ACTIVE = "qm_active_store_v1";
-  const LS_CHECKOUT_DRAFT = "qm_checkout_draft_v1";
+function getAllCart(){
+  return safeParse(localStorage.getItem(KEY_CART), []);
+}
 
-  const money = (n) => {
-    const v = Number(n || 0);
-    return v.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
-  };
+function saveAllCart(cart){
+  localStorage.setItem(KEY_CART, JSON.stringify(cart));
+}
 
-  const esc = (s) => String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
-  const enc = (s) => encodeURIComponent(String(s ?? ""));
+function formatPrice(value){
+  return Number(value || 0).toFixed(2) + " zł";
+}
 
-  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
-  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+function getStoreCart(){
+  const activeStore = getActiveStore();
+  const all = getAllCart();
 
-  const getPlatformPct = () => {
-    const raw = String(localStorage.getItem(LS_PLATFORM_PCT) || "").trim().replace(",", ".");
-    let n = Number(raw);
-    if (!isFinite(n) || n < 0) n = DEFAULT_PLATFORM_FEE_PCT;
-    if (n > 1) n = n / 100;
-    return Math.max(0, Math.min(0.25, n));
-  };
+  if(!activeStore) return [];
 
-  const getStoreMarginPct = () => {
-    const raw = String(localStorage.getItem(LS_STORE_MARGIN) || "").trim().replace(",", ".");
-    let n = Number(raw);
-    if (!isFinite(n) || n < 0) n = 0;
-    if (n > 1) n = n / 100;
-    return Math.max(0, Math.min(0.8, n));
-  };
+  return all.filter(function(item){
+    return String(item.storeId) === String(activeStore.id);
+  });
+}
 
-  // ✅ AUTO store/margin sync
-  const getQueryStore = () => {
-    const u = new URL(location.href);
-    const s = (u.searchParams.get("store") || "").trim();
-    return s || "";
-  };
+function setStoreName(){
+  const activeStore = getActiveStore();
+  document.getElementById("storeNameBox").innerText =
+    "Aktywny sklep: " + (activeStore && activeStore.name ? activeStore.name : "brak");
+}
 
-  const readStoresMap = () => {
-    const m = readJSON(LS_STORES, {});
-    return (m && typeof m === "object") ? m : {};
-  };
+function changeQty(productId, delta){
+  const activeStore = getActiveStore();
+  const all = getAllCart();
 
-  const resolveActiveStoreSlug = () => {
-    const fromUrl = getQueryStore();
-    if (fromUrl) {
-      localStorage.setItem(LS_ACTIVE, fromUrl);
-      return fromUrl;
-    }
-    const active = String(localStorage.getItem(LS_ACTIVE) || "").trim();
-    return active || "default";
-  };
+  const item = all.find(function(row){
+    return String(row.storeId) === String(activeStore.id) &&
+           String(row.productId) === String(productId);
+  });
 
-  const syncStoreMarginFromStoresMap = (storeSlug) => {
-    const stores = readStoresMap();
-    const st = stores?.[storeSlug];
-    const marginPct = st?.marginPct;
+  if(!item) return;
 
-    if (marginPct === undefined || marginPct === null) return;
+  item.qty = Number(item.qty || 0) + delta;
 
-    let n = Number(String(marginPct).replace("%","").replace(",", "."));
-    if (!isFinite(n) || n < 0) return;
-    if (n > 1) n = n / 100;
+  const cleaned = all.filter(function(row){
+    return Number(row.qty || 0) > 0;
+  });
 
-    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(0.8, n))));
-  };
+  saveAllCart(cleaned);
+  renderCart();
+}
 
-  const groupBySupplier = (items) => {
-    const map = new Map();
-    for (const it of items) {
-      const sup = String(it.supplier || "BRAK_HURTOWNI").trim() || "BRAK_HURTOWNI";
-      if (!map.has(sup)) map.set(sup, []);
-      map.get(sup).push(it);
-    }
-    return map;
-  };
+function removeItem(productId){
+  const activeStore = getActiveStore();
+  const all = getAllCart();
 
-  const priceForMode = (it, mode) => (
-    mode === "b2b"
-      ? (Number(it.priceB2B||0) || Number(it.priceRetail||0) || 0)
-      : (Number(it.priceRetail||0) || 0)
-  );
+  const filtered = all.filter(function(row){
+    return !(
+      String(row.storeId) === String(activeStore.id) &&
+      String(row.productId) === String(productId)
+    );
+  });
 
-  const computeSupplierBreakdown = (items, mode) => {
-    const out = {};
-    const bySupplier = groupBySupplier(items);
-    for (const [sup, arr] of bySupplier.entries()) {
-      let net = 0;
-      let count = 0;
-      for (const it of arr) {
-        const qty = Number(it.qty||0)||0;
-        const price = priceForMode(it, mode);
-        net += qty * price;
-        count += qty;
-      }
-      const gross = (mode === "b2b") ? (net * (1 + VAT_RATE)) : net;
-      out[sup] = { items: count, net, gross };
-    }
-    return out;
-  };
+  saveAllCart(filtered);
+  renderCart();
+}
 
-  const buildSupplierBlock = (sup, items, mode, profile, noteText) => {
-    const lines = [];
-    lines.push(`HURTOWNIA: ${sup}`);
-    lines.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
-    lines.push(`Tryb: ${mode === "b2b" ? "B2B (netto)" : "DETAL (brutto)"}`);
-    lines.push(``);
+function clearStoreCart(){
+  const activeStore = getActiveStore();
+  const all = getAllCart();
 
-    if (mode === "b2b") {
-      lines.push(`DANE FIRMY (B2B):`);
-      lines.push(`- Firma: ${profile.companyName || "-"}`);
-      lines.push(`- NIP: ${profile.nip || "-"}`);
-      lines.push(`- Adres: ${profile.addr || "-"}`);
-      lines.push(`- Kontakt: ${profile.contact || "-"}`);
-      lines.push(``);
-    }
+  const filtered = all.filter(function(row){
+    return String(row.storeId) !== String(activeStore.id);
+  });
 
-    if (noteText) {
-      lines.push(`NOTATKA: ${noteText}`);
-      lines.push(``);
-    }
+  saveAllCart(filtered);
+  renderCart();
+}
 
-    lines.push(`POZYCJE:`);
-    let sum = 0;
-    let moqOk = true;
+function renderSummary(cart){
+  const qty = cart.reduce(function(sum,item){
+    return sum + Number(item.qty || 0);
+  }, 0);
 
-    for (const it of items) {
-      const qty = Number(it.qty || 0) || 0;
-      const moq = Number(it.moq || 1) || 1;
-      if (mode === "b2b" && qty < moq) moqOk = false;
+  const value = cart.reduce(function(sum,item){
+    return sum + (Number(item.price || 0) * Number(item.qty || 0));
+  }, 0);
 
-      const price = priceForMode(it, mode);
-      sum += qty * price;
+  document.getElementById("summaryQty").innerText = qty;
+  document.getElementById("summaryValue").innerText = formatPrice(value);
+  document.getElementById("summaryTotal").innerText = "Razem: " + formatPrice(value);
+  document.getElementById("stickyTotal").innerText = "Razem: " + formatPrice(value);
+  document.getElementById("itemsInfo").innerText = "Produkty w koszyku: " + qty;
+}
 
-      lines.push(`- ${it.name} | SKU: ${it.sku || it.id} | Ilość: ${qty} ${it.unit || "szt"} | Cena: ${price.toFixed(2)} | MOQ: ${moq}`);
-    }
+function renderCart(){
+  setStoreName();
 
-    lines.push(``);
-    lines.push(`SUMA (wg trybu): ${money(sum)}`);
-    if (mode === "b2b") {
-      const vat = sum * VAT_RATE;
-      lines.push(`VAT(23%): ${money(vat)} | BRUTTO: ${money(sum + vat)}`);
-    } else {
-      const net = sum / (1 + VAT_RATE);
-      lines.push(`NETTO (wyliczone): ${money(net)} | VAT: ${money(sum - net)}`);
-    }
+  const box = document.getElementById("cartBox");
+  const cart = getStoreCart();
 
-    if (mode === "b2b" && !moqOk) {
-      lines.push(``);
-      lines.push(`UWAGA: Są pozycje poniżej MOQ — popraw ilości.`);
-    }
+  if(!cart.length){
+    box.innerHTML =
+      '<div class="empty">Koszyk jest pusty.</div>' +
+      '<div style="margin-top:12px;"><a href="sklep.html" class="btn btn-black">Idź do sklepu</a></div>';
+    renderSummary([]);
+    return;
+  }
 
-    return lines.join("\n");
-  };
+  box.innerHTML = "";
 
-  const buildSplitText = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return { text:"", suppliers: [], blocks: new Map() };
+  cart.forEach(function(item){
+    const total = Number(item.price || 0) * Number(item.qty || 0);
 
-    const totals = Cart.totals();
-    const cart = Cart.read();
-    const profile = Cart.getB2BProfile();
-    const noteText = Cart.getNote();
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML =
+      '<div class="item-title">' + (item.name || "Produkt") + '</div>' +
+      '<div class="small">Sklep: ' + (item.storeName || "—") + '</div>' +
+      '<div class="price">' + formatPrice(item.price) + ' / szt.</div>' +
+      '<div class="qty-box">' +
+        '<button class="qty-btn" data-action="minus">-</button>' +
+        '<div class="qty-number">' + Number(item.qty || 0) + '</div>' +
+        '<button class="qty-btn" data-action="plus">+</button>' +
+      '</div>' +
+      '<div class="price">Suma: ' + formatPrice(total) + '</div>' +
+      '<div style="margin-top:10px;">' +
+        '<button class="btn-red" data-action="remove">Usuń</button>' +
+      '</div>';
 
-    const bySupplier = groupBySupplier(cart.items);
-    const suppliers = Array.from(bySupplier.keys()).sort((a,b)=>a.localeCompare(b,"pl"));
+    const buttons = div.querySelectorAll("button");
 
-    const blocks = new Map();
-    const out = [];
+    buttons.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const action = btn.getAttribute("data-action");
 
-    out.push(`ZAMÓWIENIA PER HURTOWNIA – QualitetMarket`);
-    out.push(`Data: ${new Date().toLocaleString("pl-PL")}`);
-    out.push(`Tryb: ${totals.mode === "b2b" ? "B2B (netto)" : "DETAL (brutto)"}`);
-    out.push(``);
-
-    for (const sup of suppliers) {
-      const items = bySupplier.get(sup) || [];
-      const block = buildSupplierBlock(sup, items, totals.mode, profile, noteText);
-      blocks.set(sup, block);
-
-      out.push(`==============================`);
-      out.push(block);
-      out.push(``);
-    }
-
-    return { text: out.join("\n"), suppliers, blocks };
-  };
-
-  const $ = (id) => document.getElementById(id);
-
-  let state = { text:"", suppliers: [], blocks: new Map() };
-
-  const renderSupActions = () => {
-    const box = $("supActions");
-    if (!box) return;
-
-    if (!state.suppliers.length) {
-      box.innerHTML = `<div class="muted-xs">Brak hurtowni do pokazania — kliknij “Generuj per hurtownia”.</div>`;
-      return;
-    }
-
-    box.innerHTML = `
-      <table class="miniTable">
-        <thead>
-          <tr>
-            <th>Hurtownia</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.suppliers.map(sup => `
-            <tr>
-              <td><strong>${esc(sup)}</strong></td>
-              <td>
-                <button class="btn btn-sm" data-copy="${esc(sup)}" type="button">Kopiuj</button>
-                <a class="btn btn-sm btn-primary" data-mail="${esc(sup)}" href="#" role="button">Wyślij e-mail</a>
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-      <div class="muted-xs" style="margin-top:8px;">
-        Tip: e-mail otworzy się z gotową treścią. Adres hurtowni dopisz ręcznie (MVP).
-      </div>
-    `;
-
-    box.querySelectorAll("[data-copy]").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const sup = btn.getAttribute("data-copy");
-        const txt = state.blocks.get(sup) || "";
-        if (!txt) return;
-        try { await navigator.clipboard.writeText(txt); } catch {}
+        if(action === "minus") changeQty(item.productId, -1);
+        if(action === "plus") changeQty(item.productId, 1);
+        if(action === "remove") removeItem(item.productId);
       });
     });
 
-    box.querySelectorAll("[data-mail]").forEach(a => {
-      a.addEventListener("click", (ev) => {
-        ev.preventDefault();
-        const sup = a.getAttribute("data-mail");
-        const txt = state.blocks.get(sup) || "";
-        if (!txt) return;
-
-        const { Cart } = window.QM_SHOP || {};
-        if (!Cart) return;
-
-        const cart = Cart.read();
-        const t = Cart.totals();
-
-        const subject = `Zamówienie QualitetMarket – ${sup} – ${new Date().toLocaleDateString("pl-PL")}`;
-        const body = txt;
-
-        // ✅ zapis “śladu” (MVP) także przy mailto (bez statusów, bo statusy będą w checkout)
-        try {
-          if (cart.items?.length) {
-            const storeSlug = resolveActiveStoreSlug();
-            syncStoreMarginFromStoresMap(storeSlug);
-
-            const platformPct = getPlatformPct();
-            const storePct = getStoreMarginPct();
-
-            const platformFee = (Number(t.gross||0)||0) * platformPct;
-            const sellerMargin = (Number(t.gross||0)||0) * storePct;
-
-            const supplierBreakdown = computeSupplierBreakdown(cart.items, t.mode);
-            const id = `ord_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-
-            const order = {
-              id,
-              ts: Date.now(),
-              createdAt: new Date().toISOString(),
-              storeSlug,
-              mode: t.mode,
-              items: cart.items.map(it => ({
-                id: it.id,
-                sku: it.sku,
-                name: it.name,
-                supplier: it.supplier,
-                qty: Number(it.qty||0)||0,
-                unit: it.unit,
-                moq: it.moq,
-                priceRetail: Number(it.priceRetail||0)||0,
-                priceB2B: Number(it.priceB2B||0)||0,
-                image: it.image
-              })),
-              totals: {
-                items: Number(t.items||0)||0,
-                net: Number(t.net||0)||0,
-                vat: Number(t.vat||0)||0,
-                gross: Number(t.gross||0)||0,
-                moqOk: !!t.moqOk
-              },
-              fees: {
-                platformPct,
-                storeMarginPct: storePct,
-                platformFee,
-                sellerMargin
-              },
-              supplierBreakdown,
-              note: Cart.getNote ? (Cart.getNote() || "") : "",
-              b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {},
-              meta: { action:"mailto", supplier: sup, subject }
-            };
-
-            const arr = readJSON(LS_ORDERS, []);
-            const list = Array.isArray(arr) ? arr : [];
-            list.push(order);
-            writeJSON(LS_ORDERS, list);
-
-            window.dispatchEvent(new CustomEvent("qm:orders"));
-          }
-        } catch {}
-
-        const url = `mailto:?subject=${enc(subject)}&body=${enc(body)}`;
-        window.location.href = url;
-      });
-    });
-  };
-
-  const generateSplit = () => {
-    state = buildSplitText();
-    $("splitOut").value = state.text || "";
-
-    $("splitInfo").textContent = state.suppliers?.length
-      ? `Wykryte hurtownie: ${state.suppliers.join(", ")}`
-      : `Brak hurtowni w koszyku (sprawdź pole supplier przy produktach).`;
-
-    renderSupActions();
-  };
-
-  $("generateSplit")?.addEventListener("click", generateSplit);
-
-  $("copySplitAll")?.addEventListener("click", async () => {
-    const out = $("splitOut");
-    if (!out) return;
-    if (!out.value) generateSplit();
-    try { await navigator.clipboard.writeText(out.value); } catch {}
+    box.appendChild(div);
   });
 
-  const renderFees = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
+  const tools = document.createElement("div");
+  tools.style.marginTop = "12px";
+  tools.innerHTML =
+    '<button class="btn-black" id="clearCartBtn">Wyczyść koszyk tego sklepu</button>';
 
-    const t = Cart.totals();
-    const platformPct = getPlatformPct();
-    const storePct = getStoreMarginPct();
+  box.appendChild(tools);
 
-    const platformFee = (Number(t.gross||0)||0) * platformPct;
-    const sellerMargin = (Number(t.gross||0)||0) * storePct;
-
-    const fp = $("feePlatform");
-    const fpm = $("feePlatformMeta");
-    const fs = $("feeSeller");
-    const fsm = $("feeSellerMeta");
-
-    if (fp) fp.textContent = money(platformFee);
-    if (fpm) fpm.textContent = `Stawka: ${(platformPct*100).toFixed(1)}% brutto (MVP)`;
-    if (fs) fs.textContent = money(sellerMargin);
-    if (fsm) fsm.textContent = `Stawka sklepu: ${(storePct*100).toFixed(1)}% (z qm_store_margin_pct)`;
-  };
-
-  // ✅ NOWE: koszyk -> checkout (draft + redirect)
-  const goToCheckout = () => {
-    const { Cart } = window.QM_SHOP || {};
-    if (!Cart) return;
-
-    const cart = Cart.read();
-    const t = Cart.totals();
-
-    if (!cart.items?.length) {
-      $("orderMsg").textContent = "Koszyk pusty — dodaj produkty.";
-      $("orderMsg").style.color = "rgba(245,158,11,.95)";
-      return;
-    }
-
-    if (t.mode === "b2b" && !t.moqOk) {
-      $("orderMsg").textContent = "Nie można przejść dalej: są pozycje poniżej MOQ (B2B).";
-      $("orderMsg").style.color = "rgba(245,158,11,.95)";
-      return;
-    }
-
-    const storeSlug = resolveActiveStoreSlug();
-    syncStoreMarginFromStoresMap(storeSlug);
-
-    const draft = {
-      ts: Date.now(),
-      storeSlug,
-      mode: t.mode,
-      note: Cart.getNote ? (Cart.getNote() || "") : "",
-      b2bProfile: Cart.getB2BProfile ? (Cart.getB2BProfile() || {}) : {},
-      b2bDiscountPct: Number(String($("b2bDiscount")?.value || "").replace(",", ".")) || 0
-    };
-    writeJSON(LS_CHECKOUT_DRAFT, draft);
-
-    $("orderMsg").textContent = "➡️ Przechodzę do dostawy…";
-    $("orderMsg").style.color = "rgba(34,197,94,.95)";
-
-    window.location.href = `./checkout.html?store=${encodeURIComponent(storeSlug)}`;
-  };
-
-  $("goCheckout")?.addEventListener("click", goToCheckout);
-
-  window.addEventListener("qm:cart", () => {
-    const out = $("splitOut");
-    if (out && out.value) generateSplit();
-    renderFees();
+  document.getElementById("clearCartBtn").addEventListener("click", function(){
+    clearStoreCart();
   });
 
-  // ✅ AUTO-init: wykryj sklep i ustaw marżę od razu
-  try {
-    const storeSlug = resolveActiveStoreSlug();
-    syncStoreMarginFromStoresMap(storeSlug);
-  } catch {}
+  renderSummary(cart);
+}
 
-  setTimeout(renderFees, 0);
-})();
+renderCart();
 </script>
+
+<script src="js/config.js"></script>
+<script src="js/plan-guard.js"></script>
 
 </body>
 </html>
