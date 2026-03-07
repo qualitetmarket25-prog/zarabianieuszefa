@@ -6,7 +6,7 @@
   <title>QualitetMarket — start</title>
   <meta name="description" content="QualitetMarket — jedno wejście do platformy, sklepu, hurtowni i subskrypcji." />
   <link rel="stylesheet" href="./styles.css" />
-  <script defer src="./js/subscriptions.js"></script>
+  <script src="./js/config.js"></script>
   <script defer src="./js/planGuard.js"></script>
 
   <style>
@@ -227,8 +227,8 @@
         <a href="./platforma.html">Platforma</a>
         <a href="./hurtownie.html">Hurtownie</a>
         <a href="./sklep.html">Sklep</a>
-        <a href="./panel-sklepu.html" data-require="pro">Panel</a>
-        <a href="./intelligence.html" data-require="elite">AI</a>
+        <a href="./panel-sklepu.html">Panel</a>
+        <a href="./intelligence.html">AI</a>
         <a href="./cennik.html">Plany</a>
       </nav>
     </div>
@@ -282,8 +282,8 @@
           <strong>Szybkie wejścia</strong>
           <div class="mini-list">
             <a class="mini-item" href="./sklep.html"><span>Sklep LIVE</span><strong>Otwórz</strong></a>
-            <a class="mini-item" href="./panel-sklepu.html" data-require="pro"><span>Panel sprzedawcy</span><strong>Wejdź</strong></a>
-            <a class="mini-item" href="./intelligence.html" data-require="elite"><span>AI pomocnik</span><strong>Start</strong></a>
+            <a class="mini-item" href="./panel-sklepu.html"><span>Panel sprzedawcy</span><strong>Wejdź</strong></a>
+            <a class="mini-item" href="./intelligence.html"><span>AI pomocnik</span><strong>Start</strong></a>
           </div>
         </div>
       </aside>
@@ -343,7 +343,7 @@
         <article class="module">
           <strong>AI pomocnik</strong>
           <p>Moduł premium do szybszego działania użytkowników i mniejszego oporu.</p>
-          <a href="./intelligence.html" data-require="elite">Wejdź do AI</a>
+          <a href="./intelligence.html">Wejdź do AI</a>
         </article>
       </div>
     </section>
@@ -444,11 +444,15 @@
         }
       }
 
-      var plan = String(read("qm_user_plan_v1","basic") || "basic").toLowerCase();
+      var plan = String(read("qm_plan_v1","basic") || "basic").toLowerCase();
       if(!["basic","pro","elite"].includes(plan)) plan = "basic";
 
-      var margin = parseFloat(read("qm_store_margin_pct", plan === "elite" ? "0.24" : plan === "pro" ? "0.18" : "0.12"));
-      if(!Number.isFinite(margin)) margin = plan === "elite" ? 0.24 : plan === "pro" ? 0.18 : 0.12;
+      var marginRaw = read("qm_store_margin_pct", "");
+      var margin = parseFloat(marginRaw);
+
+      if(!Number.isFinite(margin)){
+        margin = plan === "elite" ? 24 : plan === "pro" ? 18 : 12;
+      }
 
       var planPill = document.querySelector("[data-current-plan-pill]");
       var marginNode = document.querySelector("[data-current-margin]");
@@ -460,11 +464,11 @@
         planPill.classList.remove("basic","pro","elite");
         planPill.classList.add(plan);
       }
-      if(marginNode) marginNode.textContent = Math.round(margin * 100) + "%";
+      if(marginNode) marginNode.textContent = Math.round(margin) + "%";
       if(proNode) proNode.textContent = (plan === "pro" || plan === "elite") ? "Tak" : "Nie";
       if(eliteNode) eliteNode.textContent = (plan === "elite") ? "Tak" : "Nie";
     })();
   </script>
-<script src="js/loader.js"></script>
+  <script src="js/loader.js"></script>
 </body>
 </html>
