@@ -1,183 +1,173 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>QualitetMarket — Hurtownie</title>
-
-<link rel="stylesheet" href="./styles.css" />
-<script defer src="./js/subscriptions.js"></script>
-<script defer src="./js/planGuard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hurtownie</title>
 
 <style>
-/* ZOSTAWIAMY TWÓJ CSS BEZ ZMIAN */
+body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#111}
+header{background:#111;color:#fff;padding:14px;font-size:18px;font-weight:bold}
+.container{max-width:700px;margin:0 auto;padding:12px}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.title{font-size:18px;font-weight:bold;margin-bottom:8px}
+.small{font-size:13px;color:#666}
+input,textarea,select{width:100%;padding:12px;margin-top:6px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;box-sizing:border-box}
+textarea{min-height:110px;resize:vertical}
+button,.btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:bold;text-align:center;text-decoration:none;box-sizing:border-box;cursor:pointer}
+.btn-black{background:#111;color:#fff}
+.btn-white{background:#fff;color:#111;border:1px solid #ddd}
+.btn-red{background:#cf2e2e;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{border:1px solid #eee;border-radius:12px;padding:12px;margin-top:10px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#efefef;font-size:12px;font-weight:bold}
+.actions{display:flex;gap:10px;margin-top:10px}
+.actions button,.actions a{flex:1}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.actions{flex-direction:column}}
 </style>
 </head>
-
 <body>
-<main class="wrap">
 
-<!-- ===== TOP ===== -->
+<header>Hurtownie i produkty</header>
 
-<div class="topline">
-<a class="back" href="./index.html">← Wróć</a>
+<div class="container">
 
-<div class="top-actions">
-<a class="btn btn-ghost" href="./platforma.html">Platforma</a>
-<a class="btn btn-ghost" href="./sklep.html">Sklep</a>
-</div>
-</div>
+  <div class="card">
+    <div class="title">Aktywny sklep</div>
+    <div id="storeBox">Brak aktywnego sklepu</div>
+    <div class="small" style="margin-top:8px;">Tu dodajesz produkty do aktualnego sklepu.</div>
+  </div>
 
+  <div class="card">
+    <div class="title">Dodaj produkt ręcznie</div>
 
-<!-- ===== HERO ===== -->
+    Nazwa produktu
+    <input id="name" placeholder="np. Kiełbasa premium">
 
-<section class="hero">
+    Opis
+    <textarea id="description" placeholder="Krótki opis produktu"></textarea>
 
-<h1>Hurtownie</h1>
+    <div class="grid">
+      <div>
+        Cena bazowa
+        <input id="price" type="number" step="0.01" placeholder="49.99">
+      </div>
+      <div>
+        Dostawca
+        <input id="supplier" placeholder="np. Hurtownia A">
+      </div>
+    </div>
 
-<p class="lead">
-Importuj CSV z hurtowni → ustaw marżę → produkty pojawią się w sklepie.
-</p>
+    <div class="grid">
+      <div>
+        Kategoria
+        <input id="category" placeholder="np. Gastronomia">
+      </div>
+      <div>
+        URL zdjęcia
+        <input id="image" placeholder="https://...">
+      </div>
+    </div>
 
-</section>
+    <button class="btn-black" onclick="addProduct()">Dodaj produkt</button>
+  </div>
 
+  <div class="card">
+    <div class="title">Szybki import CSV</div>
+    <div class="small">Format: nazwa,opis,cena,dostawca,kategoria,zdjecie</div>
+    <textarea id="csvBox" placeholder="Kiełbasa,Opis,39.99,Hurtownia A,Gastronomia,&#10;Szynka,Opis,59.99,Hurtownia B,Mięso,"></textarea>
+    <button class="btn-black" onclick="importCsv()">Importuj CSV</button>
+  </div>
 
-<!-- =========================
-IMPORT CSV
-========================= -->
-
-<section class="section">
-
-<div class="head">
-<h2>Import CSV</h2>
-<p>Wgraj plik CSV z hurtowni</p>
-</div>
-
-<div class="card">
-
-<input type="file" id="csvFile" accept=".csv" class="btn btn-ghost">
-
-<br><br>
-
-<button class="btn btn-main" onclick="qmImportCSV()">
-Importuj produkty
-</button>
-
-<div id="csvStatus" style="margin-top:10px;color:#9db0cf"></div>
-
-</div>
-
-</section>
-
-
-
-<!-- =========================
-STANDARD
-========================= -->
-
-<section class="section">
-
-<div class="head">
-<h2>Hurtownie standard</h2>
-</div>
-
-<div class="grid">
-
-<article class="card">
-<div class="title">Import własny CSV</div>
-<p class="desc">
-Użyj importu powyżej
-</p>
-</article>
+  <div class="card">
+    <div class="title">Produkty tego sklepu</div>
+    <div id="productsBox"></div>
+    <div class="actions">
+      <a href="sklep.html" class="btn btn-white">Przejdź do sklepu</a>
+      <button class="btn-red" onclick="clearStoreProducts()">Usuń produkty sklepu</button>
+    </div>
+  </div>
 
 </div>
-
-</section>
-
-
-
-</main>
-
-
 
 <script>
+const PRODUCTS_KEY = "qm_products_by_supplier_v1";
+const ACTIVE_STORE_KEY = "qm_active_store_v1";
+const MARGIN_KEY = "qm_store_margin_pct";
 
-const LS_PRODUCTS_SUPPLIER = "qm_products_by_supplier_v1";
-
-function qmParseCSV(text){
-
-const lines = text.split("\n");
-
-const headers = lines[0].split(",");
-
-const result = [];
-
-for(let i=1;i<lines.length;i++){
-
-const row = lines[i].split(",");
-
-if(row.length < 2) continue;
-
-let obj = {};
-
-headers.forEach((h,idx)=>{
-obj[h.trim()] = row[idx];
-});
-
-result.push(obj);
-
+function safeParse(value, fallback){
+  try{return JSON.parse(value)}catch(e){return fallback}
 }
 
-return result;
-
+function getStore(){
+  return safeParse(localStorage.getItem(ACTIVE_STORE_KEY), null);
 }
 
-
-
-function qmImportCSV(){
-
-const fileInput = document.getElementById("csvFile");
-
-const status = document.getElementById("csvStatus");
-
-if(!fileInput.files.length){
-
-status.textContent = "Wybierz plik CSV";
-
-return;
-
+function getAllProducts(){
+  return safeParse(localStorage.getItem(PRODUCTS_KEY), []);
 }
 
-const file = fileInput.files[0];
-
-const reader = new FileReader();
-
-reader.onload = function(e){
-
-const text = e.target.result;
-
-const products = qmParseCSV(text);
-
-localStorage.setItem(
-
-LS_PRODUCTS_SUPPLIER,
-
-JSON.stringify(products)
-
-);
-
-status.textContent =
-
-"Zaimportowano: " + products.length + " produktów";
-
-};
-
-reader.readAsText(file);
-
+function saveAllProducts(products){
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
 }
 
-</script>
+function getMarginPct(){
+  const raw = localStorage.getItem(MARGIN_KEY);
+  const num = Number(raw);
+  if(!isNaN(num) && num >= 0) return num;
+  return 30;
+}
 
+function formatPrice(v){
+  return Number(v || 0).toFixed(2) + " zł";
+}
 
-</body>
-</html>
+function renderStore(){
+  const store = getStore();
+  document.getElementById("storeBox").innerText =
+    store ? (store.name + " • ID: " + store.id) : "Brak aktywnego sklepu";
+}
+
+function getStoreProducts(){
+  const store = getStore();
+  if(!store) return [];
+  return getAllProducts().filter(function(item){
+    return String(item.storeId) === String(store.id);
+  });
+}
+
+function renderProducts(){
+  const box = document.getElementById("productsBox");
+  const items = getStoreProducts();
+
+  if(!items.length){
+    box.innerHTML = '<div class="small">Brak produktów. Dodaj pierwszy produkt powyżej.</div>';
+    return;
+  }
+
+  box.innerHTML = "";
+
+  items.forEach(function(item){
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML =
+      '<div class="row"><strong>' + (item.name || "Produkt") + '</strong><span class="badge">' + formatPrice(item.price) + '</span></div>' +
+      '<div class="small" style="margin-top:8px;">Dostawca: ' + (item.supplier || "—") + '</div>' +
+      '<div class="small">Kategoria: ' + (item.category || "—") + '</div>' +
+      '<div class="small">Cena w sklepie: ' + formatPrice(item.finalPrice || item.price) + '</div>' +
+      '<div class="small" style="margin-top:8px;">' + (item.description || "") + '</div>' +
+      '<div class="actions"><button class="btn-red" onclick="removeProduct(' + item.id + ')">Usuń</button></div>';
+
+    box.appendChild(div);
+  });
+}
+
+function addProduct(){
+  const store = getStore();
+  if(!store){
+    alert("Najpierw utwórz i aktywuj sklep");
+    location.href = "generator-sklepu.html";
+    return;
+  }
