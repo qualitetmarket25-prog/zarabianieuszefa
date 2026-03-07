@@ -30,7 +30,6 @@
 
   function getPlan() {
     var c = getConfig();
-
     var keys = c.storageKeys || {};
 
     var p =
@@ -40,7 +39,6 @@
       (safeParse(read(keys.subscription, "{}"), {}).plan);
 
     if (!p) return "basic";
-
     return String(p).toLowerCase();
   }
 
@@ -50,7 +48,7 @@
     var map = c.plans || {
       basic: 1,
       pro: 2,
-      elite: 3,
+      elite: 3
     };
 
     var a = map[plan] || 1;
@@ -62,14 +60,12 @@
   function getStores() {
     var c = getConfig();
     var k = c.storageKeys.stores;
-
     return safeParse(read(k, "[]"), []);
   }
 
   function getActiveStore() {
     var c = getConfig();
     var k = c.storageKeys.activeStore;
-
     return safeParse(read(k, "null"), null);
   }
 
@@ -79,7 +75,7 @@
       "koszyk.html",
       "checkout.html",
       "zamowienia.html",
-      "panel-sklepu.html",
+      "panel-sklepu.html"
     ];
 
     return list.indexOf(page) !== -1;
@@ -96,7 +92,7 @@
       "checkout.html",
       "zamowienia.html",
       "panel-sklepu.html",
-      "sklepy.html",
+      "sklepy.html"
     ];
 
     return list.indexOf(page) !== -1;
@@ -125,12 +121,8 @@
 
   function run() {
     var c = getConfig();
-
     var page = getPage();
-
-    var access =
-      (c.pageAccess && c.pageAccess[page]) || "basic";
-
+    var access = (c.pageAccess && c.pageAccess[page]) || "basic";
     var plan = getPlan();
 
     if (needsLogin(page) && !isLogged()) {
@@ -159,5 +151,4 @@
   } else {
     run();
   }
-
 })();
