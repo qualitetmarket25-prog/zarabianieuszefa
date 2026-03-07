@@ -1,187 +1,207 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Generator sklepu – QualitetMarket</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    /* ===== HARD OVERRIDE (żeby CSS globalny nie psuł czytelności) ===== */
-    :root { color-scheme: dark; }
-    body { margin:0; }
-    .wrap{max-width:880px;margin:42px auto;padding:0 16px}
-    .card{
-      border-radius:18px;
-      padding:20px;
-      background:rgba(17,24,39,.82);
-      border:1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 30px 80px rgba(0,0,0,.35);
-    }
-    .card, .card *{ color:#eaf0ff !important; }
-    .muted{ opacity:1 !important; color:rgba(234,240,255,.72) !important; }
-    .h{font-size:30px;font-weight:950;margin:0 0 8px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    label{display:block;font-weight:900;margin:12px 0 6px}
-    input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.92);
-      color:#0b1220 !important;
-      outline:none;
-    }
-    input::placeholder{ color:rgba(11,18,32,.55); }
+<title>Generator sklepu</title>
 
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+<style>
 
-    /* ✅ przyciski i linki zawsze czytelne (bez hover) */
-    .btn{
-      appearance:none;
-      border:0;
-      border-radius:12px;
-      padding:12px 14px;
-      font-weight:950;
-      cursor:pointer;
-      text-decoration:none !important;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      line-height:1;
-      transition: transform .12s ease, filter .12s ease;
-    }
-    .btn:active{ transform: translateY(1px); }
-    .btn-primary{ background:#22c55e !important; color:#06110a !important; }
-    .btn-ghost{ background:rgba(255,255,255,.10) !important; color:#eaf0ff !important; border:1px solid rgba(255,255,255,.12); }
-    .btn-primary:hover, .btn-ghost:hover{ filter:brightness(1.08); }
+body{
+margin:0;
+font-family:Arial;
+background:#f5f5f5;
+}
 
-    .out{
-      margin-top:14px;
-      padding:12px;
-      border-radius:12px;
-      background:rgba(34,197,94,.12);
-      border:1px solid rgba(34,197,94,.35);
-      word-break:break-all;
-    }
-    .warn{
-      margin-top:14px;
-      padding:12px;
-      border-radius:12px;
-      background:rgba(245,158,11,.14);
-      border:1px solid rgba(245,158,11,.35);
-    }
-    code{background:rgba(255,255,255,.10);padding:2px 6px;border-radius:8px}
-    a{ color:#bfe1ff !important; text-decoration: underline !important; }
-    a:hover{ filter:brightness(1.2); }
-  </style>
+header{
+background:#111;
+color:white;
+padding:14px;
+font-size:18px;
+font-weight:bold;
+}
+
+.container{
+padding:12px;
+max-width:600px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:14px;
+border-radius:12px;
+margin-bottom:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:6px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+background:black;
+color:white;
+}
+
+.store{
+padding:10px;
+border-bottom:1px solid #eee;
+}
+
+.footer-space{
+height:80px;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="h">Stwórz swój sklep</div>
-      <div class="muted">MVP marketplace: tworzysz sklep → dostajesz link → sklep działa przez <code>?store=slug</code>.</div>
 
-      <div class="grid">
-        <div>
-          <label>Nazwa sklepu</label>
-          <input id="title" placeholder="np. Sklep Szefa" maxlength="48">
-        </div>
+<header>
+Generator sklepu
+</header>
 
-        <div>
-          <label>Slug (link) – możesz zostawić puste</label>
-          <input id="slug" placeholder="np. szef, masarnia24" maxlength="32">
-          <div class="muted" style="margin-top:6px">Link będzie: <code>sklep.html?store=slug</code></div>
-        </div>
+<div class="container">
 
-        <div>
-          <label>Marża sprzedawcy (%)</label>
-          <input id="margin" type="number" min="0" max="80" step="0.1" value="8">
-        </div>
+<div class="card">
 
-        <div>
-          <label>Email do zamówień (opcjonalnie)</label>
-          <input id="email" type="email" placeholder="np. kontakt@twojsklep.pl" maxlength="80">
-        </div>
-      </div>
+Nazwa sklepu
 
-      <div class="row">
-        <button class="btn btn-primary" id="createBtn">Utwórz / Zapisz sklep</button>
-        <a class="btn btn-ghost" href="panel-sklepu.html">Panel sklepu</a>
-        <a class="btn btn-ghost" href="platforma.html">Wejście do platformy</a>
-      </div>
+<input id="storeName">
 
-      <div id="warn" class="warn" style="display:none"></div>
-      <div id="out" class="out" style="display:none"></div>
-    </div>
-  </div>
+<button onclick="createStore()">
+Utwórz sklep
+</button>
+
+</div>
+
+
+<div class="card">
+
+Moje sklepy
+
+<div id="storesBox"></div>
+
+</div>
+
+<div class="footer-space"></div>
+
+</div>
+
 
 <script>
-(() => {
-  "use strict";
 
-  const LS_STORES = "qm_stores_v1";
-  const LS_ACTIVE = "qm_active_store_v1";
-  const LS_MARGIN01 = "qm_store_margin_pct";
+const KEY_STORES = "qm_stores_v1"
+const KEY_ACTIVE = "qm_active_store_v1"
 
-  const $ = (id) => document.getElementById(id);
 
-  const slugify = (s) => String(s || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 32);
+function loadStores(){
 
-  const readJSON = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; } };
-  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+let stores =
+JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
 
-  const warn = (msg) => { $("warn").style.display="block"; $("warn").innerHTML = msg; };
-  const out = (html) => { $("out").style.display="block"; $("out").innerHTML = html; };
+let box =
+document.getElementById("storesBox")
 
-  const makeUrl = (slug) => `${location.origin}/zarabianieuszefa/sklep.html?store=${encodeURIComponent(slug)}`;
+box.innerHTML = ""
 
-  const upsertStoreMap = (slug, patch) => {
-    const reg = readJSON(LS_STORES, {});
-    const map = (reg && typeof reg === "object" && !Array.isArray(reg)) ? reg : {};
-    map[slug] = { ...(map[slug] || {}), ...patch };
-    writeJSON(LS_STORES, map);
-  };
+stores.forEach((s,i)=>{
 
-  $("createBtn").addEventListener("click", () => {
-    $("warn").style.display="none";
-    $("out").style.display="none";
+let div =
+document.createElement("div")
 
-    const title = String($("title").value || "").trim();
-    let slug = String($("slug").value || "").trim();
-    const email = String($("email").value || "").trim();
-    const marginPct = Number(String($("margin").value || "0").replace(",", "."));
+div.className = "store"
 
-    if (!title) return warn("Podaj nazwę sklepu.");
-    if (!slug) slug = title;
-    slug = slugify(slug);
+div.innerHTML =
 
-    if (!slug || slug.length < 2) return warn("Slug za krótki (min 2 znaki).");
-    if (!isFinite(marginPct) || marginPct < 0 || marginPct > 80) return warn("Marża musi być 0–80%.");
+s.name +
+"<br>" +
 
-    const margin01 = Math.max(0, Math.min(1, marginPct / 100));
+"<button onclick='setActive("+i+")'>Aktywuj</button>"
 
-    // zapis mapą (kompatybilnie z shop.js)
-    upsertStoreMap(slug, { title, theme:"default", email, marginPct: margin01 });
+box.appendChild(div)
 
-    // aktywny sklep
-    localStorage.setItem(LS_ACTIVE, slug);
-    localStorage.setItem(LS_MARGIN01, String(margin01));
-    localStorage.setItem("qm_store_slug", slug);
+})
 
-    const url = makeUrl(slug);
-    out(`✅ Zapisano sklep: <b>${title}</b><br>Link: <a href="${url}" target="_blank" rel="noopener">${url}</a>`);
-  });
-})();
+}
+
+
+
+function createStore(){
+
+let name =
+document.getElementById("storeName").value
+
+if(!name) return
+
+let stores =
+JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
+
+let store = {
+
+id: Date.now(),
+name: name
+
+}
+
+stores.push(store)
+
+localStorage.setItem(
+KEY_STORES,
+JSON.stringify(stores)
+)
+
+localStorage.setItem(
+KEY_ACTIVE,
+JSON.stringify(store)
+)
+
+document.getElementById("storeName").value=""
+
+loadStores()
+
+}
+
+
+
+function setActive(i){
+
+let stores =
+JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
+
+let store = stores[i]
+
+localStorage.setItem(
+KEY_ACTIVE,
+JSON.stringify(store)
+)
+
+alert("Aktywny sklep: " + store.name)
+
+}
+
+
+loadStores()
+
 </script>
+
+
+<script src="js/config.js"></script>
+<script src="js/plan-guard.js"></script>
+
 </body>
 </html>
