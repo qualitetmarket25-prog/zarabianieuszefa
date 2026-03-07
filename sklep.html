@@ -1,100 +1,374 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sklep B2B – QualitetMarket</title>
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./shop.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sklep</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+}
+header{
+  background:#111;
+  color:#fff;
+  padding:14px;
+  font-size:18px;
+  font-weight:bold;
+}
+.container{
+  max-width:700px;
+  margin:0 auto;
+  padding:12px;
+}
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#efefef;
+  font-size:13px;
+  margin-top:8px;
+}
+.product{
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+}
+.product h3{
+  margin:0 0 8px 0;
+  font-size:18px;
+}
+.price{
+  font-size:20px;
+  font-weight:bold;
+  margin:8px 0;
+}
+button,
+.btn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:10px;
+  padding:14px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  text-decoration:none;
+  text-align:center;
+  box-sizing:border-box;
+}
+.btn-black{
+  background:#111;
+  color:#fff;
+}
+.btn-white{
+  background:#fff;
+  color:#111;
+  border:1px solid #ddd;
+}
+.top-actions{
+  display:flex;
+  gap:10px;
+}
+.top-actions a{
+  flex:1;
+}
+.small{
+  font-size:13px;
+  color:#666;
+}
+.empty{
+  text-align:center;
+  padding:20px 10px;
+  color:#666;
+}
+.footer-space{
+  height:90px;
+}
+.sticky-bar{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  z-index:9999;
+}
+.sticky-inner{
+  background:#111;
+  color:#fff;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+}
+.sticky-text{
+  font-size:14px;
+  margin-bottom:10px;
+}
+@media (min-width:768px){
+  .sticky-bar{
+    max-width:700px;
+    margin:0 auto;
+    left:50%;
+    transform:translateX(-50%);
+  }
+}
+</style>
 </head>
 <body>
-  <main class="shop-wrap">
-    <section class="shop-hero qm-card">
-      <div class="shop-hero__left">
-        <div class="shop-kicker">Marketplace dropshipping B2B / B2C</div>
-        <h1 id="qmStoreTitle">Sklep dropshipping – Gastronomia / Masarnie</h1>
-        <p class="shop-lead">Produkty z importu CSV hurtowni + fallback z <code>./products.json</code>. Każdy sprzedawca może mieć własny motyw, kolor, logo i marżę. System dobiera bestsellery, pokazuje badge i podpowiada co promować.</p>
-        <div class="shop-hero__actions">
-          <a class="qm-btn qm-btn--primary" href="./panel-sklepu.html">Panel sklepu</a>
-          <a class="qm-btn qm-btn--ghost" href="./zamowienia.html">Zamówienia</a>
-          <a class="qm-btn qm-btn--ghost" href="./koszyk.html">Koszyk</a>
-        </div>
-      </div>
-      <div class="shop-hero__right">
-        <div class="shop-stat"><strong id="qmProductsCount">0</strong><span>Produkty</span></div>
-        <div class="shop-stat"><strong id="qmCategoriesCount">0</strong><span>Kategorie</span></div>
-        <div class="shop-stat"><strong id="qmModeLabel">DETAL</strong><span>Tryb</span></div>
-      </div>
-    </section>
 
-    <section class="shop-toolbar qm-card">
-      <label class="qm-field">
-        <span>Szukaj</span>
-        <input id="qmSearch" type="search" placeholder="np. opakowania, zgrzewarka, kubki" />
-      </label>
-      <label class="qm-field">
-        <span>Kategoria</span>
-        <select id="qmCategory"><option value="">Wszystkie</option></select>
-      </label>
-      <label class="qm-field">
-        <span>Tryb ceny</span>
-        <select id="qmMode">
-          <option value="detal">Detal</option>
-          <option value="hurt">Hurt (B2B)</option>
-        </select>
-      </label>
-      <label class="qm-field">
-        <span>Sortowanie</span>
-        <select id="qmSort">
-          <option value="ranking">Ranking ↓</option>
-          <option value="price-asc">Cena ↑</option>
-          <option value="price-desc">Cena ↓</option>
-          <option value="name">Nazwa A→Z</option>
-        </select>
-      </label>
-    </section>
+<header>
+Sklep
+</header>
 
-    <section id="qmEnhancer"></section>
+<div class="container">
 
-    <section class="qm-card shop-products-section">
-      <div class="section-head">
-        <div>
-          <div class="shop-kicker">Oferta sklepu</div>
-          <h2>Produkty gotowe do sprzedaży</h2>
-        </div>
-        <div class="shop-hint">Jeśli nic tu nie ma, zrób import CSV w module Hurtownie albo dodaj wpisy do <code>./products.json</code>.</div>
-      </div>
-      <div id="qmProducts" class="shop-grid"></div>
-      <div id="qmEmpty" class="qm-empty" hidden>
-        <strong>Brak produktów</strong>
-        <span>Zrób import CSV w module Hurtownie lub dodaj wpisy do <code>./products.json</code>.</span>
-      </div>
-    </section>
+  <div class="card">
+    <div id="storeNameBox">Aktywny sklep: —</div>
+    <div class="badge" id="storeIdBox">ID sklepu: —</div>
+  </div>
 
-    <section class="qm-card shop-info-grid">
-      <article>
-        <h3>Jak działa ten marketplace?</h3>
-        <p>To jest marketplace dropshipping: Ty kupujesz w hurtowni, a klient dostaje towar bez Twojego magazynu. System rozbija koszyk na hurtownie i zapisuje zamówienia w platformie.</p>
-      </article>
-      <article>
-        <h3>Split per hurtownia</h3>
-        <p>Koszyk może rozbić zamówienie na kilka źródeł towaru, żeby sprzedawca wiedział skąd ma iść realizacja.</p>
-      </article>
-      <article>
-        <h3>Detal vs Hurt (B2B)</h3>
-        <p>W DETAL klient widzi cenę detaliczną. W B2B pokazujemy cenę hurtową i MOQ, czyli minimalne zamówienie.</p>
-      </article>
-      <article>
-        <h3>Jak zwiększyć sprzedaż</h3>
-        <p>Ustaw niską marżę na start, promuj bestsellery, użyj badge i progów koszyka. To daje większy CTR i większy koszyk bez większego budżetu.</p>
-      </article>
-    </section>
-  </main>
+  <div class="card">
+    <div class="top-actions">
+      <a href="koszyk.html" class="btn btn-white">Koszyk</a>
+      <a href="zamowienia.html" class="btn btn-white">Zamówienia</a>
+    </div>
+  </div>
 
-  <script src="./js/subscriptions.js"></script>
-  <script src="./js/pricing.js"></script>
-  <script src="./js/shop.js"></script>
-  <script src="./js/live.js"></script>
+  <div class="card">
+    <div id="productsBox"></div>
+  </div>
+
+  <div class="footer-space"></div>
+
+</div>
+
+<div class="sticky-bar">
+  <div class="sticky-inner">
+    <div class="sticky-text" id="cartInfo">Koszyk: 0 produktów</div>
+    <a href="koszyk.html" class="btn btn-white">Przejdź do koszyka</a>
+  </div>
+</div>
+
+<script>
+const KEY_ACTIVE_STORE = "qm_active_store_v1";
+const KEY_STORE_MARGIN = "qm_store_margin_pct";
+const KEY_SUPPLIER_PRODUCTS = "qm_products_by_supplier_v1";
+const KEY_CART = "qm_cart_v1";
+
+function safeParse(value, fallback){
+  try{
+    return JSON.parse(value);
+  }catch(e){
+    return fallback;
+  }
+}
+
+function getActiveStore(){
+  return safeParse(localStorage.getItem(KEY_ACTIVE_STORE), null);
+}
+
+function getMargin(){
+  const raw = localStorage.getItem(KEY_STORE_MARGIN);
+  const num = Number(raw);
+  if(!isNaN(num) && num >= 0) return num;
+  return 30;
+}
+
+function getCart(){
+  return safeParse(localStorage.getItem(KEY_CART), []);
+}
+
+function saveCart(cart){
+  localStorage.setItem(KEY_CART, JSON.stringify(cart));
+}
+
+function updateCartInfo(){
+  const cart = getCart();
+  const count = cart.reduce(function(sum,item){
+    return sum + Number(item.qty || 0);
+  }, 0);
+
+  document.getElementById("cartInfo").innerText = "Koszyk: " + count + " produktów";
+}
+
+function formatPrice(value){
+  return Number(value).toFixed(2) + " zł";
+}
+
+function normalizeProducts(rawProducts, activeStore){
+  const margin = getMargin();
+  const result = [];
+
+  if(Array.isArray(rawProducts)){
+    rawProducts.forEach(function(item, index){
+      if(!item) return;
+
+      const basePrice = Number(item.price || item.basePrice || item.cost || 0);
+      const finalPrice = basePrice > 0
+        ? (basePrice * (1 + margin / 100))
+        : Number(item.finalPrice || 0);
+
+      result.push({
+        id: item.id || ("p_" + activeStore.id + "_" + index),
+        storeId: activeStore.id,
+        name: item.name || item.title || ("Produkt " + (index + 1)),
+        description: item.description || item.desc || "Produkt dostępny w sklepie.",
+        price: finalPrice > 0 ? finalPrice : 49.99,
+        supplier: item.supplier || item.supplierName || "Hurtownia",
+        image: item.image || ""
+      });
+    });
+  }
+
+  if(result.length === 0){
+    result.push(
+      {
+        id: "demo_1_" + activeStore.id,
+        storeId: activeStore.id,
+        name: "Produkt startowy",
+        description: "Domyślny produkt dla nowego sklepu.",
+        price: 79.00,
+        supplier: "Demo",
+        image: ""
+      },
+      {
+        id: "demo_2_" + activeStore.id,
+        storeId: activeStore.id,
+        name: "Produkt premium",
+        description: "Przykładowy produkt do szybkiego startu.",
+        price: 129.00,
+        supplier: "Demo",
+        image: ""
+      }
+    );
+  }
+
+  return result;
+}
+
+function getProductsForStore(activeStore){
+  const raw = safeParse(localStorage.getItem(KEY_SUPPLIER_PRODUCTS), []);
+  let source = [];
+
+  if(Array.isArray(raw)){
+    source = raw.filter(function(item){
+      if(!item) return false;
+      if(item.storeId && String(item.storeId) !== String(activeStore.id)) return false;
+      return true;
+    });
+  }else if(raw && typeof raw === "object"){
+    const values = Object.values(raw).flat();
+    source = values.filter(function(item){
+      if(!item) return false;
+      if(item.storeId && String(item.storeId) !== String(activeStore.id)) return false;
+      return true;
+    });
+  }
+
+  return normalizeProducts(source, activeStore);
+}
+
+function addToCart(product){
+  const activeStore = getActiveStore();
+  const cart = getCart();
+
+  const existing = cart.find(function(item){
+    return String(item.productId) === String(product.id) &&
+           String(item.storeId) === String(activeStore.id);
+  });
+
+  if(existing){
+    existing.qty = Number(existing.qty || 0) + 1;
+  }else{
+    cart.push({
+      productId: product.id,
+      storeId: activeStore.id,
+      storeName: activeStore.name,
+      name: product.name,
+      price: Number(product.price),
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+  updateCartInfo();
+  alert("Dodano do koszyka");
+}
+
+function renderProducts(){
+  const activeStore = getActiveStore();
+  const box = document.getElementById("productsBox");
+
+  if(!activeStore){
+    box.innerHTML = '<div class="empty">Brak aktywnego sklepu.</div>';
+    return;
+  }
+
+  const products = getProductsForStore(activeStore);
+
+  if(!products.length){
+    box.innerHTML = '<div class="empty">Brak produktów w sklepie.</div>';
+    return;
+  }
+
+  box.innerHTML = "";
+
+  products.forEach(function(product){
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML =
+      "<h3>" + product.name + "</h3>" +
+      "<div class='small'>Dostawca: " + product.supplier + "</div>" +
+      "<div class='price'>" + formatPrice(product.price) + "</div>" +
+      "<div class='small'>" + product.description + "</div>" +
+      "<div style='margin-top:12px;'>" +
+        "<button class='btn-black' data-id='" + product.id + "'>Dodaj do koszyka</button>" +
+      "</div>";
+
+    box.appendChild(div);
+
+    div.querySelector("button").addEventListener("click", function(){
+      addToCart(product);
+    });
+  });
+}
+
+function renderStoreInfo(){
+  const activeStore = getActiveStore();
+
+  if(!activeStore){
+    document.getElementById("storeNameBox").innerText = "Aktywny sklep: brak";
+    document.getElementById("storeIdBox").innerText = "ID sklepu: brak";
+    return;
+  }
+
+  document.getElementById("storeNameBox").innerText = "Aktywny sklep: " + (activeStore.name || "—");
+  document.getElementById("storeIdBox").innerText = "ID sklepu: " + (activeStore.id || "—");
+}
+
+renderStoreInfo();
+renderProducts();
+updateCartInfo();
+</script>
+
+<script src="js/config.js"></script>
+<script src="js/plan-guard.js"></script>
+
 </body>
 </html>
