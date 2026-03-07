@@ -171,3 +171,126 @@ function addProduct(){
     location.href = "generator-sklepu.html";
     return;
   }
+
+  const name = document.getElementById("name").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const price = Number(document.getElementById("price").value);
+  const supplier = document.getElementById("supplier").value.trim() || "Hurtownia";
+  const category = document.getElementById("category").value.trim() || "Ogólne";
+  const image = document.getElementById("image").value.trim();
+
+  if(!name || !price){
+    alert("Podaj nazwę i cenę");
+    return;
+  }
+
+  const margin = getMarginPct();
+  const finalPrice = price * (1 + margin / 100);
+
+  const products = getAllProducts();
+  products.push({
+    id: Date.now(),
+    storeId: store.id,
+    storeName: store.name,
+    name: name,
+    description: description,
+    price: price,
+    finalPrice: Number(finalPrice.toFixed(2)),
+    supplier: supplier,
+    category: category,
+    image: image
+  });
+
+  saveAllProducts(products);
+
+  document.getElementById("name").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("supplier").value = "";
+  document.getElementById("category").value = "";
+  document.getElementById("image").value = "";
+
+  renderProducts();
+  alert("Produkt dodany");
+}
+
+function importCsv(){
+  const store = getStore();
+  if(!store){
+    alert("Najpierw utwórz i aktywuj sklep");
+    location.href = "generator-sklepu.html";
+    return;
+  }
+
+  const text = document.getElementById("csvBox").value.trim();
+  if(!text){
+    alert("Wklej CSV");
+    return;
+  }
+
+  const margin = getMarginPct();
+  const products = getAllProducts();
+  const rows = text.split(/\r?\n/).filter(Boolean);
+
+  rows.forEach(function(row){
+    const cols = row.split(",");
+    const name = (cols[0] || "").trim();
+    const description = (cols[1] || "").trim();
+    const price = Number((cols[2] || "0").trim());
+    const supplier = (cols[3] || "Hurtownia").trim();
+    const category = (cols[4] || "Ogólne").trim();
+    const image = (cols[5] || "").trim();
+
+    if(!name || !price) return;
+
+    const finalPrice = price * (1 + margin / 100);
+
+    products.push({
+      id: Date.now() + Math.floor(Math.random() * 100000),
+      storeId: store.id,
+      storeName: store.name,
+      name: name,
+      description: description,
+      price: price,
+      finalPrice: Number(finalPrice.toFixed(2)),
+      supplier: supplier,
+      category: category,
+      image: image
+    });
+  });
+
+  saveAllProducts(products);
+  document.getElementById("csvBox").value = "";
+  renderProducts();
+  alert("Import zakończony");
+}
+
+function removeProduct(id){
+  const store = getStore();
+  const filtered = getAllProducts().filter(function(item){
+    return !(String(item.id) === String(id) && String(item.storeId) === String(store.id));
+  });
+  saveAllProducts(filtered);
+  renderProducts();
+}
+
+function clearStoreProducts(){
+  const store = getStore();
+  if(!store) return;
+
+  const filtered = getAllProducts().filter(function(item){
+    return String(item.storeId) !== String(store.id);
+  });
+
+  saveAllProducts(filtered);
+  renderProducts();
+}
+
+renderStore();
+renderProducts();
+</script>
+
+<script src="js/config.js"></script>
+<script src="js/planGuard.js"></script>
+</body>
+</html>
