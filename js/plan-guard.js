@@ -1,240 +1,154 @@
 (function () {
   "use strict";
 
-  function safeParse(value, fallback) {
+  function safeParse(v, d) {
     try {
-      return JSON.parse(value);
+      return JSON.parse(v);
     } catch (e) {
-      return fallback;
+      return d;
     }
   }
 
   function getConfig() {
-    return window.QM_CONFIG || {
-      plans: { basic: 1, pro: 2, elite: 3 },
-      pageAccess: {},
-      redirects: {
-        noAccess: "cennik.html",
-        noStore: "generator-sklepu.html",
-        noLogin: "login.html"
-      }
-    };
+    return window.QM_CONFIG || {};
   }
 
-  function getCurrentPage() {
-    var path = window.location.pathname || "";
-    var page = path.split("/").pop();
-    return page || "index.html";
+  function getPage() {
+    var p = location.pathname.split("/").pop();
+    return p || "index.html";
   }
 
-  function readLocal(key, fallback) {
+  function read(key, def) {
     try {
-      var raw = localStorage.getItem(key);
-      if (raw === null || raw === undefined || raw === "") return fallback;
-      return raw;
+      var v = localStorage.getItem(key);
+      if (v === null) return def;
+      return v;
     } catch (e) {
-      return fallback;
+      return def;
     }
   }
 
-  function getUserPlan() {
-    var directPlan = readLocal("qm_plan_v1", "");
-    if (directPlan && typeof directPlan === "string") {
-      return directPlan.toLowerCase().trim();
-    }
+  function getPlan() {
+    var c = getConfig();
+    var keys = c.storageKeys || {};
 
-    var auth = safeParse(readLocal("qm_auth_v1", "{}"), {});
-    if (auth && auth.plan) return String(auth.plan).toLowerCase().trim();
+    var p =
+      read(keys.plan, "") ||
+      (safeParse(read(keys.auth, "{}"), {}).plan) ||
+      (safeParse(read(keys.user, "{}"), {}).plan) ||
+      (safeParse(read(keys.subscription, "{}"), {}).plan);
 
-    var user = safeParse(readLocal("qm_user_v1", "{}"), {});
-    if (user && user.plan) return String(user.plan).toLowerCase().trim();
-
-    var sub = safeParse(readLocal("qm_subscription_v1", "{}"), {});
-    if (sub && sub.plan) return String(sub.plan).toLowerCase().trim();
-
-    return "basic";
+    if (!p) return "basic";
+    return String(p).toLowerCase();
   }
 
-  function hasRequiredPlan(currentPlan, requiredPlan, plansMap) {
-    var current = plansMap[currentPlan] || plansMap.basic || 1;
-    var required = plansMap[requiredPlan] || plansMap.basic || 1;
-    return current >= required;
+  function hasAccess(plan, need) {
+    var c = getConfig();
+
+    var map = c.plans || {
+      basic: 1,
+      pro: 2,
+      elite: 3
+    };
+
+    var a = map[plan] || 1;
+    var b = map[need] || 1;
+
+    return a >= b;
   }
 
-  function hasAnyLogin() {
-    var auth = safeParse(readLocal("qm_auth_v1", "{}"), {});
-    var user = safeParse(readLocal("qm_user_v1", "{}"), {});
-    var token = readLocal("qm_token_v1", "");
+  function getStores() {
+    var c = getConfig();
+    var k = c.storageKeys.stores;
+    return safeParse(read(k, "[]"), []);
+  }
 
-    if (token) return true;
-    if (auth && (auth.email || auth.id || auth.loggedIn)) return true;
-    if (user && (user.email || user.id)) return true;
+  function getActiveStore() {
+    var c = getConfig();
+    var k = c.storageKeys.activeStore;
+    return safeParse(read(k, "null"), null);
+  }
+
+  function needsStore(page) {
+    var list = [
+      "sklep.html",
+      "koszyk.html",
+      "checkout.html",
+      "zamowienia.html",
+      "panel-sklepu.html"
+    ];
+
+    return list.indexOf(page) !== -1;
+  }
+
+  function needsLogin(page) {
+    var list = [
+      "dashboard.html",
+      "hurtownie.html",
+      "intelligence.html",
+      "generator-sklepu.html",
+      "sklep.html",
+      "koszyk.html",
+      "checkout.html",
+      "zamowienia.html",
+      "panel-sklepu.html",
+      "sklepy.html"
+    ];
+
+    return list.indexOf(page) !== -1;
+  }
+
+  function isLogged() {
+    var c = getConfig();
+    var k = c.storageKeys;
+
+    var t = read(k.token, "");
+    var a = safeParse(read(k.auth, "{}"), {});
+    var u = safeParse(read(k.user, "{}"), {});
+
+    if (t) return true;
+    if (a.email) return true;
+    if (u.email) return true;
 
     return false;
   }
 
-  function getStores() {
-    var config = getConfig();
-    return safeParse(readLocal(config.storageKeys ? config.storageKeys.stores : "qm_stores_v1", "[]"), []);
-  }
-
-  function getActiveStore() {
-    var config = getConfig();
-    return safeParse(readLocal(config.storageKeys ? config.storageKeys.activeStore : "qm_active_store_v1", "null"), null);
-  }
-
-  function pageNeedsStore(page) {
-    return [
-      "sklep.html",
-      "koszyk.html",
-      "checkout.html",
-      "zamowienia.html",
-      "panel-sklepu.html",
-      "panel-zamowien-sklepu.html"
-    ].indexOf(page) !== -1;
-  }
-
-  function pageNeedsLogin(page) {
-    return [
-      "dashboard.html",
-      "hurtownie.html",
-      "qualitetmarket.html",
-      "intelligence.html",
-      "sklep.html",
-      "koszyk.html",
-      "checkout.html",
-      "zamowienia.html",
-      "panel-sklepu.html",
-      "generator-sklepu.html",
-      "panel-zamowien-sklepu.html",
-      "sklepy.html",
-      "suppliers.html",
-      "blueprints.html"
-    ].indexOf(page) !== -1;
-  }
-
-  function buildUpgradeUrl(page) {
-    var target = "cennik.html";
-    try {
-      return target + "?from=" + encodeURIComponent(page);
-    } catch (e) {
-      return target;
-    }
-  }
-
-  function buildCreateStoreUrl(page) {
-    var target = "generator-sklepu.html";
-    try {
-      return target + "?from=" + encodeURIComponent(page);
-    } catch (e) {
-      return target;
-    }
-  }
-
-  function redirect(url) {
+  function go(url) {
     if (!url) return;
-    if (window.location.pathname.indexOf(url) !== -1) return;
-    window.location.href = url;
+    if (location.pathname.indexOf(url) !== -1) return;
+    location.href = url;
   }
 
-  function injectGuardBanner(message, buttonText, buttonHref) {
-    if (!document.body) return;
+  function run() {
+    var c = getConfig();
+    var page = getPage();
+    var access = (c.pageAccess && c.pageAccess[page]) || "basic";
+    var plan = getPlan();
 
-    var old = document.getElementById("qm-guard-banner");
-    if (old) old.remove();
-
-    var wrap = document.createElement("div");
-    wrap.id = "qm-guard-banner";
-    wrap.style.position = "fixed";
-    wrap.style.left = "12px";
-    wrap.style.right = "12px";
-    wrap.style.bottom = "12px";
-    wrap.style.zIndex = "99999";
-    wrap.style.background = "#111";
-    wrap.style.color = "#fff";
-    wrap.style.padding = "14px";
-    wrap.style.borderRadius = "14px";
-    wrap.style.boxShadow = "0 10px 30px rgba(0,0,0,0.25)";
-    wrap.style.fontFamily = "Arial, sans-serif";
-
-    var text = document.createElement("div");
-    text.style.fontSize = "14px";
-    text.style.lineHeight = "1.45";
-    text.style.marginBottom = "10px";
-    text.textContent = message;
-
-    var btn = document.createElement("a");
-    btn.href = buttonHref || "cennik.html";
-    btn.textContent = buttonText || "Przejdź dalej";
-    btn.style.display = "block";
-    btn.style.textAlign = "center";
-    btn.style.background = "#fff";
-    btn.style.color = "#111";
-    btn.style.textDecoration = "none";
-    btn.style.padding = "12px 14px";
-    btn.style.borderRadius = "10px";
-    btn.style.fontWeight = "700";
-    btn.style.fontSize = "14px";
-
-    wrap.appendChild(text);
-    wrap.appendChild(btn);
-    document.body.appendChild(wrap);
-  }
-
-  function runGuard() {
-    var config = getConfig();
-    var page = getCurrentPage();
-    var requiredPlan = (config.pageAccess && config.pageAccess[page]) || "basic";
-    var currentPlan = getUserPlan();
-    var loggedIn = hasAnyLogin();
-
-    if (pageNeedsLogin(page) && !loggedIn) {
-      redirect((config.redirects && config.redirects.noLogin) || "login.html");
+    if (needsLogin(page) && !isLogged()) {
+      go(c.redirects.noLogin);
       return;
     }
 
-    if (!hasRequiredPlan(currentPlan, requiredPlan, config.plans || {})) {
-      injectGuardBanner(
-        "Ta strona wymaga planu " + requiredPlan.toUpperCase() + ". Twój aktualny plan: " + currentPlan.toUpperCase() + ".",
-        "Odblokuj plan",
-        buildUpgradeUrl(page)
-      );
-      redirect(buildUpgradeUrl(page));
+    if (!hasAccess(plan, access)) {
+      go(c.redirects.noAccess);
       return;
     }
 
-    if (pageNeedsStore(page)) {
-      var stores = getStores();
-      var activeStore = getActiveStore();
+    if (needsStore(page)) {
+      var s = getStores();
+      var a = getActiveStore();
 
-      var hasStores = Array.isArray(stores) && stores.length > 0;
-      var hasActiveStore = !!activeStore;
-
-      if (!hasStores || !hasActiveStore) {
-        injectGuardBanner(
-          "Najpierw utwórz i aktywuj sklep, żeby wejść na tę stronę.",
-          "Utwórz sklep",
-          buildCreateStoreUrl(page)
-        );
-        redirect(buildCreateStoreUrl(page));
+      if (!s.length || !a) {
+        go(c.redirects.noStore);
         return;
       }
     }
-
-    document.documentElement.setAttribute("data-qm-plan", currentPlan);
-    document.documentElement.setAttribute("data-qm-page", page);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", runGuard);
+    document.addEventListener("DOMContentLoaded", run);
   } else {
-    runGuard();
+    run();
   }
-
-  window.QMGuard = {
-    run: runGuard,
-    getUserPlan: getUserPlan,
-    getStores: getStores,
-    getActiveStore: getActiveStore
-  };
 })();
