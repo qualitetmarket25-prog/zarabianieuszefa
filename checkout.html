@@ -1,153 +1,143 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout – QualitetMarket</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout</title>
 
-  <!-- ✅ GitHub Pages: nie używaj /styles.css -->
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./shop.css" />
+<style>
 
-  <script defer src="./js/shopCart.js"></script>
-  <script defer src="./js/checkout.js"></script>
+body{
+margin:0;
+font-family:Arial;
+background:#f5f5f5;
+}
 
-  <style>
-    .muted-xs { opacity:.75; font-size:12px; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
-    .row .field { flex:1; min-width:220px; }
-    .miniTable { width:100%; border-collapse: collapse; margin-top:10px; }
-    .miniTable th, .miniTable td { border-bottom:1px solid rgba(0,0,0,.08); padding:8px 6px; text-align:left; font-size:13px; }
-    .badge { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
-  </style>
+header{
+background:#111;
+color:white;
+padding:14px;
+font-size:18px;
+font-weight:bold;
+}
+
+.container{
+padding:12px;
+max-width:600px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:14px;
+border-radius:12px;
+margin-bottom:12px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:6px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+background:black;
+color:white;
+}
+
+</style>
 </head>
 
-<body data-noShell="1">
-  <div class="wrap">
-    <div class="hero-card">
-      <div class="shop-top">
-        <div>
-          <h1 class="h1">Checkout</h1>
-          <p class="p">Dane dostawy + zapis zamówienia w marketplace. Status startowy: <span class="badge">NEW</span></p>
-        </div>
+<body>
 
-        <div class="shop-actions">
-          <a class="btn btn-sm" href="./koszyk.html">← Koszyk</a>
-          <a class="btn btn-sm" href="./zamowienia.html">Zamówienia</a>
-        </div>
-      </div>
+<header>
+Checkout
+</header>
 
-      <div class="hr"></div>
+<div class="container">
 
-      <div class="shop-toolbar">
-        <div class="field">
-          <label class="muted-xs">Tryb</label>
-          <div id="modeLabel" style="font-weight:900;">—</div>
-          <div class="muted-xs" id="storeLabel" style="margin-top:6px;"></div>
-        </div>
+<div class="card">
 
-        <div class="field">
-          <label class="muted-xs">Notatka (z koszyka)</label>
-          <input id="note" class="input" placeholder="notatka do zamówienia" />
-          <div class="muted-xs" style="margin-top:6px;">Zapiszemy to w zamówieniu.</div>
-        </div>
-      </div>
-    </div>
+Imię
 
-    <div class="section">
-      <div class="grid-2">
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Dane dostawy</h2>
+<input id="name">
 
-          <div class="form-grid">
-            <div class="field">
-              <label class="muted-xs">Imię i nazwisko</label>
-              <input id="shipName" class="input" placeholder="np. Jan Kowalski" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Telefon</label>
-              <input id="shipPhone" class="input" placeholder="np. 500 600 700" inputmode="tel" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Email</label>
-              <input id="shipEmail" class="input" placeholder="np. klient@mail.com" inputmode="email" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Ulica i nr</label>
-              <input id="shipStreet" class="input" placeholder="np. Langerstrasse 1" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Miasto</label>
-              <input id="shipCity" class="input" placeholder="np. Koło" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Kod pocztowy</label>
-              <input id="shipZip" class="input" placeholder="np. 62-600" />
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label class="muted-xs">Uwagi do kuriera (opcjonalnie)</label>
-              <input id="shipMsg" class="input" placeholder="np. domofon 12, zostaw u sąsiada..." />
-            </div>
-          </div>
+Email
 
-          <div class="hr"></div>
+<input id="email">
 
-          <h2 style="margin:0 0 10px; font-size:18px;">Dane B2B (jeśli B2B)</h2>
-          <div class="muted-xs">Jeśli tryb B2B – zapisujemy firmę/NIP z koszyka. Możesz tu poprawić.</div>
+Adres
 
-          <div class="form-grid" style="margin-top:10px;">
-            <div class="field">
-              <label class="muted-xs">Firma</label>
-              <input id="b2bCompany" class="input" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">NIP</label>
-              <input id="b2bNip" class="input" inputmode="numeric" />
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label class="muted-xs">Adres firmy</label>
-              <input id="b2bAddr" class="input" />
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label class="muted-xs">Kontakt (email/telefon)</label>
-              <input id="b2bContact" class="input" />
-            </div>
-          </div>
+<input id="address">
 
-          <div class="hr"></div>
+<button onclick="buy()">
+Kupuję
+</button>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="placeOrderFinal" type="button">Złóż zamówienie</button>
-            <button class="btn" id="saveDraft" type="button">Zapisz szkic</button>
-          </div>
+</div>
 
-          <div id="msg" class="muted-xs" style="margin-top:10px;"></div>
-        </div>
+</div>
 
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Podsumowanie</h2>
+<script>
 
-          <div class="sum-row"><span class="muted">Pozycje</span><strong id="sumItems">0</strong></div>
-          <div class="sum-row"><span class="muted">Suma netto</span><strong id="sumNet">0,00 zł</strong></div>
-          <div class="sum-row"><span class="muted">VAT (23% – orientacyjnie)</span><strong id="sumVat">0,00 zł</strong></div>
-          <div class="sum-row"><span class="muted">Suma brutto</span><strong id="sumGross">0,00 zł</strong></div>
+const CART_KEY = "qm_cart_v1"
+const ORDERS_KEY = "qm_orders_v1"
+const STORE_KEY = "qm_active_store_v1"
 
-          <div class="hr"></div>
 
-          <h3 style="margin:0 0 8px; font-size:16px;">Split per hurtownia</h3>
-          <div id="splitMeta" class="muted-xs"></div>
-          <div id="splitTableWrap"></div>
+function buy(){
 
-          <div class="hr"></div>
+let cart =
+JSON.parse(localStorage.getItem(CART_KEY) || "[]")
 
-          <div class="muted-xs">
-            Po złożeniu: status <strong>NEW</strong> i widzisz w panelu zamówień.
-          </div>
-        </div>
-      </div>
-    </div>
+if(cart.length==0){
 
-    <div class="footer">QualitetMarket • checkout (MVP)</div>
-  </div>
+alert("Koszyk pusty")
+return
+
+}
+
+let orders =
+JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]")
+
+let store =
+JSON.parse(localStorage.getItem(STORE_KEY) || "null")
+
+let order = {
+
+id: Date.now(),
+date: Date.now(),
+items: cart,
+store: store
+
+}
+
+orders.push(order)
+
+localStorage.setItem(
+ORDERS_KEY,
+JSON.stringify(orders)
+)
+
+localStorage.removeItem(CART_KEY)
+
+location.href = "success.html"
+
+}
+
+</script>
+
+<script src="js/config.js"></script>
+<script src="js/planGuard.js"></script>
+
 </body>
 </html>
