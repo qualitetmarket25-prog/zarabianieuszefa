@@ -6,34 +6,31 @@
 <title>Checkout</title>
 
 <style>
-
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial,sans-serif;
 background:#f5f5f5;
+color:#111;
 }
-
 header{
 background:#111;
-color:white;
+color:#fff;
 padding:14px;
 font-size:18px;
 font-weight:bold;
 }
-
 .container{
 padding:12px;
-max-width:600px;
-margin:auto;
+max-width:700px;
+margin:0 auto;
 }
-
 .card{
-background:white;
+background:#fff;
 padding:14px;
 border-radius:12px;
 margin-bottom:12px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
-
 input{
 width:100%;
 padding:12px;
@@ -41,22 +38,61 @@ margin-top:6px;
 margin-bottom:10px;
 border-radius:8px;
 border:1px solid #ccc;
+font-size:16px;
+box-sizing:border-box;
 }
-
-button{
+button,
+.btn{
+display:block;
 width:100%;
 padding:14px;
 border:none;
 border-radius:10px;
 font-size:16px;
 font-weight:bold;
-background:black;
-color:white;
+text-align:center;
+text-decoration:none;
+box-sizing:border-box;
+cursor:pointer;
 }
-
+.btn-black{
+background:#111;
+color:#fff;
+}
+.btn-white{
+background:#fff;
+color:#111;
+border:1px solid #ddd;
+}
+.small{
+font-size:13px;
+color:#666;
+}
+.row{
+display:flex;
+justify-content:space-between;
+gap:10px;
+margin-bottom:8px;
+}
+.total{
+font-size:20px;
+font-weight:bold;
+margin-top:12px;
+}
+.top-actions{
+display:flex;
+gap:10px;
+}
+.top-actions a{
+flex:1;
+}
+.item{
+padding:8px 0;
+border-top:1px solid #f0f0f0;
+font-size:14px;
+}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -66,74 +102,171 @@ Checkout
 <div class="container">
 
 <div class="card">
+<div id="storeBox">Aktywny sklep: —</div>
+<div class="small" id="cartInfo">Koszyk: 0 produktów</div>
+</div>
 
+<div class="card">
+<div class="top-actions">
+<a href="koszyk.html" class="btn btn-white">Wróć do koszyka</a>
+<a href="zamowienia.html" class="btn btn-white">Zamówienia</a>
+</div>
+</div>
+
+<div class="card">
+<div id="itemsBox"></div>
+<div class="total" id="totalBox">Razem: 0.00 zł</div>
+</div>
+
+<div class="card">
 Imię
-
-<input id="name">
+<input id="name" placeholder="Jan">
 
 Email
-
-<input id="email">
+<input id="email" placeholder="jan@email.com">
 
 Adres
+<input id="address" placeholder="Ulica, kod, miasto">
 
-<input id="address">
-
-<button onclick="buy()">
-Kupuję
-</button>
-
+<button class="btn-black" onclick="buy()">Kupuję</button>
 </div>
 
 </div>
 
 <script>
+const CART_KEY = "qm_cart_v1";
+const ORDERS_KEY = "qm_orders_v1";
+const STORE_KEY = "qm_active_store_v1";
+const LAST_ORDER_KEY = "qm_last_order_v1";
 
-const CART_KEY = "qm_cart_v1"
-const ORDERS_KEY = "qm_orders_v1"
-const STORE_KEY = "qm_active_store_v1"
+function safeParse(value, fallback){
+  try{
+    return JSON.parse(value);
+  }catch(e){
+    return fallback;
+  }
+}
 
+function getStore(){
+  return safeParse(localStorage.getItem(STORE_KEY), null);
+}
+
+function getAllCart(){
+  return safeParse(localStorage.getItem(CART_KEY), []);
+}
+
+function saveAllCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function getStoreCart(){
+  const store = getStore();
+  const all = getAllCart();
+
+  if(!store) return [];
+
+  return all.filter(function(item){
+    return String(item.storeId) === String(store.id);
+  });
+}
+
+function formatPrice(value){
+  return Number(value || 0).toFixed(2) + " zł";
+}
+
+function countQty(items){
+  return items.reduce(function(sum,item){
+    return sum + Number(item.qty || 0);
+  }, 0);
+}
+
+function totalCart(items){
+  return items.reduce(function(sum,item){
+    return sum + (Number(item.price || 0) * Number(item.qty || 0));
+  }, 0);
+}
+
+function renderStore(){
+  const store = getStore();
+  document.getElementById("storeBox").innerText =
+    "Aktywny sklep: " + (store && store.name ? store.name : "brak");
+}
+
+function renderCart(){
+  const box = document.getElementById("itemsBox");
+  const items = getStoreCart();
+
+  document.getElementById("cartInfo").innerText = "Koszyk: " + countQty(items) + " produktów";
+  document.getElementById("totalBox").innerText = "Razem: " + formatPrice(totalCart(items));
+
+  if(!items.length){
+    box.innerHTML = '<div class="small">Koszyk pusty.</div>';
+    return;
+  }
+
+  box.innerHTML = "";
+
+  items.forEach(function(item){
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML =
+      '<strong>' + (item.name || "Produkt") + '</strong><br>' +
+      '<span class="small">Ilość: ' + Number(item.qty || 0) + '</span><br>' +
+      '<span class="small">Cena: ' + formatPrice(Number(item.price || 0) * Number(item.qty || 0)) + '</span>';
+    box.appendChild(div);
+  });
+}
 
 function buy(){
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const address = document.getElementById("address").value.trim();
 
-let cart =
-JSON.parse(localStorage.getItem(CART_KEY) || "[]")
+  if(!name || !email || !address){
+    alert("Uzupełnij imię, email i adres");
+    return;
+  }
 
-if(cart.length==0){
+  const cart = getStoreCart();
 
-alert("Koszyk pusty")
-return
+  if(cart.length === 0){
+    alert("Koszyk pusty");
+    return;
+  }
 
+  const orders = safeParse(localStorage.getItem(ORDERS_KEY), []);
+  const store = getStore();
+
+  const order = {
+    id: Date.now(),
+    date: Date.now(),
+    status: "nowe",
+    storeId: store ? store.id : null,
+    store: store,
+    customer: {
+      name: name,
+      email: email,
+      address: address
+    },
+    items: cart,
+    total: totalCart(cart)
+  };
+
+  orders.push(order);
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
+
+  const allCart = getAllCart().filter(function(item){
+    return String(item.storeId) !== String(store.id);
+  });
+
+  saveAllCart(allCart);
+
+  location.href = "success.html";
 }
 
-let orders =
-JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]")
-
-let store =
-JSON.parse(localStorage.getItem(STORE_KEY) || "null")
-
-let order = {
-
-id: Date.now(),
-date: Date.now(),
-items: cart,
-store: store
-
-}
-
-orders.push(order)
-
-localStorage.setItem(
-ORDERS_KEY,
-JSON.stringify(orders)
-)
-
-localStorage.removeItem(CART_KEY)
-
-location.href = "success.html"
-
-}
-
+renderStore();
+renderCart();
 </script>
 
 <script src="js/config.js"></script>
