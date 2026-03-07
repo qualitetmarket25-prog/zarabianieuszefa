@@ -7,128 +7,51 @@
 
 <style>
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  color:#111;
+margin:0;
+font-family:Arial;
+background:#f5f5f5;
 }
+
 header{
-  background:#111;
-  color:#fff;
-  padding:14px;
-  font-size:18px;
-  font-weight:bold;
+background:#111;
+color:white;
+padding:14px;
+font-size:18px;
+font-weight:bold;
 }
+
 .container{
-  max-width:700px;
-  margin:0 auto;
-  padding:12px;
+padding:12px;
+max-width:800px;
+margin:auto;
 }
+
 .card{
-  background:#fff;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+background:white;
+padding:12px;
+border-radius:12px;
+margin-bottom:10px;
 }
-.row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#efefef;
-  font-size:13px;
-  margin-top:8px;
-}
+
 .product{
-  border:1px solid #eee;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:10px;
+border:1px solid #eee;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
 }
-.product h3{
-  margin:0 0 8px 0;
-  font-size:18px;
+
+button{
+padding:10px;
+border:none;
+border-radius:8px;
+background:black;
+color:white;
+width:100%;
 }
-.price{
-  font-size:20px;
-  font-weight:bold;
-  margin:8px 0;
-}
-button,
-.btn{
-  display:block;
-  width:100%;
-  border:none;
-  border-radius:10px;
-  padding:14px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  text-decoration:none;
-  text-align:center;
-  box-sizing:border-box;
-}
-.btn-black{
-  background:#111;
-  color:#fff;
-}
-.btn-white{
-  background:#fff;
-  color:#111;
-  border:1px solid #ddd;
-}
-.top-actions{
-  display:flex;
-  gap:10px;
-}
-.top-actions a{
-  flex:1;
-}
-.small{
-  font-size:13px;
-  color:#666;
-}
-.empty{
-  text-align:center;
-  padding:20px 10px;
-  color:#666;
-}
-.footer-space{
-  height:90px;
-}
-.sticky-bar{
-  position:fixed;
-  left:12px;
-  right:12px;
-  bottom:12px;
-  z-index:9999;
-}
-.sticky-inner{
-  background:#111;
-  color:#fff;
-  border-radius:14px;
-  padding:12px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.25);
-}
-.sticky-text{
-  font-size:14px;
-  margin-bottom:10px;
-}
-@media (min-width:768px){
-  .sticky-bar{
-    max-width:700px;
-    margin:0 auto;
-    left:50%;
-    transform:translateX(-50%);
-  }
-}
+
 </style>
 </head>
+
 <body>
 
 <header>
@@ -137,238 +60,117 @@ Sklep
 
 <div class="container">
 
-  <div class="card">
-    <div id="storeNameBox">Aktywny sklep: —</div>
-    <div class="badge" id="storeIdBox">ID sklepu: —</div>
-  </div>
+<div id="storeBox"></div>
 
-  <div class="card">
-    <div class="top-actions">
-      <a href="koszyk.html" class="btn btn-white">Koszyk</a>
-      <a href="zamowienia.html" class="btn btn-white">Zamówienia</a>
-    </div>
-  </div>
+<div id="productsBox"></div>
 
-  <div class="card">
-    <div id="productsBox"></div>
-  </div>
-
-  <div class="footer-space"></div>
-
-</div>
-
-<div class="sticky-bar">
-  <div class="sticky-inner">
-    <div class="sticky-text" id="cartInfo">Koszyk: 0 produktów</div>
-    <a href="koszyk.html" class="btn btn-white">Przejdź do koszyka</a>
-  </div>
 </div>
 
 <script>
-const KEY_ACTIVE_STORE = "qm_active_store_v1";
-const KEY_STORE_MARGIN = "qm_store_margin_pct";
-const KEY_SUPPLIER_PRODUCTS = "qm_products_by_supplier_v1";
-const KEY_CART = "qm_cart_v1";
 
-function safeParse(value, fallback){
-  try{
-    return JSON.parse(value);
-  }catch(e){
-    return fallback;
-  }
+const PRODUCTS_KEY = "qm_products_by_supplier_v1"
+const STORE_KEY = "qm_active_store_v1"
+const CART_KEY = "qm_cart_v1"
+
+function safeParse(v,f){
+try{return JSON.parse(v)}catch(e){return f}
 }
 
-function getActiveStore(){
-  return safeParse(localStorage.getItem(KEY_ACTIVE_STORE), null);
+function getStore(){
+return safeParse(localStorage.getItem(STORE_KEY),null)
 }
 
-function getMargin(){
-  const raw = localStorage.getItem(KEY_STORE_MARGIN);
-  const num = Number(raw);
-  if(!isNaN(num) && num >= 0) return num;
-  return 30;
+function getProducts(){
+return safeParse(localStorage.getItem(PRODUCTS_KEY),[])
 }
 
-function getCart(){
-  return safeParse(localStorage.getItem(KEY_CART), []);
+function getStoreProducts(){
+
+let store = getStore()
+let all = getProducts()
+
+if(!store) return []
+
+return all.filter(p => String(p.storeId) === String(store.id))
+
 }
 
-function saveCart(cart){
-  localStorage.setItem(KEY_CART, JSON.stringify(cart));
+function addToCart(id){
+
+let cart =
+safeParse(localStorage.getItem(CART_KEY),[])
+
+let products = getProducts()
+
+let p = products.find(x=>x.id==id)
+
+if(!p) return
+
+cart.push({
+id:p.id,
+name:p.name,
+price:p.finalPrice,
+qty:1,
+storeId:p.storeId
+})
+
+localStorage.setItem(
+CART_KEY,
+JSON.stringify(cart)
+)
+
+alert("Dodano")
+
 }
 
-function updateCartInfo(){
-  const cart = getCart();
-  const count = cart.reduce(function(sum,item){
-    return sum + Number(item.qty || 0);
-  }, 0);
+function render(){
 
-  document.getElementById("cartInfo").innerText = "Koszyk: " + count + " produktów";
+let store = getStore()
+
+document.getElementById("storeBox").innerHTML =
+store
+? "<div class='card'>Sklep: "+store.name+"</div>"
+: "<div class='card'>Brak sklepu</div>"
+
+let list = getStoreProducts()
+
+let box = document.getElementById("productsBox")
+
+if(!list.length){
+
+box.innerHTML =
+"<div class='card'>Brak produktów</div>"
+
+return
+
 }
 
-function formatPrice(value){
-  return Number(value).toFixed(2) + " zł";
+box.innerHTML=""
+
+list.forEach(p=>{
+
+let div=document.createElement("div")
+
+div.className="product"
+
+div.innerHTML=
+"<b>"+p.name+"</b><br>"+
+(p.description||"")+"<br>"+
+"Cena: "+p.finalPrice+" zł<br>"+
+"<button onclick='addToCart("+p.id+")'>Dodaj</button>"
+
+box.appendChild(div)
+
+})
+
 }
 
-function normalizeProducts(rawProducts, activeStore){
-  const margin = getMargin();
-  const result = [];
+render()
 
-  if(Array.isArray(rawProducts)){
-    rawProducts.forEach(function(item, index){
-      if(!item) return;
-
-      const basePrice = Number(item.price || item.basePrice || item.cost || 0);
-      const finalPrice = basePrice > 0
-        ? (basePrice * (1 + margin / 100))
-        : Number(item.finalPrice || 0);
-
-      result.push({
-        id: item.id || ("p_" + activeStore.id + "_" + index),
-        storeId: activeStore.id,
-        name: item.name || item.title || ("Produkt " + (index + 1)),
-        description: item.description || item.desc || "Produkt dostępny w sklepie.",
-        price: finalPrice > 0 ? finalPrice : 49.99,
-        supplier: item.supplier || item.supplierName || "Hurtownia",
-        image: item.image || ""
-      });
-    });
-  }
-
-  if(result.length === 0){
-    result.push(
-      {
-        id: "demo_1_" + activeStore.id,
-        storeId: activeStore.id,
-        name: "Produkt startowy",
-        description: "Domyślny produkt dla nowego sklepu.",
-        price: 79.00,
-        supplier: "Demo",
-        image: ""
-      },
-      {
-        id: "demo_2_" + activeStore.id,
-        storeId: activeStore.id,
-        name: "Produkt premium",
-        description: "Przykładowy produkt do szybkiego startu.",
-        price: 129.00,
-        supplier: "Demo",
-        image: ""
-      }
-    );
-  }
-
-  return result;
-}
-
-function getProductsForStore(activeStore){
-  const raw = safeParse(localStorage.getItem(KEY_SUPPLIER_PRODUCTS), []);
-  let source = [];
-
-  if(Array.isArray(raw)){
-    source = raw.filter(function(item){
-      if(!item) return false;
-      if(item.storeId && String(item.storeId) !== String(activeStore.id)) return false;
-      return true;
-    });
-  }else if(raw && typeof raw === "object"){
-    const values = Object.values(raw).flat();
-    source = values.filter(function(item){
-      if(!item) return false;
-      if(item.storeId && String(item.storeId) !== String(activeStore.id)) return false;
-      return true;
-    });
-  }
-
-  return normalizeProducts(source, activeStore);
-}
-
-function addToCart(product){
-  const activeStore = getActiveStore();
-  const cart = getCart();
-
-  const existing = cart.find(function(item){
-    return String(item.productId) === String(product.id) &&
-           String(item.storeId) === String(activeStore.id);
-  });
-
-  if(existing){
-    existing.qty = Number(existing.qty || 0) + 1;
-  }else{
-    cart.push({
-      productId: product.id,
-      storeId: activeStore.id,
-      storeName: activeStore.name,
-      name: product.name,
-      price: Number(product.price),
-      qty: 1
-    });
-  }
-
-  saveCart(cart);
-  updateCartInfo();
-  alert("Dodano do koszyka");
-}
-
-function renderProducts(){
-  const activeStore = getActiveStore();
-  const box = document.getElementById("productsBox");
-
-  if(!activeStore){
-    box.innerHTML = '<div class="empty">Brak aktywnego sklepu.</div>';
-    return;
-  }
-
-  const products = getProductsForStore(activeStore);
-
-  if(!products.length){
-    box.innerHTML = '<div class="empty">Brak produktów w sklepie.</div>';
-    return;
-  }
-
-  box.innerHTML = "";
-
-  products.forEach(function(product){
-    const div = document.createElement("div");
-    div.className = "product";
-
-    div.innerHTML =
-      "<h3>" + product.name + "</h3>" +
-      "<div class='small'>Dostawca: " + product.supplier + "</div>" +
-      "<div class='price'>" + formatPrice(product.price) + "</div>" +
-      "<div class='small'>" + product.description + "</div>" +
-      "<div style='margin-top:12px;'>" +
-        "<button class='btn-black' data-id='" + product.id + "'>Dodaj do koszyka</button>" +
-      "</div>";
-
-    box.appendChild(div);
-
-    div.querySelector("button").addEventListener("click", function(){
-      addToCart(product);
-    });
-  });
-}
-
-function renderStoreInfo(){
-  const activeStore = getActiveStore();
-
-  if(!activeStore){
-    document.getElementById("storeNameBox").innerText = "Aktywny sklep: brak";
-    document.getElementById("storeIdBox").innerText = "ID sklepu: brak";
-    return;
-  }
-
-  document.getElementById("storeNameBox").innerText = "Aktywny sklep: " + (activeStore.name || "—");
-  document.getElementById("storeIdBox").innerText = "ID sklepu: " + (activeStore.id || "—");
-}
-
-renderStoreInfo();
-renderProducts();
-updateCartInfo();
 </script>
 
 <script src="js/config.js"></script>
-<script src="js/plan-guard.js"></script>
+<script src="js/planGuard.js"></script>
 
 </body>
 </html>
