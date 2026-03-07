@@ -1,113 +1,162 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Dashboard – Zarabianie u Szefa</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="js/planGuard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard — QualitetMarket</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#111;
+color:white;
+padding:14px;
+font-size:18px;
+font-weight:bold;
+}
+
+.container{
+padding:12px;
+max-width:600px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:14px;
+border-radius:12px;
+margin-bottom:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.btn{
+display:block;
+width:100%;
+padding:14px;
+margin-top:8px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.btn-main{
+background:black;
+color:white;
+}
+
+.btn-blue{
+background:#007bff;
+color:white;
+}
+
+.btn-green{
+background:#28a745;
+color:white;
+}
+
+.btn-orange{
+background:#ff9800;
+color:white;
+}
+
+.footer-space{
+height:80px;
+}
+
+</style>
 </head>
 
-<body data-require="login">
+<body>
 
-<div class="nav">
-  <div class="nav-inner" data-nav>
-    <div class="brand">
-      <div class="logo"></div>
-      <div>Zarabianie u Szefa</div>
-      <span id="planBadge" style="margin-left:10px"></span>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Start</a>
-      <a href="cennik.html">Plany</a>
-      <a href="qualitetmarket.html">QualitetMarket</a>
-      <a href="intelligence.html">Intelligence</a>
-      <a href="blueprints.html">Blueprints</a>
-      <a href="hurtownie.html" id="hurtownieLink">Hurtownie</a>
-      <a href="dashboard.html">Dashboard</a>
-    </div>
-    <div class="nav-cta">
-      <button class="btn btn-sm btn-danger" onclick="logout()">Wyloguj</button>
-    </div>
-  </div>
+<header>
+QualitetMarket — Dashboard
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<div id="planBox">
+Plan: basic
 </div>
-
-<div class="wrap">
-
-  <div class="hero-card reveal">
-    <span class="badge"><span class="dot"></span> Panel Sterowania</span>
-    <div class="h1" style="font-size:34px">Dashboard</div>
-    <div class="p">Centrum kontroli Twojego systemu sprzedażowego.</div>
-
-    <div class="grid-3">
-
-      <div class="kpi reveal d2">
-        <div>
-          <strong>Plan</strong>
-          <div style="color:var(--muted);font-size:12px">Aktywny dostęp</div>
-        </div>
-        <span id="currentPlan">BASIC</span>
-      </div>
-
-      <div class="kpi reveal d3">
-        <div>
-          <strong>Moduły</strong>
-          <div style="color:var(--muted);font-size:12px">Dostępne funkcje</div>
-        </div>
-        <span id="moduleAccess">Ograniczone</span>
-      </div>
-
-      <div class="kpi reveal d4">
-        <div>
-          <strong>Status</strong>
-          <div style="color:var(--muted);font-size:12px">System</div>
-        </div>
-        <span>Aktywny</span>
-      </div>
-
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="qualitetmarket.html">QualitetMarket</a>
-      <a class="btn" href="intelligence.html">Intelligence</a>
-      <a class="btn" href="blueprints.html">Blueprints</a>
-      <a class="btn btn-secondary" href="hurtownie.html" id="hurtownieBtn">System Hurtowni</a>
-      <a class="btn" href="cennik.html">Upgrade planu</a>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title reveal">
-      <h2>Twoje następne kroki</h2>
-      <p>Produkt → Marża → Dostawca → Ruch → Sprzedaż.</p>
-    </div>
-
-    <div class="cards">
-
-      <div class="card reveal d2">
-        <h3>1) Intelligence</h3>
-        <p>Sprawdź scoring i marżę produktu.</p>
-      </div>
-
-      <div class="card reveal d3">
-        <h3>2) Hurtownie</h3>
-        <p>Wczytaj CSV dostawcy i oceń opłacalność.</p>
-      </div>
-
-      <div class="card reveal d4">
-        <h3>3) Blueprint</h3>
-        <p>Wdrażaj gotowe schematy sprzedażowe.</p>
-      </div>
-
-    </div>
-  </div>
 
 </div>
 
-<div class="footer">© 2026 Zarabianie u Szefa × QualitetMarket</div>
+<div class="card">
 
-<script src="assets/app.js"></script>
+<button class="btn btn-main"
+onclick="go('intelligence.html')">
+Intelligence
+</button>
+
+<button class="btn btn-blue"
+onclick="go('hurtownie.html')">
+Hurtownie
+</button>
+
+<button class="btn btn-green"
+onclick="go('generator-sklepu.html')">
+Generator sklepu
+</button>
+
+<button class="btn btn-orange"
+onclick="go('sklepy.html')">
+Moje sklepy
+</button>
+
+</div>
+
+<div class="card">
+
+<button class="btn"
+onclick="logout()">
+Wyloguj
+</button>
+
+</div>
+
+<div class="footer-space"></div>
+
+</div>
+
+
+<script>
+
+function go(p){
+location.href = p
+}
+
+function logout(){
+localStorage.clear()
+location.href = "login.html"
+}
+
+function showPlan(){
+
+let plan =
+localStorage.getItem("qm_plan_v1") || "basic"
+
+document.getElementById("planBox").innerText =
+"Plan: " + plan
+
+}
+
+showPlan()
+
+</script>
+
+
+<script src="js/config.js"></script>
+<script src="js/plan-guard.js"></script>
+
 </body>
 </html>
