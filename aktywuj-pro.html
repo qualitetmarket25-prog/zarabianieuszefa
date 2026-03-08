@@ -1,23 +1,18 @@
-(function () {
-  var plan = (localStorage.getItem('qm_plan_v1') || 'basic').toLowerCase();
-  var weight = { basic: 1, pro: 2, elite: 3 };
 
-  function allowed(required) {
-    return (weight[plan] || 1) >= (weight[(required || 'basic').toLowerCase()] || 1);
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-require]').forEach(function (el) {
-      var required = el.getAttribute('data-require');
-      if (!allowed(required)) {
-        el.classList.add('is-locked');
-        if (el.tagName === 'A') {
-          el.addEventListener('click', function (e) {
-            e.preventDefault();
-            window.location.href = 'cennik.html';
-          });
-        }
+(function(){
+  const plan = (localStorage.getItem('qm_plan_v1') || 'basic').toLowerCase();
+  const weight = { basic:1, pro:2, elite:3 };
+  document.querySelectorAll('[data-require]').forEach(el => {
+    const need = (el.getAttribute('data-require') || 'basic').toLowerCase();
+    if((weight[plan]||1) < (weight[need]||1)){
+      if(el.tagName === 'A'){
+        el.addEventListener('click', function(ev){
+          ev.preventDefault();
+          location.href = 'cennik.html';
+        });
       }
-    });
+      el.classList.add('locked');
+      el.setAttribute('title', 'Wymaga planu ' + need.toUpperCase());
+    }
   });
 })();

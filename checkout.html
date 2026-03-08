@@ -1,90 +1,91 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QualitetMarket — Cennik</title>
-  <link rel="stylesheet" href="app-layout.css" />
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo" />
-      <span>QualitetMarket</span>
-    </a>
-    <a class="btn btn-ghost" href="platforma.html">Platforma</a>
-  </header>
+    <!doctype html>
+    <html lang="pl">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>QualitetMarket — Cennik</title>
+      <meta name="theme-color" content="#08111f">
+      <link rel="stylesheet" href="app-layout.css">
+    </head>
+    <body data-page="cennik">
+      <div class="shell">
+        <div id="shell-start"></div>
+        <main class="main">
+          <header id="topbar" class="topbar"></header>
+          <div id="mobileDrawer" class="mobile-drawer"></div>
+          <div class="page">
+            <div class="container">
 
-  <main class="page">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">Pakiet 15</p>
-        <h1>Subskrypcje gotowe do startu</h1>
-        <p class="lead">Wybierz plan, uruchom dropshipping i aktywuj automatyczną marżę dla sklepu.</p>
+<section class="card card-pad">
+  <div class="eyebrow">💎 Cennik</div>
+  <h1>Wybierz plan, który najbardziej zarabia</h1>
+  <p class="lead">Ceny i marże ustawione tak, żeby klienci mogli łatwo wejść, a Tobie opłacało się skalować sprzedaż.</p>
+</section>
+<section style="margin-top:22px" class="grid grid-3">
+  <div class="plan-card">
+    <div class="icon-xl">🌱</div><h3>Basic</h3><div class="price">79 PLN <span class="small muted">/ mies.</span></div>
+    <p>Start dla pierwszego sklepu, prosty dropshipping i podstawowa automatyzacja.</p>
+    <div class="pill">Marża 18%</div>
+    <button class="btn btn-primary" data-plan-select="basic">Wybierz Basic</button>
+  </div>
+  <div class="plan-card" style="border-color:rgba(34,197,94,.35);box-shadow:0 0 0 1px rgba(34,197,94,.2) inset">
+    <div class="icon-xl">🔥</div><h3>Pro</h3><div class="price">149 PLN <span class="small muted">/ mies.</span></div>
+    <p>Najlepszy plan do sprzedaży: hurtownie, lepsza marża, większy potencjał zysku.</p>
+    <div class="pill green">Marża 28%</div>
+    <button class="btn btn-primary" data-plan-select="pro">Wybierz Pro</button>
+  </div>
+  <div class="plan-card">
+    <div class="icon-xl">👑</div><h3>Elite</h3><div class="price">299 PLN <span class="small muted">/ mies.</span></div>
+    <p>Pełny dostęp i najwyższa marża dla użytkowników, którzy chcą rosnąć szybciej.</p>
+    <div class="pill blue">Marża 38%</div>
+    <button class="btn btn-blue" data-plan-select="elite">Wybierz Elite</button>
+  </div>
+</section>
+
+            </div>
+          </div>
+          <footer class="footer">
+            <div class="container footer-grid">
+              <div class="card card-pad">
+                <div class="brand" style="background:none;border:none;padding:0">
+                  <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket">
+                  <div>
+                    <div class="brand-name">QualitetMarket</div>
+                    <div class="brand-sub">Nowoczesna aplikacja do zarabiania przez własny sklep i dropshipping.</div>
+                  </div>
+                </div>
+                <p class="muted" style="margin-top:12px">Uruchamiasz sklep, importujesz produkty z hurtowni, ustawiasz marżę i zbierasz zamówienia w jednym miejscu.</p>
+              </div>
+              <div>
+                <h4>Produkt</h4>
+                <a href="platforma.html">Platforma</a>
+                <a href="sklep.html">Sklep</a>
+                <a href="hurtownie.html">Hurtownie</a>
+                <a href="cennik.html">Cennik</a>
+              </div>
+              <div>
+                <h4>Pomoc</h4>
+                <a href="kontakt.html">Kontakt</a>
+                <a href="regulamin.html">Regulamin</a>
+                <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+                <a href="polityka-cookies.html">Polityka cookies</a>
+                <a href="rodo.html">RODO</a>
+              </div>
+              <div>
+                <h4>Start</h4>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="zamowienia.html">Zamówienia</a>
+                <a href="sklepy.html">Sklepy</a>
+                <a href="success.html">Aktywacja</a>
+              </div>
+            </div>
+            <div class="container" style="padding-top:16px;color:#94a3b8">© <span data-year></span> QualitetMarket. Wszystkie prawa zastrzeżone.</div>
+          </footer>
+        </main>
       </div>
-    </section>
-
-    <section class="cards grid-3">
-      <article class="card plan-card">
-        <div class="pill">Basic</div>
-        <h2>79 PLN / mies.</h2>
-        <p>Na start dla jednej osoby.</p>
-        <ul class="clean-list">
-          <li>Automatyczna marża 18%</li>
-          <li>1 sklep</li>
-          <li>Podstawowe moduły</li>
-        </ul>
-        <button class="btn btn-primary" data-select-plan="basic" data-price="79">Wybierz Basic</button>
-      </article>
-
-      <article class="card plan-card featured">
-        <div class="pill pill-green">Pro</div>
-        <h2>149 PLN / mies.</h2>
-        <p>Najlepszy balans opłacalności.</p>
-        <ul class="clean-list">
-          <li>Automatyczna marża 28%</li>
-          <li>Hurtownie i seller tools</li>
-          <li>Lepsza opłacalność</li>
-        </ul>
-        <button class="btn btn-primary" data-select-plan="pro" data-price="149">Wybierz Pro</button>
-      </article>
-
-      <article class="card plan-card">
-        <div class="pill pill-blue">Elite</div>
-        <h2>299 PLN / mies.</h2>
-        <p>Dla większej sprzedaży i automatyzacji.</p>
-        <ul class="clean-list">
-          <li>Automatyczna marża 38%</li>
-          <li>Więcej modułów premium</li>
-          <li>Lepsza skala</li>
-        </ul>
-        <button class="btn btn-primary" data-select-plan="elite" data-price="299">Wybierz Elite</button>
-      </article>
-    </section>
-
-    <section class="card">
-      <h3>Jak to działa</h3>
-      <div class="steps">
-        <div><strong>1.</strong> Wybierasz plan</div>
-        <div><strong>2.</strong> Przechodzisz do aktywacji</div>
-        <div><strong>3.</strong> Po potwierdzeniu plan zapisuje się w aplikacji</div>
-      </div>
-      <div class="actions">
-        <a class="btn btn-secondary" href="aktywuj-pro.html">Przejdź do aktywacji</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-links">
-      <a href="kontakt.html">Kontakt</a>
-      <a href="regulamin.html">Regulamin</a>
-      <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-      <a href="polityka-cookies.html">Cookies</a>
-    </div>
-  </footer>
-
-  <script src="js/subscriptions.js"></script>
-  <script src="js/payments.js"></script>
-</body>
-</html>
+      <nav id="bottomNav" class="bottom-nav"></nav>
+      <script src="auto-margin.js"></script>
+      <script src="app-shell.js"></script>
+      <script src="js/subscriptions.js"></script>
+    </body>
+    </html>

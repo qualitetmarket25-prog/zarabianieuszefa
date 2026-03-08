@@ -1,1 +1,117 @@
-<!doctype html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sklep</title><link rel="stylesheet" href="app-layout.css"></head><body><main class="page"><section class="card"><p class="eyebrow">Sklep</p><h1>Katalog</h1><p class="lead">Ceny są liczone z automatyczną marżą zapisaną w aplikacji.</p><div class="actions"><a class="btn btn-primary" href="koszyk.html">Koszyk</a><a class="btn btn-secondary" href="checkout.html">Checkout</a></div></section></main></body></html>
+    <!doctype html>
+    <html lang="pl">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>QualitetMarket — Sklep</title>
+      <meta name="theme-color" content="#08111f">
+      <link rel="stylesheet" href="app-layout.css">
+    </head>
+    <body data-page="sklep">
+      <div class="shell">
+        <div id="shell-start"></div>
+        <main class="main">
+          <header id="topbar" class="topbar"></header>
+          <div id="mobileDrawer" class="mobile-drawer"></div>
+          <div class="page">
+            <div class="container">
+
+<section class="card card-pad">
+  <div class="eyebrow">🛒 Sklep</div>
+  <h1>Produkty gotowe do sprzedaży</h1>
+  <p class="lead">Cena końcowa liczy się automatycznie pod plan i opłacalność. Klient dostaje czytelną ofertę, a Tobie zostaje marża.</p>
+  <div class="search" style="margin-top:16px">
+    <span>🔎</span>
+    <input id="productSearch" placeholder="Szukaj produktów...">
+  </div>
+</section>
+<section style="margin-top:22px">
+  <div id="shopGrid" class="grid grid-3"></div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const CART_KEY='qm_cart_v1';
+  const getProducts = () => { try { return JSON.parse(localStorage.getItem('qm_products_by_supplier_v1')||'[]'); } catch(e){ return []; } };
+  const addToCart = (item) => {
+    let cart = [];
+    try{ cart = JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch(e){}
+    const idx = cart.findIndex(c=>c.id===item.id);
+    if(idx >= 0) cart[idx].qty += 1;
+    else cart.push({id:item.id,name:item.name,price:Number(item.price||0),qty:1});
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    location.href = 'koszyk.html';
+  };
+  const wrap = document.getElementById('shopGrid');
+  const render = (q='') => {
+    const qq = q.toLowerCase().trim();
+    const items = getProducts().filter(p => (p.name||'').toLowerCase().includes(qq));
+    if(!items.length){ wrap.innerHTML = '<div class="card card-pad">Brak produktów. Wejdź do hurtowni i załaduj demo albo CSV.</div>'; return; }
+    wrap.innerHTML = items.map(p => `
+      <div class="product-card">
+        <div class="pill blue">${p.supplier || 'supplier'}</div>
+        <h3>${p.name}</h3>
+        <p>Baza: ${Number(p.basePrice||0).toFixed(2)} PLN · Marża: ${p.marginPct||0}%</p>
+        <div class="price">${Number(p.price||0).toFixed(2)} PLN</div>
+        <button class="btn btn-primary" data-id="${p.id}">Dodaj do koszyka</button>
+      </div>
+    `).join('');
+    wrap.querySelectorAll('[data-id]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const item = getProducts().find(p=>String(p.id)===btn.dataset.id);
+        if(item) addToCart(item);
+      });
+    });
+  };
+  document.getElementById('productSearch').addEventListener('input', e=>render(e.target.value));
+  window.QMAutoMargin?.applyMarginToProducts();
+  render();
+});
+</script>
+
+            </div>
+          </div>
+          <footer class="footer">
+            <div class="container footer-grid">
+              <div class="card card-pad">
+                <div class="brand" style="background:none;border:none;padding:0">
+                  <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket">
+                  <div>
+                    <div class="brand-name">QualitetMarket</div>
+                    <div class="brand-sub">Nowoczesna aplikacja do zarabiania przez własny sklep i dropshipping.</div>
+                  </div>
+                </div>
+                <p class="muted" style="margin-top:12px">Uruchamiasz sklep, importujesz produkty z hurtowni, ustawiasz marżę i zbierasz zamówienia w jednym miejscu.</p>
+              </div>
+              <div>
+                <h4>Produkt</h4>
+                <a href="platforma.html">Platforma</a>
+                <a href="sklep.html">Sklep</a>
+                <a href="hurtownie.html">Hurtownie</a>
+                <a href="cennik.html">Cennik</a>
+              </div>
+              <div>
+                <h4>Pomoc</h4>
+                <a href="kontakt.html">Kontakt</a>
+                <a href="regulamin.html">Regulamin</a>
+                <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+                <a href="polityka-cookies.html">Polityka cookies</a>
+                <a href="rodo.html">RODO</a>
+              </div>
+              <div>
+                <h4>Start</h4>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="zamowienia.html">Zamówienia</a>
+                <a href="sklepy.html">Sklepy</a>
+                <a href="success.html">Aktywacja</a>
+              </div>
+            </div>
+            <div class="container" style="padding-top:16px;color:#94a3b8">© <span data-year></span> QualitetMarket. Wszystkie prawa zastrzeżone.</div>
+          </footer>
+        </main>
+      </div>
+      <nav id="bottomNav" class="bottom-nav"></nav>
+      <script src="auto-margin.js"></script>
+      <script src="app-shell.js"></script>
+
+    </body>
+    </html>
