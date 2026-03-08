@@ -1,24 +1,23 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Aplikacje — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-  
-</head>
-<body class="app-page" data-title="Aplikacje">
-
-<section class="grid cols-2">
-  <div class="card"><h1>Aplikacje użytkowników</h1><p class="muted">Tu klient widzi, że może mieć swoją własną aplikację dla sklepu, usług, ogłoszeń i sprzedaży.</p><div style="margin-bottom:14px"><a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a></div><div id="appsList" class="list"></div></div>
-  <div class="card"><h2>Po co własna aplikacja</h2><div class="list">
-    <div class="list-item"><strong>Więcej zaufania</strong><span class="tag">brand</span></div>
-    <div class="list-item"><strong>Lepszy kontakt z klientem</strong><span class="tag">push</span></div>
-    <div class="list-item"><strong>Więcej sprzedaży</strong><span class="tag">pro</span></div>
-  </div></div>
-</section>
-
-<script src="app-shell.js"></script>
-</body>
-</html>
+<!doctype html><html lang='pl'><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aplikacje — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+<script defer src="app-shell.js"></script>
+</head><body>
+<div data-page-root>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Aplikacje','sprzedawaj i twórz aplikacje dla klientów');});</script>
+  <div class="section-title"><h2>Aplikacje, które użytkownik może stworzyć</h2><a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a></div>
+  <div class="grid grid-4">
+    <div class="card"><h3>Sklep</h3><p class="small">Aplikacja dla e-commerce i dropshippingu.</p></div>
+    <div class="card"><h3>Ogłoszenia</h3><p class="small">Aplikacja typu ogłoszenia, usługi, używane.</p></div>
+    <div class="card"><h3>Nieruchomości</h3><p class="small">Aplikacja dla agentów, wynajmu i sprzedaży.</p></div>
+    <div class="card"><h3>Auto / komis</h3><p class="small">Aplikacja do sprzedaży aut i leadów.</p></div>
+  </div>
+  <div class="cta-strip" style="margin-top:24px">
+    <div><strong>Najdroższa opcja, którą warto sprzedawać</strong><div class="small">Dedykowana płatna aplikacja Agenta Nieruchomości dla firm zajmujących się wynajmem i sprzedażą.</div></div>
+    <a class="btn-gold" href="agent-nieruchomosci-pro.html">Sprzedawaj Agent PRO</a>
+  </div>
+</div>
+</body></html>

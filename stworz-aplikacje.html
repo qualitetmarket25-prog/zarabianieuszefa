@@ -1,37 +1,51 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Stwórz swoją aplikację — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-  
-</head>
-<body class="app-page" data-title="Stwórz swoją aplikację">
-
-<section class="grid cols-2">
+<!doctype html><html lang='pl'><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stwórz swoją aplikację — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+<script defer src="app-shell.js"></script>
+</head><body>
+<div data-page-root>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Stwórz swoją aplikację','kreator uproszczony dla klientów');});</script>
   <div class="card">
-    <h1>Stwórz swoją aplikację</h1>
-    <p class="muted">Uproszczony kreator aplikacji dla sklepu, nieruchomości, aut, ogłoszeń i usług.</p>
-    <form id="createAppForm" class="grid">
-      <input class="input" name="name" placeholder="Nazwa aplikacji" required>
-      <select name="type"><option>Sklep</option><option>Ogłoszenia</option><option>Nieruchomości</option><option>Motoryzacja</option><option>Usługi</option></select>
-      <select name="plan"><option>Pro</option><option>Elite</option><option>Boss</option></select>
-      <textarea name="idea" placeholder="Co ma robić aplikacja?"></textarea>
-      <button class="btn" type="submit">Zapisz aplikację</button>
-    </form>
+    <div class="section-title"><h2>Kreator aplikacji</h2></div>
+    <div class="form-grid">
+      <div class="field"><label>Nazwa aplikacji</label><input id="appName" placeholder="np. Mieszkania Premium"></div>
+      <div class="field"><label>Typ</label><select id="appType"><option>Sklep</option><option>Ogłoszenia</option><option>Nieruchomości</option><option>Auto / komis</option><option>Usługi</option></select></div>
+      <div class="field"><label>Miasto</label><input id="appCity" placeholder="np. Warszawa"></div>
+      <div class="field"><label>Plan</label><select id="appPlan"><option>Basic</option><option>Pro</option><option>Elite</option><option>Boss</option><option>Agent PRO</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>Opis</label><textarea id="appDesc" placeholder="Co ma robić aplikacja?"></textarea></div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="saveApp">Zapisz aplikację</button><a class="btn-gold" href="cennik.html">Zobacz płatne pakiety</a></div>
+    <div id="appOut" class="small" style="margin-top:12px"></div>
   </div>
-  <div class="card">
-    <h2>Co dostaje użytkownik</h2>
+  <div class="card" style="margin-top:20px">
+    <div class="section-title"><h2>Dlaczego to sprzedaje</h2></div>
     <div class="list">
-      <div class="list-item"><strong>Gotowy kierunek</strong><span class="tag">bez stresu</span></div>
-      <div class="list-item"><strong>Możliwość pobrania</strong><span class="tag">mobile</span></div>
-      <div class="list-item"><strong>Sklep + reklama + AI</strong><span class="tag">moc</span></div>
+      <div class="list-row"><div><strong>Klik i gotowe</strong><div class="small">Użytkownik nie musi znać kodu.</div></div></div>
+      <div class="list-row"><div><strong>Plan miesięczny</strong><div class="small">Twoja powtarzalna opłata miesięczna.</div></div></div>
+      <div class="list-row"><div><strong>Upsell branżowy</strong><div class="small">Najdrożej sprzedaje się Agent Nieruchomości PRO.</div></div></div>
     </div>
   </div>
-</section>
-
-<script src="app-shell.js"></script>
-</body>
-</html>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var out = document.getElementById('appOut');
+  document.getElementById('saveApp').addEventListener('click', function(){
+    var apps = QU.read('qm_apps_v1', []);
+    apps.unshift({
+      id: QU.uid(),
+      name: document.getElementById('appName').value || 'Nowa aplikacja',
+      type: document.getElementById('appType').value,
+      city: document.getElementById('appCity').value,
+      plan: document.getElementById('appPlan').value,
+      desc: document.getElementById('appDesc').value,
+      createdAt: new Date().toISOString()
+    });
+    QU.write('qm_apps_v1', apps);
+    out.textContent = 'Aplikacja zapisana. Liczba aplikacji: ' + apps.length;
+  });
+});
+</script>
+</div>
+</body></html>

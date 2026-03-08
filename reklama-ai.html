@@ -1,0 +1,40 @@
+<!doctype html><html lang='pl'><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reklama AI — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+<script defer src="app-shell.js"></script>
+</head><body>
+<div data-page-root>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Reklama AI','prosty moduł kampanii i treści');});</script>
+  <div class="card">
+    <div class="section-title"><h2>Zrób reklamę w 2 minuty</h2></div>
+    <div class="form-grid">
+      <div class="field"><label>Co promujesz</label><select id="adType"><option>Sklep</option><option>Ogłoszenie</option><option>Nieruchomość</option><option>Auta</option></select></div>
+      <div class="field"><label>Budżet</label><input id="adBudget" type="number" placeholder="np. 300"></div>
+      <div class="field" style="grid-column:1/-1"><label>Opis</label><textarea id="adDesc" placeholder="Napisz co promujesz, AI zrobi gotowy kierunek reklamy."></textarea></div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="saveCampaign">Zapisz kampanię</button><a class="btn-gold" href="cennik.html">Odblokuj większe limity</a></div>
+    <div id="adOut" class="note" style="margin-top:12px"></div>
+  </div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var out = document.getElementById('adOut');
+  document.getElementById('saveCampaign').addEventListener('click', function(){
+    var campaigns = QU.read('qm_ads_campaigns_v1', []);
+    var item = {
+      id: QU.uid(),
+      type: document.getElementById('adType').value,
+      budget: Number(document.getElementById('adBudget').value || 0),
+      desc: document.getElementById('adDesc').value,
+      createdAt: new Date().toISOString()
+    };
+    campaigns.unshift(item);
+    QU.write('qm_ads_campaigns_v1', campaigns);
+    out.textContent = 'Kampania zapisana. Budżet: ' + QU.money(item.budget) + '. Łącznie kampanii: ' + campaigns.length;
+  });
+});
+</script>
+</div>
+</body></html>

@@ -1,32 +1,22 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Logowanie — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-  
-</head>
-<body class="" data-title="Logowanie">
-
-<div class="auth-wrap">
-  <div class="auth-card">
-    <div class="brand" style="padding:0 0 18px">
-      <img src="uszefaqualitet-logo.svg" alt="logo">
-      <div><div class="title">UszefaQualitet</div><div class="sub">wejdź do swojej platformy</div></div>
+<!doctype html><html lang='pl'><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logowanie — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+<script defer src="app-shell.js"></script>
+</head><body>
+<div data-page-root>
+  <div class="card" style="max-width:560px;margin:40px auto">
+    <div class="center"><img src="uszefaqualitet-logo.svg" alt="" style="width:72px;height:72px;margin:0 auto 12px"><h1 style="margin:0 0 10px">Wejdź do aplikacji</h1><p class="lead">Prosty start. Po wejściu trafiasz do premium dashboardu.</p></div>
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="field"><label>E-mail</label><input type="email" placeholder="twoj@email.pl"></div>
+      <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••"></div>
     </div>
-    <h1>Zaloguj się do aplikacji</h1>
-    <p class="muted">Po wejściu masz sklep, ogłoszenia, reklamy, AI i kreator własnej aplikacji.</p>
-    <form id="loginForm" class="grid" style="margin-top:18px">
-      <input class="input" type="email" placeholder="E-mail" required>
-      <input class="input" type="password" placeholder="Hasło" required>
-      <button class="btn" type="submit">Wejdź do panelu</button>
-      <a class="btn-ghost" href="index.html">Wróć na start</a>
-    </form>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+      <a class="btn" href="dashboard.html">Wejdź do panelu</a>
+      <a class="btn-ghost" href="cennik.html">Wybierz plan</a>
+    </div>
   </div>
 </div>
-
-<script src="app-shell.js"></script>
-</body>
-</html>
+</body></html>

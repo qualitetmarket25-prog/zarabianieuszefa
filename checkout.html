@@ -1,29 +1,20 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Checkout — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-  
-</head>
-<body class="app-page" data-title="Checkout">
-
-<section class="grid cols-2">
+<!doctype html><html lang='pl'><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+<script defer src="app-shell.js"></script>
+</head><body>
+<div data-page-root>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Checkout','finalizacja zamówienia');});</script>
   <div class="card">
-    <h1>Checkout</h1>
-    <form id="checkoutForm" class="grid">
-      <input class="input" name="name" placeholder="Imię i nazwisko" required>
-      <input class="input" name="email" type="email" placeholder="E-mail" required>
-      <input class="input" name="phone" placeholder="Telefon">
-      <textarea name="address" placeholder="Adres dostawy"></textarea>
-      <button class="btn" type="submit">Złóż zamówienie</button>
-    </form>
+    <div class="section-title"><h2>Checkout</h2></div>
+    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
+      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
+    </div>
   </div>
-  <div class="card"><h2>Podsumowanie</h2><div id="cartList" class="list"></div><div class="banner" style="margin-top:16px"><strong>Razem</strong><strong data-cart-total>0 zł</strong></div></div>
-</section>
-
-<script src="app-shell.js"></script>
-</body>
-</html>
+</div>
+</body></html>
