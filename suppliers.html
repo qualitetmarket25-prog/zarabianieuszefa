@@ -1,74 +1,167 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>System hurtowni – QualitetMarket</title>
-
-  <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="./shop.css" />
-
-  <script defer src="./js/suppliers.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Suppliers — QualitetMarket</title>
+  <meta name="description" content="Moduł dostawców i supplierów. Ma wspierać import produktów, rozbudowę źródeł towaru i rozwój zarabiania przez handel.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
 </head>
-
-<body data-noShell="1">
-  <div class="wrap">
-    <div class="hero-card">
-      <div class="shop-top">
-        <div>
-          <h1 class="h1">System dodawania hurtowni</h1>
-          <p class="p">MVP: rejestr hurtowni w LocalStorage.</p>
-        </div>
-        <div class="shop-actions">
-          <a class="btn btn-sm" href="./sklep.html">Sklep</a>
-          <a class="btn btn-sm" href="/hurtownie.html">Import CSV</a>
-          <a class="btn btn-sm" href="/dashboard.html">Dashboard</a>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="QualitetMarket">
+        <div class="brand-text">
+          <div class="brand-title">QualitetMarket</div>
+          <div class="brand-sub">Aplikacja do zarabiania, sprzedaży i budowy własnych narzędzi</div>
         </div>
       </div>
-
-      <div class="hr"></div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Dodaj hurtownię</h2>
-
-          <div class="form-grid">
-            <div class="field">
-              <label class="muted-xs">Nazwa</label>
-              <input id="sName" class="input" placeholder="np. Hurtownia Opakowań XYZ" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Email / telefon</label>
-              <input id="sContact" class="input" placeholder="kontakt" />
-            </div>
-            <div class="field">
-              <label class="muted-xs">Format CSV (separator)</label>
-              <select id="sSep" class="input">
-                <option value=",">Przecinek (,)</option>
-                <option value=";">Średnik (;)</option>
-                <option value="\t">Tabulator</option>
-              </select>
-            </div>
-            <div class="field">
-              <label class="muted-xs">Uwagi</label>
-              <input id="sNotes" class="input" placeholder="np. netto, dostępność, terminy" />
-            </div>
-          </div>
-
-          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary" id="addSupplier" type="button">Dodaj</button>
-            <button class="btn btn-danger" id="resetSuppliers" type="button">Reset listy</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 style="margin:0 0 10px; font-size:18px;">Lista hurtowni</h2>
-          <div id="supList"></div>
-        </div>
+      <div class="top-actions">
+        <button class="icon-btn" type="button" data-menu-open>Menu</button>
+        <a class="cta-btn" href="index.html">Strona główna</a>
       </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="side-head">
+          <div class="side-brand">
+            <img src="uszefaqualitet-logo.svg" alt="QM">
+            <div>
+              <strong>Główne menu</strong>
+              <div class="brand-sub">Wszystkie moduły aplikacji</div>
+            </div>
+          </div>
+          <button class="icon-btn" type="button" data-menu-close>Zamknij</button>
+        </div>
+        <nav class="side-nav">
+          <div class="nav-group"><div class="nav-label">Start</div>
+<a class="nav-link" href="index.html">
+                  <div><strong>Strona główna</strong><small>Jedno wejście do aplikacji</small></div>
+                  <span class="nav-badge">Start</span>
+                </a>
+<a class="nav-link" href="platforma.html">
+                  <div><strong>Platforma</strong><small>Panel główny i skróty</small></div>
+                  <span class="nav-badge">Core</span>
+                </a>
+<a class="nav-link" href="dashboard.html">
+                  <div><strong>Dashboard</strong><small>Statystyki i działania</small></div>
+                  <span class="nav-badge">Panel</span>
+                </a>
+<a class="nav-link" href="cennik.html">
+                  <div><strong>Cennik</strong><small>Pakiety Basic / Pro / Elite</small></div>
+                  <span class="nav-badge">Plan</span>
+                </a>
+</div>
+<div class="nav-group"><div class="nav-label">Sprzedaż</div>
+<a class="nav-link" href="sklep.html">
+                  <div><strong>Sklep</strong><small>Produkty i sprzedaż online</small></div>
+                  <span class="nav-badge">Sklep</span>
+                </a>
+<a class="nav-link" href="hurtownie.html">
+                  <div><strong>Hurtownie</strong><small>Import produktów i dostawcy</small></div>
+                  <span class="nav-badge">Pro</span>
+                </a>
+<a class="nav-link" href="zamowienia.html">
+                  <div><strong>Zamówienia</strong><small>Obsługa sprzedaży</small></div>
+                  <span class="nav-badge">Orders</span>
+                </a>
+<a class="nav-link" href="panel-sklepu.html">
+                  <div><strong>Panel sklepu</strong><small>Ustawienia sklepu</small></div>
+                  <span class="nav-badge">Store</span>
+                </a>
+<a class="nav-link" href="generator-sklepu.html">
+                  <div><strong>Generator sklepu</strong><small>Budowa sklepu</small></div>
+                  <span class="nav-badge">Build</span>
+                </a>
+</div>
+<div class="nav-group"><div class="nav-label">AI i aplikacje</div>
+<a class="nav-link" href="ai.html">
+                  <div><strong>AI</strong><small>Narzędzia AI do pracy</small></div>
+                  <span class="nav-badge">AI</span>
+                </a>
+<a class="nav-link" href="reklama-ai.html">
+                  <div><strong>Reklama AI</strong><small>Kreator reklam</small></div>
+                  <span class="nav-badge">Ads</span>
+                </a>
+<a class="nav-link" href="aplikacje.html">
+                  <div><strong>Aplikacje</strong><small>Katalog aplikacji</small></div>
+                  <span class="nav-badge">Apps</span>
+                </a>
+<a class="nav-link" href="stworz-aplikacje.html">
+                  <div><strong>Stwórz aplikację</strong><small>Własne narzędzie</small></div>
+                  <span class="nav-badge">Create</span>
+                </a>
+<a class="nav-link" href="pobierz-aplikacje.html">
+                  <div><strong>Pobierz aplikacje</strong><small>Instalacja i dostęp</small></div>
+                  <span class="nav-badge">Install</span>
+                </a>
+</div>
+<div class="nav-group"><div class="nav-label">Branże i marketplace</div>
+<a class="nav-link" href="nieruchomosci.html">
+                  <div><strong>Nieruchomości</strong><small>Oferty i agenci</small></div>
+                  <span class="nav-badge">Home</span>
+                </a>
+<a class="nav-link" href="auta.html">
+                  <div><strong>Auta</strong><small>Samochody i komis</small></div>
+                  <span class="nav-badge">Auto</span>
+                </a>
+<a class="nav-link" href="ogloszenia.html">
+                  <div><strong>Ogłoszenia</strong><small>Publikacja ogłoszeń</small></div>
+                  <span class="nav-badge">Ads</span>
+                </a>
+<a class="nav-link active" href="suppliers.html">
+                  <div><strong>Suppliers</strong><small>Dostawcy i import</small></div>
+                  <span class="nav-badge">CSV</span>
+                </a>
+<a class="nav-link" href="blueprints.html">
+                  <div><strong>Blueprints</strong><small>Gotowe modele działania</small></div>
+                  <span class="nav-badge">Docs</span>
+                </a>
+<a class="nav-link" href="qualitetmarket.html">
+                  <div><strong>QualitetMarket</strong><small>Marketplace i sprzedaż</small></div>
+                  <span class="nav-badge">Market</span>
+                </a>
+</div>
+        </nav>
+      </aside>
+
+      <div class="sidebar-overlay"></div>
+
+      <main class="main">
+        <section class="hero">
+          <span class="eyebrow">Dostawcy • import • rozwój</span>
+          <h1>Suppliers</h1>
+          <p class="lead">Moduł dostawców i supplierów. Ma wspierać import produktów, rozbudowę źródeł towaru i rozwój zarabiania przez handel.</p>
+          <div class="hero-actions">
+            <a class="cta-btn" href="index.html">Główny link aplikacji</a>
+            <a class="ghost-btn" href="platforma.html">Przejdź do platformy</a>
+          </div>
+          <div class="tag-row"><span class="tag">supplier</span><span class="tag">csv</span><span class="tag">produkty</span><span class="tag">handel</span></div>
+        </section>
+
+        <section class="grid cols-3">
+   <article class="card"><h3>Dostawcy</h3><p>Miejsce na listę supplierów, źródła produktów i gotowe kierunki importu.</p></article>
+   <article class="card"><h3>Połączenie ze sklepem</h3><p>Łączy się logicznie z hurtowniami, sklepem i generatorami sprzedaży.</p></article>
+   <article class="card"><h3>Skalowanie</h3><p>To moduł pod dalszy rozwój CSV, marketplace i multi-store.</p></article>
+   </section>
+
+        <h2 class="section-title">Szybkie przejścia</h2><div class="link-list"><a class="link-item" href="hurtownie.html"><div><strong>Hurtownie</strong><div class="meta">Import produktów</div></div><span>→</span></a><a class="link-item" href="sklep.html"><div><strong>Sklep</strong><div class="meta">Sprzedaż produktów</div></div><span>→</span></a><a class="link-item" href="blueprints.html"><div><strong>Blueprints</strong><div class="meta">Gotowe schematy działania</div></div><span>→</span></a></div>
+
+        <div class="note">Ten ekran jest przygotowany pod GitHub Pages i wersję mobilną. Główne wejście do całej aplikacji zostaje pod jednym linkiem: <strong>index.html</strong>.</div>
+        <div class="footer-space"></div>
+      </main>
     </div>
 
-    <div class="footer">QualitetMarket • suppliers registry (MVP)</div>
+    <nav class="bottom-nav">
+      <a href="index.html">Start</a>
+      <a href="platforma.html">Platforma</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="dashboard.html">Panel</a>
+    </nav>
   </div>
+  <script src="app-shell.js"></script>
 </body>
 </html>

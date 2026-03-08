@@ -2,135 +2,166 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ogłoszenia — UszefaQualitet</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Ogłoszenia — QualitetMarket</title>
+  <meta name="description" content="Centralny moduł ogłoszeń dla różnych branż. Ma pomagać wystawiać oferty, zbierać leady i rozwijać płatne wyróżnienia.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Ogłoszenia','uniwersalny moduł leadów i publikacji');});</script>
-
-  <div class="split">
-    <section class="card">
-      <div class="section-title"><h2>Dodaj ogłoszenie</h2></div>
-      <form id="adsForm" class="form-grid">
-        <div class="field"><label>Tytuł</label><input id="title" placeholder="np. Usługa remontowa premium"></div>
-        <div class="field"><label>Kategoria</label>
-          <select id="category">
-            <option>Usługi</option>
-            <option>Nieruchomości</option>
-            <option>Auto</option>
-            <option>E-commerce</option>
-            <option>Inne</option>
-          </select>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="QualitetMarket">
+        <div class="brand-text">
+          <div class="brand-title">QualitetMarket</div>
+          <div class="brand-sub">Aplikacja do zarabiania, sprzedaży i budowy własnych narzędzi</div>
         </div>
-        <div class="field"><label>Miasto</label><input id="city" placeholder="Kraków"></div>
-        <div class="field"><label>Cena / budżet</label><input id="price" type="number" min="0" placeholder="1999"></div>
-        <div class="field"><label>Kontakt</label><input id="contact" placeholder="+48... / email"></div>
-        <div class="field"><label>Status</label>
-          <select id="status">
-            <option>aktywne</option>
-            <option>w realizacji</option>
-            <option>zamknięte</option>
-          </select>
-        </div>
-        <div class="field full"><label>Opis</label><textarea id="description" placeholder="Krótki opis ogłoszenia i co klient ma zrobić dalej."></textarea></div>
-        <div class="field full">
-          <div class="actions-row">
-            <button class="btn btn-primary" type="submit">Zapisz ogłoszenie</button>
-            <button class="btn btn-ghost" type="button" id="seedAds">Wstaw demo</button>
-            <button class="btn btn-danger" type="button" id="clearAds">Wyczyść</button>
-          </div>
-        </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <div class="section-title"><h2>Po co ten moduł</h2></div>
-      <div class="list">
-        <div class="list-row"><div><strong>Lead generation</strong><div class="small">Szybki moduł dla różnych branż bez budowania wszystkiego od nowa.</div></div><span class="badge pro">MVP</span></div>
-        <div class="list-row"><div><strong>Cross-sell</strong><div class="small">Do ogłoszeń możesz od razu dokleić reklamę AI i własną aplikację.</div></div><span class="badge boss">upsell</span></div>
       </div>
-    </section>
-  </div>
+      <div class="top-actions">
+        <button class="icon-btn" type="button" data-menu-open>Menu</button>
+        <a class="cta-btn" href="index.html">Strona główna</a>
+      </div>
+    </header>
 
-  <section class="card" style="margin-top:18px">
-    <div class="section-title"><h2>Aktywne ogłoszenia</h2></div>
-    <div id="adsList" class="grid grid-3"></div>
-  </section>
-
-  <script>
-  (function(){
-    var form = document.getElementById('adsForm');
-    var list = document.getElementById('adsList');
-
-    function read(){ return QU.readCrm().classifiedAds || []; }
-
-    function render(){
-      var items = read();
-      if(!items.length){
-        list.innerHTML = '<div class="empty">Brak ogłoszeń.</div>';
-        return;
-      }
-      list.innerHTML = items.map(function(item){
-        return '<div class="offer-card">'
-          + '<div class="offer-meta"><span class="badge pro">'+ item.category +'</span><span class="badge '+ QU.statusBadgeClass(item.status) +'">'+ item.status +'</span></div>'
-          + '<h3 style="margin:0">' + item.title + '</h3>'
-          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
-          + '<div class="price">' + QU.money(item.price) + '</div>'
-          + '<div class="small">' + (item.city || 'online') + ' • ' + (item.contact || 'brak kontaktu') + '</div>'
-          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
-          + '</div>';
-      }).join('');
-      list.querySelectorAll('[data-del]').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var id = btn.getAttribute('data-del');
-          QU.updateCrm(function(crm){
-            crm.classifiedAds = (crm.classifiedAds || []).filter(function(item){ return item.id !== id; });
-            return crm;
-          });
-          render();
-        });
-      });
-    }
-
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var item = QU.normalizeListing({
-        title: document.getElementById('title').value.trim(),
-        category: document.getElementById('category').value,
-        city: document.getElementById('city').value.trim(),
-        price: document.getElementById('price').value,
-        contact: document.getElementById('contact').value.trim(),
-        status: document.getElementById('status').value,
-        description: document.getElementById('description').value.trim()
-      });
-      if(!item.title){ alert('Dodaj tytuł.'); return; }
-      QU.updateCrm(function(crm){ crm.classifiedAds.unshift(item); return crm; });
-      form.reset();
-      render();
-    });
-
-    document.getElementById('seedAds').addEventListener('click', function(){
-      QU.updateCrm(function(crm){
-        crm.classifiedAds = [
-          QU.normalizeListing({ title:'Prowadzenie social media dla firm', category:'Usługi', city:'Kraków', price:1500, contact:'kontakt@firma.pl', status:'aktywne', description:'Obsługa kampanii i treści dla małych firm.' }),
-          QU.normalizeListing({ title:'Sklep internetowy dla lokalnego biznesu', category:'E-commerce', city:'Poznań', price:2990, contact:'+48 500 100 200', status:'w realizacji', description:'Oferta wdrożenia prostego sklepu i panelu sprzedażowego.' })
-        ];
-        return crm;
-      });
-      render();
-    });
-
-    document.getElementById('clearAds').addEventListener('click', function(){
-      QU.updateCrm(function(crm){ crm.classifiedAds = []; return crm; });
-      render();
-    });
-
-    render();
-  })();
-  </script>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="side-head">
+          <div class="side-brand">
+            <img src="uszefaqualitet-logo.svg" alt="QM">
+            <div>
+              <strong>Główne menu</strong>
+              <div class="brand-sub">Wszystkie moduły aplikacji</div>
+            </div>
+          </div>
+          <button class="icon-btn" type="button" data-menu-close>Zamknij</button>
+        </div>
+        <nav class="side-nav">
+          <div class="nav-group"><div class="nav-label">Start</div>
+<a class="nav-link" href="index.html">
+                  <div><strong>Strona główna</strong><small>Jedno wejście do aplikacji</small></div>
+                  <span class="nav-badge">Start</span>
+                </a>
+<a class="nav-link" href="platforma.html">
+                  <div><strong>Platforma</strong><small>Panel główny i skróty</small></div>
+                  <span class="nav-badge">Core</span>
+                </a>
+<a class="nav-link" href="dashboard.html">
+                  <div><strong>Dashboard</strong><small>Statystyki i działania</small></div>
+                  <span class="nav-badge">Panel</span>
+                </a>
+<a class="nav-link" href="cennik.html">
+                  <div><strong>Cennik</strong><small>Pakiety Basic / Pro / Elite</small></div>
+                  <span class="nav-badge">Plan</span>
+                </a>
 </div>
+<div class="nav-group"><div class="nav-label">Sprzedaż</div>
+<a class="nav-link" href="sklep.html">
+                  <div><strong>Sklep</strong><small>Produkty i sprzedaż online</small></div>
+                  <span class="nav-badge">Sklep</span>
+                </a>
+<a class="nav-link" href="hurtownie.html">
+                  <div><strong>Hurtownie</strong><small>Import produktów i dostawcy</small></div>
+                  <span class="nav-badge">Pro</span>
+                </a>
+<a class="nav-link" href="zamowienia.html">
+                  <div><strong>Zamówienia</strong><small>Obsługa sprzedaży</small></div>
+                  <span class="nav-badge">Orders</span>
+                </a>
+<a class="nav-link" href="panel-sklepu.html">
+                  <div><strong>Panel sklepu</strong><small>Ustawienia sklepu</small></div>
+                  <span class="nav-badge">Store</span>
+                </a>
+<a class="nav-link" href="generator-sklepu.html">
+                  <div><strong>Generator sklepu</strong><small>Budowa sklepu</small></div>
+                  <span class="nav-badge">Build</span>
+                </a>
+</div>
+<div class="nav-group"><div class="nav-label">AI i aplikacje</div>
+<a class="nav-link" href="ai.html">
+                  <div><strong>AI</strong><small>Narzędzia AI do pracy</small></div>
+                  <span class="nav-badge">AI</span>
+                </a>
+<a class="nav-link" href="reklama-ai.html">
+                  <div><strong>Reklama AI</strong><small>Kreator reklam</small></div>
+                  <span class="nav-badge">Ads</span>
+                </a>
+<a class="nav-link" href="aplikacje.html">
+                  <div><strong>Aplikacje</strong><small>Katalog aplikacji</small></div>
+                  <span class="nav-badge">Apps</span>
+                </a>
+<a class="nav-link" href="stworz-aplikacje.html">
+                  <div><strong>Stwórz aplikację</strong><small>Własne narzędzie</small></div>
+                  <span class="nav-badge">Create</span>
+                </a>
+<a class="nav-link" href="pobierz-aplikacje.html">
+                  <div><strong>Pobierz aplikacje</strong><small>Instalacja i dostęp</small></div>
+                  <span class="nav-badge">Install</span>
+                </a>
+</div>
+<div class="nav-group"><div class="nav-label">Branże i marketplace</div>
+<a class="nav-link" href="nieruchomosci.html">
+                  <div><strong>Nieruchomości</strong><small>Oferty i agenci</small></div>
+                  <span class="nav-badge">Home</span>
+                </a>
+<a class="nav-link" href="auta.html">
+                  <div><strong>Auta</strong><small>Samochody i komis</small></div>
+                  <span class="nav-badge">Auto</span>
+                </a>
+<a class="nav-link active" href="ogloszenia.html">
+                  <div><strong>Ogłoszenia</strong><small>Publikacja ogłoszeń</small></div>
+                  <span class="nav-badge">Ads</span>
+                </a>
+<a class="nav-link" href="suppliers.html">
+                  <div><strong>Suppliers</strong><small>Dostawcy i import</small></div>
+                  <span class="nav-badge">CSV</span>
+                </a>
+<a class="nav-link" href="blueprints.html">
+                  <div><strong>Blueprints</strong><small>Gotowe modele działania</small></div>
+                  <span class="nav-badge">Docs</span>
+                </a>
+<a class="nav-link" href="qualitetmarket.html">
+                  <div><strong>QualitetMarket</strong><small>Marketplace i sprzedaż</small></div>
+                  <span class="nav-badge">Market</span>
+                </a>
+</div>
+        </nav>
+      </aside>
+
+      <div class="sidebar-overlay"></div>
+
+      <main class="main">
+        <section class="hero">
+          <span class="eyebrow">Listing • publikacja • leady</span>
+          <h1>Ogłoszenia</h1>
+          <p class="lead">Centralny moduł ogłoszeń dla różnych branż. Ma pomagać wystawiać oferty, zbierać leady i rozwijać płatne wyróżnienia.</p>
+          <div class="hero-actions">
+            <a class="cta-btn" href="index.html">Główny link aplikacji</a>
+            <a class="ghost-btn" href="platforma.html">Przejdź do platformy</a>
+          </div>
+          <div class="tag-row"><span class="tag">listing</span><span class="tag">marketplace</span><span class="tag">leady</span><span class="tag">publikacja</span></div>
+        </section>
+
+        <section class="grid cols-3">
+   <article class="card"><h3>Jedna tablica</h3><p>Ogłoszenia mogą zbierać ruch z nieruchomości, aut, usług i innych branż w jednym miejscu.</p></article>
+   <article class="card"><h3>Dodawanie ofert</h3><p>Osobny ekran do publikacji ogłoszeń pozwala rozwijać prosty marketplace bez backendu.</p></article>
+   <article class="card"><h3>Monetyzacja</h3><p>Wyróżnienia, plany premium, reklamy AI i pakiety PRO dla sprzedających.</p></article>
+   </section>
+
+        <h2 class="section-title">Szybkie przejścia</h2><div class="link-list"><a class="link-item" href="dodaj-ogloszenie.html"><div><strong>Dodaj ogłoszenie</strong><div class="meta">Przejście do publikacji</div></div><span>→</span></a><a class="link-item" href="nieruchomosci.html"><div><strong>Nieruchomości</strong><div class="meta">Ogłoszenia branżowe</div></div><span>→</span></a><a class="link-item" href="auta.html"><div><strong>Auta</strong><div class="meta">Ogłoszenia motoryzacyjne</div></div><span>→</span></a></div>
+
+        <div class="note">Ten ekran jest przygotowany pod GitHub Pages i wersję mobilną. Główne wejście do całej aplikacji zostaje pod jednym linkiem: <strong>index.html</strong>.</div>
+        <div class="footer-space"></div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="index.html">Start</a>
+      <a href="platforma.html">Platforma</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="dashboard.html">Panel</a>
+    </nav>
+  </div>
+  <script src="app-shell.js"></script>
 </body>
 </html>
