@@ -1,95 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QualitetMarket — dashboard</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — QualitetMarket</title>
+  <meta name="description" content="Panel główny użytkownika">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <div class="app-shell" data-app-shell>
-    <main class="page-wrap">
-      <section class="hero">
-        <div class="tag">QualitetMarket • mobile first</div>
-        <h1>Dashboard użytkownika</h1>
-        <p>Szybki ekran startowy z najważniejszymi skrótami do sprzedaży, importu produktów, AI i rozwoju aplikacji.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="platforma.html">Otwórz pełne menu</a>
-          <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
-          <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
-        </div>
-      </section>
-      
-<section class="section-head">
-  <div>
-    <h2>Dashboard zarabiania</h2>
-    <div class="section-copy">Ten ekran jest prosty i szybki. Ma kierować użytkownika do najważniejszych działań, a nie rozpraszać.</div>
-  </div>
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
+  <script>
+    QualitetShell.buildShell({
+      topSubtitle: "Panel główny użytkownika",
+      primaryHref: "platforma.html",
+      primaryLabel: "Mapa modułów",
+      heroTitle: "Dashboard",
+      heroText: "Dashboard zbiera najważniejsze skróty do sprzedaży, importu, reklam i obsługi sklepu.",
+      notice: "",
+      quickLinks: ["panel-sklepu.html", "hurtownie.html", "zamowienia.html"],
+      body: `
+<section class="metrics">
+  <article class="card"><div class="muted">Sklep</div><div class="metric-number">Aktywny</div></article>
+  <article class="card"><div class="muted">Hurtownie</div><div class="metric-number">Import</div></article>
+  <article class="card"><div class="muted">AI</div><div class="metric-number">Treści</div></article>
+  <article class="card"><div class="muted">Zamówienia</div><div class="metric-number">Obsługa</div></article>
 </section>
-
-<div class="kpi-grid">
-  <div class="kpi"><div class="muted">Sprzedaż</div><strong>Sklep</strong><span>Produkty, koszyk, checkout</span></div>
-  <div class="kpi"><div class="muted">Import</div><strong>CSV</strong><span>Produkty z hurtowni</span></div>
-  <div class="kpi"><div class="muted">Aplikacje</div><strong>AI</strong><span>Tworzenie narzędzi i reklam</span></div>
-  <div class="kpi"><div class="muted">Skalowanie</div><strong>Multi</strong><span>Sklepy i różne branże</span></div>
-</div>
-
-<div class="card-grid">
-  <article class="card">
-    <div class="badge green">Najpierw sprzedaż</div>
-    <h3>Sklep i zamówienia</h3>
-    <p>Najkrótsza droga do działania: uruchom sklep, dodaj produkty, sprawdź koszyk i checkout.</p>
-    <div class="card-actions">
-      <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      <a class="btn btn-secondary" href="zamowienia.html">Zamówienia</a>
-    </div>
-  </article>
-  <article class="card">
-    <div class="badge">Dodaj źródło produktów</div>
-    <h3>Hurtownie i suppliers</h3>
-    <p>Import produktów ma szybko zasilić sklep i skrócić drogę do pierwszej sprzedaży.</p>
-    <div class="card-actions">
-      <a class="btn btn-primary" href="hurtownie.html">Hurtownie</a>
-      <a class="btn btn-secondary" href="suppliers.html">Suppliers</a>
-    </div>
-  </article>
-  <article class="card">
-    <div class="badge gold">Dodatkowy przychód</div>
-    <h3>AI i aplikacje</h3>
-    <p>Twórz reklamy, aplikacje i dodatkowe usługi, które pomagają klientom zarabiać.</p>
-    <div class="card-actions">
-      <a class="btn btn-primary" href="ai.html">AI</a>
-      <a class="btn btn-secondary" href="aplikacje.html">Aplikacje</a>
-    </div>
-  </article>
-</div>
-
-<div class="list-grid">
-  <article class="list-card">
-    <div class="badge">Co dalej</div>
-    <h3>Ścieżka użytkownika</h3>
-    <ul>
-      <li>Wejdź do hurtowni i dodaj produkty.</li>
-      <li>Przejdź do sklepu i sprawdź ofertę.</li>
-      <li>Skonfiguruj panel sklepu i generator.</li>
-      <li>Rozwiń ofertę przez AI, reklamy i aplikacje.</li>
-    </ul>
-  </article>
-  <article class="list-card">
-    <div class="badge green">Szybkie skróty</div>
-    <h3>Najważniejsze miejsca</h3>
-    <div class="card-actions">
-      <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-      <a class="btn btn-secondary" href="cennik.html">Cennik</a>
-      <a class="btn btn-secondary" href="blueprints.html">Blueprints</a>
-      <a class="btn btn-secondary" href="stworz-aplikacje.html">Stwórz aplikację</a>
-    </div>
-  </article>
-</div>
-
-    </main>
-  </div>
+<section class="cards">
+  <article class="card"><h3>Panel zarobku</h3><p>Tu użytkownik ma od razu widzieć najważniejsze akcje: produkty, reklamy, zamówienia i sklep.</p><div class="tag-row"><span class="tag">Produkty</span><span class="tag">Marża</span><span class="tag">Multi-store</span></div></article>
+  <article class="card"><h3>Szybkie akcje</h3><ul class="list"><li><div><strong>Dodaj produkty</strong><span>Import do sklepu z hurtowni</span></div><a class="primary-btn" href="hurtownie.html">Start</a></li><li><div><strong>Uruchom sklep</strong><span>Panel sklepu i generator</span></div><a class="primary-btn" href="panel-sklepu.html">Panel</a></li><li><div><strong>Twórz reklamy</strong><span>Moduł AI i reklama AI</span></div><a class="primary-btn" href="reklama-ai.html">AI</a></li></ul></article>
+</section>
+`
+    });
+  </script>
 </body>
 </html>

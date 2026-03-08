@@ -1,187 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Hurtownie</title>
-  <script src="app-shell.js"></script>
-  <style>
-    .banner, .panel, .supplier, .product { background: rgba(15,23,42,.9); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.22); }
-    .banner { padding: 22px; margin-bottom: 18px; }
-    .banner p { color: #94a3b8; line-height: 1.7; margin: 10px 0 0; }
-    .layout { display: grid; grid-template-columns: 340px minmax(0,1fr); gap: 16px; }
-    .panel { padding: 18px; }
-    .panel h3 { margin: 0 0 14px; font-size: 18px; }
-    .field { display: grid; gap: 8px; margin-bottom: 12px; }
-    .field label { font-size: 13px; color: #94a3b8; font-weight: 700; }
-    .field input, .field select, .field textarea { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #0b1220; color: #f8fafc; }
-    .field textarea { min-height: 92px; resize: vertical; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #111827; color: #fff; font-weight: 800; cursor: pointer; }
-    .btn.primary { background: linear-gradient(135deg,#22c55e,#16a34a); color: #052e16; border-color: transparent; }
-    .btn.blue { background: linear-gradient(135deg,#38bdf8,#0ea5e9); color: #082f49; border-color: transparent; }
-    .suppliers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; margin-bottom: 16px; }
-    .supplier { padding: 16px; }
-    .supplier strong { display: block; margin-bottom: 8px; font-size: 17px; }
-    .muted { color: #94a3b8; line-height: 1.6; }
-    .products { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
-    .product { overflow: hidden; }
-    .thumb { aspect-ratio: 4/3; background: #0b1220 center/cover no-repeat; }
-    .body { padding: 14px; display: grid; gap: 10px; }
-    .badge { display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid rgba(56,189,248,.18);background:rgba(56,189,248,.12);color:#bae6fd; }
-    .row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
-    @media (max-width: 1100px) {
-      .layout { grid-template-columns: 1fr; }
-      .products { grid-template-columns: repeat(2,minmax(0,1fr)); }
-    }
-    @media (max-width: 720px) {
-      .suppliers, .products, .row { grid-template-columns: 1fr; }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hurtownie — QualitetMarket</title>
+  <meta name="description" content="Import produktów i przygotowanie asortymentu">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div data-page-root>
-    <section class="banner">
-      <h2 style="margin:0;font-size:30px;">Hurtownie i import produktów</h2>
-      <p>
-        Ten ekran daje szybki start pod import do <strong>qm_products_by_supplier_v1</strong>.
-        W ETAPIE 9 robimy lepszy preview zdjęć, prosty import demo i czytelniejszy wybór dostawców pod sklep.
-      </p>
-    </section>
-
-    <section class="layout">
-      <aside class="panel">
-        <h3>Import produktu ręcznie</h3>
-        <div class="field">
-          <label for="supplierSelect">Hurtownia</label>
-          <select id="supplierSelect">
-            <option>AliExpress</option>
-            <option>CJ Dropshipping</option>
-            <option>EPROLO</option>
-            <option>VidaXL</option>
-            <option>Banggood</option>
-            <option>BigBuy</option>
-            <option>Hertwill</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="productName">Nazwa produktu</label>
-          <input id="productName" />
-        </div>
-        <div class="field">
-          <label for="productPrice">Cena bazowa</label>
-          <input id="productPrice" type="number" min="0" value="99" />
-        </div>
-        <div class="field">
-          <label for="productImg">URL zdjęcia</label>
-          <input id="productImg" />
-        </div>
-        <div class="field">
-          <label for="productDesc">Opis</label>
-          <textarea id="productDesc"></textarea>
-        </div>
-        <div class="row">
-          <button class="btn primary" id="addProductBtn" type="button">Dodaj produkt</button>
-          <button class="btn blue" id="seedDemoBtn" type="button">Dodaj demo import</button>
-        </div>
-      </aside>
-
-      <div>
-        <div class="suppliers" id="suppliersGrid"></div>
-        <section id="productsGrid" class="products"></section>
-      </div>
-    </section>
-  </div>
-
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
   <script>
-    QU.shell('Hurtownie', 'ETAP 9 — preview zdjęć i import demo');
-    if (!QU.requirePlans(['pro', 'elite'], 'aktywuj-pro.html')) {
-      throw new Error('Brak dostępu do hurtowni');
-    }
-
-    var suppliers = [
-      { name: 'AliExpress', note: 'Dobry start bez dużych kosztów.' },
-      { name: 'CJ Dropshipping', note: 'Popularny do testów i szybkich wdrożeń.' },
-      { name: 'EPROLO', note: 'Pod prosty import i dropshipping.' },
-      { name: 'VidaXL', note: 'Mocny wariant dla UE i domu / ogrodu.' },
-      { name: 'Banggood', note: 'Sprzęt i elektronika.' },
-      { name: 'BigBuy', note: 'Europejski kierunek dla marketplace.' },
-      { name: 'Hertwill', note: 'Moda i produkty lifestyle.' }
-    ];
-
-    function seedDemoProducts() {
-      var current = QU.readProducts();
-      if (current.length >= 6) return current;
-      var demo = [
-        { id: QU.uid(), name: 'Krzesło premium', price: 140, img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80', supplier: 'VidaXL', desc: 'Produkt demo z magazynu UE.' },
-        { id: QU.uid(), name: 'Biurkowa stacja ładowania', price: 110, img: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=80', supplier: 'CJ Dropshipping', desc: 'Dobry produkt do startu od zera.' },
-        { id: QU.uid(), name: 'Smart zegarek', price: 210, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80', supplier: 'Banggood', desc: 'Elektronika pod lepsze marże.' },
-        { id: QU.uid(), name: 'Organizer do domu', price: 69, img: 'https://images.unsplash.com/photo-1582582429416-47f2b17f0f61?auto=format&fit=crop&w=900&q=80', supplier: 'AliExpress', desc: 'Szybki produkt do testów reklam.' }
-      ];
-      QU.writeProducts(current.concat(demo));
-      return QU.readProducts();
-    }
-
-    function renderSuppliers() {
-      document.getElementById('suppliersGrid').innerHTML = suppliers.map(function (item) {
-        return '<article class="supplier"><strong>' + QU.escapeHtml(item.name) + '</strong><div class="muted">' + QU.escapeHtml(item.note) + '</div></article>';
-      }).join('');
-    }
-
-    function renderProducts() {
-      var items = QU.readProducts();
-      document.getElementById('productsGrid').innerHTML = items.map(function (item) {
-        return ''
-          + '<article class="product">'
-          + '  <div class="thumb" style="background-image:url(' + QU.escapeHtml(item.img || '') + ');"></div>'
-          + '  <div class="body">'
-          + '    <div style="font-weight:800;font-size:17px;">' + QU.escapeHtml(item.name || 'Produkt') + '</div>'
-          + '    <div><span class="badge">' + QU.escapeHtml(item.supplier || 'Import') + '</span></div>'
-          + '    <div class="muted">' + QU.escapeHtml(item.desc || 'Produkt zaimportowany do sklepu.') + '</div>'
-          + '    <div style="font-weight:900;font-size:20px;">' + QU.money(item.price || 0) + '</div>'
-          + '  </div>'
-          + '</article>';
-      }).join('');
-    }
-
-    function addProduct() {
-      var supplier = document.getElementById('supplierSelect').value;
-      var name = document.getElementById('productName').value.trim();
-      var price = Number(document.getElementById('productPrice').value) || 0;
-      var img = document.getElementById('productImg').value.trim();
-      var desc = document.getElementById('productDesc').value.trim();
-
-      if (!name || !img) {
-        alert('Podaj nazwę i URL zdjęcia.');
-        return;
-      }
-
-      var items = QU.readProducts();
-      items.unshift({
-        id: QU.uid(),
-        name: name,
-        price: price,
-        img: img,
-        supplier: supplier,
-        desc: desc
-      });
-      QU.writeProducts(items);
-
-      document.getElementById('productName').value = '';
-      document.getElementById('productImg').value = '';
-      document.getElementById('productDesc').value = '';
-      renderProducts();
-    }
-
-    document.getElementById('addProductBtn').addEventListener('click', addProduct);
-    document.getElementById('seedDemoBtn').addEventListener('click', function () {
-      seedDemoProducts();
-      renderProducts();
+    QualitetShell.buildShell({
+      topSubtitle: "Import produktów i przygotowanie asortymentu",
+      primaryHref: "sklep.html",
+      primaryLabel: "Przejdź do sklepu",
+      heroTitle: "Hurtownie",
+      heroText: "Hurtownie są punktem startowym do wgrania produktów, ustawienia oferty i dalszej sprzedaży w sklepie.",
+      notice: "",
+      quickLinks: ["generator-sklepu.html", "sklep.html", "reklama-ai.html"],
+      body: `
+<section class="cards">
+  <article class="card"><h3>Import produktów</h3><p>Tu użytkownik dodaje produkty, które później sprzedaje w sklepie i marketplace.</p><div class="tag-row"><span class="tag">CSV</span><span class="tag">Dostawcy</span><span class="tag">qm_products_by_supplier_v1</span></div></article>
+  <article class="card"><h3>Co dalej po imporcie</h3><ul class="list"><li><div><strong>Przejdź do sklepu</strong><span>Sprawdź ofertę i ekspozycję produktów</span></div><a class="primary-btn" href="sklep.html">Sklep</a></li><li><div><strong>Skonfiguruj sklep</strong><span>Ustaw aktywny store i marżę</span></div><a class="primary-btn" href="generator-sklepu.html">Generator</a></li><li><div><strong>Promuj produkty</strong><span>Użyj reklamy AI i treści AI</span></div><a class="primary-btn" href="reklama-ai.html">Promocja</a></li></ul></article>
+</section>
+`
     });
-
-    QU.ensureSeedStore && QU.ensureSeedStore();
-    renderSuppliers();
-    if (!QU.readProducts().length) seedDemoProducts();
-    renderProducts();
   </script>
 </body>
 </html>

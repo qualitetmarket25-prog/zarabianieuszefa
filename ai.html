@@ -3,26 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AI — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>AI — QualitetMarket</title>
+  <meta name="description" content="Moduł AI do treści i promocji">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  
 </head>
-<body class="app-page" data-title="AI">
-
-<section class="grid cols-2">
-  <div class="card" data-require="elite">
-    <h1>AI dla sprzedaży</h1>
-    <p class="muted">Generuj opisy produktów, ogłoszeń, reklam i nazw aplikacji.</p>
-    <div class="list">
-      <div class="list-item"><strong>Opis produktu AI</strong><span class="tag">elite</span></div>
-      <div class="list-item"><strong>Opis reklamy AI</strong><span class="tag">elite</span></div>
-      <div class="list-item"><strong>Pomysł na aplikację AI</strong><span class="tag">boss</span></div>
-    </div>
-  </div>
-  <div class="card"><h2>Najbardziej opłacalne użycie</h2><p class="muted">AI ma pomagać użytkownikowi szybciej ruszyć, a Tobie zwiększać wartość planu miesięcznego.</p></div>
+<body>
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
+  <script>
+    QualitetShell.buildShell({
+      topSubtitle: "Moduł AI do treści i promocji",
+      primaryHref: "reklama-ai.html",
+      primaryLabel: "Otwórz reklamę AI",
+      heroTitle: "AI",
+      heroText: "AI ma pomagać użytkownikowi tworzyć treści, reklamy i szybciej budować rzeczy, które sprzedaje.",
+      notice: "",
+      quickLinks: ["reklama-ai.html", "ogloszenia.html", "aplikacje.html"],
+      body: `
+<section class="module-grid">
+  <article class="card module-card"><div class="module-top"><div class="module-icon">✍️</div><div class="module-copy"><h3>Treści do sprzedaży</h3><p>Generowanie opisów, haseł i prostych tekstów ofertowych.</p></div></div><div class="module-actions"><a class="primary-btn" href="reklama-ai.html">Reklama AI</a></div></article>
+  <article class="card module-card"><div class="module-top"><div class="module-icon">📣</div><div class="module-copy"><h3>Promocja</h3><p>Wsparcie kampanii i publikacji, żeby łatwiej pozyskiwać klientów.</p></div></div><div class="module-actions"><a class="primary-btn" href="ogloszenia.html">Ogłoszenia</a></div></article>
+  <article class="card module-card"><div class="module-top"><div class="module-icon">💼</div><div class="module-copy"><h3>Usługi i oferty</h3><p>AI może wspierać nie tylko sklep, ale też usługi, aplikacje i leady.</p></div></div><div class="module-actions"><a class="primary-btn" href="aplikacje.html">Aplikacje</a></div></article>
 </section>
-
-<script src="app-shell.js"></script>
+`
+    });
+  </script>
 </body>
 </html>

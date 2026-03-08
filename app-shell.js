@@ -1,157 +1,139 @@
-(function () {
-  const MENU = [
-    { group: 'Start', items: [
-      { href: 'index.html', label: 'Strona główna', tag: 'start' },
-      { href: 'platforma.html', label: 'Platforma', tag: 'hub' },
-      { href: 'dashboard.html', label: 'Dashboard', tag: 'panel' },
-      { href: 'login.html', label: 'Logowanie', tag: 'konto' },
-      { href: 'onboarding.html', label: 'Onboarding', tag: 'start' }
-    ]},
-    { group: 'Sprzedaż', items: [
-      { href: 'sklep.html', label: 'Sklep', tag: 'sprzedaż' },
-      { href: 'koszyk.html', label: 'Koszyk', tag: 'zakup' },
-      { href: 'checkout.html', label: 'Checkout', tag: 'finalizacja' },
-      { href: 'zamowienia.html', label: 'Zamówienia', tag: 'orders' },
-      { href: 'panel-zamowien-sklepu.html', label: 'Panel zamówień sklepu', tag: 'obsługa' },
-      { href: 'sklepy.html', label: 'Sklepy', tag: 'multi-store' }
-    ]},
-    { group: 'Sklep i produkty', items: [
-      { href: 'panel-sklepu.html', label: 'Panel sklepu', tag: 'ustawienia' },
-      { href: 'generator-sklepu.html', label: 'Generator sklepu', tag: 'builder' },
-      { href: 'hurtownie.html', label: 'Hurtownie', tag: 'pro' },
-      { href: 'suppliers.html', label: 'Suppliers', tag: 'import' },
-      { href: 'qualitetmarket.html', label: 'QualitetMarket', tag: 'pro' },
-      { href: 'blueprints.html', label: 'Blueprints', tag: 'szablony' }
-    ]},
-    { group: 'AI i aplikacje', items: [
-      { href: 'ai.html', label: 'AI', tag: 'narzędzia' },
-      { href: 'intelligence.html', label: 'Intelligence', tag: 'elite' },
-      { href: 'reklama-ai.html', label: 'Reklama AI', tag: 'ads' },
-      { href: 'reklama.html', label: 'Reklama', tag: 'promo' },
-      { href: 'aplikacje.html', label: 'Aplikacje', tag: 'apps' },
-      { href: 'stworz-aplikacje.html', label: 'Stwórz aplikację', tag: 'builder' },
-      { href: 'pobierz-aplikacje.html', label: 'Pobierz aplikacje', tag: 'download' }
-    ]},
-    { group: 'Branże', items: [
-      { href: 'nieruchomosci.html', label: 'Nieruchomości', tag: 'branża' },
-      { href: 'agenci-nieruchomosci.html', label: 'Agenci nieruchomości', tag: 'pro' },
-      { href: 'firmy-nieruchomosci.html', label: 'Firmy nieruchomości', tag: 'biznes' },
-      { href: 'agent-nieruchomosci-pro.html', label: 'Agent Nieruchomości PRO', tag: 'premium' },
-      { href: 'auta.html', label: 'Auta', tag: 'branża' },
-      { href: 'komis-auto.html', label: 'Komis auto', tag: 'sprzedaż' },
-      { href: 'uzywane.html', label: 'Używane', tag: 'ogłoszenia' },
-      { href: 'ogloszenia.html', label: 'Ogłoszenia', tag: 'marketplace' },
-      { href: 'dodaj-ogloszenie.html', label: 'Dodaj ogłoszenie', tag: 'publish' }
-    ]},
-    { group: 'Plan i oferta', items: [
-      { href: 'cennik.html', label: 'Cennik', tag: 'plan' },
-      { href: 'aktywuj-pro.html', label: 'Aktywuj PRO', tag: 'upgrade' },
-      { href: 'success.html', label: 'Success', tag: 'status' },
-      { href: 'zarabianie.html', label: 'Zarabianie', tag: 'income' }
-    ]}
+(function(){
+  const NAV = [
+    { href:'index.html', label:'Start', desc:'Główne wejście do aplikacji', icon:'🏠', key:'index.html' },
+    { href:'platforma.html', label:'Platforma', desc:'Mapa modułów i zarabiania', icon:'🧭', key:'platforma.html' },
+    { href:'dashboard.html', label:'Dashboard', desc:'Panel główny użytkownika', icon:'📊', key:'dashboard.html' },
+    { href:'sklep.html', label:'Sklep', desc:'Produkty i sprzedaż', icon:'🛒', key:'sklep.html' },
+    { href:'hurtownie.html', label:'Hurtownie', desc:'Import produktów i CSV', icon:'📦', key:'hurtownie.html' },
+    { href:'zamowienia.html', label:'Zamówienia', desc:'Obsługa zamówień', icon:'📋', key:'zamowienia.html' },
+    { href:'panel-sklepu.html', label:'Panel sklepu', desc:'Ustawienia sklepu', icon:'🏪', key:'panel-sklepu.html' },
+    { href:'generator-sklepu.html', label:'Generator', desc:'Budowa własnego sklepu', icon:'⚙️', key:'generator-sklepu.html' },
+    { href:'ai.html', label:'AI', desc:'Narzędzia AI do pracy', icon:'🤖', key:'ai.html' },
+    { href:'reklama-ai.html', label:'Reklama AI', desc:'Promocja i kreacje', icon:'📣', key:'reklama-ai.html' },
+    { href:'aplikacje.html', label:'Aplikacje', desc:'Aplikacje do zarabiania', icon:'📱', key:'aplikacje.html' },
+    { href:'nieruchomosci.html', label:'Nieruchomości', desc:'Moduł nieruchomości', icon:'🏘️', key:'nieruchomosci.html' },
+    { href:'auta.html', label:'Auta', desc:'Moduł aut i komisów', icon:'🚗', key:'auta.html' },
+    { href:'ogloszenia.html', label:'Ogłoszenia', desc:'Dodawanie i publikacja ofert', icon:'📢', key:'ogloszenia.html' },
+    { href:'cennik.html', label:'Cennik', desc:'Basic / Pro / Elite', icon:'💳', key:'cennik.html' },
+    { href:'qualitetmarket.html', label:'QualitetMarket', desc:'Marketplace i sprzedaż', icon:'🌐', key:'qualitetmarket.html' },
+    { href:'suppliers.html', label:'Suppliers', desc:'Dostawcy i partnerzy', icon:'🤝', key:'suppliers.html' },
+    { href:'blueprints.html', label:'Blueprints', desc:'Gotowe szablony', icon:'🧩', key:'blueprints.html' }
   ];
 
-  const BOTTOM = [
-    { href: 'index.html', label: 'Start', icon: '⌂' },
-    { href: 'platforma.html', label: 'Menu', icon: '☰' },
-    { href: 'dashboard.html', label: 'Panel', icon: '◫' },
-    { href: 'sklep.html', label: 'Sklep', icon: '🛒' },
-    { href: 'hurtownie.html', label: 'Import', icon: '⬇' }
-  ];
-
-  function getPlan() {
-    return localStorage.getItem('qm_plan') || localStorage.getItem('qm_user_plan') || 'basic';
+  function activeKey(){
+    const file = location.pathname.split('/').pop() || 'index.html';
+    return file;
   }
 
-  function activePath() {
-    const path = location.pathname.split('/').pop() || 'index.html';
-    return path.toLowerCase();
+  function navLink(item){
+    const active = activeKey() === item.key ? ' active' : '';
+    return `<a class="nav-link${active}" href="${item.href}">
+      <span class="nav-emoji">${item.icon}</span>
+      <span class="nav-meta">
+        <span class="nav-title">${item.label}</span>
+        <span class="nav-desc">${item.desc}</span>
+      </span>
+    </a>`;
   }
 
-  function groupMarkup(group) {
-    const current = activePath();
-    const links = group.items.map(function (item) {
-      const isActive = current === item.href.toLowerCase();
-      return '<a class="nav-link ' + (isActive ? 'active' : '') + '" href="' + item.href + '">' +
-        '<span>' + item.label + '</span><span>' + item.tag + '</span></a>';
-    }).join('');
-    return '<div class="nav-group"><div class="nav-title">' + group.group + '</div>' + links + '</div>';
+  function bottomLink(item){
+    const active = activeKey() === item.key ? ' active' : '';
+    return `<a class="bottom-link${active}" href="${item.href}"><span class="icon">${item.icon}</span><span>${item.label}</span></a>`;
   }
 
-  function shellMarkup() {
-    const plan = getPlan().toUpperCase();
-    const current = activePath();
-    const bottom = BOTTOM.map(function(item){
-      const isActive = current === item.href.toLowerCase();
-      return '<a class="' + (isActive ? 'active' : '') + '" href="' + item.href + '"><span>' + item.icon + '</span><span>' + item.label + '</span></a>';
-    }).join('');
-    return '' +
-      '<div class="app-topbar">' +
-        '<div class="brand">' +
-          '<button class="menu-toggle" id="menuToggle" aria-label="Otwórz menu">☰ Menu</button>' +
-          '<a href="index.html" style="display:flex;align-items:center;gap:12px">' +
-            '<img src="uszefaqualitet-logo.svg" alt="Qualitet logo">' +
-            '<div><div>QualitetMarket</div><small>Aplikacja do zarabiania i sprzedaży</small></div>' +
-          '</a>' +
-        '</div>' +
-        '<div class="top-actions">' +
-          '<div class="plan-pill">Plan: ' + plan + '</div>' +
-          '<a class="btn btn-primary desktop-only" href="platforma.html">Główne menu</a>' +
-        '</div>' +
-      '</div>' +
-      '<aside class="app-sidebar" id="appSidebar">' +
-        '<div class="sidebar-head">' +
-          '<div class="sidebar-brand"><img src="uszefaqualitet-logo.svg" alt="Logo"><div><strong>QualitetMarket</strong><div class="muted">Wszystko w jednym miejscu</div></div></div>' +
-          '<button class="close-sidebar" id="closeSidebar" aria-label="Zamknij menu">✕</button>' +
-        '</div>' +
-        MENU.map(groupMarkup).join('') +
-      '</aside>' +
-      '<div class="sidebar-overlay" id="sidebarOverlay"></div>' +
-      '<nav class="bottom-nav">' + bottom + '</nav>';
-  }
+  function buildShell(opts){
+    const root = document.getElementById('qm-shell');
+    if(!root) return;
+    const current = NAV.find(n => n.key === activeKey()) || NAV[0];
+    const quick = (opts.quickLinks || ['sklep.html','hurtownie.html','ai.html']).map(h => NAV.find(n => n.href===h)).filter(Boolean);
+    const bottom = ['index.html','platforma.html','sklep.html','hurtownie.html','dashboard.html'].map(h => NAV.find(n=>n.href===h)).filter(Boolean);
 
-  function initShell() {
-    document.body.classList.add('has-app-shell');
-    var root = document.querySelector('[data-app-shell]');
-    if (!root) return;
-    root.insertAdjacentHTML('afterbegin', shellMarkup());
+    root.innerHTML = `
+      <div class="app-shell">
+        <header class="app-topbar">
+          <div class="brand">
+            <button id="qm-open-menu" class="icon-btn mobile-only" aria-label="Otwórz menu">☰</button>
+            <a href="index.html" class="brand">
+              <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
+              <div class="brand-text">
+                <div class="brand-title">QualitetMarket</div>
+                <div class="brand-sub">${opts.topSubtitle || 'Aplikacja do zarabiania online i sprzedaży'}</div>
+              </div>
+            </a>
+          </div>
+          <div class="topbar-actions">
+            <a class="ghost-btn desktop-only" href="platforma.html">Mapa modułów</a>
+            <a class="primary-btn" href="${opts.primaryHref || 'platforma.html'}">${opts.primaryLabel || 'Wejdź do platformy'}</a>
+          </div>
+        </header>
 
-    var menuToggle = document.getElementById('menuToggle');
-    var closeSidebar = document.getElementById('closeSidebar');
-    var sidebar = document.getElementById('appSidebar');
-    var overlay = document.getElementById('sidebarOverlay');
+        <div class="layout">
+          <aside id="qm-sidebar" class="sidebar">
+            <div class="brand" style="margin-bottom:10px">
+              <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
+              <div class="brand-text">
+                <div class="brand-title">Menu główne</div>
+                <div class="brand-sub">Wszystkie moduły aplikacji</div>
+              </div>
+            </div>
 
-    function openSidebar() {
-      sidebar.classList.add('open');
-      overlay.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeIt() {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('show');
-      document.body.style.overflow = '';
-    }
-    if (menuToggle) menuToggle.addEventListener('click', openSidebar);
-    if (closeSidebar) closeSidebar.addEventListener('click', closeIt);
-    if (overlay) overlay.addEventListener('click', closeIt);
+            <div class="section-label">Start</div>
+            <div class="nav-list">${NAV.slice(0,3).map(navLink).join('')}</div>
 
-    var searchInput = document.querySelector('[data-module-search]');
-    if (searchInput) {
-      searchInput.addEventListener('input', function () {
-        var term = (searchInput.value || '').toLowerCase().trim();
-        var cards = document.querySelectorAll('[data-module-card]');
-        var visible = 0;
-        cards.forEach(function(card){
-          var hay = (card.getAttribute('data-search') || '').toLowerCase();
-          var match = !term || hay.indexOf(term) !== -1;
-          card.style.display = match ? '' : 'none';
-          if (match) visible += 1;
+            <div class="section-label">Sprzedaż i sklep</div>
+            <div class="nav-list">${NAV.slice(3,8).map(navLink).join('')}</div>
+
+            <div class="section-label">AI i rozwój</div>
+            <div class="nav-list">${NAV.slice(8,11).map(navLink).join('')}</div>
+
+            <div class="section-label">Branże</div>
+            <div class="nav-list">${NAV.slice(11,14).map(navLink).join('')}</div>
+
+            <div class="section-label">System</div>
+            <div class="nav-list">${NAV.slice(14).map(navLink).join('')}</div>
+          </aside>
+
+          <div id="qm-overlay" class="sidebar-overlay"></div>
+
+          <main class="content">
+            <section class="hero">
+              <span class="pill">📱 Mobile-first • GitHub Pages • zarabianie online</span>
+              <h1>${opts.heroTitle || current.label}</h1>
+              <p>${opts.heroText || current.desc}</p>
+              <div class="hero-actions">
+                ${quick.map(item => `<a class="primary-btn" href="${item.href}">${item.label}</a>`).join('')}
+              </div>
+              ${opts.notice ? `<div class="notice">${opts.notice}</div>` : ''}
+            </section>
+
+            ${opts.body || ''}
+
+            <div class="footer-space"></div>
+          </main>
+        </div>
+
+        <nav class="bottom-nav">${bottom.map(bottomLink).join('')}</nav>
+      </div>
+    `;
+
+    const sidebar = document.getElementById('qm-sidebar');
+    const overlay = document.getElementById('qm-overlay');
+    const openBtn = document.getElementById('qm-open-menu');
+    function close(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+    function open(){ sidebar.classList.add('open'); overlay.classList.add('show'); }
+    if(openBtn) openBtn.addEventListener('click', open);
+    if(overlay) overlay.addEventListener('click', close);
+
+    document.querySelectorAll('[data-module-search]').forEach(input => {
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        document.querySelectorAll('[data-module-card]').forEach(card => {
+          const hay = (card.getAttribute('data-search') || '').toLowerCase();
+          card.style.display = !q || hay.includes(q) ? '' : 'none';
         });
-        var empty = document.querySelector('[data-empty-state]');
-        if (empty) empty.style.display = visible ? 'none' : '';
       });
-    }
+    });
   }
 
-  document.addEventListener('DOMContentLoaded', initShell);
+  window.QualitetShell = { buildShell, NAV };
 })();

@@ -1,71 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QualitetMarket — główne menu</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jedno główne menu — QualitetMarket</title>
+  <meta name="description" content="Start do całej aplikacji QualitetMarket">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <div class="app-shell" data-app-shell>
-    <main class="page-wrap">
-      <section class="hero">
-        <div class="tag">QualitetMarket • mobile first</div>
-        <h1>Główne menu aplikacji do zarabiania</h1>
-        <p>Jedno wejście do całej platformy. Użytkownik ma szybko przejść do sprzedaży, importu produktów, AI, aplikacji i modułów branżowych.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="platforma.html">Otwórz pełne menu</a>
-          <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
-          <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
-        </div>
-      </section>
-      
-<section class="section-head">
-  <div>
-    <h2>Jedna główna strona do całej aplikacji</h2>
-    <div class="section-copy">To jest nowy punkt wejścia do platformy. Użytkownik ma od razu zobaczyć jak może zarabiać: sklep, hurtownie, AI, aplikacje, ogłoszenia i branże.</div>
-  </div>
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
+  <script>
+    QualitetShell.buildShell({
+      topSubtitle: "Start do całej aplikacji QualitetMarket",
+      primaryHref: "platforma.html",
+      primaryLabel: "Otwórz pełną platformę",
+      heroTitle: "Jedno główne menu",
+      heroText: "To jest główny link do całej platformy. Użytkownik wchodzi tutaj i od razu widzi jak zarabiać: sklep, hurtownie, AI, reklamy, aplikacje i kolejne moduły.",
+      notice: "Jedna strona startowa, jedno menu i szybkie wejście do wszystkich modułów aplikacji.",
+      quickLinks: ["platforma.html", "sklep.html", "ai.html"],
+      body: `
+<section class="metrics">
+  <article class="card"><div class="muted">Moduły w aplikacji</div><div class="metric-number">18+</div></article>
+  <article class="card"><div class="muted">Kierunki zarabiania</div><div class="metric-number">Sklep • AI • Usługi</div></article>
+  <article class="card"><div class="muted">Tryb działania</div><div class="metric-number">Mobile</div></article>
+  <article class="card"><div class="muted">Start</div><div class="metric-number">1 link</div></article>
 </section>
 
-<div class="kpi-grid">
-  <div class="kpi"><div class="muted">Moduły w menu</div><strong>40+</strong><span>Sprzedaż, AI, sklepy, ogłoszenia</span></div>
-  <div class="kpi"><div class="muted">Tryb działania</div><strong>Mobile</strong><span>Menu działa na telefonie i desktopie</span></div>
-  <div class="kpi"><div class="muted">Cel użytkownika</div><strong>Zarabianie</strong><span>Produkty, usługi, aplikacje i leady</span></div>
-  <div class="kpi"><div class="muted">Start</div><strong>1 link</strong><span>Wejście przez index.html</span></div>
+<div class="section-head">
+  <div><h2>Jak zarabiać w aplikacji</h2><p>Najkrótsza droga od wejścia do sprzedaży i promocji.</p></div>
 </div>
 
-<div class="quick-grid">
-  <article class="quick-card">
-    <div class="badge green">Szybki start</div>
-    <h3>1. Wybierz drogę zarabiania</h3>
-    <p>Sklep i hurtownie dla sprzedaży produktów, AI i reklama dla usług, nieruchomości i auta dla leadów i ogłoszeń.</p>
-    <div class="card-actions">
-      <a class="btn btn-primary" href="platforma.html">Pokaż wszystkie moduły</a>
-    </div>
+<section class="cards">
+  <article class="card">
+    <h3>1. Wgraj lub wybierz produkty</h3>
+    <p>Wejdź do hurtowni, przygotuj produkty i od razu buduj własną ofertę sklepową.</p>
+    <div class="module-actions"><a class="primary-btn" href="hurtownie.html">Otwórz hurtownie</a></div>
   </article>
-  <article class="quick-card">
-    <div class="badge">Import produktów</div>
-    <h3>2. Dodaj produkty z hurtowni</h3>
-    <p>Hurtownie i suppliers mają być prostą drogą do zasilenia sklepu i dalszej sprzedaży.</p>
-    <div class="card-actions">
-      <a class="btn btn-secondary" href="hurtownie.html">Otwórz hurtownie</a>
-      <a class="btn btn-secondary" href="suppliers.html">Otwórz suppliers</a>
-    </div>
+  <article class="card">
+    <h3>2. Zbuduj sklep i marżę</h3>
+    <p>Ustaw sklep, własny panel i przejdź do sprzedaży przez prosty marketplace.</p>
+    <div class="module-actions"><a class="primary-btn" href="generator-sklepu.html">Generator sklepu</a></div>
   </article>
-  <article class="quick-card">
-    <div class="badge gold">Skalowanie</div>
-    <h3>3. Rozwijaj własną aplikację i sklep</h3>
-    <p>Z tego miejsca użytkownik przejdzie do generatora sklepu, panelu sklepu, AI i kreatora aplikacji.</p>
-    <div class="card-actions">
-      <a class="btn btn-secondary" href="generator-sklepu.html">Generator sklepu</a>
-      <a class="btn btn-secondary" href="stworz-aplikacje.html">Stwórz aplikację</a>
-    </div>
+  <article class="card">
+    <h3>3. Promuj się przez AI</h3>
+    <p>Twórz treści, reklamy i publikacje, żeby zwiększać ruch i zamówienia.</p>
+    <div class="module-actions"><a class="primary-btn" href="reklama-ai.html">Reklama AI</a></div>
   </article>
-</div>
+</section>
 
-    </main>
-  </div>
+<div class="section-head">
+  <div><h2>Szybkie wejścia</h2><p>Najważniejsze ścieżki dla użytkownika.</p></div>
+</div>
+<section class="module-grid">
+  <article class="card module-card"><div class="module-top"><div class="module-icon">🧭</div><div class="module-copy"><h3>Pełna platforma</h3><p>Wszystko w jednym miejscu z pełnym menu modułów.</p></div></div><div class="module-actions"><a class="primary-btn" href="platforma.html">Otwórz platformę</a></div></article>
+  <article class="card module-card"><div class="module-top"><div class="module-icon">🛒</div><div class="module-copy"><h3>Sklep</h3><p>Sprzedaż produktów i budowa oferty pod klienta.</p></div></div><div class="module-actions"><a class="primary-btn" href="sklep.html">Przejdź do sklepu</a></div></article>
+  <article class="card module-card"><div class="module-top"><div class="module-icon">🤖</div><div class="module-copy"><h3>AI i reklama</h3><p>Treści, reklamy, promowanie usług i ofert.</p></div></div><div class="module-actions"><a class="primary-btn" href="ai.html">Otwórz AI</a></div></article>
+</section>
+`
+    });
+  </script>
 </body>
 </html>

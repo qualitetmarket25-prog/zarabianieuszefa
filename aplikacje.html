@@ -2,87 +2,31 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Aplikacje — UszefaQualitet</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aplikacje — QualitetMarket</title>
+  <meta name="description" content="Aplikacje i usługi do zarabiania">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Aplikacje','lista gotowych app-ek klientów');});</script>
-
-  <section class="grid grid-4">
-    <div class="kpi"><strong id="appsCount">0</strong><span>aplikacji</span></div>
-    <div class="kpi"><strong id="mrrCount">0 zł</strong><span>potencjał miesięczny</span></div>
-    <div class="kpi"><strong id="draftCount">0</strong><span>wersji roboczych</span></div>
-    <div class="kpi"><strong id="liveCount">0</strong><span>gotowych do sprzedaży</span></div>
-  </section>
-
-  <section class="card" style="margin-top:18px">
-    <div class="section-title">
-      <h2>Twoje aplikacje</h2>
-      <a class="btn btn-primary" href="stworz-aplikacje.html">Dodaj nową</a>
-    </div>
-    <div id="appsList" class="grid grid-3"></div>
-  </section>
-
-  <section class="card" style="margin-top:18px">
-    <div class="section-title"><h2>Jak to sprzedawać</h2></div>
-    <div class="list">
-      <div class="list-row"><div><strong>Sklep</strong><div class="small">Start od prostych sklepów i dropshippingu.</div></div><span class="badge pro">mainstream</span></div>
-      <div class="list-row"><div><strong>Nieruchomości</strong><div class="small">Najwyższy ticket i najlepszy upsell dla Agent PRO.</div></div><span class="badge boss">premium</span></div>
-      <div class="list-row"><div><strong>Auto / komis</strong><div class="small">Dobra nisza na leady i abonament miesięczny.</div></div><span class="badge elite">branża</span></div>
-    </div>
-  </section>
-
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
   <script>
-  (function(){
-    var list = document.getElementById('appsList');
-
-    function planLabel(plan){
-      return String(plan || 'basic').toUpperCase();
-    }
-
-    function render(){
-      var apps = QU.readCrm().generatedApps || [];
-      document.getElementById('appsCount').textContent = apps.length;
-      document.getElementById('mrrCount').textContent = QU.money(apps.reduce(function(sum,item){ return sum + (Number(item.monthlyPrice) || 0); }, 0));
-      document.getElementById('draftCount').textContent = apps.filter(function(item){ return item.status === 'draft'; }).length;
-      document.getElementById('liveCount').textContent = apps.filter(function(item){ return item.status === 'live'; }).length;
-
-      if(!apps.length){
-        list.innerHTML = '<div class="empty">Brak aplikacji. Wejdź do kreatora i zapisz pierwszą.</div>';
-        return;
-      }
-
-      list.innerHTML = apps.map(function(item){
-        return '<div class="app-card">'
-          + '<div class="offer-meta"><span class="badge pro">'+ item.type +'</span><span class="badge boss">'+ planLabel(item.plan) +'</span><span class="badge '+ QU.statusBadgeClass(item.status) +'">'+ item.status +'</span></div>'
-          + '<h3 style="margin:0">' + item.name + '</h3>'
-          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
-          + '<div class="list-row"><div><strong>Miasto</strong><div class="small">' + (item.city || 'online') + '</div></div><div><strong>Target</strong><div class="small">' + (item.target || 'B2C') + '</div></div><div><strong>MRR</strong><div class="small">' + QU.money(item.monthlyPrice) + '</div></div></div>'
-          + '<div class="actions-row">'
-          + '<a class="btn btn-ghost" href="stworz-aplikacje.html?edit='+ item.id +'">Edytuj</a>'
-          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-
-      list.querySelectorAll('[data-del]').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var id = btn.getAttribute('data-del');
-          QU.updateCrm(function(crm){
-            crm.generatedApps = (crm.generatedApps || []).filter(function(item){ return item.id !== id; });
-            return crm;
-          });
-          render();
-        });
-      });
-    }
-
-    render();
-  })();
+    QualitetShell.buildShell({
+      topSubtitle: "Aplikacje i usługi do zarabiania",
+      primaryHref: "stworz-aplikacje.html",
+      primaryLabel: "Stwórz aplikację",
+      heroTitle: "Aplikacje",
+      heroText: "Ten moduł rozwija dodatkowe źródła przychodu: aplikacje, usługi, generatory i cyfrowe produkty.",
+      notice: "",
+      quickLinks: ["stworz-aplikacje.html", "pobierz-aplikacje.html", "platforma.html"],
+      body: `
+<section class="cards">
+  <article class="card"><h3>Aplikacje do zarabiania</h3><p>Moduł zbierający aplikacje, pomysły i usługi, które użytkownik może sprzedawać lub rozwijać.</p></article>
+  <article class="card"><h3>Szybkie przejścia</h3><div class="module-actions"><a class="primary-btn" href="stworz-aplikacje.html">Stwórz aplikację</a><a class="ghost-btn" href="pobierz-aplikacje.html">Pobierz aplikacje</a></div></article>
+</section>
+`
+    });
   </script>
-</div>
 </body>
 </html>

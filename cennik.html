@@ -1,42 +1,32 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cennik — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Cennik','pakiety miesięczne i monetyzacja');});</script>
-  <div class="section-title"><h2>Pakiety, które sprzedają się co miesiąc</h2></div>
-  <div class="pricing">
-    <div class="card price-card">
-      <h3>Basic</h3><div class="price">29 zł <small>/ mies.</small></div>
-      <ul class="features"><li>1 sklep</li><li>proste ogłoszenia</li><li>podstawowy panel</li></ul>
-      <button class="btn-ghost" data-set-plan="basic">Wybierz Basic</button>
-    </div>
-    <div class="card price-card">
-      <h3>Pro</h3><div class="price">59 zł <small>/ mies.</small></div>
-      <ul class="features"><li>sklep + reklama</li><li>wyróżnienia ofert</li><li>więcej modułów</li></ul>
-      <button class="btn" data-set-plan="pro">Wybierz Pro</button>
-    </div>
-    <div class="card price-card featured">
-      <div class="ribbon">najczęściej</div>
-      <h3>Elite</h3><div class="price">99 zł <small>/ mies.</small></div>
-      <ul class="features"><li>AI reklamy</li><li>kreator własnej aplikacji</li><li>lepsza automatyzacja</li></ul>
-      <button class="btn" data-set-plan="elite">Wybierz Elite</button>
-    </div>
-    <div class="card price-card">
-      <h3>Boss</h3><div class="price">149 zł <small>/ mies.</small></div>
-      <ul class="features"><li>pełna super app</li><li>aplikacje klientów</li><li>priorytet i premium branding</li></ul>
-      <button class="btn-gold" data-set-plan="boss">Wybierz Boss</button>
-    </div>
-  </div>
-  <div class="section-title" style="margin-top:24px"><h2>Płatne aplikacje branżowe</h2></div>
-  <div class="grid grid-3">
-    <div class="card"><span class="badge boss">B2B premium</span><h3>Agent Nieruchomości PRO</h3><div class="price">399 zł <small>/ mies.</small></div><p class="small">Aplikacja dla agentów, biur, firm zarządzających najmem i sprzedażą. Własne oferty, panel klientów, reklamy, zgłoszenia i szybki kontakt.</p><a class="btn-gold" href="agent-nieruchomosci-pro.html">Zobacz Agent PRO</a></div>
-    <div class="card"><h3>Firma Wynajmu Start</h3><div class="price">249 zł <small>/ mies.</small></div><p class="small">Dla małych firm wynajmujących mieszkania i apartamenty. Panel ofert, kalendarz, kontakt i formularze leadów.</p></div>
-    <div class="card"><h3>Biuro Nieruchomości Max</h3><div class="price">699 zł <small>/ mies.</small></div><p class="small">Dla większych biur. Multi-agent, reklamy AI, premium branding i dedykowana aplikacja.</p></div>
-  </div>
-</div>
-</body></html>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cennik — QualitetMarket</title>
+  <meta name="description" content="Pakiety Basic / Pro / Elite">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div id="qm-shell"></div>
+  <script src="app-shell.js"></script>
+  <script>
+    QualitetShell.buildShell({
+      topSubtitle: "Pakiety Basic / Pro / Elite",
+      primaryHref: "aktywuj-pro.html",
+      primaryLabel: "Aktywuj PRO",
+      heroTitle: "Cennik",
+      heroText: "Cennik porządkuje dostęp do modułów i prowadzi użytkownika do aktywacji odpowiedniego planu.",
+      notice: "",
+      quickLinks: ["aktywuj-pro.html", "success.html", "platforma.html"],
+      body: `
+<section class="cards">
+  <article class="card"><h3>Pakiety użytkownika</h3><p>Basic, Pro i Elite. Menu kieruje do modułów zgodnie z planem i guardami.</p><div class="tag-row"><span class="tag">basic</span><span class="tag">pro</span><span class="tag">elite</span></div></article>
+  <article class="card"><h3>Ścieżka sprzedaży planów</h3><ul class="list"><li><div><strong>Plan PRO</strong><span>Dostęp do hurtowni i QualitetMarket</span></div><a class="primary-btn" href="aktywuj-pro.html">Aktywuj PRO</a></li><li><div><strong>Success</strong><span>Po aktywacji wróć do aplikacji</span></div><a class="primary-btn" href="success.html">Success</a></li></ul></article>
+</section>
+`
+    });
+  </script>
+</body>
+</html>
