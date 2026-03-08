@@ -1,78 +1,42 @@
-<!doctype html>
-<html lang="pl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QualitetMarket — Cennik</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-</head>
-<body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link active" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Cennik</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      
-<div class="grid grid-3">
-  <div class="card"><h3>Basic</h3><div class="price">79 zł</div><p class="small">Start dla jednej osoby. Marża 15%.</p><button class="btn btn-primary" onclick="activatePlan('basic')">Wybierz Basic</button></div>
-  <div class="card"><h3>Pro</h3><div class="price">149 zł</div><p class="small">Najlepszy środek. Marża 25%.</p><button class="btn btn-gold" onclick="activatePlan('pro')">Wybierz Pro</button></div>
-  <div class="card"><h3>Elite</h3><div class="price">299 zł</div><p class="small">Najwyższa marża. Marża 35%.</p><button class="btn btn-primary" onclick="activatePlan('elite')">Wybierz Elite</button></div>
-</div>
-<div class="card" style="margin-top:18px">
-  <h2>Jak to działa</h2>
-  <p class="small">Na tym etapie pakiet ustawia plan i marżę w localStorage. Prawdziwe płatności Stripe podepniemy osobno.</p>
-</div>
-<script>
-function activatePlan(plan){
-  var m = qm.setPlan(plan);
-  alert('Plan ustawiony: ' + plan.toUpperCase() + ' | marża: ' + m + '%');
-  location.href = 'platforma.html';
-}
-</script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
-</body>
-</html>
+(function(){
+  function smartPct(basePrice, plan){
+    const base = {basic:18, pro:28, elite:38}[plan] || 18;
+    const p = Number(basePrice || 0);
+    let extra = 0;
+    if (p < 30) extra = 18;
+    else if (p < 80) extra = 12;
+    else if (p < 150) extra = 8;
+    else if (p < 400) extra = 5;
+    else extra = 2;
+    return base + extra;
+  }
+
+  function to99(price){
+    const floor = Math.max(1, Math.floor(Number(price || 0)));
+    return Number((floor + 0.99).toFixed(2));
+  }
+
+  window.qmMargin = {
+    currentPlan(){ return localStorage.getItem('qm_plan_v1') || 'basic'; },
+    currentPct(){ return Number(localStorage.getItem('qm_store_margin_pct') || 18); },
+    setPlan(plan){
+      const pct = {basic:18, pro:28, elite:38}[plan] || 18;
+      localStorage.setItem('qm_plan_v1', plan);
+      localStorage.setItem('qm_store_margin_pct', String(pct));
+      return pct;
+    },
+    productPrice(basePrice){
+      const plan = this.currentPlan();
+      const pct = smartPct(basePrice, plan);
+      return to99(Number(basePrice) * (1 + pct / 100));
+    },
+    enrichProducts(products){
+      return (products || []).map(p=>{
+        const raw = Number(p.basePrice ?? p.price ?? 0);
+        const finalPrice = this.productPrice(raw);
+        return {...p, basePrice: raw, price: finalPrice, marginLabel: `${Math.round(((finalPrice-raw)/Math.max(raw,1))*100)}%`};
+      });
+    }
+  };
+})();

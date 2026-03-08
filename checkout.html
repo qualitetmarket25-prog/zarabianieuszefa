@@ -1,88 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QualitetMarket — Checkout</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QualitetMarket — Cennik</title>
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link active" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Checkout</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      
-<div class="card">
-  <h2>Checkout</h2>
-  <p class="small">Prosty checkout zapisujący zamówienie do localStorage.</p>
-  <div class="grid grid-2">
-    <div><input id="name" placeholder="Imię i nazwisko"></div>
-    <div><input id="email" placeholder="E-mail"></div>
-  </div>
-  <div style="margin-top:14px"><textarea id="address" placeholder="Adres dostawy"></textarea></div>
-  <div class="actions-row" style="margin-top:14px">
-    <button class="btn btn-primary" onclick="placeOrder()">Złóż zamówienie</button>
-    <a class="btn btn-ghost" href="koszyk.html">Wróć do koszyka</a>
-  </div>
-</div>
+<script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
 <script>
-function placeOrder(){
-  var cart = qm.getCart();
-  if(!cart.length){ alert('Koszyk jest pusty'); return; }
-  var orders = qm.getOrders();
-  var total = cart.reduce(function(s,x){ return s + x.price*x.qty; },0);
-  orders.unshift({id:'ORD-'+Date.now(), createdAt:new Date().toISOString(), customer:document.getElementById('name').value || 'Klient', email:document.getElementById('email').value || '-', total:total, items:cart});
-  qm.saveOrders(orders);
-  qm.saveCart([]);
-  alert('Zamówienie zapisane');
-  location.href = 'zamowienia.html';
+
+renderShell({
+  title:'QualitetMarket — Cennik',
+  subtitle:'Plany subskrypcji',
+  content: `
+    <section class="hero">
+      <span class="badge">Cennik i subskrypcje</span>
+      <h1>Wybierz plan, który zwiększa zysk</h1>
+      <p>Wyższy plan = większa domyślna marża i więcej możliwości sprzedaży.</p>
+    </section>
+    <section class="pricing" style="margin-top:18px">
+      ${Object.entries(qmSubscriptions.plans).map(([key,val])=>`
+      <article class="price-card ${key==='pro' ? 'featured' : ''}">
+        <span class="badge">${key.toUpperCase()}</span>
+        <h3>${key==='basic'?'Start sprzedaży':key==='pro'?'Najlepszy dla większości':'Maksymalny zysk'}</h3>
+        <div class="amount">${val.price} zł</div>
+        <p class="muted">rozliczenie / ${val.billing}</p>
+        <div class="note" style="margin:14px 0">Marża bazowa: ${val.margin}%</div>
+        <div class="list">
+          <div>✔ sklep i koszyk</div>
+          <div>✔ auto marża</div>
+          <div>✔ plan ${key.toUpperCase()}</div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="activatePlan('${key}')">Wybierz ${key.toUpperCase()}</button>
+        </div>
+      </article>`).join('')}
+    </section>
+  `
+});
+window.activatePlan = function(plan){
+  const meta = qmSubscriptions.activate(plan);
+  alert(`Plan ${plan.toUpperCase()} aktywny. Marża ${meta.margin}%`);
+  location.href = 'platforma.html';
 }
+
 </script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
 </body>
 </html>

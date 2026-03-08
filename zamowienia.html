@@ -1,76 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QualitetMarket — Zamówienia</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link active" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Zamówienia</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      
-<div class="card">
-  <h2>Zamówienia</h2>
-  <div id="ordersWrap"></div>
-</div>
+<script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  var orders = qm.getOrders();
-  var wrap = document.getElementById('ordersWrap');
-  if(!orders.length){ wrap.innerHTML = '<div class="empty">Brak zamówień.</div>'; return; }
-  wrap.innerHTML = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Suma</th></tr></thead><tbody>' + orders.map(function(o){
-    return '<tr><td>'+o.id+'</td><td>'+o.createdAt.slice(0,10)+'</td><td>'+o.customer+'</td><td>'+qm.money(o.total)+'</td></tr>';
-  }).join('') + '</tbody></table></div>';
+
+const orders = qmUtils.read('qm_orders_v1',[]);
+renderShell({
+  title:'QualitetMarket — Zamówienia',
+  subtitle:'Lista zamówień',
+  content: `
+    <section class="hero">
+      <span class="badge">Zamówienia</span>
+      <h1>Historia zamówień</h1>
+      <p>Tu widzisz wszystkie zapisane checkouty z aplikacji.</p>
+    </section>
+    <div id="ordersList" class="list" style="margin-top:18px"></div>
+  `
 });
+const el = document.getElementById('ordersList');
+if(!orders.length){
+  el.innerHTML = `<div class="empty">Brak zamówień.</div>`;
+}else{
+  el.innerHTML = orders.map(o=>`
+    <article class="card">
+      <h3>${o.id}</h3>
+      <p>Klient: ${o.customer.name} • ${o.customer.email}</p>
+      <p>Plan: ${String(o.plan).toUpperCase()} • Razem: ${qmUtils.money(o.total)}</p>
+      <p class="muted">${new Date(o.createdAt).toLocaleString('pl-PL')}</p>
+    </article>
+  `).join('');
+}
+
 </script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
 </body>
 </html>

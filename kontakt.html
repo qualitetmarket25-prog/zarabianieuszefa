@@ -1,61 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kontakt — QualitetMarket</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QualitetMarket — Start</title>
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link active" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Kontakt</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      <div class="card"><h2>Kontakt</h2><p class="small">Wpisz tutaj swój e-mail i dane firmy przed startem.</p></div>
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
 <script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
+<script>
+
+renderShell({
+  title:'QualitetMarket — Start',
+  subtitle:'Zarabianie przez sklep, dropshipping i marżę',
+  content: `
+    <section class="hero">
+      <span class="badge">Start aplikacji</span>
+      <h1>Nowoczesny panel do zarabiania online</h1>
+      <p>Uruchamiasz sklep, ustawiasz plan, importujesz produkty z hurtowni i sprzedajesz z automatyczną marżą. Wszystko działa na telefonie i GitHub Pages.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="platforma.html">Wejdź do platformy</a>
+        <a class="btn btn-secondary" href="cennik.html">Zobacz cennik</a>
+        <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
+      </div>
+    </section>
+
+    <section class="grid cards">
+      <article class="card span-3 kpi"><span class="muted">Aktywny plan</span><strong>${qmState.getPlan().toUpperCase()}</strong><span class="muted">Zmiana w cenniku</span></article>
+      <article class="card span-3 kpi"><span class="muted">Marża</span><strong>${qmState.getMargin()}%</strong><span class="muted">Auto pricing w sklepie</span></article>
+      <article class="card span-3 kpi"><span class="muted">Produkty</span><strong id="kpiProducts">0</strong><span class="muted">Zaimportowane do sprzedaży</span></article>
+      <article class="card span-3 kpi"><span class="muted">Zamówienia</span><strong id="kpiOrders">0</strong><span class="muted">W Twojej aplikacji</span></article>
+    </section>
+
+    <div class="section-title"><h2>Główne moduły</h2><span class="muted">Kliknij i działaj</span></div>
+    <section class="module-grid">
+      ${[
+        ['🧭','Platforma','Jedno miejsce do sterowania aplikacją.','platforma.html'],
+        ['🏭','Hurtownie','Import demo i własnych produktów CSV.','hurtownie.html'],
+        ['🛍️','Sklep','Sprzedaż z automatyczną marżą.','sklep.html'],
+        ['🛒','Koszyk','Szybka ścieżka zakupowa mobile.','koszyk.html'],
+        ['💳','Checkout','Zapis zamówień i dane klienta.','checkout.html'],
+        ['💸','Cennik','Plany Basic / Pro / Elite.','cennik.html']
+      ].map(item=>`
+      <article class="module">
+        <div class="emoji">${item[0]}</div>
+        <h3>${item[1]}</h3>
+        <p>${item[2]}</p>
+        <div class="actions"><a class="btn btn-primary" href="${item[3]}">Otwórz</a></div>
+      </article>`).join('')}
+    </section>
+  `
+});
+document.getElementById('kpiProducts').textContent = (qmUtils.read('qm_products_by_supplier_v1',[]) || []).length;
+document.getElementById('kpiOrders').textContent = (qmUtils.read('qm_orders_v1',[]) || []).length;
+
+</script>
+
 </body>
 </html>

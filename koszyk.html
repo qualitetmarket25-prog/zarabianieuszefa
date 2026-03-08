@@ -1,85 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QualitetMarket — Koszyk</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link active" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Koszyk</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      
-<div class="card">
-  <div class="section-title"><h2>Koszyk</h2><a class="btn btn-primary" href="checkout.html">Przejdź do checkout</a></div>
-  <div id="cartWrap"></div>
-</div>
+<script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
 <script>
+
+function readCart(){ return qmUtils.read('qm_cart_v1',[]); }
+function writeCart(cart){ qmUtils.write('qm_cart_v1', cart); }
+function total(cart){ return cart.reduce((s,i)=>s + Number(i.price)*Number(i.qty), 0); }
+
+renderShell({
+  title:'QualitetMarket — Koszyk',
+  subtitle:'Twój koszyk',
+  content: `
+    <section class="hero">
+      <span class="badge">Koszyk</span>
+      <h1>Gotowe do checkoutu</h1>
+      <p>Edytuj ilości i przejdź dalej. Wszystko działa też na telefonie.</p>
+      <div class="hero-actions">
+        <a class="btn btn-secondary" href="sklep.html">Wróć do sklepu</a>
+        <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
+      </div>
+    </section>
+    <div id="cartList" class="list"></div>
+    <div id="cartSummary" class="card" style="margin-top:16px"></div>
+  `
+});
+
+window.cartPlus = function(id){
+  const cart = readCart(); const item = cart.find(x=>x.id===id); if(item) item.qty += 1; writeCart(cart); renderCart();
+}
+window.cartMinus = function(id){
+  let cart = readCart(); const item = cart.find(x=>x.id===id); if(item) item.qty -= 1; cart = cart.filter(x=>x.qty > 0); writeCart(cart); renderCart();
+}
+window.cartRemove = function(id){
+  let cart = readCart().filter(x=>x.id!==id); writeCart(cart); renderCart();
+}
+
 function renderCart(){
-  var cart = qm.getCart();
-  var wrap = document.getElementById('cartWrap');
-  if(!cart.length){ wrap.innerHTML = '<div class="empty">Koszyk jest pusty.</div>'; return; }
-  var rows = cart.map(function(x,i){
-    return '<tr><td>'+x.name+'</td><td>'+qm.money(x.price)+'</td><td>'+x.qty+'</td><td>'+qm.money(x.price*x.qty)+'</td><td><button class="btn btn-danger" onclick="removeItem('+i+')">Usuń</button></td></tr>';
-  }).join('');
-  var total = cart.reduce(function(s,x){ return s + x.price*x.qty; },0);
-  wrap.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Produkt</th><th>Cena</th><th>Ilość</th><th>Razem</th><th>Akcja</th></tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:16px" class="price">Suma: '+qm.money(total)+'</div>';
+  const cart = readCart();
+  const list = document.getElementById('cartList');
+  const summary = document.getElementById('cartSummary');
+  if(!cart.length){
+    list.innerHTML = `<div class="empty">Koszyk jest pusty.</div>`;
+    summary.innerHTML = `<strong>Razem: 0.00 zł</strong>`;
+    return;
+  }
+  list.innerHTML = cart.map(p=>`
+    <article class="list-item">
+      <div class="meta">
+        <img class="thumb" src="${p.img || 'uszefaqualitet-logo.svg'}" alt="">
+        <div><strong>${p.name}</strong><div class="muted">${qmUtils.money(p.price)} / szt.</div></div>
+      </div>
+      <div class="row">
+        <button class="btn" onclick="cartMinus('${p.id}')">−</button>
+        <div class="btn">${p.qty}</div>
+        <button class="btn" onclick="cartPlus('${p.id}')">+</button>
+        <button class="btn btn-danger" onclick="cartRemove('${p.id}')">Usuń</button>
+      </div>
+    </article>
+  `).join('');
+  summary.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center"><strong>Razem: ${qmUtils.money(total(cart))}</strong><a class="btn btn-primary" href="checkout.html">Dalej</a></div>`;
 }
-function removeItem(i){
-  var cart = qm.getCart();
-  cart.splice(i,1);
-  qm.saveCart(cart);
-  renderCart();
-}
-document.addEventListener('DOMContentLoaded', renderCart);
+renderCart();
+
 </script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
 </body>
 </html>

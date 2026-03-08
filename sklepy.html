@@ -1,91 +1,92 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QualitetMarket — Sklepy</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
-      </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link active" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
-        <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Sklepy</h1>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-      </div>
-    </header>
-    <section class="page-content">
-      
-<div class="card">
-  <h2>Sklepy i marża</h2>
-  <p class="small">Prosty ekran sterowania aktywnym sklepem i marżą.</p>
-  <div class="grid grid-2">
-    <div><input id="storeNameInput" placeholder="Nazwa sklepu" value="Mój sklep"></div>
-    <div><input id="marginInput" type="number" placeholder="Marża %" value="15"></div>
-  </div>
-  <div class="actions-row" style="margin-top:14px">
-    <button class="btn btn-primary" onclick="saveStore()">Zapisz sklep</button>
-    <a class="btn btn-ghost" href="sklep.html">Idź do sklepu</a>
-  </div>
-</div>
+<script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  var stores = qm.readJson('qm_stores_v1', []);
-  var active = qm.readJson('qm_active_store_v1', null);
-  if(active && active.name) document.getElementById('storeNameInput').value = active.name;
-  document.getElementById('marginInput').value = qm.getMargin();
+
+function getStores(){ return qmUtils.read('qm_stores_v1',[]); }
+function setStores(stores){ qmUtils.write('qm_stores_v1', stores); }
+function currentSlug(){ return localStorage.getItem('qm_active_store_v1') || ''; }
+
+renderShell({
+  title:'QualitetMarket — Sklepy',
+  subtitle:'Multi-store',
+  content: `
+    <section class="hero">
+      <span class="badge">Sklepy</span>
+      <h1>Ustaw swój sklep</h1>
+      <p>Dodajesz sklep, ustawiasz aktywny i zapisujesz marżę pod sprzedaż.</p>
+    </section>
+    <section class="card" style="margin-top:18px">
+      <form id="storeForm" class="form-grid">
+        <div class="col-6"><label>Nazwa sklepu<input class="input" name="name" required></label></div>
+        <div class="col-6"><label>Slug<input class="input" name="slug" required placeholder="moj-sklep"></label></div>
+        <div class="col-6"><label>Marża %<input class="input" name="margin" type="number" min="1" step="1" value="${qmState.getMargin()}" required></label></div>
+        <div class="col-6" style="display:flex;align-items:end"><button class="btn btn-primary" type="submit">Dodaj sklep</button></div>
+      </form>
+    </section>
+    <div id="storesList" class="list" style="margin-top:18px"></div>
+  `
 });
-function saveStore(){
-  var name = document.getElementById('storeNameInput').value || 'Mój sklep';
-  var margin = Number(document.getElementById('marginInput').value || 15);
-  var store = {id:'store-main',name:name,marginPct:margin};
+
+document.getElementById('storeForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const fd = new FormData(this);
+  const store = Object.fromEntries(fd.entries());
+  store.id = qmUtils.uid('store');
+  const stores = getStores();
+  stores.push(store);
+  setStores(stores);
+  localStorage.setItem('qm_active_store_v1', store.slug);
+  localStorage.setItem('qm_store_margin_pct', String(store.margin));
+  this.reset();
+  renderStores();
+});
+
+window.activateStore = function(slug, margin){
+  localStorage.setItem('qm_active_store_v1', slug);
   localStorage.setItem('qm_store_margin_pct', String(margin));
-  qm.writeJson('qm_active_store_v1', store);
-  qm.writeJson('qm_stores_v1', [store]);
-  alert('Zapisano sklep i marżę');
+  alert('Aktywny sklep ustawiony.');
+  renderStores();
 }
+window.deleteStore = function(id){
+  setStores(getStores().filter(s=>s.id!==id));
+  renderStores();
+}
+
+function renderStores(){
+  const stores = getStores();
+  const slug = currentSlug();
+  const el = document.getElementById('storesList');
+  if(!stores.length){
+    el.innerHTML = `<div class="empty">Brak sklepów.</div>`;
+    return;
+  }
+  el.innerHTML = stores.map(s=>`
+    <article class="list-item">
+      <div>
+        <strong>${s.name}</strong>
+        <div class="muted">slug: ${s.slug} • marża: ${s.margin}% ${slug===s.slug ? '• aktywny' : ''}</div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" onclick="activateStore('${s.slug}','${s.margin}')">Aktywuj</button>
+        <button class="btn btn-danger" onclick="deleteStore('${s.id}')">Usuń</button>
+      </div>
+    </article>
+  `).join('');
+}
+renderStores();
+
 </script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
 </body>
 </html>

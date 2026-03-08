@@ -1,103 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QualitetMarket — Sklep</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="mobileDrawer">
-    <div class="brand-wrap">
-      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="brand">QualitetMarket</div>
-        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
+<script src="app-shell.js"></script>
+<script src="auto-margin.js"></script>
+<script src="js/subscriptions.js"></script>
+<script src="js/planGuard.js"></script>
+<script>
+
+function getProducts(){
+  return qmUtils.read('qm_products_by_supplier_v1',[]);
+}
+function getCart(){
+  return qmUtils.read('qm_cart_v1',[]);
+}
+function saveCart(cart){ qmUtils.write('qm_cart_v1', cart); }
+
+renderShell({
+  title:'QualitetMarket — Sklep',
+  subtitle:'Sprzedaż produktów',
+  content: `
+    <section class="hero">
+      <span class="badge">Sklep z automatyczną marżą</span>
+      <h1>Produkty gotowe do sprzedaży</h1>
+      <p>Każdy produkt ma cenę wyliczoną automatycznie na podstawie planu i marży.</p>
+      <div class="hero-actions">
+        <a class="btn btn-secondary" href="hurtownie.html">Dodaj produkty</a>
+        <a class="btn btn-primary" href="koszyk.html">Przejdź do koszyka</a>
       </div>
-    </div>
-    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link active" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
-    <div class="plan-box">
-      <div class="muted-label">Aktywny plan</div>
-      <div class="plan-pill" id="planBadge">BASIC</div>
-      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
-      <div class="plan-actions">
-        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
-        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
-      </div>
-    </div>
-  </aside>
-  <main class="app-main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
+    </section>
+    <div class="section-title"><h2>Katalog</h2></div>
+    <div id="shopList" class="list"></div>
+  `
+});
+
+function addToCart(id){
+  const products = getProducts();
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  const cart = getCart();
+  const existing = cart.find(x=>x.id===id);
+  if(existing) existing.qty += 1;
+  else cart.push({...p, qty:1});
+  saveCart(cart);
+  alert('Dodano do koszyka');
+  renderList();
+}
+window.addToCart = addToCart;
+
+function renderList(){
+  const list = getProducts();
+  const el = document.getElementById('shopList');
+  if(!list.length){
+    el.innerHTML = `<div class="empty">Brak produktów. Najpierw wejdź w hurtownie i kliknij „Załaduj demo produkty”.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(p=>`
+    <article class="list-item">
+      <div class="meta">
+        <img class="thumb" src="${p.img || 'uszefaqualitet-logo.svg'}" alt="">
         <div>
-          <div class="topbar-sub">QualitetMarket</div>
-          <h1 class="topbar-title">Sklep</h1>
+          <strong>${p.name}</strong>
+          <div class="muted">${p.supplier || 'Dostawca'} • marża ${p.marginLabel || '-'}</div>
+          <div class="muted">Baza: ${qmUtils.money(p.basePrice)}</div>
         </div>
       </div>
-      <div class="topbar-actions">
-        <a class="btn btn-ghost" href="platforma.html">Panel</a>
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
+      <div class="row">
+        <div class="price">${qmUtils.money(p.price)}</div>
+        <button class="btn btn-primary" onclick="addToCart('${p.id}')">Dodaj</button>
       </div>
-    </header>
-    <section class="page-content">
-      
-<div class="grid grid-4">
-  <div class="kpi"><strong id="shopCount">0</strong><span>produkty</span></div>
-  <div class="kpi"><strong id="avgMargin">15%</strong><span>aktualna marża</span></div>
-  <div class="kpi"><strong id="cartValue">0,00 zł</strong><span>wartość koszyka</span></div>
-  <div class="kpi"><strong id="storeName">Mój sklep</strong><span>aktywny sklep</span></div>
-</div>
-<div class="card" style="margin-top:18px">
-  <div class="section-title"><h2>Produkty</h2><a class="btn btn-ghost" href="hurtownie.html">Import z hurtowni</a></div>
-  <div id="productsWrap" class="product-grid"></div>
-</div>
-<script>
-function finalPrice(base){
-  var margin = qm.getMargin();
-  return Math.round((Number(base) * (1 + margin/100))*100)/100;
+    </article>
+  `).join('');
 }
-function addToCart(id){
-  var products = qm.getProducts();
-  var p = products.find(function(x){ return x.id===id; });
-  if(!p) return;
-  var cart = qm.getCart();
-  var ex = cart.find(function(x){ return x.id===id; });
-  if(ex){ ex.qty += 1; } else { cart.push({id:p.id,name:p.name,price:finalPrice(p.price),qty:1}); }
-  qm.saveCart(cart);
-  renderShop();
-}
-function renderShop(){
-  var products = qm.getProducts();
-  var wrap = document.getElementById('productsWrap');
-  var cart = qm.getCart();
-  document.getElementById('shopCount').textContent = products.length;
-  document.getElementById('avgMargin').textContent = qm.getMargin() + '%';
-  var total = cart.reduce(function(s,x){ return s + x.price*x.qty; },0);
-  document.getElementById('cartValue').textContent = qm.money(total);
-  if(!products.length){ wrap.innerHTML = '<div class="empty">Brak produktów. Wejdź do hurtowni i kliknij "Załaduj demo produkty".</div>'; return; }
-  wrap.innerHTML = products.map(function(p){
-    var fp = finalPrice(p.price);
-    return '<article class="product-card"><img src="'+p.img+'" alt=""><h3>'+p.name+'</h3><div class="small">'+(p.supplier||'Dostawca')+'</div><div class="price">'+qm.money(fp)+'</div><div class="small">Cena bazowa: '+qm.money(p.price)+'</div><button class="btn btn-primary" onclick="addToCart(\''+p.id+'\')">Dodaj do koszyka</button></article>';
-  }).join('');
-}
-document.addEventListener('DOMContentLoaded', renderShop);
+renderList();
+
 </script>
 
-      <footer class="footer">
-        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
-        <div class="footer-links">
-          <a href="kontakt.html">Kontakt</a>
-          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a href="regulamin.html">Regulamin</a>
-        </div>
-      </footer>
-    </section>
-  </main>
-</div>
-<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
-<script src="app-shell.js"></script>
 </body>
 </html>
