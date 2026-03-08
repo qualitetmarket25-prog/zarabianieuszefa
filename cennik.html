@@ -1,82 +1,78 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QualitetMarket — Cennik</title>
+<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="mobileDrawer">
+    <div class="brand-wrap">
+      <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
+      <div>
+        <div class="brand">QualitetMarket</div>
+        <div class="brand-sub">Aplikacja do zarabiania i dropshippingu</div>
+      </div>
+    </div>
+    <nav class="nav-list"><a class="nav-link" href="index.html">Start</a><a class="nav-link" href="platforma.html">Platforma</a><a class="nav-link active" href="cennik.html">Cennik</a><a class="nav-link" href="hurtownie.html">Hurtownie</a><a class="nav-link" href="sklep.html">Sklep</a><a class="nav-link" href="koszyk.html">Koszyk</a><a class="nav-link" href="checkout.html">Checkout</a><a class="nav-link" href="zamowienia.html">Zamówienia</a><a class="nav-link" href="sklepy.html">Sklepy</a></nav>
+    <div class="plan-box">
+      <div class="muted-label">Aktywny plan</div>
+      <div class="plan-pill" id="planBadge">BASIC</div>
+      <div class="muted-copy" style="margin-top:10px">Marża sklepu: <strong id="marginBadge">15%</strong></div>
+      <div class="plan-actions">
+        <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
+        <a class="btn btn-ghost" href="hurtownie.html">Import produktów</a>
+      </div>
+    </div>
+  </aside>
+  <main class="app-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu" aria-expanded="false">☰</button>
+        <div>
+          <div class="topbar-sub">QualitetMarket</div>
+          <h1 class="topbar-title">Cennik</h1>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <a class="btn btn-ghost" href="platforma.html">Panel</a>
+        <a class="btn btn-primary" href="sklep.html">Sklep</a>
+      </div>
+    </header>
+    <section class="page-content">
+      
+<div class="grid grid-3">
+  <div class="card"><h3>Basic</h3><div class="price">79 zł</div><p class="small">Start dla jednej osoby. Marża 15%.</p><button class="btn btn-primary" onclick="activatePlan('basic')">Wybierz Basic</button></div>
+  <div class="card"><h3>Pro</h3><div class="price">149 zł</div><p class="small">Najlepszy środek. Marża 25%.</p><button class="btn btn-gold" onclick="activatePlan('pro')">Wybierz Pro</button></div>
+  <div class="card"><h3>Elite</h3><div class="price">299 zł</div><p class="small">Najwyższa marża. Marża 35%.</p><button class="btn btn-primary" onclick="activatePlan('elite')">Wybierz Elite</button></div>
+</div>
+<div class="card" style="margin-top:18px">
+  <h2>Jak to działa</h2>
+  <p class="small">Na tym etapie pakiet ustawia plan i marżę w localStorage. Prawdziwe płatności Stripe podepniemy osobno.</p>
+</div>
+<script>
+function activatePlan(plan){
+  var m = qm.setPlan(plan);
+  alert('Plan ustawiony: ' + plan.toUpperCase() + ' | marża: ' + m + '%');
+  location.href = 'platforma.html';
+}
+</script>
 
-(function(){
-  const PLAN_KEY = 'qm_plan_v1';
-  const MARGIN_KEY = 'qm_store_margin_pct';
-  const PRODUCTS_KEY = 'qm_products_by_supplier_v1';
-  const STORES_KEY = 'qm_stores_v1';
-  const ACTIVE_STORE_KEY = 'qm_active_store_v1';
-
-  const planMargins = { basic:18, pro:28, elite:38 };
-  const planPrices = { basic:79, pro:149, elite:299 };
-
-  function safeParse(key, fallback){
-    try{ return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-    catch(e){ return fallback; }
-  }
-  function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-
-  function getPlan(){ return (localStorage.getItem(PLAN_KEY)||'basic').toLowerCase(); }
-  function setPlan(plan){
-    const normalized = ['basic','pro','elite'].includes((plan||'').toLowerCase()) ? plan.toLowerCase() : 'basic';
-    localStorage.setItem(PLAN_KEY, normalized);
-    const margin = planMargins[normalized] || 18;
-    localStorage.setItem(MARGIN_KEY, String(margin));
-    localStorage.setItem('qm_subscription_v1', JSON.stringify({
-      plan: normalized, price: planPrices[normalized], status:'active', interval:'monthly', updatedAt: new Date().toISOString()
-    }));
-    applyMarginToStores(margin);
-    applyMarginToProducts();
-  }
-
-  function round99(value){
-    if(!isFinite(value)) return 0;
-    const floored = Math.floor(value);
-    return Math.max(0.99, Number((floored + 0.99).toFixed(2)));
-  }
-
-  function marginForPrice(base, plan){
-    const baseMargin = planMargins[plan] || 18;
-    if(base <= 20) return baseMargin + 16;
-    if(base <= 50) return baseMargin + 10;
-    if(base <= 120) return baseMargin + 6;
-    if(base <= 250) return baseMargin + 2;
-    if(base <= 500) return baseMargin;
-    return Math.max(12, baseMargin - 5);
-  }
-
-  function applyMarginToProducts(){
-    const plan = getPlan();
-    const products = safeParse(PRODUCTS_KEY, []);
-    if(!Array.isArray(products)) return [];
-    const next = products.map((p, idx) => {
-      const base = Number(p.basePrice ?? p.cost ?? p.price ?? 0);
-      const pct = marginForPrice(base, plan);
-      const sale = round99(base * (1 + pct/100));
-      return {
-        ...p,
-        id: p.id || `prod_${idx+1}`,
-        basePrice: Number(base.toFixed(2)),
-        marginPct: pct,
-        price: sale
-      };
-    });
-    save(PRODUCTS_KEY, next);
-    return next;
-  }
-
-  function applyMarginToStores(margin){
-    const stores = safeParse(STORES_KEY, []);
-    const active = localStorage.getItem(ACTIVE_STORE_KEY) || '';
-    if(Array.isArray(stores) && stores.length){
-      const next = stores.map((s, idx) => {
-        const isActive = s.slug === active || (!active && idx === 0);
-        return isActive ? { ...s, marginPct: margin, updatedAt: new Date().toISOString() } : s;
-      });
-      save(STORES_KEY, next);
-    }
-  }
-
-  window.QMAutoMargin = { setPlan, applyMarginToProducts, getPlan, planMargins };
-
-  if(!localStorage.getItem(MARGIN_KEY)) localStorage.setItem(MARGIN_KEY, '18');
-})();
+      <footer class="footer">
+        <div>QualitetMarket • build ratunkowy pod GitHub Pages</div>
+        <div class="footer-links">
+          <a href="kontakt.html">Kontakt</a>
+          <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+          <a href="regulamin.html">Regulamin</a>
+        </div>
+      </footer>
+    </section>
+  </main>
+</div>
+<nav class="mobile-bottom"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="cennik.html">Cennik</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a></nav>
+<script src="app-shell.js"></script>
+</body>
+</html>
