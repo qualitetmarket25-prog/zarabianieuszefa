@@ -1,52 +1,44 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket — Platforma</title>
-<link rel="stylesheet" href="app-layout.css">
-</head>
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QualitetMarket — Platforma</title><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
-<script src="js/subscriptions.js"></script>
-<script src="js/planGuard.js"></script>
-<script>
+<header class="topbar"><div class="container topbar-inner">
+<div class="brand"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div><div class="title">QualitetMarket</div><div class="sub">Aplikacja do zarabiania i dropshippingu</div></div></div>
+<nav class="nav"><a href="index.html" class="">Start</a><a href="platforma.html" class="active">Platforma</a><a href="hurtownie.html" class="">Hurtownie</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="cennik.html" class="">Cennik</a></nav>
+<button id="menuToggle" class="menu-btn">Menu</button></div>
+<div class="container drawer" id="mobileDrawer"><div class="drawer-grid"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a><a href="koszyk.html">Koszyk</a><a href="cennik.html">Cennik</a><a href="checkout.html">Checkout</a><a href="zamowienia.html">Zamówienia</a><a href="sklepy.html">Sklepy</a></div></div></header>
 
-const products = qmUtils.read('qm_products_by_supplier_v1',[]);
-const orders = qmUtils.read('qm_orders_v1',[]);
-const stores = qmUtils.read('qm_stores_v1',[]);
-renderShell({
-  title:'QualitetMarket — Platforma',
-  subtitle:'Panel aplikacji',
-  content: `
-  <section class="hero">
-    <span class="badge">Panel główny</span>
-    <h1>Platforma sprzedażowa</h1>
-    <p>Tu zarządzasz planem, marżą, sklepem, zamówieniami i hurtowniami.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="hurtownie.html">Importuj produkty</a>
-      <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
-      <a class="btn btn-secondary" href="sklepy.html">Zarządzaj sklepami</a>
-    </div>
-  </section>
+<main class="container">
+<section class="hero">
+<div class="card pad">
+<span class="badge">Plan <strong id="planBadge">Basic</strong></span>
+<span class="badge">Marża <strong id="marginBadge">18%</strong></span>
+<h1 style="margin-top:14px">Panel platformy</h1>
+<p>To jest główny ekran operacyjny. Stąd wchodzisz do hurtowni, sklepu, zamówień i ustawień sklepów.</p>
+</div>
+</section>
+<section class="section">
+<div class="kpis">
+<div class="kpi"><div class="v" id="productsCount">0</div><div class="l">produkty</div></div>
+<div class="kpi"><div class="v" id="ordersCount">0</div><div class="l">zamówienia</div></div>
+<div class="kpi"><div class="v" id="cartCount">0</div><div class="l">w koszyku</div></div>
+<div class="kpi"><div class="v" id="storesCount">0</div><div class="l">sklepy</div></div>
+</div>
+</section>
+<section class="section">
+<div class="grid grid-3">
+<div class="module"><h3>Import produktów</h3><p>Załaduj demo produkty albo CSV do sklepu.</p><a class="btn btn-primary" href="hurtownie.html">Hurtownie</a></div>
+<div class="module"><h3>Sprzedaż</h3><p>Sprawdź sklep, ceny po marży i dodawanie do koszyka.</p><a class="btn btn-primary" href="sklep.html">Sklep</a></div>
+<div class="module"><h3>Sklepy i marża</h3><p>Ustaw aktywny sklep i zarządzaj marżą.</p><a class="btn btn-primary" href="sklepy.html">Sklepy</a></div>
+</div>
+</section>
+</main>
 
-  <section class="grid cards">
-    <article class="card span-4 kpi"><span class="muted">Plan</span><strong>${qmState.getPlan().toUpperCase()}</strong><span class="muted">Subskrypcja aktywna</span></article>
-    <article class="card span-4 kpi"><span class="muted">Marża</span><strong>${qmState.getMargin()}%</strong><span class="muted">Domyślna marża sklepu</span></article>
-    <article class="card span-4 kpi"><span class="muted">Produkty / Zamówienia / Sklepy</span><strong>${products.length} / ${orders.length} / ${stores.length}</strong><span class="muted">Stan aplikacji</span></article>
-  </section>
-
-  <div class="section-title"><h2>Szybkie akcje</h2></div>
-  <section class="module-grid">
-    <article class="module"><div class="emoji">🏭</div><h3>Hurtownie</h3><p>Załaduj demo produkty i ustaw katalog.</p><div class="actions"><a class="btn btn-primary" href="hurtownie.html">Otwórz</a></div></article>
-    <article class="module"><div class="emoji">🛍️</div><h3>Sklep</h3><p>Sprzedawaj produkty z automatyczną marżą.</p><div class="actions"><a class="btn btn-primary" href="sklep.html">Otwórz sklep</a></div></article>
-    <article class="module"><div class="emoji">💸</div><h3>Cennik</h3><p>Zmień plan, by zwiększyć marżę i odblokować funkcje.</p><div class="actions"><a class="btn btn-primary" href="cennik.html">Zmień plan</a></div></article>
-  </section>
-  `
-});
-
-</script>
-
-</body>
-</html>
+<footer class="footer"><div class="container">
+<div class="footer-links">
+<a href="kontakt.html">Kontakt</a><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="regulamin.html">Regulamin</a><a href="polityka-cookies.html">Polityka cookies</a><a href="rodo.html">RODO</a>
+</div>
+<p class="small" style="margin-top:10px">QualitetMarket • gotowy build pod GitHub Pages • link główny: /zarabianieuszefa/</p>
+</div></footer>
+<nav class="bottom-nav"><a href="index.html" class="">Start</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="zamowienia.html" class="">Zamówienia</a><a href="sklepy.html" class="">Sklepy</a></nav>
+<script src="app-shell.js"></script></body></html>

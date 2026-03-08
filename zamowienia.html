@@ -1,46 +1,22 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket — Zamówienia</title>
-<link rel="stylesheet" href="app-layout.css">
-</head>
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QualitetMarket — Zamówienia</title><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
-<script src="js/subscriptions.js"></script>
-<script src="js/planGuard.js"></script>
-<script>
+<header class="topbar"><div class="container topbar-inner">
+<div class="brand"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div><div class="title">QualitetMarket</div><div class="sub">Aplikacja do zarabiania i dropshippingu</div></div></div>
+<nav class="nav"><a href="index.html" class="">Start</a><a href="platforma.html" class="">Platforma</a><a href="hurtownie.html" class="">Hurtownie</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="cennik.html" class="">Cennik</a></nav>
+<button id="menuToggle" class="menu-btn">Menu</button></div>
+<div class="container drawer" id="mobileDrawer"><div class="drawer-grid"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a><a href="koszyk.html">Koszyk</a><a href="cennik.html">Cennik</a><a href="checkout.html">Checkout</a><a href="zamowienia.html">Zamówienia</a><a href="sklepy.html">Sklepy</a></div></div></header>
 
-const orders = qmUtils.read('qm_orders_v1',[]);
-renderShell({
-  title:'QualitetMarket — Zamówienia',
-  subtitle:'Lista zamówień',
-  content: `
-    <section class="hero">
-      <span class="badge">Zamówienia</span>
-      <h1>Historia zamówień</h1>
-      <p>Tu widzisz wszystkie zapisane checkouty z aplikacji.</p>
-    </section>
-    <div id="ordersList" class="list" style="margin-top:18px"></div>
-  `
-});
-const el = document.getElementById('ordersList');
-if(!orders.length){
-  el.innerHTML = `<div class="empty">Brak zamówień.</div>`;
-}else{
-  el.innerHTML = orders.map(o=>`
-    <article class="card">
-      <h3>${o.id}</h3>
-      <p>Klient: ${o.customer.name} • ${o.customer.email}</p>
-      <p>Plan: ${String(o.plan).toUpperCase()} • Razem: ${qmUtils.money(o.total)}</p>
-      <p class="muted">${new Date(o.createdAt).toLocaleString('pl-PL')}</p>
-    </article>
-  `).join('');
-}
+<main class="container"><section class="hero"><div class="card pad">
+<h1>Zamówienia</h1><p>Tutaj trafiają wszystkie zamówienia z checkoutu.</p></div></section>
+<section class="section"><div id="ordersList" class="order-list"></div></section></main>
 
-</script>
-
-</body>
-</html>
+<footer class="footer"><div class="container">
+<div class="footer-links">
+<a href="kontakt.html">Kontakt</a><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="regulamin.html">Regulamin</a><a href="polityka-cookies.html">Polityka cookies</a><a href="rodo.html">RODO</a>
+</div>
+<p class="small" style="margin-top:10px">QualitetMarket • gotowy build pod GitHub Pages • link główny: /zarabianieuszefa/</p>
+</div></footer>
+<nav class="bottom-nav"><a href="index.html" class="">Start</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="zamowienia.html" class="active">Zamówienia</a><a href="sklepy.html" class="">Sklepy</a></nav>
+<script src="app-shell.js"></script></body></html>

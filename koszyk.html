@@ -1,78 +1,18 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket — Koszyk</title>
-<link rel="stylesheet" href="app-layout.css">
-</head>
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QualitetMarket — Kontakt</title><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
-<script src="js/subscriptions.js"></script>
-<script src="js/planGuard.js"></script>
-<script>
-
-function readCart(){ return qmUtils.read('qm_cart_v1',[]); }
-function writeCart(cart){ qmUtils.write('qm_cart_v1', cart); }
-function total(cart){ return cart.reduce((s,i)=>s + Number(i.price)*Number(i.qty), 0); }
-
-renderShell({
-  title:'QualitetMarket — Koszyk',
-  subtitle:'Twój koszyk',
-  content: `
-    <section class="hero">
-      <span class="badge">Koszyk</span>
-      <h1>Gotowe do checkoutu</h1>
-      <p>Edytuj ilości i przejdź dalej. Wszystko działa też na telefonie.</p>
-      <div class="hero-actions">
-        <a class="btn btn-secondary" href="sklep.html">Wróć do sklepu</a>
-        <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
-      </div>
-    </section>
-    <div id="cartList" class="list"></div>
-    <div id="cartSummary" class="card" style="margin-top:16px"></div>
-  `
-});
-
-window.cartPlus = function(id){
-  const cart = readCart(); const item = cart.find(x=>x.id===id); if(item) item.qty += 1; writeCart(cart); renderCart();
-}
-window.cartMinus = function(id){
-  let cart = readCart(); const item = cart.find(x=>x.id===id); if(item) item.qty -= 1; cart = cart.filter(x=>x.qty > 0); writeCart(cart); renderCart();
-}
-window.cartRemove = function(id){
-  let cart = readCart().filter(x=>x.id!==id); writeCart(cart); renderCart();
-}
-
-function renderCart(){
-  const cart = readCart();
-  const list = document.getElementById('cartList');
-  const summary = document.getElementById('cartSummary');
-  if(!cart.length){
-    list.innerHTML = `<div class="empty">Koszyk jest pusty.</div>`;
-    summary.innerHTML = `<strong>Razem: 0.00 zł</strong>`;
-    return;
-  }
-  list.innerHTML = cart.map(p=>`
-    <article class="list-item">
-      <div class="meta">
-        <img class="thumb" src="${p.img || 'uszefaqualitet-logo.svg'}" alt="">
-        <div><strong>${p.name}</strong><div class="muted">${qmUtils.money(p.price)} / szt.</div></div>
-      </div>
-      <div class="row">
-        <button class="btn" onclick="cartMinus('${p.id}')">−</button>
-        <div class="btn">${p.qty}</div>
-        <button class="btn" onclick="cartPlus('${p.id}')">+</button>
-        <button class="btn btn-danger" onclick="cartRemove('${p.id}')">Usuń</button>
-      </div>
-    </article>
-  `).join('');
-  summary.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center"><strong>Razem: ${qmUtils.money(total(cart))}</strong><a class="btn btn-primary" href="checkout.html">Dalej</a></div>`;
-}
-renderCart();
-
-</script>
-
-</body>
-</html>
+<header class="topbar"><div class="container topbar-inner">
+<div class="brand"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div><div class="title">QualitetMarket</div><div class="sub">Aplikacja do zarabiania i dropshippingu</div></div></div>
+<nav class="nav"><a href="index.html" class="">Start</a><a href="platforma.html" class="">Platforma</a><a href="hurtownie.html" class="">Hurtownie</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="cennik.html" class="">Cennik</a></nav>
+<button id="menuToggle" class="menu-btn">Menu</button></div>
+<div class="container drawer" id="mobileDrawer"><div class="drawer-grid"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a><a href="koszyk.html">Koszyk</a><a href="cennik.html">Cennik</a><a href="checkout.html">Checkout</a><a href="zamowienia.html">Zamówienia</a><a href="sklepy.html">Sklepy</a></div></div></header>
+<main class='container'><section class='hero'><div class='card pad'><h1>Kontakt</h1><p>Wpisz tutaj swój email, adres i dane firmy przed startem. To jest gotowy szablon kontaktu.</p></div></section></main>
+<footer class="footer"><div class="container">
+<div class="footer-links">
+<a href="kontakt.html">Kontakt</a><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="regulamin.html">Regulamin</a><a href="polityka-cookies.html">Polityka cookies</a><a href="rodo.html">RODO</a>
+</div>
+<p class="small" style="margin-top:10px">QualitetMarket • gotowy build pod GitHub Pages • link główny: /zarabianieuszefa/</p>
+</div></footer>
+<nav class="bottom-nav"><a href="index.html" class="">Start</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="zamowienia.html" class="">Zamówienia</a><a href="sklepy.html" class="">Sklepy</a></nav>
+<script src="app-shell.js"></script></body></html>

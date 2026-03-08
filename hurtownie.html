@@ -1,71 +1,37 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket — Checkout</title>
-<link rel="stylesheet" href="app-layout.css">
-</head>
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QualitetMarket — Checkout</title><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
-<script src="js/subscriptions.js"></script>
-<script src="js/planGuard.js"></script>
-<script>
+<header class="topbar"><div class="container topbar-inner">
+<div class="brand"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div><div class="title">QualitetMarket</div><div class="sub">Aplikacja do zarabiania i dropshippingu</div></div></div>
+<nav class="nav"><a href="index.html" class="">Start</a><a href="platforma.html" class="">Platforma</a><a href="hurtownie.html" class="">Hurtownie</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="cennik.html" class="">Cennik</a></nav>
+<button id="menuToggle" class="menu-btn">Menu</button></div>
+<div class="container drawer" id="mobileDrawer"><div class="drawer-grid"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a><a href="koszyk.html">Koszyk</a><a href="cennik.html">Cennik</a><a href="checkout.html">Checkout</a><a href="zamowienia.html">Zamówienia</a><a href="sklepy.html">Sklepy</a></div></div></header>
 
-function readCart(){ return qmUtils.read('qm_cart_v1',[]); }
-function writeCart(cart){ qmUtils.write('qm_cart_v1', cart); }
-function total(cart){ return cart.reduce((s,i)=>s + Number(i.price)*Number(i.qty), 0); }
+<main class="container">
+<section class="hero"><div class="card pad"><h1>Checkout</h1><p>Finalizacja zapisuje zamówienie do <strong>qm_orders_v1</strong> i czyści koszyk.</p></div></section>
+<section class="section grid grid-2">
+<form id="checkoutForm" class="card pad">
+<h2>Dane klienta</h2>
+<div class="form-grid">
+<input id="c_name" class="input" placeholder="Imię i nazwisko">
+<input id="c_email" class="input" placeholder="Email">
+<input id="c_phone" class="input" placeholder="Telefon">
+<input id="c_city" class="input" placeholder="Miasto">
+<input id="c_address" class="input" placeholder="Adres">
+<input id="c_postal" class="input" placeholder="Kod pocztowy">
+</div>
+<textarea id="c_note" class="input" placeholder="Notatka do zamówienia" style="margin-top:12px;min-height:120px"></textarea>
+<div class="actions" style="margin-top:12px"><button class="btn btn-primary" type="submit">Finalizuj zamówienie</button><a class="btn btn-secondary" href="koszyk.html">Wróć do koszyka</a></div>
+</form>
+<div class="card pad"><h2>Twoje zamówienie</h2><div id="checkoutSummary"></div></div>
+</section></main>
 
-renderShell({
-  title:'QualitetMarket — Checkout',
-  subtitle:'Finalizacja zamówienia',
-  content: `
-    <section class="hero">
-      <span class="badge">Checkout</span>
-      <h1>Dokończ zamówienie</h1>
-      <p>Po zapisaniu zamówienie pojawi się na liście w zamówieniach.</p>
-    </section>
-    <section class="card" style="margin-top:18px">
-      <form id="orderForm" class="form-grid">
-        <div class="col-6"><label>Imię i nazwisko<input class="input" name="name" required></label></div>
-        <div class="col-6"><label>E-mail<input class="input" type="email" name="email" required></label></div>
-        <div class="col-12"><label>Adres<input class="input" name="address" required></label></div>
-        <div class="col-6"><label>Miasto<input class="input" name="city" required></label></div>
-        <div class="col-6"><label>Kod pocztowy<input class="input" name="zip" required></label></div>
-        <div class="col-12"><button class="btn btn-primary" type="submit">Zapisz zamówienie</button></div>
-      </form>
-    </section>
-    <section class="card" style="margin-top:18px"><div id="checkoutSummary"></div></section>
-  `
-});
-
-const cart = readCart();
-const sum = total(cart);
-document.getElementById('checkoutSummary').innerHTML = cart.length
-  ? `<strong>Produkty: ${cart.length}</strong><div class="muted">Łącznie: ${qmUtils.money(sum)}</div>`
-  : `<div class="empty">Koszyk jest pusty.</div>`;
-
-document.getElementById('orderForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  if(!cart.length){ alert('Koszyk jest pusty.'); return; }
-  const fd = new FormData(this);
-  const order = {
-    id: qmUtils.uid('ord'),
-    createdAt: new Date().toISOString(),
-    customer: Object.fromEntries(fd.entries()),
-    items: cart,
-    total: sum,
-    plan: localStorage.getItem('qm_plan_v1') || 'basic'
-  };
-  const orders = qmUtils.read('qm_orders_v1',[]);
-  orders.unshift(order);
-  qmUtils.write('qm_orders_v1', orders);
-  writeCart([]);
-  location.href = 'zamowienia.html';
-});
-
-</script>
-
-</body>
-</html>
+<footer class="footer"><div class="container">
+<div class="footer-links">
+<a href="kontakt.html">Kontakt</a><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="regulamin.html">Regulamin</a><a href="polityka-cookies.html">Polityka cookies</a><a href="rodo.html">RODO</a>
+</div>
+<p class="small" style="margin-top:10px">QualitetMarket • gotowy build pod GitHub Pages • link główny: /zarabianieuszefa/</p>
+</div></footer>
+<nav class="bottom-nav"><a href="index.html" class="">Start</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="zamowienia.html" class="">Zamówienia</a><a href="sklepy.html" class="">Sklepy</a></nav>
+<script src="app-shell.js"></script></body></html>

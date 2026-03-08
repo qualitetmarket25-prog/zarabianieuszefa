@@ -1,63 +1,51 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QualitetMarket — Start</title>
-<link rel="stylesheet" href="app-layout.css">
-</head>
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QualitetMarket — Start</title><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
-<script src="js/subscriptions.js"></script>
-<script src="js/planGuard.js"></script>
-<script>
+<header class="topbar"><div class="container topbar-inner">
+<div class="brand"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div><div class="title">QualitetMarket</div><div class="sub">Aplikacja do zarabiania i dropshippingu</div></div></div>
+<nav class="nav"><a href="index.html" class="active">Start</a><a href="platforma.html" class="">Platforma</a><a href="hurtownie.html" class="">Hurtownie</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="cennik.html" class="">Cennik</a></nav>
+<button id="menuToggle" class="menu-btn">Menu</button></div>
+<div class="container drawer" id="mobileDrawer"><div class="drawer-grid"><a href="index.html">Start</a><a href="platforma.html">Platforma</a><a href="hurtownie.html">Hurtownie</a><a href="sklep.html">Sklep</a><a href="koszyk.html">Koszyk</a><a href="cennik.html">Cennik</a><a href="checkout.html">Checkout</a><a href="zamowienia.html">Zamówienia</a><a href="sklepy.html">Sklepy</a></div></div></header>
 
-renderShell({
-  title:'QualitetMarket — Start',
-  subtitle:'Zarabianie przez sklep, dropshipping i marżę',
-  content: `
-    <section class="hero">
-      <span class="badge">Start aplikacji</span>
-      <h1>Nowoczesny panel do zarabiania online</h1>
-      <p>Uruchamiasz sklep, ustawiasz plan, importujesz produkty z hurtowni i sprzedajesz z automatyczną marżą. Wszystko działa na telefonie i GitHub Pages.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="platforma.html">Wejdź do platformy</a>
-        <a class="btn btn-secondary" href="cennik.html">Zobacz cennik</a>
-        <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
-      </div>
-    </section>
+<main class="container">
+<section class="hero">
+<div class="hero-grid">
+<div class="card pad">
+<span class="badge">Plan <strong id="planBadge">Basic</strong> • Marża <strong id="marginBadge">18%</strong></span>
+<h1 style="margin-top:14px">Jedna aplikacja do sklepu, dropshippingu i zarabiania online.</h1>
+<p>Najpierw wybierasz plan, potem importujesz produkty, uruchamiasz sklep i zbierasz zamówienia. Całość działa na GitHub Pages i localStorage.</p>
+<div class="cta-row">
+<a class="btn btn-primary" href="platforma.html">Wejdź do platformy</a>
+<a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
+</div>
+</div>
+<div class="card pad">
+<h2>Szybki start</h2>
+<div class="kpis">
+<div class="kpi"><div class="v" id="productsCount">0</div><div class="l">produkty</div></div>
+<div class="kpi"><div class="v" id="cartCount">0</div><div class="l">w koszyku</div></div>
+<div class="kpi"><div class="v" id="ordersCount">0</div><div class="l">zamówienia</div></div>
+<div class="kpi"><div class="v" id="storesCount">0</div><div class="l">sklepy</div></div>
+</div>
+<p style="margin-top:14px">Aktywny sklep: <strong id="activeStoreLabel">—</strong></p>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="grid grid-3">
+<div class="module"><h3>Sklep i sprzedaż</h3><p>Produkty, koszyk, checkout i zamówienia w jednym flow.</p><div class="actions"><a class="btn btn-secondary" href="sklep.html">Otwórz sklep</a></div></div>
+<div class="module"><h3>Hurtownie i import</h3><p>Demo supplierzy i import CSV do szybkiego startu.</p><div class="actions"><a class="btn btn-secondary" href="hurtownie.html">Przejdź do hurtowni</a></div></div>
+<div class="module"><h3>Plany i marża</h3><p>Basic, Pro i Elite z auto marżą dla każdego produktu.</p><div class="actions"><a class="btn btn-secondary" href="cennik.html">Zobacz cennik</a></div></div>
+</div>
+</section>
+</main>
 
-    <section class="grid cards">
-      <article class="card span-3 kpi"><span class="muted">Aktywny plan</span><strong>${qmState.getPlan().toUpperCase()}</strong><span class="muted">Zmiana w cenniku</span></article>
-      <article class="card span-3 kpi"><span class="muted">Marża</span><strong>${qmState.getMargin()}%</strong><span class="muted">Auto pricing w sklepie</span></article>
-      <article class="card span-3 kpi"><span class="muted">Produkty</span><strong id="kpiProducts">0</strong><span class="muted">Zaimportowane do sprzedaży</span></article>
-      <article class="card span-3 kpi"><span class="muted">Zamówienia</span><strong id="kpiOrders">0</strong><span class="muted">W Twojej aplikacji</span></article>
-    </section>
-
-    <div class="section-title"><h2>Główne moduły</h2><span class="muted">Kliknij i działaj</span></div>
-    <section class="module-grid">
-      ${[
-        ['🧭','Platforma','Jedno miejsce do sterowania aplikacją.','platforma.html'],
-        ['🏭','Hurtownie','Import demo i własnych produktów CSV.','hurtownie.html'],
-        ['🛍️','Sklep','Sprzedaż z automatyczną marżą.','sklep.html'],
-        ['🛒','Koszyk','Szybka ścieżka zakupowa mobile.','koszyk.html'],
-        ['💳','Checkout','Zapis zamówień i dane klienta.','checkout.html'],
-        ['💸','Cennik','Plany Basic / Pro / Elite.','cennik.html']
-      ].map(item=>`
-      <article class="module">
-        <div class="emoji">${item[0]}</div>
-        <h3>${item[1]}</h3>
-        <p>${item[2]}</p>
-        <div class="actions"><a class="btn btn-primary" href="${item[3]}">Otwórz</a></div>
-      </article>`).join('')}
-    </section>
-  `
-});
-document.getElementById('kpiProducts').textContent = (qmUtils.read('qm_products_by_supplier_v1',[]) || []).length;
-document.getElementById('kpiOrders').textContent = (qmUtils.read('qm_orders_v1',[]) || []).length;
-
-</script>
-
-</body>
-</html>
+<footer class="footer"><div class="container">
+<div class="footer-links">
+<a href="kontakt.html">Kontakt</a><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="regulamin.html">Regulamin</a><a href="polityka-cookies.html">Polityka cookies</a><a href="rodo.html">RODO</a>
+</div>
+<p class="small" style="margin-top:10px">QualitetMarket • gotowy build pod GitHub Pages • link główny: /zarabianieuszefa/</p>
+</div></footer>
+<nav class="bottom-nav"><a href="index.html" class="active">Start</a><a href="sklep.html" class="">Sklep</a><a href="koszyk.html" class="">Koszyk</a><a href="zamowienia.html" class="">Zamówienia</a><a href="sklepy.html" class="">Sklepy</a></nav>
+<script src="app-shell.js"></script></body></html>
