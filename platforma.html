@@ -36,6 +36,10 @@
       color:var(--text);
     }
 
+    body.menu-open{
+      overflow:hidden;
+    }
+
     a{color:inherit;text-decoration:none}
     button{font:inherit}
 
@@ -50,12 +54,17 @@
       top:0;
       height:100vh;
       border-right:1px solid var(--line);
-      background:rgba(10,15,28,.86);
+      background:rgba(10,15,28,.96);
       backdrop-filter: blur(12px);
       padding:24px 18px;
       display:flex;
       flex-direction:column;
       gap:20px;
+      z-index:40;
+    }
+
+    .sidebar-overlay{
+      display:none;
     }
 
     .brand{
@@ -174,6 +183,8 @@
     .content{
       min-width:0;
       padding:24px;
+      position:relative;
+      z-index:1;
     }
 
     .topbar{
@@ -191,6 +202,9 @@
       color:var(--text);
       border-radius:14px;
       padding:11px 14px;
+      cursor:pointer;
+      position:relative;
+      z-index:70;
     }
 
     .page-title h1{
@@ -502,11 +516,6 @@
       line-height:1.5;
     }
 
-    .empty{
-      color:var(--muted);
-      font-size:13px;
-    }
-
     .notice{
       margin-top:14px;
       padding:14px 16px;
@@ -532,27 +541,45 @@
       .app{
         grid-template-columns:1fr;
       }
+
       .sidebar{
         position:fixed;
         inset:0 auto 0 0;
         width:min(86vw, 320px);
+        height:100vh;
         transform:translateX(-105%);
-        transition:.25s ease;
-        z-index:60;
+        transition:transform .25s ease;
+        z-index:80;
       }
+
       .sidebar.open{
         transform:translateX(0);
       }
+
+      .sidebar-overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(2,6,23,.62);
+        backdrop-filter:blur(2px);
+        z-index:70;
+      }
+
+      .sidebar-overlay.show{
+        display:block;
+      }
+
       .mobile-toggle{
         display:inline-flex;
       }
+
       .content{
         padding:16px;
       }
+
       .topbar{
         position:sticky;
         top:0;
-        z-index:25;
+        z-index:30;
         background:rgba(11,17,32,.88);
         backdrop-filter: blur(12px);
         padding:8px 0 10px;
@@ -569,10 +596,18 @@
       .top-actions{justify-content:stretch}
       .top-actions .btn{flex:1 1 auto}
       .big{font-size:24px}
+      .list-item{
+        flex-direction:column;
+      }
+      .list-item .btn{
+        width:100%;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <div class="app">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
@@ -653,7 +688,7 @@
     <main class="content">
       <div class="topbar">
         <div style="display:flex; align-items:center; gap:12px;">
-          <button class="mobile-toggle" id="mobileToggle" type="button">☰ Menu</button>
+          <button class="mobile-toggle" id="mobileToggle" type="button" aria-label="Otwórz menu" aria-expanded="false" aria-controls="sidebar">☰ Menu</button>
           <div class="page-title">
             <h1>Główna aplikacja</h1>
             <p>Centrum zarządzania sprzedażą, sklepami i modułami QualitetMarket.</p>
@@ -756,7 +791,7 @@
             <a class="btn" href="dashboard.html">Otwórz dashboard</a>
           </div>
 
-          <div class="apps" id="appsGrid">
+          <div class="apps">
             <a class="app-card" href="generator-sklepu.html">
               <div class="top">
                 <div class="icon">GS</div>
@@ -775,22 +810,4 @@
               <p>Podgląd i przełączanie sklepów w modelu multi-store.</p>
             </a>
 
-            <a class="app-card" href="hurtownie.html" data-require="pro">
-              <div class="top">
-                <div class="icon">HU</div>
-                <span class="chip pro">PRO</span>
-              </div>
-              <h4>Hurtownie</h4>
-              <p>Import produktów, dostawcy i zasilenie sklepu przez localStorage.</p>
-            </a>
-
-            <a class="app-card" href="qualitetmarket.html" data-require="pro">
-              <div class="top">
-                <div class="icon">PR</div>
-                <span class="chip pro">PRO</span>
-              </div>
-              <h4>Produkty</h4>
-              <p>Katalog produktów do dalszego wystawiania i sprzedaży.</p>
-            </a>
-
-   
+            <a class="app-card" href="hurtownie.html" data-require=
