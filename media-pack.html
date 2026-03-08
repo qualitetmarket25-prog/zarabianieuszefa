@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Media Pack</title>
+  <script src="app-shell.js"></script>
+  <style>
+    .wrap, .card, .asset, .copybox { background: rgba(15,23,42,.9); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.22); }
+    .wrap { padding: 22px; margin-bottom: 18px; }
+    .lead { color: #94a3b8; line-height: 1.7; max-width: 920px; }
+    .grid { display: grid; grid-template-columns: 1.2fr .9fr; gap: 16px; }
+    .card { padding: 18px; }
+    .card h3 { margin: 0 0 14px; font-size: 18px; }
+    .field { display: grid; gap: 8px; margin-bottom: 12px; }
+    .field label { font-size: 13px; color: #94a3b8; font-weight: 700; }
+    .field input, .field textarea, .field select { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #0b1220; color: #f8fafc; }
+    .field textarea { min-height: 92px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #111827; color: #fff; font-weight: 800; cursor: pointer; }
+    .btn.primary { background: linear-gradient(135deg,#22c55e,#16a34a); color: #052e16; border-color: transparent; }
+    .btn.blue { background: linear-gradient(135deg,#38bdf8,#0ea5e9); color: #082f49; border-color: transparent; }
+    .list { display: grid; gap: 12px; }
+    .asset { padding: 14px; }
+    .asset strong { display: block; margin-bottom: 8px; }
+    .asset small { color: #94a3b8; display: block; margin-top: 8px; line-height: 1.6; }
+    .pill { display: inline-flex; padding: 6px 9px; border-radius: 999px; border: 1px solid rgba(56,189,248,.18); background: rgba(56,189,248,.12); color: #bae6fd; font-size: 12px; font-weight: 700; }
+    .copybox { padding: 16px; min-height: 180px; white-space: pre-wrap; line-height: 1.6; }
+    .stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat { padding: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 18px; }
+    .stat strong { display: block; font-size: 24px; margin-bottom: 6px; }
+    .muted { color: #94a3b8; }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .row, .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div data-page-root>
+    <section class="wrap">
+      <h2 style="margin:0 0 10px;font-size:30px;">Media Pack sprzedażowy</h2>
+      <div class="lead">
+        Ten moduł daje gotową paczkę materiałów do wysyłki klientowi: opis oferty, linki, mockupy, copy sprzedażowe,
+        oferta start od 0 zł i prosty eksport. To jest baza pod królowanie w sprzedaży sklepów, aplikacji i usług.
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><strong id="mpStoreName">—</strong><span class="muted">Aktywny sklep</span></div>
+      <div class="stat"><strong id="mpAssetsCount">0</strong><span class="muted">Pozycji media packu</span></div>
+      <div class="stat"><strong id="mpGalleryCount">0</strong><span class="muted">Zdjęć w galerii</span></div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Dodaj materiał</h3>
+        <div class="field">
+          <label for="mpType">Typ materiału</label>
+          <select id="mpType">
+            <option value="copy">Copy sprzedażowe</option>
+            <option value="asset">Asset / mockup</option>
+            <option value="offer">Oferta</option>
+            <option value="link">Link</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mpTitle">Tytuł</label>
+          <input id="mpTitle" placeholder="Np. Oferta sklepu PRO / Tekst do klienta" />
+        </div>
+        <div class="field">
+          <label for="mpUrl">URL / link</label>
+          <input id="mpUrl" placeholder="https://..." />
+        </div>
+        <div class="field">
+          <label for="mpNote">Treść / opis</label>
+          <textarea id="mpNote" placeholder="Wklej gotową wiadomość, opis oferty albo instrukcję"></textarea>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="mpSaveBtn" type="button">Dodaj materiał</button>
+          <button class="btn" id="mpSeedBtn" type="button">Dodaj gotowe przykłady</button>
+        </div>
+
+        <h3 style="margin-top:18px;">Generator wiadomości</h3>
+        <div class="field">
+          <label for="clientName">Imię klienta</label>
+          <input id="clientName" placeholder="Np. Mateusz" />
+        </div>
+        <div class="field">
+          <label for="offerType">Typ oferty</label>
+          <select id="offerType">
+            <option value="shop">Sklep online</option>
+            <option value="app">Aplikacja</option>
+            <option value="marketplace">Marketplace</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="offerValue">Cena startowa</label>
+          <input id="offerValue" type="number" min="0" value="999" />
+        </div>
+        <div class="row">
+          <button class="btn blue" id="generateCopyBtn" type="button">Generuj tekst</button>
+          <button class="btn" id="copyTextBtn" type="button">Kopiuj tekst</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Gotowa wiadomość sprzedażowa</h3>
+        <div id="generatedCopy" class="copybox"></div>
+
+        <h3 style="margin-top:18px;">Lista materiałów</h3>
+        <div id="mediaList" class="list"></div>
+
+        <div class="row" style="margin-top:18px;">
+          <button class="btn" id="exportJsonBtn" type="button">Eksport JSON</button>
+          <button class="btn" id="exportCsvBtn" type="button">Eksport CSV</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    QU.shell('Media Pack', 'ETAP 9 — materiały do sprzedaży sklepu i aplikacji');
+
+    function getStore() {
+      return QU.getActiveStore();
+    }
+
+    function readMediaPack() {
+      var store = getStore();
+      return Array.isArray(store.mediaPack) ? store.mediaPack : [];
+    }
+
+    function saveMediaPack(next) {
+      return QU.updateActiveStore(function (store) {
+        store.mediaPack = next;
+        return store;
+      });
+    }
+
+    function seedPack() {
+      var current = readMediaPack();
+      if (current.length) return current;
+
+      var items = [
+        {
+          id: QU.uid(),
+          type: 'offer',
+          title: 'Oferta sklepu online',
+          url: '',
+          note: 'Gotowy sklep od 0 zł. Startujesz bez budżetu, sprzedajesz i skalujesz.'
+        },
+        {
+          id: QU.uid(),
+          type: 'copy',
+          title: 'Krótki tekst do klienta',
+          url: '',
+          note: 'Masz gotowy sklep, galerię, materiały sprzedażowe i możliwość rozbudowy do CRM i marketplace.'
+        },
+        {
+          id: QU.uid(),
+          type: 'asset',
+          title: 'Link do galerii',
+          url: 'gallery.html',
+          note: 'Podgląd zdjęć i mockupów sklepu.'
+        }
+      ];
+      saveMediaPack(items);
+      return items;
+    }
+
+    function setStats() {
+      var store = getStore();
+      document.getElementById('mpStoreName').textContent = store.name;
+      document.getElementById('mpAssetsCount').textContent = String(readMediaPack().length);
+      document.getElementById('mpGalleryCount').textContent = String((store.gallery || []).length);
+    }
+
+    function renderList() {
+      var list = document.getElementById('mediaList');
+      var items = readMediaPack();
+      if (!items.length) {
+        list.innerHTML = '<div class="asset"><strong>Brak materiałów</strong><small>Dodaj pierwszą ofertę, copy albo link.</small></div>';
+        setStats();
+        return;
+      }
+
+      list.innerHTML = items.map(function (item) {
+        return ''
+          + '<div class="asset">'
+          + '  <span class="pill">' + QU.escapeHtml(item.type || 'asset') + '</span>'
+          + '  <strong>' + QU.escapeHtml(item.title || 'Bez tytułu') + '</strong>'
+          + '  <div>' + (item.url ? '<a href="' + QU.escapeHtml(item.url) + '" target="_blank" rel="noopener">' + QU.escapeHtml(item.url) + '</a>' : 'Brak linku') + '</div>'
+          + '  <small>' + QU.escapeHtml(item.note || '') + '</small>'
+          + '  <div style="margin-top:10px;"><button class="btn" type="button" data-delete-id="' + QU.escapeHtml(item.id) + '">Usuń</button></div>'
+          + '</div>';
+      }).join('');
+      setStats();
+    }
+
+    function addItem() {
+      var type = document.getElementById('mpType').value;
+      var title = document.getElementById('mpTitle').value.trim();
+      var url = document.getElementById('mpUrl').value.trim();
+      var note = document.getElementById('mpNote').value.trim();
+      if (!title) {
+        alert('Podaj tytuł materiału.');
+        return;
+      }
+      var items = readMediaPack();
+      items.unshift({ id: QU.uid(), type: type, title: title, url: url, note: note });
+      saveMediaPack(items);
+      document.getElementById('mpTitle').value = '';
+      document.getElementById('mpUrl').value = '';
+      document.getElementById('mpNote').value = '';
+      renderList();
+    }
+
+    function generateCopy() {
+      var store = getStore();
+      var client = document.getElementById('clientName').value.trim() || 'Dzień dobry';
+      var offerType = document.getElementById('offerType').value;
+      var price = Number(document.getElementById('offerValue').value) || 0;
+      var label = offerType === 'app' ? 'aplikację' : offerType === 'marketplace' ? 'marketplace' : 'sklep online';
+      var text =
+        client + ',\n\n'
+        + 'przygotowaliśmy dla Ciebie gotową ofertę na ' + label + ' dla marki ' + store.name + '.\n'
+        + 'To rozwiązanie pozwala startować od 0 zł, sprzedawać szybciej i później skalować całość do CRM, pipeline i multi-store.\n\n'
+        + 'Zakres startowy:\n'
+        + '- gotowy panel i sklep,\n'
+        + '- galeria i media pack,\n'
+        + '- materiały do publikacji i sprzedaży,\n'
+        + '- przygotowanie pod dalsze etapy rozwoju.\n\n'
+        + 'Cena startowa: ' + QU.money(price) + '.\n'
+        + 'Jeśli chcesz, możemy od razu przejść do wdrożenia i uruchomić Twój system.\n\n'
+        + 'Pozdrawiam,\nQualitetMarket';
+      document.getElementById('generatedCopy').textContent = text;
+    }
+
+    function exportPack(mode) {
+      var items = readMediaPack();
+      var store = getStore();
+      if (mode === 'json') {
+        QU.download('media-pack-' + (store.slug || 'store') + '.json', JSON.stringify(items, null, 2), 'application/json');
+        return;
+      }
+      var rows = [['id', 'type', 'title', 'url', 'note']];
+      items.forEach(function (item) {
+        rows.push([item.id, item.type, item.title, item.url, item.note]);
+      });
+      QU.download('media-pack-' + (store.slug || 'store') + '.csv', QU.toCsv(rows), 'text/csv;charset=utf-8');
+    }
+
+    document.getElementById('mpSaveBtn').addEventListener('click', addItem);
+    document.getElementById('mpSeedBtn').addEventListener('click', function () {
+      seedPack();
+      renderList();
+    });
+    document.getElementById('generateCopyBtn').addEventListener('click', generateCopy);
+    document.getElementById('copyTextBtn').addEventListener('click', function () {
+      var text = document.getElementById('generatedCopy').textContent.trim();
+      if (!text) {
+        alert('Najpierw wygeneruj tekst.');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(function () {
+        alert('Skopiowano wiadomość.');
+      });
+    });
+    document.getElementById('exportJsonBtn').addEventListener('click', function () { exportPack('json'); });
+    document.getElementById('exportCsvBtn').addEventListener('click', function () { exportPack('csv'); });
+    document.addEventListener('click', function (event) {
+      var btn = event.target.closest('[data-delete-id]');
+      if (!btn) return;
+      var id = btn.getAttribute('data-delete-id');
+      var next = readMediaPack().filter(function (item) { return item.id !== id; });
+      saveMediaPack(next);
+      renderList();
+    });
+
+    QU.ensureSeedStore && QU.ensureSeedStore();
+    if (!readMediaPack().length) seedPack();
+    generateCopy();
+    renderList();
+  </script>
+</body>
+</html>

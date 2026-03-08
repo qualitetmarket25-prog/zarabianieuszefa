@@ -1,20 +1,197 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sklep — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Sklep','panel sklepu i marketplace');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Sklep</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sklep</title>
+  <script src="app-shell.js"></script>
+  <style>
+    .hero, .card, .product, .empty { background: rgba(15,23,42,.9); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.22); }
+    .hero { overflow: hidden; margin-bottom: 18px; }
+    .hero-image { aspect-ratio: 16/5; background: linear-gradient(135deg,#0f172a,#1e293b) center/cover no-repeat; }
+    .hero-body { padding: 22px; display: grid; grid-template-columns: 1.3fr .9fr; gap: 16px; }
+    .hero h2 { margin: 0 0 10px; font-size: 30px; }
+    .lead { color: #94a3b8; line-height: 1.7; }
+    .mini-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+    .mini { padding: 16px; border-radius: 18px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+    .mini strong { display: block; font-size: 22px; margin-bottom: 8px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .toolbar input, .toolbar select { padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #0b1220; color: #f8fafc; }
+    .products { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+    .product { overflow: hidden; }
+    .thumb { aspect-ratio: 4/3; background: #0b1220 center/cover no-repeat; }
+    .body { padding: 16px; display: grid; gap: 10px; }
+    .title { font-size: 18px; font-weight: 800; }
+    .price { font-size: 22px; font-weight: 900; }
+    .muted { color: #94a3b8; line-height: 1.6; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid rgba(56,189,248,.18);background:rgba(56,189,248,.12);color:#bae6fd; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: #111827; color: #fff; font-weight: 800; cursor: pointer; text-decoration: none; }
+    .btn.primary { background: linear-gradient(135deg,#22c55e,#16a34a); color: #052e16; border-color: transparent; }
+    .empty { padding: 26px; text-align: center; color: #94a3b8; }
+    .section-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .card { padding: 18px; }
+    .card h3 { margin: 0 0 10px; font-size: 18px; }
+    @media (max-width: 1100px) {
+      .products, .section-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .hero-body { grid-template-columns: 1fr; }
+      .mini-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px) {
+      .products, .section-grid, .actions, .mini-grid { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div data-page-root>
+    <section class="hero">
+      <div id="heroImage" class="hero-image"></div>
+      <div class="hero-body">
+        <div>
+          <h2 id="storeTitle">Sklep premium</h2>
+          <div id="storeDesc" class="lead"></div>
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;">
+            <a class="btn primary" href="panel-sklepu.html">Edytuj sklep</a>
+            <a class="btn" href="gallery.html">Galeria</a>
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini"><strong id="productsCount">0</strong><span class="muted">Produktów</span></div>
+          <div class="mini"><strong id="galleryCount">0</strong><span class="muted">Zdjęć sklepu</span></div>
+          <div class="mini"><strong id="marginValue">0%</strong><span class="muted">Marża sklepu</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <input id="searchInput" placeholder="Szukaj produktu" />
+      <select id="sortSelect">
+        <option value="latest">Najnowsze</option>
+        <option value="price-asc">Cena rosnąco</option>
+        <option value="price-desc">Cena malejąco</option>
+      </select>
+      <select id="modeSelect">
+        <option value="all">Wszystkie</option>
+        <option value="cheap">Do 100 zł</option>
+        <option value="mid">100–300 zł</option>
+        <option value="high">300+ zł</option>
+      </select>
     </div>
+
+    <section id="productsGrid" class="products"></section>
+    <div id="emptyState" class="empty" style="display:none;">
+      Brak produktów. Wejdź w Hurtownie i zaimportuj produkty do <strong>qm_products_by_supplier_v1</strong>.
+    </div>
+
+    <section id="sectionsGrid" class="section-grid"></section>
   </div>
-</div>
-</body></html>
+
+  <script>
+    QU.shell('Sklep', 'ETAP 9 — lepsze karty produktów i sprzedaż');
+
+    function getMargin() {
+      var value = localStorage.getItem(QU.keys.MARGIN_KEY);
+      return Number(value) || 25;
+    }
+
+    function seedProducts() {
+      var current = QU.readProducts();
+      if (current.length) return current;
+      var seed = [
+        { id: QU.uid(), name: 'Zestaw startowy premium', price: 89, img: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?auto=format&fit=crop&w=900&q=80', supplier: 'AliExpress', desc: 'Produkt testowy do szybkiego startu sprzedaży.' },
+        { id: QU.uid(), name: 'Organizer biurkowy PRO', price: 129, img: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80', supplier: 'CJ Dropshipping', desc: 'Nowoczesny produkt do sklepu premium.' },
+        { id: QU.uid(), name: 'Lampka LED Smart', price: 249, img: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=900&q=80', supplier: 'EPROLO', desc: 'Produkt z wysokim potencjałem marży.' },
+        { id: QU.uid(), name: 'Plecak miejski', price: 319, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80', supplier: 'VidaXL', desc: 'Produkt lifestyle do lepszych kart.' }
+      ];
+      QU.writeProducts(seed);
+      return seed;
+    }
+
+    function withMargin(product) {
+      var base = Number(product.price) || 0;
+      var finalPrice = Math.round(base * (1 + getMargin() / 100));
+      return Object.assign({}, product, { finalPrice: finalPrice });
+    }
+
+    function sortProducts(items, mode) {
+      var copy = items.slice();
+      if (mode === 'price-asc') copy.sort(function (a, b) { return a.finalPrice - b.finalPrice; });
+      else if (mode === 'price-desc') copy.sort(function (a, b) { return b.finalPrice - a.finalPrice; });
+      return copy;
+    }
+
+    function renderProducts() {
+      var store = QU.getActiveStore();
+      var items = QU.readProducts().map(withMargin);
+      var query = document.getElementById('searchInput').value.trim().toLowerCase();
+      var sort = document.getElementById('sortSelect').value;
+      var mode = document.getElementById('modeSelect').value;
+
+      items = items.filter(function (item) {
+        var textOk = !query || String(item.name || '').toLowerCase().indexOf(query) !== -1;
+        var price = item.finalPrice;
+        var modeOk = mode === 'all'
+          || (mode === 'cheap' && price < 100)
+          || (mode === 'mid' && price >= 100 && price <= 300)
+          || (mode === 'high' && price > 300);
+        return textOk && modeOk;
+      });
+
+      items = sortProducts(items, sort);
+
+      document.getElementById('storeTitle').textContent = store.name;
+      document.getElementById('storeDesc').textContent = store.description || 'Sklep gotowy do sprzedaży i skalowania.';
+      document.getElementById('heroImage').style.backgroundImage = 'url(' + (store.heroImage || ((store.gallery || [])[0] || {}).url || 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1400&q=80') + ')';
+      document.getElementById('productsCount').textContent = String(QU.readProducts().length);
+      document.getElementById('galleryCount').textContent = String((store.gallery || []).length);
+      document.getElementById('marginValue').textContent = String(getMargin()) + '%';
+
+      var grid = document.getElementById('productsGrid');
+      var empty = document.getElementById('emptyState');
+
+      if (!items.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        grid.innerHTML = items.map(function (item) {
+          return ''
+            + '<article class="product">'
+            + '  <div class="thumb" style="background-image:url(' + QU.escapeHtml(item.img || '') + ');"></div>'
+            + '  <div class="body">'
+            + '    <div class="title">' + QU.escapeHtml(item.name || 'Produkt') + '</div>'
+            + '    <div class="badges"><span class="badge">' + QU.escapeHtml(item.supplier || 'Import') + '</span><span class="badge">Marża +' + getMargin() + '%</span></div>'
+            + '    <div class="muted">' + QU.escapeHtml(item.desc || 'Gotowy produkt do sprzedaży w sklepie.') + '</div>'
+            + '    <div class="price">' + QU.money(item.finalPrice) + '</div>'
+            + '    <div class="actions">'
+            + '      <button class="btn primary" type="button" data-add-id="' + QU.escapeHtml(item.id || item.name) + '">Dodaj do koszyka</button>'
+            + '      <a class="btn" href="gallery.html">Zobacz media</a>'
+            + '    </div>'
+            + '  </div>'
+            + '</article>';
+        }).join('');
+      }
+
+      var sections = Array.isArray(store.sections) ? store.sections : [];
+      document.getElementById('sectionsGrid').innerHTML = sections.map(function (section) {
+        return '<article class="card"><h3>' + QU.escapeHtml(section.title || 'Sekcja') + '</h3><div class="muted">' + QU.escapeHtml(section.text || '') + '</div></article>';
+      }).join('');
+    }
+
+    document.getElementById('searchInput').addEventListener('input', renderProducts);
+    document.getElementById('sortSelect').addEventListener('change', renderProducts);
+    document.getElementById('modeSelect').addEventListener('change', renderProducts);
+    document.addEventListener('click', function (event) {
+      var btn = event.target.closest('[data-add-id]');
+      if (!btn) return;
+      alert('Produkt dodany do koszyka. Ten etap jest gotowy pod dalsze rozwinięcie checkoutu.');
+    });
+
+    QU.ensureSeedStore && QU.ensureSeedStore();
+    if (!QU.readProducts().length) seedProducts();
+    renderProducts();
+  </script>
+</body>
+</html>
