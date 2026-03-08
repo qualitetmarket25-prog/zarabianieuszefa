@@ -1,52 +1,46 @@
-
 (function(){
   function getPlan(){
-    return localStorage.getItem('qm_user_plan_v1') || 'basic';
+    return (localStorage.getItem('qm_plan') || 'basic').toLowerCase();
   }
   function marginForPlan(plan){
     if(plan === 'elite') return 35;
     if(plan === 'pro') return 25;
     return 15;
   }
-  function normalizeNum(v){
-    const n = Number(v);
-    return Number.isFinite(n) ? n : 0;
-  }
-  function applyAutoMargin(){
-    const current = normalizeNum(localStorage.getItem('qm_store_margin_pct'));
-    const wanted = marginForPlan(getPlan());
-    if(current !== wanted) localStorage.setItem('qm_store_margin_pct', String(wanted));
+  function applyMargin(){
+    const plan = getPlan();
+    const margin = marginForPlan(plan);
+    localStorage.setItem('qm_store_margin_pct', String(margin));
 
     try{
-      const raw = JSON.parse(localStorage.getItem('qm_products_by_supplier_v1') || '[]');
-      if(Array.isArray(raw)){
-        const pct = wanted / 100;
-        const updated = raw.map(item => {
-          const base = normalizeNum(item.basePrice || item.originalPrice || item.price);
-          const price = base ? +(base * (1 + pct)).toFixed(2) : normalizeNum(item.price);
-          return Object.assign({}, item, {
-            basePrice: base || normalizeNum(item.price),
-            originalPrice: base || normalizeNum(item.price),
-            price,
-            marginPct: wanted
-          });
-        });
-        localStorage.setItem('qm_products_by_supplier_v1', JSON.stringify(updated));
-      }
-    }catch(e){}
-    try{
       const stores = JSON.parse(localStorage.getItem('qm_stores_v1') || '[]');
-      if(Array.isArray(stores)){
-        const active = localStorage.getItem('qm_active_store_v1') || '';
-        const next = stores.map(store => {
-          if(!active || store.slug === active || store.id === active || store.name === active){
-            return Object.assign({}, store, {marginPct:wanted});
+      const active = localStorage.getItem('qm_active_store_v1');
+      if(Array.isArray(stores) && active){
+        const changed = stores.map(store=>{
+          if((store.slug || store.id || store.name) == active){
+            return Object.assign({}, store, { marginPct: margin });
           }
           return store;
         });
-        localStorage.setItem('qm_stores_v1', JSON.stringify(next));
+        localStorage.setItem('qm_stores_v1', JSON.stringify(changed));
+      }
+    }catch(e){}
+
+    try{
+      const raw = JSON.parse(localStorage.getItem('qm_products_by_supplier_v1') || '[]');
+      if(Array.isArray(raw) && raw.length){
+        const normalized = raw.map(item=>{
+          const basePrice = Number(item.basePrice || item.cost || item.price || 0);
+          const finalPrice = +(basePrice * (1 + margin/100)).toFixed(2);
+          return Object.assign({}, item, {
+            basePrice,
+            marginPct: margin,
+            price: finalPrice
+          });
+        });
+        localStorage.setItem('qm_products_by_supplier_v1', JSON.stringify(normalized));
       }
     }catch(e){}
   }
-  document.addEventListener('DOMContentLoaded', applyAutoMargin);
+  document.addEventListener('DOMContentLoaded', applyMargin);
 })();

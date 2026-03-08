@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" role="img" aria-label="QualitetMarket">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-labelledby="title desc">
+  <title id="title">QualitetMarket</title>
+  <desc id="desc">Nowoczesne logo QualitetMarket</desc>
   <defs>
     <linearGradient id="g" x1="0" x2="1">
       <stop offset="0%" stop-color="#22c55e"/>
       <stop offset="100%" stop-color="#38bdf8"/>
     </linearGradient>
   </defs>
-  <rect width="320" height="72" rx="18" fill="#0f172a"/>
-  <g transform="translate(18 14)">
-    <rect x="0" y="0" width="44" height="44" rx="14" fill="url(#g)"/>
-    <path d="M12 28V16h9.2c4.8 0 7.8 2.4 7.8 6.2 0 3.7-3 5.8-7.8 5.8H16v8h-4zM16 24.7h4.8c2.5 0 4-1 4-2.8 0-1.9-1.5-2.9-4-2.9H16v5.7z" fill="#fff"/>
-  </g>
-  <text x="74" y="31" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#f8fafc">QualitetMarket</text>
-  <text x="74" y="52" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#94a3b8">zarabianie • sprzedaż • AI • marketplace</text>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="#0f172a"/>
+  <path d="M18 18h16c9.9 0 18 8.1 18 18s-8.1 18-18 18H18V18zm14 10h-4v16h4c4.4 0 8-3.6 8-8s-3.6-8-8-8z" fill="url(#g)"/>
+  <circle cx="46" cy="46" r="5" fill="#e2fef0"/>
+  <text x="74" y="28" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#e5eefb">Qualitet</text>
+  <text x="74" y="48" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="url(#g)">Market</text>
 </svg>

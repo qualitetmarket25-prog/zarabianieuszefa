@@ -1,164 +1,121 @@
-
 (function(){
-  const shellData = {
-    menu: [
-      {href:'index.html', title:'Start', desc:'główne wejście'},
-      {href:'platforma.html', title:'Platforma', desc:'centrum aplikacji'},
-      {href:'dashboard.html', title:'Dashboard', desc:'wyniki i szybkie akcje'},
-      {href:'sklep.html', title:'Sklep', desc:'produkty i sprzedaż'},
-      {href:'hurtownie.html', title:'Hurtownie', desc:'import i dostawcy'},
-      {href:'koszyk.html', title:'Koszyk', desc:'produkty do zamówienia'},
-      {href:'checkout.html', title:'Checkout', desc:'finalizacja zamówień'},
-      {href:'zamowienia.html', title:'Zamówienia', desc:'lista sprzedaży'},
-      {href:'sklepy.html', title:'Sklepy', desc:'multi-store i marża'},
-      {href:'panel-sklepu.html', title:'Panel sklepu', desc:'ustawienia sklepu'},
-      {href:'generator-sklepu.html', title:'Generator', desc:'tworzenie sklepu'},
-      {href:'ai.html', title:'AI', desc:'narzędzia AI'},
-      {href:'reklama-ai.html', title:'Reklama AI', desc:'materiały sprzedażowe'},
-      {href:'aplikacje.html', title:'Aplikacje', desc:'katalog aplikacji'},
-      {href:'stworz-aplikacje.html', title:'Stwórz aplikację', desc:'generator aplikacji'},
-      {href:'intelligence.html', title:'Intelligence', desc:'analiza i listing'},
-      {href:'qualitetmarket.html', title:'QualitetMarket', desc:'marketplace i sprzedaż'},
-      {href:'suppliers.html', title:'Suppliers', desc:'partnerzy i dostawcy'},
-      {href:'blueprints.html', title:'Blueprints', desc:'gotowe schematy'},
-      {href:'cennik.html', title:'Cennik', desc:'plany i aktywacja'},
-      {href:'login.html', title:'Login', desc:'wejście do aplikacji'}
-    ],
-    bottom: [
-      {href:'index.html', label:'Start', icon:'⌂'},
-      {href:'platforma.html', label:'Panel', icon:'▣'},
-      {href:'sklep.html', label:'Sklep', icon:'🛒'},
-      {href:'hurtownie.html', label:'Import', icon:'⬇'},
-      {href:'zamowienia.html', label:'Zamów.', icon:'✓'},
-      {href:'sklepy.html', label:'Sklepy', icon:'◫'}
-    ]
-  };
+  const pageKey = (document.body.dataset.page || '').trim();
+  const routes = [
+    {href:'index.html', label:'Start', icon:'🏠', desc:'Główne menu aplikacji'},
+    {href:'platforma.html', label:'Platforma', icon:'🧭', desc:'Moduły do zarabiania'},
+    {href:'dashboard.html', label:'Panel', icon:'📊', desc:'Statystyki i skróty'},
+    {href:'sklep.html', label:'Sklep', icon:'🛍️', desc:'Produkty i sprzedaż'},
+    {href:'hurtownie.html', label:'Hurtownie', icon:'📦', desc:'Import i dostawcy'},
+    {href:'cennik.html', label:'Cennik', icon:'💎', desc:'Plany Basic / Pro / Elite'},
+    {href:'aplikacje.html', label:'Aplikacje', icon:'📱', desc:'Gotowe aplikacje'},
+    {href:'ai.html', label:'AI', icon:'🤖', desc:'Narzędzia AI'},
+    {href:'qualitetmarket.html', label:'Marketplace', icon:'🚀', desc:'Centrum sprzedaży'},
+    {href:'suppliers.html', label:'Suppliers', icon:'🌍', desc:'Partnerzy i sourcing'}
+  ];
 
-  function currentPage(){
-    const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-    return path || 'index.html';
-  }
-
-  function renderShell(){
-    const root = document.querySelector('[data-shell]');
-    if(!root) return;
-
-    const page = currentPage();
-    const title = root.getAttribute('data-title') || 'QualitetMarket';
-    const subtitle = root.getAttribute('data-subtitle') || 'Aplikacja do zarabiania';
-    const hero = root.querySelector('[data-page-content]');
-
-    root.innerHTML = `
-      <div class="app-shell">
-        <header class="topbar">
-          <div class="brand">
-            <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-            <div class="brand-text">
-              <strong>${title}</strong>
-              <span>${subtitle}</span>
-            </div>
-          </div>
-          <div class="top-actions">
-            <a class="secondary-btn" href="index.html">Start</a>
-            <button class="icon-btn" type="button" data-open-menu aria-label="Otwórz menu">☰</button>
-          </div>
-        </header>
-
-        <div class="drawer" data-drawer>
-          <div class="drawer-backdrop" data-close-menu></div>
-          <aside class="drawer-panel">
-            <div class="section-title">
-              <div>
-                <h2>Główne menu</h2>
-                <p>Wszystko w jednym miejscu</p>
-              </div>
-              <button class="icon-btn" type="button" data-close-menu aria-label="Zamknij menu">×</button>
-            </div>
-            <div class="drawer-grid">
-              ${shellData.menu.map(item => `
-                <a class="drawer-link" href="${item.href}">
-                  ${item.title}
-                  <small>${item.desc}</small>
-                </a>
-              `).join('')}
-            </div>
-          </aside>
+  function initTopbar(){
+    const shell = document.querySelector('.app-shell');
+    if(!shell) return;
+    const topbar = document.createElement('header');
+    topbar.className = 'topbar';
+    topbar.innerHTML = `
+      <div class="topbar-inner">
+        <a class="brand" href="index.html" aria-label="QualitetMarket start">
+          <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
+        </a>
+        <div class="top-actions">
+          <a class="ghost-btn" href="cennik.html">Cennik</a>
+          <a class="cta-btn" href="platforma.html">Zarabiaj teraz</a>
+          <button class="icon-btn" id="menuToggle" aria-label="Otwórz menu">☰</button>
         </div>
-
-        ${hero ? hero.outerHTML : ''}
-
-        <nav class="bottom-nav">
-          <div class="bottom-nav-grid">
-            ${shellData.bottom.map(item => `
-              <a href="${item.href}" class="${page === item.href.toLowerCase() ? 'active' : ''}">
-                <span>${item.icon}</span>
-                <span>${item.label}</span>
-              </a>
-            `).join('')}
-          </div>
-        </nav>
       </div>
     `;
+    shell.prepend(topbar);
 
-    root.querySelector('[data-open-menu]').addEventListener('click', ()=> root.querySelector('[data-drawer]').classList.add('open'));
-    root.querySelectorAll('[data-close-menu]').forEach(el=> el.addEventListener('click', ()=> root.querySelector('[data-drawer]').classList.remove('open')));
-  }
-
-  function applyAutolinks(){
-    document.addEventListener('click', function(e){
-      const btn = e.target.closest('[data-go]');
-      if(btn){
-        const href = btn.getAttribute('data-go');
-        if(href) location.href = href;
-      }
-      const action = e.target.closest('[data-action]');
-      if(!action) return;
-      const name = action.getAttribute('data-action');
-      if(name === 'load-demo-products'){
-        const demo = [
-          {name:'Smartwatch Sport', price:79, img:'https://via.placeholder.com/300x200?text=Smartwatch'},
-          {name:'Lampa LED Biurko', price:49, img:'https://via.placeholder.com/300x200?text=Lampa+LED'},
-          {name:'Kamera Auto', price:129, img:'https://via.placeholder.com/300x200?text=Kamera+Auto'}
-        ];
-        localStorage.setItem('qm_products_by_supplier_v1', JSON.stringify(demo));
-        alert('Załadowano demo produkty do qm_products_by_supplier_v1');
-      }
-      if(name === 'activate-pro'){
-        localStorage.setItem('qm_user_plan_v1', 'pro');
-        localStorage.setItem('qm_store_margin_pct', '25');
-        alert('Aktywowano plan PRO i marżę 25%');
-      }
-      if(name === 'activate-elite'){
-        localStorage.setItem('qm_user_plan_v1', 'elite');
-        localStorage.setItem('qm_store_margin_pct', '35');
-        alert('Aktywowano plan ELITE i marżę 35%');
-      }
+    const drawer = document.createElement('div');
+    drawer.className = 'drawer';
+    drawer.innerHTML = `
+      <div class="drawer-panel">
+        <div class="drawer-head">
+          <img src="uszefaqualitet-logo.svg" alt="QualitetMarket" style="width:170px">
+          <button class="icon-btn" id="menuClose" aria-label="Zamknij menu">✕</button>
+        </div>
+        <div class="drawer-grid">
+          ${routes.map(r=>`
+            <a class="drawer-link" href="${r.href}">
+              <div style="font-size:28px">${r.icon}</div>
+              <div><b>${r.label}</b><div class="muted">${r.desc}</div></div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(drawer);
+    document.getElementById('menuToggle')?.addEventListener('click', ()=>drawer.classList.add('open'));
+    drawer.addEventListener('click', (e)=>{
+      if(e.target === drawer || e.target.id === 'menuClose') drawer.classList.remove('open');
     });
   }
 
-  function filterCards(){
-    const input = document.querySelector('[data-filter-input]');
-    const cards = Array.from(document.querySelectorAll('[data-filter-card]'));
-    const select = document.querySelector('[data-filter-group]');
-    if(!input && !select) return;
-    function run(){
-      const q = (input?.value || '').trim().toLowerCase();
-      const g = (select?.value || '').trim().toLowerCase();
-      cards.forEach(card=>{
-        const text = card.innerText.toLowerCase();
-        const group = (card.getAttribute('data-group') || '').toLowerCase();
-        const okQ = !q || text.includes(q);
-        const okG = !g || group === g;
-        card.classList.toggle('hidden', !(okQ && okG));
-      });
-    }
-    input && input.addEventListener('input', run);
-    select && select.addEventListener('change', run);
+  function initMobileNav(){
+    const shell = document.querySelector('.app-shell');
+    if(!shell) return;
+    const nav = document.createElement('nav');
+    nav.className = 'mobile-nav';
+    nav.innerHTML = `<div class="mobile-nav-inner">
+      <a href="index.html" class="${pageKey==='home'?'active':''}"><span>🏠</span>Start</a>
+      <a href="platforma.html" class="${pageKey==='platforma'?'active':''}"><span>🧭</span>Moduły</a>
+      <a href="sklep.html" class="${pageKey==='sklep'?'active':''}"><span>🛍️</span>Sklep</a>
+      <a href="cennik.html" class="${pageKey==='cennik'?'active':''}"><span>💎</span>Cennik</a>
+    </div>`;
+    document.body.appendChild(nav);
   }
 
-  document.addEventListener('DOMContentLoaded', function(){
-    renderShell();
-    applyAutolinks();
-    filterCards();
+  function wireButtons(){
+    document.querySelectorAll('[data-link]').forEach(el=>{
+      const href = el.getAttribute('data-link');
+      if(!href) return;
+      if(el.tagName !== 'A') el.setAttribute('role', 'link');
+      const go = ()=> window.location.href = href;
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', e=>{
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+      });
+      el.style.cursor = 'pointer';
+    });
+
+    document.querySelectorAll('[data-copy-link]').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        const value = el.getAttribute('data-copy-link');
+        try{
+          await navigator.clipboard.writeText(value);
+          el.textContent = 'Skopiowano link';
+          setTimeout(()=>{ el.textContent = 'Kopiuj link'; }, 1500);
+        }catch(err){}
+      });
+    });
+
+    document.querySelectorAll('[data-plan]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const plan = btn.getAttribute('data-plan');
+        const planLower = (plan || 'basic').toLowerCase();
+        localStorage.setItem('qm_plan', planLower);
+        const margin = planLower === 'elite' ? 35 : planLower === 'pro' ? 25 : 15;
+        localStorage.setItem('qm_store_margin_pct', String(margin));
+        window.location.href = 'success.html';
+      });
+    });
+  }
+
+  function highlightCurrentLinks(){
+    const file = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll(`a[href="${file}"]`).forEach(a=>a.classList.add('active'));
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    initTopbar();
+    initMobileNav();
+    wireButtons();
+    highlightCurrentLinks();
   });
 })();

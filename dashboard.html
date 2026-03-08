@@ -3,49 +3,111 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Dashboard — QualitetMarket</title>
+  <title>QualitetMarket — Dashboard</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body>
-  <div id="appShell"></div>
-  <div id="pageBody" class="hidden">
-    
-<section class="hero">
-  <div class="hero-grid">
-    <div>
-      <h1>Dashboard</h1>
-      <p>Wszystkie najważniejsze liczby: produkty, sklepy, zamówienia i aktywny sklep. Prosto, szybko i wygodnie na telefonie.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="sklep.html">Sklep</a>
-        <a class="btn" href="zamowienia.html">Zamówienia</a>
-        <a class="btn" href="sklepy.html">Sklepy</a>
-      </div>
-    </div>
-    <div class="kpis">
-      <div class="kpi"><strong id="dashProducts">0</strong><span>Produkty</span></div>
-      <div class="kpi"><strong id="dashOrders">0</strong><span>Zamówienia</span></div>
-      <div class="kpi"><strong id="dashStores">0</strong><span>Sklepy</span></div>
-      <div class="kpi"><strong id="dashMargin">20%</strong><span>Marża</span></div>
-    </div>
-  </div>
-</section>
+<body data-page="dashboard">
+  <div class="app-shell">
+    <main class="page">
+      <section class="hero">
+        <div class="card hero-copy">
+          <span class="eyebrow">QualitetMarket • mobile first</span>
+          <h1>Panel startowy do szybkiej pracy.</h1>
+          <p class="lead">Ten ekran daje szybkie przejścia do codziennych działań: sklep, zamówienia, hurtownie, aplikacje, oferty i cennik. Przyciski są duże i bezpieczne pod kciuk.</p>
+          <div class="hero-actions">
+            <a class="cta-btn" href="platforma.html">Zarabiaj teraz</a>
+            <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
+          </div>
+        </div>
+        <aside class="card hero-panel">
+          <div class="metric-grid">
+            <div class="metric"><strong>1 link</strong><span class="muted">główne wejście do całej aplikacji</span></div>
+            <div class="metric"><strong>Mobile</strong><span class="muted">duże CTA i łatwe klikanie</span></div>
+            <div class="metric"><strong>GitHub Pages</strong><span class="muted">proste ścieżki i szybkie wdrożenie</span></div>
+          </div>
+          <div class="notice">Przyciski są spięte prostymi linkami i atrybutem <b>data-link</b>, więc na telefonie działają pewniej niż stare klikalne divy.</div>
+        </aside>
+      </section>
 
+      <div class="section-title">
+        <h2>Najważniejsze moduły</h2>
+        <span class="muted">wszystko w jednym stylu</span>
+      </div>
+      <section class="link-grid">
+        
+      <article class="link-card">
+        <div class="icon">🛒</div>
+        <span class="badge">Flow sprzedaży</span>
+        <h3>Koszyk</h3>
+        <p>Podgląd koszyka i przejście do checkoutu.</p>
+        <div class="actions">
+          <a class="cta-btn" href="koszyk.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/koszyk.html">Kopiuj link</button>
+        </div>
+      </article>
+
+      <article class="link-card">
+        <div class="icon">💳</div>
+        <span class="badge">Finalizacja</span>
+        <h3>Checkout</h3>
+        <p>Składanie zamówienia i zapis.</p>
+        <div class="actions">
+          <a class="cta-btn" href="checkout.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/checkout.html">Kopiuj link</button>
+        </div>
+      </article>
+
+      <article class="link-card">
+        <div class="icon">📬</div>
+        <span class="badge">Obsługa</span>
+        <h3>Zamówienia</h3>
+        <p>Lista zamówień z localStorage.</p>
+        <div class="actions">
+          <a class="cta-btn" href="zamowienia.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/zamowienia.html">Kopiuj link</button>
+        </div>
+      </article>
+
+      <article class="link-card">
+        <div class="icon">🏪</div>
+        <span class="badge">Multi-store</span>
+        <h3>Sklepy</h3>
+        <p>Aktywny sklep, marża i ustawienia.</p>
+        <div class="actions">
+          <a class="cta-btn" href="sklepy.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/sklepy.html">Kopiuj link</button>
+        </div>
+      </article>
+
+      <article class="link-card">
+        <div class="icon">🏷️</div>
+        <span class="badge">Plan</span>
+        <h3>Cennik</h3>
+        <p>Wybór planu i wejście w Pro / Elite.</p>
+        <div class="actions">
+          <a class="cta-btn" href="cennik.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/cennik.html">Kopiuj link</button>
+        </div>
+      </article>
+
+      <article class="link-card">
+        <div class="icon">📱</div>
+        <span class="badge">Builder</span>
+        <h3>Stwórz aplikację</h3>
+        <p>Generator aplikacji i nowych modułów.</p>
+        <div class="actions">
+          <a class="cta-btn" href="stworz-aplikacje.html">Otwórz</a>
+          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/stworz-aplikacje.html">Kopiuj link</button>
+        </div>
+      </article>
+      </section>
+
+      
+      <div class="footer-space"></div>
+    </main>
   </div>
   <script src="app-shell.js"></script>
   <script src="auto-margin.js"></script>
-  <script>window.QM_APP.mount({title:'Dashboard', subtitle:'Podgląd sprzedaży i sklepów'});</script>
-  
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
- const products = QM_APP.readJSON('qm_products_by_supplier_v1', []);
- const orders = QM_APP.readJSON('qm_orders_v1', []);
- const stores = QM_APP.readJSON('qm_stores_v1', []);
- document.getElementById('dashProducts').textContent = Array.isArray(products) ? products.length : 0;
- document.getElementById('dashOrders').textContent = Array.isArray(orders) ? orders.length : 0;
- document.getElementById('dashStores').textContent = Array.isArray(stores) ? stores.length : 0;
- document.getElementById('dashMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
-});
-</script>
-
 </body>
 </html>

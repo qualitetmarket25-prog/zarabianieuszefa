@@ -1,29 +1,38 @@
-PAKIET 10 — PODMIANA
+PAKIET 11 — UI / CENNIK / IKONY / PRZYCISKI / PRZEJŚCIA
 
 Podmień w głównym katalogu repo:
-- ai.html
-- reklama-ai.html
-- aplikacje.html
-- stworz-aplikacje.html
-- cennik.html
-- qualitetmarket.html
-- blueprints.html
-- suppliers.html
-- intelligence.html
-- app-layout.css
-- app-shell.js
-- auto-margin.js
-- uszefaqualitet-logo.svg
 
-Test:
-1. Otwórz index.html
-2. Wejdź w AI / Reklama AI / Aplikacje / Cennik / QualitetMarket / Suppliers / Blueprints / Intelligence
-3. Sprawdź menu mobilne
-4. Sprawdź dolne menu
-5. Sprawdź przyciski i przejścia
-6. Sprawdź czy marża zapisuje się do qm_store_margin_pct
+index.html
+platforma.html
+dashboard.html
+cennik.html
+ai.html
+reklama-ai.html
+aplikacje.html
+stworz-aplikacje.html
+qualitetmarket.html
+blueprints.html
+suppliers.html
+intelligence.html
+app-layout.css
+app-shell.js
+auto-margin.js
+uszefaqualitet-logo.svg
 
-Ważne:
-- GitHub Pages -> używaj tylko ścieżek względnych
-- nie używaj sklepy.htm
-- poprawna strona to sklepy.html
+Po wgraniu:
+1. odśwież stronę twardo
+2. sprawdź index.html
+3. sprawdź cennik.html
+4. sprawdź ai.html i aplikacje.html
+5. sprawdź czy przyciski prowadzą do właściwych plików
+
+Marże:
+basic = 15
+pro = 25
+elite = 35
+
+Klucze localStorage:
+qm_store_margin_pct
+qm_products_by_supplier_v1
+qm_stores_v1
+qm_active_store_v1
