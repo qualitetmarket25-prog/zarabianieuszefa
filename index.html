@@ -1,56 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Start — QualitetMarket</title>
-  <meta name="description" content="QualitetMarket pomaga budować sklep, sprzedawać, importować produkty i zarabiać online.">
+  <meta name="description" content="Jedno wejście do aplikacji">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket"><span>QualitetMarket</span></a>
-      <div style="display:flex;gap:10px;align-items:center">
-        <a class="ghost-btn" href="platforma.html">Platforma</a>
-        <a class="cta-btn" href="cennik.html">Wybierz plan</a>
-      </div>
-    </div>
-  </header>
-  
-<main>
-  <section class="hero">
+  <div data-app-header></div>
+  <main class="page">
     <div class="container">
-      <div class="hero-card">
-        <h1>Zarabiaj online szybciej z jednego panelu</h1>
-        <p>Sprzedaż, sklep, hurtownie, AI, automatyczna marża, checkout, zamówienia i narzędzia do budowy własnej aplikacji w jednym miejscu.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
-          <a class="cta-btn" href="platforma.html">Wejdź do platformy</a>
-          <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
-        </div>
+      
+<section class="hero">
+  <div class="panel hero-card">
+    <span class="eyebrow">Gotowe do startu</span>
+    <h1>Zarabiaj online z jednego głównego menu</h1>
+    <p>To jest startowa strona aplikacji. Z tego miejsca użytkownik wchodzi do platformy, cennika, hurtowni, sklepu, panelu i sekcji kontaktowej. Wszystko jest mobilne, proste i gotowe pod GitHub Pages.</p>
+    <div class="actions">
+      <a class="btn" href="platforma.html">Wejdź do platformy</a>
+      <a class="btn secondary" href="cennik.html">Zobacz plany</a>
+      <a class="btn ghost" href="hurtownie.html">Import produktów</a>
+    </div>
+    <div class="section">
+      <div class="kpis">
+        <div class="kpi"><strong>1 link</strong><span class="small">jedno wejście do aplikacji</span></div>
+        <div class="kpi"><strong>Mobile</strong><span class="small">duże przyciski i stopka prawna</span></div>
+        <div class="kpi"><strong data-margin-badge>Auto marża</strong><span class="small">ustawiana automatycznie</span></div>
+        <div class="kpi"><strong>Hurtownie</strong><span class="small">linki i kierunek pod start</span></div>
       </div>
     </div>
-  </section>
-  <section class="quick-nav">
-    <div class="container grid grid-3">
-      <div class="card kpi"><div class="kpi-icon">🛍️</div><div><h3>Sklep i sprzedaż</h3><p>Produkty, koszyk, checkout i zamówienia gotowe do użycia na telefonie.</p></div></div>
-      <div class="card kpi"><div class="kpi-icon">🤖</div><div><h3>AI i aplikacje</h3><p>Generator treści, reklamy i moduły, które pomagają szybciej tworzyć ofertę.</p></div></div>
-      <div class="card kpi"><div class="kpi-icon">📈</div><div><h3>Marża i skalowanie</h3><p>Automatyczne ustawienia planów basic, pro i elite oraz rozwój multi-store.</p></div></div>
+  </div>
+  <div class="panel hero-card">
+    <h2>Na czym tu zarabia użytkownik</h2>
+    <div class="list">
+      <div class="list-item"><div>📦</div><div><strong>Import z hurtowni</strong><div class="small">produkty do sklepu i marketplace</div></div></div>
+      <div class="list-item"><div>💸</div><div><strong>Automatyczna marża</strong><div class="small">basic 15%, pro 25%, elite 35%</div></div></div>
+      <div class="list-item"><div>🛒</div><div><strong>Sprzedaż online</strong><div class="small">sklep, koszyk, checkout, zamówienia</div></div></div>
+      <div class="list-item"><div>🚀</div><div><strong>Rozwój usług</strong><div class="small">AI, reklama, aplikacje, marketplace</div></div></div>
     </div>
-  </section>
-  <section class="quick-nav">
-    <div class="container grid grid-2">
-      <a class="tile" href="sklep.html"><div><strong>Sklep</strong><span>Produkty, ceny, koszyk i szybkie CTA</span></div><div>→</div></a>
-      <a class="tile" href="hurtownie.html"><div><strong>Hurtownie</strong><span>Import produktów i źródła do dropshippingu</span></div><div>→</div></a>
-      <a class="tile" href="ai.html"><div><strong>AI</strong><span>Narzędzia do reklam, treści i automatyzacji</span></div><div>→</div></a>
-      <a class="tile" href="aplikacje.html"><div><strong>Aplikacje</strong><span>Moduły i gotowe ekrany do rozwoju platformy</span></div><div>→</div></a>
-      <a class="tile" href="cennik.html"><div><strong>Cennik</strong><span>Plany, marże i ścieżki rozwoju</span></div><div>→</div></a>
-      <a class="tile" href="kontakt.html"><div><strong>Kontakt i pomoc</strong><span>Dane kontaktowe i dokumenty prawne</span></div><div>→</div></a>
-    </div>
-  </section>
-</main>
+  </div>
+</section>
 
-  <div data-site-footer></div>
+<section class="section">
+  <div class="section-head">
+    <div>
+      <span class="tag">Wszystko w aplikacji</span>
+      <h2>Główne moduły</h2>
+    </div>
+  </div>
+  <div class="cards">
+    <article class="card"><div class="icon">🧭</div><h3>Platforma</h3><p>Centralne menu wszystkich modułów zarobkowych i narzędzi.</p><a class="btn wide secondary" href="platforma.html">Otwórz</a></article>
+    <article class="card"><div class="icon">💎</div><h3>Cennik</h3><p>Plany basic, pro i elite z automatyczną marżą.</p><a class="btn wide secondary" href="cennik.html">Otwórz</a></article>
+    <article class="card"><div class="icon">📦</div><h3>Hurtownie</h3><p>Lista hurtowni i szybkie przejścia do importu produktów.</p><a class="btn wide secondary" href="hurtownie.html">Otwórz</a></article>
+    <article class="card"><div class="icon">🛒</div><h3>Sklep</h3><p>Sprzedaż produktów, koszyk, checkout i zamówienia.</p><a class="btn wide secondary" href="sklep.html">Otwórz</a></article>
+    <article class="card"><div class="icon">📊</div><h3>Panel</h3><p>Podgląd działania, aktywny sklep i szybkie akcje.</p><a class="btn wide secondary" href="dashboard.html">Otwórz</a></article>
+    <article class="card"><div class="icon">🔗</div><h3>Linki hurtowni</h3><p>Gotowe linki startowe do partnerów i supplierów.</p><a class="btn wide secondary" href="suppliers.html">Otwórz</a></article>
+  </div>
+</section>
+
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>

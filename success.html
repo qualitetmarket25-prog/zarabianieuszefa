@@ -1,57 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Sukces</title>
-  <meta name="theme-color" content="#0b1020">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aktywacja planu — QualitetMarket</title>
+  <meta name="description" content="Potwierdzenie aktywacji planu">
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div class="page">
-    <div data-topbar></div>
-    <main class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <article class="card hero-card">
-            <div class="badge">Gotowe</div>
-            <h1>Konfiguracja zakończona</h1>
-            <p class="lead">Plan i marża zostały zapisane. Możesz od razu iść dalej do działania.</p>
-          </article>
-          <aside class="card hero-card">
-            <div class="kicker">Automatyzacja zarabiania</div>
-            <div data-margin-summary></div>
-          </aside>
-        </div>
-      </section>
+  <div data-app-header></div>
+  <main class="page">
+    <div class="container">
       
-<section class="section">
-  <div class="grid grid-2">
-    <article class="card module">
-      <h2>Gotowe — konfiguracja zapisana</h2>
-      <p class="note">Plan, marża i ustawienia sklepu są już zapisane lokalnie. Możesz iść dalej do panelu, sklepu albo hurtowni.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="dashboard.html">Otwórz dashboard</a>
-        <a class="btn" href="sklep.html">Przejdź do sklepu</a>
-        <a class="btn" href="hurtownie.html">Przejdź do hurtowni</a>
-      </div>
-    </article>
-    <article class="card module">
-      <h2>Co ustawiłem</h2>
-      <ul class="list">
-        <li>automatyczna marża według planu</li>
-        <li>zapis do <strong>qm_store_margin_pct</strong></li>
-        <li>aktualizacja produktów w <strong>qm_products_by_supplier_v1</strong></li>
-        <li>gotowość pod multi-store</li>
-      </ul>
-    </article>
+<section class="panel hero-card">
+  <span class="eyebrow">Gotowe</span>
+  <h1>Plan aktywowany</h1>
+  <p>Plan został zapisany lokalnie. Auto marża ustawi się automatycznie po wejściu do sklepu i panelu.</p>
+  <div class="actions">
+    <a class="btn" href="dashboard.html">Przejdź do panelu</a>
+    <a class="btn secondary" href="sklep.html">Przejdź do sklepu</a>
   </div>
 </section>
 
-    </main>
-    <div data-bottom-nav></div>
-  </div>
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
   <script src="app-shell.js"></script>
   <script src="auto-margin.js"></script>
 </body>

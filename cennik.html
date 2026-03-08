@@ -1,33 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cennik — QualitetMarket</title>
-  <meta name="description" content="QualitetMarket pomaga budować sklep, sprzedawać, importować produkty i zarabiać online.">
+  <meta name="description" content="Plany i marża">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket"><span>QualitetMarket</span></a>
-      <div style="display:flex;gap:10px;align-items:center">
-        <a class="ghost-btn" href="platforma.html">Platforma</a>
-        <a class="cta-btn" href="cennik.html">Wybierz plan</a>
-      </div>
-    </div>
-  </header>
-  
-<main class="container">
-  <section class="page-title"><h1>Cennik</h1><p>Prosty podział planów z automatyczną marżą i dużymi CTA na telefonie.</p></section>
-  <section class="grid grid-3">
-    <div class="card"><div class="kpi"><div class="kpi-icon">🌱</div><div><h3>Basic</h3><p>Dla startu i testów.</p></div></div><div class="notice">Automatyczna marża: 15%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Start Basic</a></div></div>
-    <div class="card"><div class="kpi"><div class="kpi-icon">🚀</div><div><h3>Pro</h3><p>Dla sprzedaży i hurtowni.</p></div></div><div class="notice">Automatyczna marża: 25%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Wejdź w Pro</a></div></div>
-    <div class="card"><div class="kpi"><div class="kpi-icon">👑</div><div><h3>Elite</h3><p>Dla pełnej automatyzacji i rozwoju.</p></div></div><div class="notice">Automatyczna marża: 35%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Wybierz Elite</a></div></div>
-  </section>
-</main>
+  <div data-app-header></div>
+  <main class="page">
+    <div class="container">
+      
+<section class="panel hero-card">
+  <span class="eyebrow">Cennik i marża</span>
+  <h1>Wybierz plan i ustaw zysk automatycznie</h1>
+  <p>Każdy plan ustawia gotową marżę dla sklepu. To najprostszy start pod sprzedaż online bez ręcznego liczenia cen.</p>
+</section>
+<section class="section plans">
+  <article class="plan">
+    <div class="icon">🌱</div>
+    <h3>Basic</h3>
+    <div class="price">49 zł</div>
+    <p class="small">na start / miesiąc</p>
+    <ul><li>Auto marża 15%</li><li>Start sklepu</li><li>Podstawowe moduły</li></ul>
+    <div class="actions"><button class="btn wide secondary" onclick="localStorage.setItem('qm_user_plan_v1','basic');location.href='success.html'">Wybierz Basic</button></div>
+  </article>
+  <article class="plan popular">
+    <div class="icon">🚀</div>
+    <h3>Pro</h3>
+    <div class="price">149 zł</div>
+    <p class="small">sprzedaż / miesiąc</p>
+    <ul><li>Auto marża 25%</li><li>Hurtownie i sklep</li><li>Lepszy potencjał zysku</li></ul>
+    <div class="actions"><button class="btn wide" onclick="localStorage.setItem('qm_user_plan_v1','pro');location.href='success.html'">Wybierz Pro</button></div>
+  </article>
+  <article class="plan">
+    <div class="icon">👑</div>
+    <h3>Elite</h3>
+    <div class="price">299 zł</div>
+    <p class="small">skalowanie / miesiąc</p>
+    <ul><li>Auto marża 35%</li><li>Priorytet na rozwój</li><li>Większy zysk na produktach</li></ul>
+    <div class="actions"><button class="btn wide secondary" onclick="localStorage.setItem('qm_user_plan_v1','elite');location.href='success.html'">Wybierz Elite</button></div>
+  </article>
+</section>
 
-  <div data-site-footer></div>
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>

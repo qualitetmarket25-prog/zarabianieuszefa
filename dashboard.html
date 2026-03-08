@@ -1,112 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — QualitetMarket</title>
+  <meta name="description" content="Panel główny">
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="dashboard">
-  <div class="app-shell">
-    <main class="page">
-      <section class="hero">
-        <div class="card hero-copy">
-          <span class="eyebrow">QualitetMarket • mobile first</span>
-          <h1>Panel startowy do szybkiej pracy.</h1>
-          <p class="lead">Ten ekran daje szybkie przejścia do codziennych działań: sklep, zamówienia, hurtownie, aplikacje, oferty i cennik. Przyciski są duże i bezpieczne pod kciuk.</p>
-          <div class="hero-actions">
-            <a class="cta-btn" href="platforma.html">Zarabiaj teraz</a>
-            <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
-          </div>
-        </div>
-        <aside class="card hero-panel">
-          <div class="metric-grid">
-            <div class="metric"><strong>1 link</strong><span class="muted">główne wejście do całej aplikacji</span></div>
-            <div class="metric"><strong>Mobile</strong><span class="muted">duże CTA i łatwe klikanie</span></div>
-            <div class="metric"><strong>GitHub Pages</strong><span class="muted">proste ścieżki i szybkie wdrożenie</span></div>
-          </div>
-          <div class="notice">Przyciski są spięte prostymi linkami i atrybutem <b>data-link</b>, więc na telefonie działają pewniej niż stare klikalne divy.</div>
-        </aside>
-      </section>
-
-      <div class="section-title">
-        <h2>Najważniejsze moduły</h2>
-        <span class="muted">wszystko w jednym stylu</span>
-      </div>
-      <section class="link-grid">
-        
-      <article class="link-card">
-        <div class="icon">🛒</div>
-        <span class="badge">Flow sprzedaży</span>
-        <h3>Koszyk</h3>
-        <p>Podgląd koszyka i przejście do checkoutu.</p>
-        <div class="actions">
-          <a class="cta-btn" href="koszyk.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/koszyk.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">💳</div>
-        <span class="badge">Finalizacja</span>
-        <h3>Checkout</h3>
-        <p>Składanie zamówienia i zapis.</p>
-        <div class="actions">
-          <a class="cta-btn" href="checkout.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/checkout.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📬</div>
-        <span class="badge">Obsługa</span>
-        <h3>Zamówienia</h3>
-        <p>Lista zamówień z localStorage.</p>
-        <div class="actions">
-          <a class="cta-btn" href="zamowienia.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/zamowienia.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🏪</div>
-        <span class="badge">Multi-store</span>
-        <h3>Sklepy</h3>
-        <p>Aktywny sklep, marża i ustawienia.</p>
-        <div class="actions">
-          <a class="cta-btn" href="sklepy.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/sklepy.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🏷️</div>
-        <span class="badge">Plan</span>
-        <h3>Cennik</h3>
-        <p>Wybór planu i wejście w Pro / Elite.</p>
-        <div class="actions">
-          <a class="cta-btn" href="cennik.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/cennik.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📱</div>
-        <span class="badge">Builder</span>
-        <h3>Stwórz aplikację</h3>
-        <p>Generator aplikacji i nowych modułów.</p>
-        <div class="actions">
-          <a class="cta-btn" href="stworz-aplikacje.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/stworz-aplikacje.html">Kopiuj link</button>
-        </div>
-      </article>
-      </section>
-
+<body>
+  <div data-app-header></div>
+  <main class="page">
+    <div class="container">
       
-      <div class="footer-space"></div>
-    </main>
+<section class="hero">
+  <div class="panel hero-card">
+    <span class="eyebrow">Panel właściciela</span>
+    <h1>Dashboard gotowy do startu</h1>
+    <p>Ten ekran zbiera najważniejsze wejścia do sprzedaży. Nadaje się jako szybki panel główny po zalogowaniu.</p>
+    <div class="actions">
+      <a class="btn" href="sklep.html">Do sklepu</a>
+      <a class="btn secondary" href="zamowienia.html">Zamówienia</a>
+      <a class="btn ghost" href="hurtownie.html">Hurtownie</a>
+    </div>
   </div>
+  <div class="panel hero-card">
+    <div class="kpis">
+      <div class="kpi"><strong>PRO</strong><span class="small">domyślny plan startowy</span></div>
+      <div class="kpi"><strong data-margin-badge>Auto marża</strong><span class="small">zapis do localStorage</span></div>
+      <div class="kpi"><strong>1 sklep</strong><span class="small">aktywny sklep</span></div>
+      <div class="kpi"><strong>Mobile</strong><span class="small">duże CTA</span></div>
+    </div>
+  </div>
+</section>
+
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
   <script src="app-shell.js"></script>
   <script src="auto-margin.js"></script>
 </body>

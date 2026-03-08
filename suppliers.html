@@ -1,112 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Suppliers</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linki hurtowni — QualitetMarket</title>
+  <meta name="description" content="Gotowe linki">
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="suppliers">
-  <div class="app-shell">
-    <main class="page">
-      <section class="hero">
-        <div class="card hero-copy">
-          <span class="eyebrow">QualitetMarket • mobile first</span>
-          <h1>Partnerzy i sourcing produktów.</h1>
-          <p class="lead">Ekran suppliers ma prowadzić prosto do dostawców, importu CSV i dalszej sprzedaży. Dodałem czytelne przejścia i większe przyciski pod telefon.</p>
-          <div class="hero-actions">
-            <a class="cta-btn" href="platforma.html">Zarabiaj teraz</a>
-            <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
-          </div>
-        </div>
-        <aside class="card hero-panel">
-          <div class="metric-grid">
-            <div class="metric"><strong>1 link</strong><span class="muted">główne wejście do całej aplikacji</span></div>
-            <div class="metric"><strong>Mobile</strong><span class="muted">duże CTA i łatwe klikanie</span></div>
-            <div class="metric"><strong>GitHub Pages</strong><span class="muted">proste ścieżki i szybkie wdrożenie</span></div>
-          </div>
-          <div class="notice">Przyciski są spięte prostymi linkami i atrybutem <b>data-link</b>, więc na telefonie działają pewniej niż stare klikalne divy.</div>
-        </aside>
-      </section>
-
-      <div class="section-title">
-        <h2>Najważniejsze moduły</h2>
-        <span class="muted">wszystko w jednym stylu</span>
-      </div>
-      <section class="link-grid">
-        
-      <article class="link-card">
-        <div class="icon">📦</div>
-        <span class="badge">Import</span>
-        <h3>Hurtownie</h3>
-        <p>Dostawcy i import produktów.</p>
-        <div class="actions">
-          <a class="cta-btn" href="hurtownie.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/hurtownie.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🛍️</div>
-        <span class="badge">Sprzedaż</span>
-        <h3>Sklep</h3>
-        <p>Produkty po imporcie i marży.</p>
-        <div class="actions">
-          <a class="cta-btn" href="sklep.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/sklep.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🏪</div>
-        <span class="badge">Multi-store</span>
-        <h3>Sklepy</h3>
-        <p>Zarządzanie sklepami i marżą.</p>
-        <div class="actions">
-          <a class="cta-btn" href="sklepy.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/sklepy.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">💎</div>
-        <span class="badge">Plan</span>
-        <h3>Cennik</h3>
-        <p>Więcej mocy dla dostawców i sprzedaży.</p>
-        <div class="actions">
-          <a class="cta-btn" href="cennik.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/cennik.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🚀</div>
-        <span class="badge">Marketplace</span>
-        <h3>QualitetMarket</h3>
-        <p>Cały marketplace w jednym miejscu.</p>
-        <div class="actions">
-          <a class="cta-btn" href="qualitetmarket.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/qualitetmarket.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📬</div>
-        <span class="badge">Obsługa</span>
-        <h3>Zamówienia</h3>
-        <p>Podgląd realizacji.</p>
-        <div class="actions">
-          <a class="cta-btn" href="zamowienia.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/zamowienia.html">Kopiuj link</button>
-        </div>
-      </article>
-      </section>
-
+<body>
+  <div data-app-header></div>
+  <main class="page">
+    <div class="container">
       
-      <div class="footer-space"></div>
-    </main>
-  </div>
+<section class="panel hero-card">
+  <span class="eyebrow">Gotowe linki</span>
+  <h1>Linki do hurtowni i supplierów</h1>
+  <p>To jest gotowa strona startowa z linkami. Klikasz i działasz. Możesz podmienić lub rozbudować listę później.</p>
+</section>
+<section class="section">
+  <table class="table">
+    <thead><tr><th>Hurtownia</th><th>Kierunek</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td>AliExpress</td><td>Tani start / test produktów</td><td><a href="https://www.aliexpress.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>CJ Dropshipping</td><td>Dropshipping / sourcing</td><td><a href="https://www.cjdropshipping.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>EPROLO</td><td>Prosty start</td><td><a href="https://eprolo.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>VidaXL</td><td>Dom / ogród / UE</td><td><a href="https://www.vidaxl.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>Banggood</td><td>Elektronika / trendy</td><td><a href="https://www.banggood.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>Costway</td><td>Dom / wyposażenie</td><td><a href="https://www.costway.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>BigBuy</td><td>UE / marketplace</td><td><a href="https://www.bigbuy.eu/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>Hertwill</td><td>UE / marki</td><td><a href="https://www.hertwill.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>Syncee</td><td>Marketplace / katalogi</td><td><a href="https://syncee.com/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+      <tr><td>Spocket</td><td>UE / USA suppliers</td><td><a href="https://www.spocket.co/" target="_blank" rel="noopener noreferrer">Przejdź</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
   <script src="app-shell.js"></script>
   <script src="auto-margin.js"></script>
 </body>

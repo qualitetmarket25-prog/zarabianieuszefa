@@ -1,12 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="QualitetMarket logo">
 <defs>
-<linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-<stop offset="0%" stop-color="#22c55e"/>
-<stop offset="100%" stop-color="#38bdf8"/>
-</linearGradient>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#22c55e"/>
+    <stop offset="100%" stop-color="#38bdf8"/>
+  </linearGradient>
 </defs>
-<rect width="256" height="256" rx="56" fill="#0b1020"/>
-<path d="M56 72h56c48 0 88 31 88 75 0 48-39 81-94 81H56z" fill="url(#g)"/>
-<path d="M92 112h54c20 0 34 11 34 28 0 18-14 30-37 30H92z" fill="#0b1020" opacity=".92"/>
-<circle cx="176" cy="84" r="18" fill="#38bdf8"/>
+<rect width="256" height="256" rx="56" fill="#0b1220"/>
+<path d="M128 36c50.81 0 92 41.19 92 92s-41.19 92-92 92S36 178.81 36 128 77.19 36 128 36zm0 24c-37.56 0-68 30.44-68 68s30.44 68 68 68 68-30.44 68-68-30.44-68-68-68z" fill="url(#g)"/>
+<path d="M92 84h50c28.72 0 48 18.33 48 44 0 28.54-20.46 44-50 44h-12l26 28h-31L92 166V84zm29 27v35h19c13.15 0 20-6.37 20-17.5 0-11.32-7.27-17.5-20.5-17.5H121z" fill="#f8fafc"/>
 </svg>

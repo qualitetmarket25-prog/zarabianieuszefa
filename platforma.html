@@ -1,39 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Platforma — QualitetMarket</title>
-  <meta name="description" content="QualitetMarket pomaga budować sklep, sprzedawać, importować produkty i zarabiać online.">
+  <meta name="description" content="Menu aplikacji">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket"><span>QualitetMarket</span></a>
-      <div style="display:flex;gap:10px;align-items:center">
-        <a class="ghost-btn" href="platforma.html">Platforma</a>
-        <a class="cta-btn" href="cennik.html">Wybierz plan</a>
-      </div>
-    </div>
-  </header>
-  
-<main class="container">
-  <section class="page-title"><h1>Platforma</h1><p>Główne menu całej aplikacji. Jedno wejście do wszystkiego, co pomaga zarabiać.</p></section>
-  <section class="grid grid-3">
-    <a class="tile" href="dashboard.html"><div><strong>Dashboard</strong><span>Podgląd całej platformy</span></div><div>📊</div></a>
-    <a class="tile" href="sklep.html"><div><strong>Sklep</strong><span>Sprzedaż i produkty</span></div><div>🛒</div></a>
-    <a class="tile" href="koszyk.html"><div><strong>Koszyk</strong><span>Przegląd zamówienia</span></div><div>🧺</div></a>
-    <a class="tile" href="checkout.html"><div><strong>Checkout</strong><span>Finalizacja zakupu</span></div><div>💳</div></a>
-    <a class="tile" href="zamowienia.html"><div><strong>Zamówienia</strong><span>Historia i statusy</span></div><div>📦</div></a>
-    <a class="tile" href="hurtownie.html"><div><strong>Hurtownie</strong><span>Import i dostawcy</span></div><div>🏭</div></a>
-    <a class="tile" href="ai.html"><div><strong>AI</strong><span>Treści i reklamy</span></div><div>🤖</div></a>
-    <a class="tile" href="reklama-ai.html"><div><strong>Reklama AI</strong><span>Moduł reklamowy</span></div><div>📣</div></a>
-    <a class="tile" href="aplikacje.html"><div><strong>Aplikacje</strong><span>Rozszerzenia i moduły</span></div><div>📱</div></a>
-  </section>
-</main>
+  <div data-app-header></div>
+  <main class="page">
+    <div class="container">
+      
+<section class="panel hero-card">
+  <span class="eyebrow">Menu aplikacji</span>
+  <h1>Platforma zarabiania online</h1>
+  <p>Pełne menu do startu. Na telefonie działa jako prosty launcher całej aplikacji. Wyszukiwarka filtruje moduły.</p>
+  <div class="searchbar">
+    <input class="input" data-filter-input placeholder="Szukaj modułu, np. sklep, hurtownie, AI, reklama...">
+    <a class="btn secondary" href="index.html">Wróć na start</a>
+  </div>
+</section>
 
-  <div data-site-footer></div>
+<section class="section">
+  <div class="grid">
+    <article class="card" data-filter-card><div class="icon">📦</div><h3>Hurtownie</h3><p>Import produktów i start ze sprzedażą.</p><a class="btn wide" href="hurtownie.html">Wejdź</a></article>
+    <article class="card" data-filter-card><div class="icon">🛒</div><h3>Sklep</h3><p>Prezentacja produktów i szybka sprzedaż.</p><a class="btn wide" href="sklep.html">Wejdź</a></article>
+    <article class="card" data-filter-card><div class="icon">💳</div><h3>Koszyk i checkout</h3><p>Flow sprzedaży dla użytkownika końcowego.</p><a class="btn wide" href="checkout.html">Wejdź</a></article>
+    <article class="card" data-filter-card><div class="icon">📋</div><h3>Zamówienia</h3><p>Historia sprzedaży i obsługa realizacji.</p><a class="btn wide" href="zamowienia.html">Wejdź</a></article>
+    <article class="card" data-filter-card><div class="icon">💎</div><h3>Cennik</h3><p>Wybór planu i auto marży dla Twojego sklepu.</p><a class="btn wide" href="cennik.html">Wejdź</a></article>
+    <article class="card" data-filter-card><div class="icon">🔗</div><h3>Linki hurtowni</h3><p>Lista partnerów i ważnych linków startowych.</p><a class="btn wide" href="suppliers.html">Wejdź</a></article>
+  </div>
+</section>
+
+    </div>
+  </main>
+  <div data-app-footer></div>
+  <div data-app-bottomnav></div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>
