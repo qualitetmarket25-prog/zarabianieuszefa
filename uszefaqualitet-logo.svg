@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
-<rect width="256" height="256" rx="48" fill="#0F172A"/>
-<path d="M52 68C52 59.1634 59.1634 52 68 52H126C173.496 52 212 90.5035 212 138C212 185.496 173.496 224 126 224H68C59.1634 224 52 216.837 52 208V68Z" fill="#111827"/>
-<path d="M88 94H126C150.301 94 170 113.699 170 138C170 162.301 150.301 182 126 182H88V94Z" fill="#22C55E"/>
-<path d="M104 112H126C140.359 112 152 123.641 152 138C152 152.359 140.359 164 126 164H104V112Z" fill="#38BDF8"/>
-<path d="M82 78H104V178H82V78Z" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+  <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+    <stop stop-color="#22c55e"/>
+    <stop offset="1" stop-color="#38bdf8"/>
+  </linearGradient>
+</defs>
+<rect width="512" height="512" rx="128" fill="#0f172a"/>
+<path d="M134 142h96c83 0 148 58 148 140s-65 140-148 140h-96z" fill="none" stroke="url(#g)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M181 189h49c55 0 98 39 98 93s-43 93-98 93h-49" fill="none" stroke="#e5f7ef" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="365" cy="151" r="22" fill="#22c55e"/>
 </svg>
