@@ -1,40 +1,154 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reklama AI — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reklama AI — UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Reklama AI','prosty moduł kampanii i treści');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Zrób reklamę w 2 minuty</h2></div>
-    <div class="form-grid">
-      <div class="field"><label>Co promujesz</label><select id="adType"><option>Sklep</option><option>Ogłoszenie</option><option>Nieruchomość</option><option>Auta</option></select></div>
-      <div class="field"><label>Budżet</label><input id="adBudget" type="number" placeholder="np. 300"></div>
-      <div class="field" style="grid-column:1/-1"><label>Opis</label><textarea id="adDesc" placeholder="Napisz co promujesz, AI zrobi gotowy kierunek reklamy."></textarea></div>
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="saveCampaign">Zapisz kampanię</button><a class="btn-gold" href="cennik.html">Odblokuj większe limity</a></div>
-    <div id="adOut" class="note" style="margin-top:12px"></div>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Reklama AI','kampanie i gotowe CTA');});</script>
+
+  <div class="split">
+    <section class="card">
+      <div class="section-title"><h2>Zrób kampanię w 2 minuty</h2></div>
+      <form id="campaignForm" class="form-grid">
+        <div class="field"><label>Nazwa kampanii</label><input id="title" placeholder="np. Leady premium Warszawa"></div>
+        <div class="field"><label>Kanał</label>
+          <select id="channel">
+            <option>Meta Ads</option>
+            <option>Google Ads</option>
+            <option>TikTok Ads</option>
+            <option>OLX / lokalne</option>
+            <option>E-mail</option>
+          </select>
+        </div>
+        <div class="field"><label>Co promujesz</label>
+          <select id="targetType">
+            <option>Sklep</option>
+            <option>Ogłoszenie</option>
+            <option>Nieruchomość</option>
+            <option>Auta</option>
+            <option>Aplikacja klienta</option>
+          </select>
+        </div>
+        <div class="field"><label>Budżet miesięczny</label><input id="budget" type="number" min="0" placeholder="3000"></div>
+        <div class="field"><label>Miasto / rynek</label><input id="city" placeholder="Warszawa"></div>
+        <div class="field"><label>Status</label>
+          <select id="status">
+            <option>robocza</option>
+            <option>do uruchomienia</option>
+            <option>aktywna</option>
+            <option>wstrzymana</option>
+          </select>
+        </div>
+        <div class="field full"><label>Opis kampanii</label><textarea id="description" placeholder="Co obiecujesz klientowi, jaka grupa, jaki cel?"></textarea></div>
+        <div class="field full"><label>CTA</label><input id="cta" placeholder="Umów bezpłatną konsultację / Zobacz ofertę / Zostaw kontakt"></div>
+        <div class="field full">
+          <div class="actions-row">
+            <button class="btn btn-primary" type="submit">Zapisz kampanię</button>
+            <button class="btn btn-ghost" type="button" id="seedCampaigns">Wstaw demo</button>
+            <button class="btn btn-danger" type="button" id="clearCampaigns">Wyczyść kampanie</button>
+          </div>
+        </div>
+      </form>
+      <div class="footer-note">Kampanie zapisują się w <strong>qm_crm_v1.aiCampaigns</strong>.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><h2>Gotowe podpowiedzi</h2></div>
+      <div class="list">
+        <div class="list-row"><div><strong>Leady nieruchomości</strong><div class="small">CTA: Umów prezentację i odbierz shortlistę ofert.</div></div><span class="badge pro">B2C</span></div>
+        <div class="list-row"><div><strong>Sklep / dropshipping</strong><div class="small">CTA: Zobacz bestseller i odbierz darmową dostawę od 199 zł.</div></div><span class="badge pro">e-commerce</span></div>
+        <div class="list-row"><div><strong>Aplikacja dla firmy</strong><div class="small">CTA: Zamów wycenę aplikacji i zobacz demo dla swojej branży.</div></div><span class="badge boss">upsell</span></div>
+      </div>
+    </section>
   </div>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var out = document.getElementById('adOut');
-  document.getElementById('saveCampaign').addEventListener('click', function(){
-    var campaigns = QU.read('qm_ads_campaigns_v1', []);
-    var item = {
-      id: QU.uid(),
-      type: document.getElementById('adType').value,
-      budget: Number(document.getElementById('adBudget').value || 0),
-      desc: document.getElementById('adDesc').value,
-      createdAt: new Date().toISOString()
-    };
-    campaigns.unshift(item);
-    QU.write('qm_ads_campaigns_v1', campaigns);
-    out.textContent = 'Kampania zapisana. Budżet: ' + QU.money(item.budget) + '. Łącznie kampanii: ' + campaigns.length;
-  });
-});
-</script>
+
+  <section class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Twoje kampanie</h2></div>
+    <div id="campaignList" class="list"></div>
+  </section>
+
+  <script>
+  (function(){
+    var form = document.getElementById('campaignForm');
+    var list = document.getElementById('campaignList');
+
+    function read(){
+      return QU.readCrm().aiCampaigns || [];
+    }
+
+    function render(){
+      var items = read();
+      if(!items.length){
+        list.innerHTML = '<div class="empty">Brak kampanii. Zapisz pierwszą po lewej.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function(item){
+        return '<div class="ad-card">'
+          + '<div class="offer-meta"><span class="badge '+ QU.statusBadgeClass(item.status) +'">' + item.status + '</span><span class="badge pro">' + item.channel + '</span><span class="badge boss">' + item.targetType + '</span></div>'
+          + '<h3 style="margin:0">' + item.title + '</h3>'
+          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
+          + '<div class="list-row"><div><strong>Budżet</strong><div class="small">' + QU.money(item.budget) + '</div></div><div><strong>Miasto</strong><div class="small">' + (item.city || 'cała Polska') + '</div></div><div><strong>CTA</strong><div class="small">' + (item.cta || 'brak') + '</div></div></div>'
+          + '<div class="actions-row">'
+          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
+          + '</div></div>';
+      }).join('');
+      list.querySelectorAll('[data-del]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-del');
+          QU.updateCrm(function(crm){
+            crm.aiCampaigns = (crm.aiCampaigns || []).filter(function(item){ return item.id !== id; });
+            return crm;
+          });
+          render();
+        });
+      });
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var item = QU.normalizeCampaign({
+        title: document.getElementById('title').value.trim(),
+        channel: document.getElementById('channel').value,
+        targetType: document.getElementById('targetType').value,
+        budget: document.getElementById('budget').value,
+        city: document.getElementById('city').value.trim(),
+        status: document.getElementById('status').value,
+        description: document.getElementById('description').value.trim(),
+        cta: document.getElementById('cta').value.trim()
+      });
+      if(!item.title){ alert('Dodaj nazwę kampanii.'); return; }
+      QU.updateCrm(function(crm){
+        crm.aiCampaigns.unshift(item);
+        return crm;
+      });
+      form.reset();
+      render();
+    });
+
+    document.getElementById('seedCampaigns').addEventListener('click', function(){
+      QU.updateCrm(function(crm){
+        crm.aiCampaigns = [
+          QU.normalizeCampaign({ title:'Leady apartamenty premium', channel:'Meta Ads', targetType:'Nieruchomość', budget:3200, city:'Warszawa', status:'aktywna', description:'Lead generation pod mieszkania premium i wynajem inwestycyjny.', cta:'Umów prezentację' }),
+          QU.normalizeCampaign({ title:'Kreator aplikacji dla firm', channel:'Google Ads', targetType:'Aplikacja klienta', budget:1800, city:'cała Polska', status:'do uruchomienia', description:'Pozyskanie firm, które chcą własną aplikację bez dłubania w kodzie.', cta:'Zobacz demo i wycenę' })
+        ];
+        return crm;
+      });
+      render();
+    });
+
+    document.getElementById('clearCampaigns').addEventListener('click', function(){
+      QU.updateCrm(function(crm){ crm.aiCampaigns = []; return crm; });
+      render();
+    });
+
+    render();
+  })();
+  </script>
 </div>
-</body></html>
+</body>
+</html>

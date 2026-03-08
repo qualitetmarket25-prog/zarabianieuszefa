@@ -1,20 +1,119 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Używane — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Używane — UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Używane','sprzedaż rzeczy używanych');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Używane</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Używane','prosty marketplace rzeczy i usług');});</script>
+
+  <div class="split">
+    <section class="card">
+      <div class="section-title"><h2>Dodaj ofertę używaną</h2></div>
+      <form id="usedForm" class="form-grid">
+        <div class="field"><label>Tytuł</label><input id="title" placeholder="Laptop biznesowy"></div>
+        <div class="field"><label>Kategoria</label>
+          <select id="category">
+            <option>Elektronika</option>
+            <option>Dom</option>
+            <option>Sport</option>
+            <option>Moda</option>
+            <option>Inne</option>
+          </select>
+        </div>
+        <div class="field"><label>Miasto</label><input id="city" placeholder="Gdańsk"></div>
+        <div class="field"><label>Cena</label><input id="price" type="number" min="0" placeholder="2500"></div>
+        <div class="field"><label>Kontakt</label><input id="contact" placeholder="telefon / email"></div>
+        <div class="field"><label>Status</label>
+          <select id="status">
+            <option>aktywne</option>
+            <option>rezerwacja</option>
+            <option>sprzedane</option>
+          </select>
+        </div>
+        <div class="field full"><label>Opis</label><textarea id="description" placeholder="Krótki opis stanu i korzyści."></textarea></div>
+        <div class="field full"><div class="actions-row"><button class="btn btn-primary" type="submit">Zapisz</button><button class="btn btn-ghost" type="button" id="seedUsed">Wstaw demo</button></div></div>
+      </form>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Szybki model sprzedaży</h2></div>
+      <div class="small">To jest lekki moduł marketplace, który można potem rozwinąć o zdjęcia, filtry, ulubione i płatne wyróżnienia.</div>
+    </section>
   </div>
+
+  <section class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Oferty używane</h2></div>
+    <div id="usedList" class="grid grid-3"></div>
+  </section>
+
+  <script>
+  (function(){
+    var form = document.getElementById('usedForm');
+    var list = document.getElementById('usedList');
+
+    function render(){
+      var items = QU.readCrm().usedItems || [];
+      if(!items.length){
+        list.innerHTML = '<div class="empty">Brak ofert używanych.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function(item){
+        return '<div class="offer-card">'
+          + '<div class="offer-meta"><span class="badge pro">'+ item.category +'</span><span class="badge '+ QU.statusBadgeClass(item.status) +'">'+ item.status +'</span></div>'
+          + '<h3 style="margin:0">' + item.title + '</h3>'
+          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
+          + '<div class="price">' + QU.money(item.price) + '</div>'
+          + '<div class="small">' + (item.city || '—') + ' • ' + (item.contact || 'brak kontaktu') + '</div>'
+          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
+          + '</div>';
+      }).join('');
+      list.querySelectorAll('[data-del]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-del');
+          QU.updateCrm(function(crm){
+            crm.usedItems = (crm.usedItems || []).filter(function(item){ return item.id !== id; });
+            return crm;
+          });
+          render();
+        });
+      });
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var item = QU.normalizeListing({
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        city: document.getElementById('city').value.trim(),
+        price: document.getElementById('price').value,
+        contact: document.getElementById('contact').value.trim(),
+        status: document.getElementById('status').value,
+        description: document.getElementById('description').value.trim()
+      });
+      if(!item.title){ alert('Dodaj tytuł oferty.'); return; }
+      QU.updateCrm(function(crm){ crm.usedItems.unshift(item); return crm; });
+      form.reset();
+      render();
+    });
+
+    document.getElementById('seedUsed').addEventListener('click', function(){
+      QU.updateCrm(function(crm){
+        crm.usedItems = [
+          QU.normalizeListing({ title:'Laptop biznesowy Dell 14"', category:'Elektronika', city:'Gdańsk', price:2500, contact:'+48 600 000 111', status:'aktywne', description:'Sprzęt po leasingu, gotowy do pracy.' }),
+          QU.normalizeListing({ title:'Rower gravel premium', category:'Sport', city:'Wrocław', price:4200, contact:'rower@example.com', status:'rezerwacja', description:'Lekki rower na sezon, stan bardzo dobry.' })
+        ];
+        return crm;
+      });
+      render();
+    });
+
+    render();
+  })();
+  </script>
 </div>
-</body></html>
+</body>
+</html>

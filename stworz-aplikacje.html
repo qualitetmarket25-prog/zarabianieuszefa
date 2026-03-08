@@ -1,51 +1,151 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stwórz swoją aplikację — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stwórz aplikację — UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Stwórz swoją aplikację','kreator uproszczony dla klientów');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Kreator aplikacji</h2></div>
-    <div class="form-grid">
-      <div class="field"><label>Nazwa aplikacji</label><input id="appName" placeholder="np. Mieszkania Premium"></div>
-      <div class="field"><label>Typ</label><select id="appType"><option>Sklep</option><option>Ogłoszenia</option><option>Nieruchomości</option><option>Auto / komis</option><option>Usługi</option></select></div>
-      <div class="field"><label>Miasto</label><input id="appCity" placeholder="np. Warszawa"></div>
-      <div class="field"><label>Plan</label><select id="appPlan"><option>Basic</option><option>Pro</option><option>Elite</option><option>Boss</option><option>Agent PRO</option></select></div>
-      <div class="field" style="grid-column:1/-1"><label>Opis</label><textarea id="appDesc" placeholder="Co ma robić aplikacja?"></textarea></div>
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="saveApp">Zapisz aplikację</button><a class="btn-gold" href="cennik.html">Zobacz płatne pakiety</a></div>
-    <div id="appOut" class="small" style="margin-top:12px"></div>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Kreator aplikacji','generator gotowych app-ek');});</script>
+
+  <div class="split">
+    <section class="card">
+      <div class="section-title"><h2>Kreator aplikacji</h2></div>
+      <form id="appForm" class="form-grid">
+        <input type="hidden" id="appId">
+        <div class="field"><label>Nazwa aplikacji</label><input id="name" placeholder="np. Apartamenty Warszawa"></div>
+        <div class="field"><label>Typ</label>
+          <select id="type">
+            <option>Sklep</option>
+            <option>Ogłoszenia</option>
+            <option>Nieruchomości</option>
+            <option>Auto / komis</option>
+            <option>Usługi</option>
+          </select>
+        </div>
+        <div class="field"><label>Miasto</label><input id="city" placeholder="Warszawa"></div>
+        <div class="field"><label>Plan</label>
+          <select id="plan">
+            <option value="basic">Basic</option>
+            <option value="pro">Pro</option>
+            <option value="elite">Elite</option>
+            <option value="agentpro">Agent PRO</option>
+          </select>
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="status">
+            <option value="draft">draft</option>
+            <option value="demo">demo</option>
+            <option value="live">live</option>
+          </select>
+        </div>
+        <div class="field"><label>Target</label>
+          <select id="target">
+            <option>B2C</option>
+            <option>B2B</option>
+            <option>B2B + B2C</option>
+          </select>
+        </div>
+        <div class="field"><label>Miesięczna cena</label><input id="monthlyPrice" type="number" min="0" placeholder="399"></div>
+        <div class="field full"><label>Opis</label><textarea id="description" placeholder="Co ta aplikacja robi i za co klient płaci co miesiąc?"></textarea></div>
+        <div class="field full">
+          <div class="actions-row">
+            <button class="btn btn-primary" type="submit">Zapisz aplikację</button>
+            <button class="btn btn-ghost" type="button" id="fillAgent">Wstaw Agent PRO</button>
+            <button class="btn btn-ghost" type="button" id="fillShop">Wstaw sklep</button>
+          </div>
+        </div>
+      </form>
+      <div class="footer-note">Dane zapisują się do <strong>qm_crm_v1.generatedApps</strong>.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><h2>Dlaczego to sprzedaje</h2></div>
+      <div class="list">
+        <div class="list-row"><div><strong>Jedna opłata miesięczna</strong><div class="small">Klient płaci abonament, nie tylko jednorazową robotę.</div></div><span class="badge pro">MRR</span></div>
+        <div class="list-row"><div><strong>Branżowy upsell</strong><div class="small">Do nieruchomości możesz od razu sprzedać Agent PRO i reklamy AI.</div></div><span class="badge boss">upsell</span></div>
+        <div class="list-row"><div><strong>Szybki start</strong><div class="small">To ma wejść bez backendu i działać na GitHub Pages.</div></div><span class="badge elite">MVP</span></div>
+      </div>
+    </section>
   </div>
-  <div class="card" style="margin-top:20px">
-    <div class="section-title"><h2>Dlaczego to sprzedaje</h2></div>
-    <div class="list">
-      <div class="list-row"><div><strong>Klik i gotowe</strong><div class="small">Użytkownik nie musi znać kodu.</div></div></div>
-      <div class="list-row"><div><strong>Plan miesięczny</strong><div class="small">Twoja powtarzalna opłata miesięczna.</div></div></div>
-      <div class="list-row"><div><strong>Upsell branżowy</strong><div class="small">Najdrożej sprzedaje się Agent Nieruchomości PRO.</div></div></div>
-    </div>
-  </div>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var out = document.getElementById('appOut');
-  document.getElementById('saveApp').addEventListener('click', function(){
-    var apps = QU.read('qm_apps_v1', []);
-    apps.unshift({
-      id: QU.uid(),
-      name: document.getElementById('appName').value || 'Nowa aplikacja',
-      type: document.getElementById('appType').value,
-      city: document.getElementById('appCity').value,
-      plan: document.getElementById('appPlan').value,
-      desc: document.getElementById('appDesc').value,
-      createdAt: new Date().toISOString()
+
+  <script>
+  (function(){
+    var form = document.getElementById('appForm');
+    var params = new URLSearchParams(location.search);
+    var editId = params.get('edit');
+
+    function loadEdit(){
+      if(!editId) return;
+      var apps = QU.readCrm().generatedApps || [];
+      var item = apps.find(function(app){ return app.id === editId; });
+      if(!item) return;
+      document.getElementById('appId').value = item.id;
+      document.getElementById('name').value = item.name || '';
+      document.getElementById('type').value = item.type || 'Sklep';
+      document.getElementById('city').value = item.city || '';
+      document.getElementById('plan').value = item.plan || 'basic';
+      document.getElementById('status').value = item.status || 'draft';
+      document.getElementById('target').value = item.target || 'B2C';
+      document.getElementById('monthlyPrice').value = item.monthlyPrice || '';
+      document.getElementById('description').value = item.description || '';
+    }
+
+    function fillAgent(){
+      document.getElementById('name').value = 'Agent Nieruchomości PRO';
+      document.getElementById('type').value = 'Nieruchomości';
+      document.getElementById('plan').value = 'agentpro';
+      document.getElementById('status').value = 'live';
+      document.getElementById('target').value = 'B2B';
+      document.getElementById('monthlyPrice').value = '399';
+      document.getElementById('description').value = 'CRM ofert, leady, listing publiczny, backup JSON i gotowy upsell reklam AI dla biur nieruchomości.';
+    }
+
+    function fillShop(){
+      document.getElementById('name').value = 'Sklep sprzedażowy PRO';
+      document.getElementById('type').value = 'Sklep';
+      document.getElementById('plan').value = 'pro';
+      document.getElementById('status').value = 'demo';
+      document.getElementById('target').value = 'B2C';
+      document.getElementById('monthlyPrice').value = '149';
+      document.getElementById('description').value = 'Sklep z produktami, koszykiem, checkoutem, hurtowniami i gotowym miejscem na reklamę AI.';
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var item = QU.normalizeApp({
+        id: document.getElementById('appId').value || undefined,
+        name: document.getElementById('name').value.trim(),
+        type: document.getElementById('type').value,
+        city: document.getElementById('city').value.trim(),
+        plan: document.getElementById('plan').value,
+        status: document.getElementById('status').value,
+        target: document.getElementById('target').value,
+        monthlyPrice: document.getElementById('monthlyPrice').value,
+        description: document.getElementById('description').value.trim()
+      });
+      if(!item.name){ alert('Dodaj nazwę aplikacji.'); return; }
+
+      QU.updateCrm(function(crm){
+        crm.generatedApps = crm.generatedApps || [];
+        var index = crm.generatedApps.findIndex(function(app){ return app.id === item.id; });
+        if(index === -1) crm.generatedApps.unshift(item);
+        else crm.generatedApps[index] = item;
+        return crm;
+      });
+
+      alert('Aplikacja zapisana.');
+      location.href = 'aplikacje.html';
     });
-    QU.write('qm_apps_v1', apps);
-    out.textContent = 'Aplikacja zapisana. Liczba aplikacji: ' + apps.length;
-  });
-});
-</script>
+
+    document.getElementById('fillAgent').addEventListener('click', fillAgent);
+    document.getElementById('fillShop').addEventListener('click', fillShop);
+    loadEdit();
+  })();
+  </script>
 </div>
-</body></html>
+</body>
+</html>

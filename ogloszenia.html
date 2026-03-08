@@ -1,20 +1,136 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ogłoszenia — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ogłoszenia — UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Ogłoszenia','sprzedaż, usługi, używane i leady');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Ogłoszenia</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Ogłoszenia','uniwersalny moduł leadów i publikacji');});</script>
+
+  <div class="split">
+    <section class="card">
+      <div class="section-title"><h2>Dodaj ogłoszenie</h2></div>
+      <form id="adsForm" class="form-grid">
+        <div class="field"><label>Tytuł</label><input id="title" placeholder="np. Usługa remontowa premium"></div>
+        <div class="field"><label>Kategoria</label>
+          <select id="category">
+            <option>Usługi</option>
+            <option>Nieruchomości</option>
+            <option>Auto</option>
+            <option>E-commerce</option>
+            <option>Inne</option>
+          </select>
+        </div>
+        <div class="field"><label>Miasto</label><input id="city" placeholder="Kraków"></div>
+        <div class="field"><label>Cena / budżet</label><input id="price" type="number" min="0" placeholder="1999"></div>
+        <div class="field"><label>Kontakt</label><input id="contact" placeholder="+48... / email"></div>
+        <div class="field"><label>Status</label>
+          <select id="status">
+            <option>aktywne</option>
+            <option>w realizacji</option>
+            <option>zamknięte</option>
+          </select>
+        </div>
+        <div class="field full"><label>Opis</label><textarea id="description" placeholder="Krótki opis ogłoszenia i co klient ma zrobić dalej."></textarea></div>
+        <div class="field full">
+          <div class="actions-row">
+            <button class="btn btn-primary" type="submit">Zapisz ogłoszenie</button>
+            <button class="btn btn-ghost" type="button" id="seedAds">Wstaw demo</button>
+            <button class="btn btn-danger" type="button" id="clearAds">Wyczyść</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><h2>Po co ten moduł</h2></div>
+      <div class="list">
+        <div class="list-row"><div><strong>Lead generation</strong><div class="small">Szybki moduł dla różnych branż bez budowania wszystkiego od nowa.</div></div><span class="badge pro">MVP</span></div>
+        <div class="list-row"><div><strong>Cross-sell</strong><div class="small">Do ogłoszeń możesz od razu dokleić reklamę AI i własną aplikację.</div></div><span class="badge boss">upsell</span></div>
+      </div>
+    </section>
   </div>
+
+  <section class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Aktywne ogłoszenia</h2></div>
+    <div id="adsList" class="grid grid-3"></div>
+  </section>
+
+  <script>
+  (function(){
+    var form = document.getElementById('adsForm');
+    var list = document.getElementById('adsList');
+
+    function read(){ return QU.readCrm().classifiedAds || []; }
+
+    function render(){
+      var items = read();
+      if(!items.length){
+        list.innerHTML = '<div class="empty">Brak ogłoszeń.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function(item){
+        return '<div class="offer-card">'
+          + '<div class="offer-meta"><span class="badge pro">'+ item.category +'</span><span class="badge '+ QU.statusBadgeClass(item.status) +'">'+ item.status +'</span></div>'
+          + '<h3 style="margin:0">' + item.title + '</h3>'
+          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
+          + '<div class="price">' + QU.money(item.price) + '</div>'
+          + '<div class="small">' + (item.city || 'online') + ' • ' + (item.contact || 'brak kontaktu') + '</div>'
+          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
+          + '</div>';
+      }).join('');
+      list.querySelectorAll('[data-del]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-del');
+          QU.updateCrm(function(crm){
+            crm.classifiedAds = (crm.classifiedAds || []).filter(function(item){ return item.id !== id; });
+            return crm;
+          });
+          render();
+        });
+      });
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var item = QU.normalizeListing({
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        city: document.getElementById('city').value.trim(),
+        price: document.getElementById('price').value,
+        contact: document.getElementById('contact').value.trim(),
+        status: document.getElementById('status').value,
+        description: document.getElementById('description').value.trim()
+      });
+      if(!item.title){ alert('Dodaj tytuł.'); return; }
+      QU.updateCrm(function(crm){ crm.classifiedAds.unshift(item); return crm; });
+      form.reset();
+      render();
+    });
+
+    document.getElementById('seedAds').addEventListener('click', function(){
+      QU.updateCrm(function(crm){
+        crm.classifiedAds = [
+          QU.normalizeListing({ title:'Prowadzenie social media dla firm', category:'Usługi', city:'Kraków', price:1500, contact:'kontakt@firma.pl', status:'aktywne', description:'Obsługa kampanii i treści dla małych firm.' }),
+          QU.normalizeListing({ title:'Sklep internetowy dla lokalnego biznesu', category:'E-commerce', city:'Poznań', price:2990, contact:'+48 500 100 200', status:'w realizacji', description:'Oferta wdrożenia prostego sklepu i panelu sprzedażowego.' })
+        ];
+        return crm;
+      });
+      render();
+    });
+
+    document.getElementById('clearAds').addEventListener('click', function(){
+      QU.updateCrm(function(crm){ crm.classifiedAds = []; return crm; });
+      render();
+    });
+
+    render();
+  })();
+  </script>
 </div>
-</body></html>
+</body>
+</html>

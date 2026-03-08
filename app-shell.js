@@ -1,14 +1,20 @@
 (function(){
+  'use strict';
+
   var PATH = location.pathname.split('/').pop() || 'index.html';
-  var PLAN_KEY = 'qm_plan_v1';
+  var PLAN_KEYS = ['qm_user_plan_v1', 'qm_plan_v1'];
   var CRM_KEY = 'qm_crm_v1';
+
   var links = [
     ['Dashboard','dashboard.html'],
-    ['Firmy nieruchomości','firmy-nieruchomosci.html'],
-    ['Nieruchomości','nieruchomosci.html'],
+    ['Platforma','platforma.html'],
+    ['Hurtownie','hurtownie.html'],
     ['Sklep','sklep.html'],
     ['Ogłoszenia','ogloszenia.html'],
     ['Auta','auta.html'],
+    ['Używane','uzywane.html'],
+    ['Nieruchomości','nieruchomosci.html'],
+    ['Firmy nieruchomości','firmy-nieruchomosci.html'],
     ['Reklama AI','reklama-ai.html'],
     ['Aplikacje','aplikacje.html'],
     ['Stwórz aplikację','stworz-aplikacje.html'],
@@ -25,11 +31,15 @@
   }
 
   function money(value){
-    return new Intl.NumberFormat('pl-PL',{
-      style:'currency',
-      currency:'PLN',
-      maximumFractionDigits:0
-    }).format(Number(value) || 0);
+    try {
+      return new Intl.NumberFormat('pl-PL', {
+        style:'currency',
+        currency:'PLN',
+        maximumFractionDigits:0
+      }).format(Number(value) || 0);
+    } catch(err){
+      return (Number(value) || 0).toFixed(0) + ' zł';
+    }
   }
 
   function dateTime(value){
@@ -43,6 +53,10 @@
       hour:'2-digit',
       minute:'2-digit'
     }).format(date);
+  }
+
+  function safeReadRaw(key){
+    try { return localStorage.getItem(key); } catch(err){ return null; }
   }
 
   function safeRead(key, fallback){
@@ -61,14 +75,41 @@
     return value;
   }
 
+  function normalizePlan(value){
+    var plan = String(value || '').toLowerCase().trim();
+    if(['elite','elita'].indexOf(plan) !== -1) return 'elite';
+    if(['pro','boss','zawodowiec'].indexOf(plan) !== -1) return 'pro';
+    if(['agentpro','agent pro','agent-pro'].indexOf(plan) !== -1) return 'agentpro';
+    return 'basic';
+  }
+
+  function plan(){
+    for(var i=0;i<PLAN_KEYS.length;i++){
+      var raw = safeReadRaw(PLAN_KEYS[i]);
+      if(raw){
+        return normalizePlan(raw.replace(/^"|"$/g,''));
+      }
+    }
+    return 'basic';
+  }
+
+  function setPlan(next){
+    var normalized = normalizePlan(next);
+    PLAN_KEYS.forEach(function(key){ localStorage.setItem(key, normalized); });
+    return normalized;
+  }
+
+  function hasPlan(required){
+    var map = { basic:1, pro:2, elite:3, agentpro:4 };
+    return (map[plan()] || 1) >= (map[normalizePlan(required)] || 1);
+  }
+
   function normalizeOffer(item){
     item = item && typeof item === 'object' ? item : {};
-    var gallery = Array.isArray(item.gallery)
-      ? item.gallery.filter(Boolean)
-      : String(item.gallery || item.image || '')
-          .split(/[\n,]/)
-          .map(function(v){ return v.trim(); })
-          .filter(Boolean);
+    var gallery = Array.isArray(item.gallery) ? item.gallery.filter(Boolean) : String(item.gallery || item.image || '')
+      .split(/[\n,]/)
+      .map(function(v){ return v.trim(); })
+      .filter(Boolean);
 
     return {
       id: item.id || uid(),
@@ -112,49 +153,102 @@
     };
   }
 
+  function normalizeApp(item){
+    item = item && typeof item === 'object' ? item : {};
+    return {
+      id: item.id || uid(),
+      name: item.name || '',
+      type: item.type || 'Sklep',
+      city: item.city || '',
+      plan: normalizePlan(item.plan || 'basic'),
+      description: item.description || '',
+      status: item.status || 'draft',
+      target: item.target || 'B2C',
+      monthlyPrice: Number(item.monthlyPrice) || 0,
+      createdAt: item.createdAt || nowIso(),
+      updatedAt: item.updatedAt || item.createdAt || nowIso()
+    };
+  }
+
+  function normalizeCampaign(item){
+    item = item && typeof item === 'object' ? item : {};
+    return {
+      id: item.id || uid(),
+      title: item.title || '',
+      channel: item.channel || 'Meta Ads',
+      targetType: item.targetType || 'Sklep',
+      budget: Number(item.budget) || 0,
+      city: item.city || '',
+      description: item.description || '',
+      cta: item.cta || '',
+      status: item.status || 'robocza',
+      createdAt: item.createdAt || nowIso(),
+      updatedAt: item.updatedAt || item.createdAt || nowIso()
+    };
+  }
+
+  function normalizeListing(item){
+    item = item && typeof item === 'object' ? item : {};
+    return {
+      id: item.id || uid(),
+      title: item.title || '',
+      category: item.category || 'Usługi',
+      city: item.city || '',
+      price: Number(item.price) || 0,
+      contact: item.contact || '',
+      description: item.description || '',
+      status: item.status || 'aktywne',
+      createdAt: item.createdAt || nowIso(),
+      updatedAt: item.updatedAt || item.createdAt || nowIso()
+    };
+  }
+
+  function normalizeCar(item){
+    item = item && typeof item === 'object' ? item : {};
+    return {
+      id: item.id || uid(),
+      brand: item.brand || '',
+      model: item.model || '',
+      year: item.year || '',
+      fuel: item.fuel || 'benzyna',
+      price: Number(item.price) || 0,
+      city: item.city || '',
+      status: item.status || 'aktywne',
+      createdAt: item.createdAt || nowIso(),
+      updatedAt: item.updatedAt || item.createdAt || nowIso()
+    };
+  }
+
   function normalizeCrm(value){
     var crm = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
     if(!Array.isArray(crm.leads)) crm.leads = [];
     if(!Array.isArray(crm.realEstateOffers)) crm.realEstateOffers = [];
     if(!Array.isArray(crm.realEstateLeads)) crm.realEstateLeads = [];
+    if(!Array.isArray(crm.generatedApps)) crm.generatedApps = [];
+    if(!Array.isArray(crm.aiCampaigns)) crm.aiCampaigns = [];
+    if(!Array.isArray(crm.classifiedAds)) crm.classifiedAds = [];
+    if(!Array.isArray(crm.usedItems)) crm.usedItems = [];
+    if(!Array.isArray(crm.vehicleOffers)) crm.vehicleOffers = [];
+    if(!Array.isArray(crm.vehicleLeads)) crm.vehicleLeads = [];
+
     crm.realEstateOffers = crm.realEstateOffers.map(normalizeOffer);
     crm.realEstateLeads = crm.realEstateLeads.map(normalizeLead);
+    crm.generatedApps = crm.generatedApps.map(normalizeApp);
+    crm.aiCampaigns = crm.aiCampaigns.map(normalizeCampaign);
+    crm.classifiedAds = crm.classifiedAds.map(normalizeListing);
+    crm.usedItems = crm.usedItems.map(normalizeListing);
+    crm.vehicleOffers = crm.vehicleOffers.map(normalizeCar);
+    crm.vehicleLeads = crm.vehicleLeads.map(normalizeLead);
+
     return crm;
   }
 
-  function readCrm(){
-    return normalizeCrm(safeRead(CRM_KEY, {}));
-  }
-
-  function writeCrm(next){
-    return safeWrite(CRM_KEY, normalizeCrm(next));
-  }
-
+  function readCrm(){ return normalizeCrm(safeRead(CRM_KEY, {})); }
+  function writeCrm(next){ return safeWrite(CRM_KEY, normalizeCrm(next)); }
   function updateCrm(mutator){
     var crm = readCrm();
     var result = typeof mutator === 'function' ? mutator(crm) || crm : crm;
     return writeCrm(result);
-  }
-
-  function readOffers(){
-    return readCrm().realEstateOffers.slice().sort(function(a,b){
-      return String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || ''));
-    });
-  }
-
-  function readLeads(){
-    return readCrm().realEstateLeads.slice().sort(function(a,b){
-      return String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || ''));
-    });
-  }
-
-  function plan(){
-    return localStorage.getItem(PLAN_KEY) || 'basic';
-  }
-
-  function setPlan(next){
-    localStorage.setItem(PLAN_KEY, next);
-    return next;
   }
 
   function statusBadgeClass(status){
@@ -162,70 +256,6 @@
     if(status.indexOf('zamk') !== -1 || status.indexOf('sprzed') !== -1) return 'elite';
     if(status.indexOf('rezerw') !== -1 || status.indexOf('kontakt') !== -1 || status.indexOf('spot') !== -1) return 'boss';
     return 'pro';
-  }
-
-  function buildShell(title, subtitle){
-    var isPublic = ['index.html','login.html'].indexOf(PATH) !== -1;
-    if(isPublic) return;
-    document.body.classList.add('app-body');
-    var root = document.querySelector('[data-page-root]');
-    if(!root) return;
-
-    var planName = plan().toUpperCase();
-    var nav = links.map(function(item){
-      var name = item[0];
-      var href = item[1];
-      return '<a class="nav-link ' + (href === PATH ? 'active' : '') + '" href="' + href + '"><span class="dot"></span><span>' + name + '</span></a>';
-    }).join('');
-
-    var content = root.innerHTML;
-    root.outerHTML =
-      '<div class="app-shell">' +
-        '<aside class="sidebar" id="sidebar">' +
-          '<a class="brand" href="dashboard.html">' +
-            '<img src="uszefaqualitet-logo.svg" alt="UszefaQualitet">' +
-            '<div><strong>UszefaQualitet</strong><span>super app do zarabiania</span></div>' +
-          '</a>' +
-          '<div class="nav-group"><div class="nav-title">Menu</div>' + nav + '</div>' +
-          '<div class="card mini-card">' +
-            '<div class="small">Twój plan</div>' +
-            '<div class="plan-name">' + planName + '</div>' +
-            '<div class="small">PRO, ELITE i AGENTPRO odblokowują panel nieruchomości.</div>' +
-            '<div class="actions-stack">' +
-              '<a class="btn" href="agent-nieruchomosci-pro.html">Pakiet Agent PRO</a>' +
-              '<a class="btn-ghost" href="cennik.html">Cennik</a>' +
-            '</div>' +
-          '</div>' +
-        '</aside>' +
-        '<main class="main">' +
-          '<div class="topbar">' +
-            '<div class="topbar-left">' +
-              '<button class="menu-btn" id="menuBtn" type="button">☰</button>' +
-              '<div><div class="small">' + (subtitle || 'panel premium') + '</div><div class="page-headline">' + (title || document.title) + '</div></div>' +
-            '</div>' +
-            '<div class="top-actions">' +
-              '<a class="btn-ghost" href="reklama-ai.html">Reklama AI</a>' +
-              '<a class="btn" href="stworz-aplikacje.html">Stwórz aplikację</a>' +
-            '</div>' +
-          '</div>' +
-          '<section class="page">' + content + '</section>' +
-        '</main>' +
-      '</div>';
-
-    var menuBtn = document.getElementById('menuBtn');
-    var sidebar = document.getElementById('sidebar');
-    if(menuBtn && sidebar){
-      menuBtn.addEventListener('click', function(){
-        sidebar.classList.toggle('open');
-      });
-    }
-  }
-
-  function requirePlans(plans, redirectHref){
-    if(plans.indexOf(plan()) !== -1) return true;
-    alert('Ta sekcja wymaga planu: ' + plans.join(' / ').toUpperCase());
-    location.href = redirectHref || 'agent-nieruchomosci-pro.html';
-    return false;
   }
 
   function download(filename, content, mime){
@@ -239,18 +269,11 @@
   }
 
   function leadsToCsv(leads){
-    var rows = [['Klient','Telefon','Email','Oferta','Miasto','Budżet','Status','Źródło','Data','Notatka']];
+    var rows = [['Klient','Telefon','Email','Oferta / temat','Miasto','Budżet','Status','Źródło','Data','Notatka']];
     leads.forEach(function(lead){
       rows.push([
-        lead.clientName,
-        lead.phone,
-        lead.email,
-        lead.offerTitle || lead.interest,
-        lead.city,
-        lead.budget,
-        lead.status,
-        lead.source,
-        dateTime(lead.createdAt),
+        lead.clientName, lead.phone, lead.email, lead.offerTitle || lead.interest,
+        lead.city, lead.budget, lead.status, lead.source, dateTime(lead.createdAt),
         (lead.note || '').replace(/\s+/g,' ').trim()
       ]);
     });
@@ -261,6 +284,76 @@
     }).join('\n');
   }
 
+  function shell(title, subtitle){
+    var root = document.querySelector('[data-page-root]');
+    if(!root || document.body.hasAttribute('data-noShell')) return;
+    document.body.classList.add('app-body');
+    var planName = plan().toUpperCase();
+
+    var nav = links.map(function(item){
+      var active = PATH === item[1] ? ' active' : '';
+      return '<a class="nav-link'+active+'" href="'+item[1]+'">'+item[0]+'</a>';
+    }).join('');
+
+    var content = root.innerHTML;
+    root.outerHTML =
+      '<div class="app-shell">' +
+        '<aside class="sidebar" id="sidebar">' +
+          '<div class="brand">UszefaQualitet</div>' +
+          '<div class="brand-sub">super app do zarabiania</div>' +
+          '<nav class="nav-list">' + nav + '</nav>' +
+          '<div class="plan-box">' +
+            '<div class="muted-label">Twój plan</div>' +
+            '<div class="plan-pill">'+ planName +'</div>' +
+            '<p class="muted-copy">PRO, ELITE i AGENTPRO odblokowują mocniejsze moduły sprzedażowe.</p>' +
+            '<div class="plan-actions">' +
+              '<a class="btn btn-gold" href="agent-nieruchomosci-pro.html">Agent PRO</a>' +
+              '<a class="btn btn-ghost" href="cennik.html">Cennik</a>' +
+            '</div>' +
+          '</div>' +
+        '</aside>' +
+        '<div class="app-main">' +
+          '<header class="topbar">' +
+            '<button class="icon-btn" id="menuBtn" type="button">☰</button>' +
+            '<div>' +
+              '<div class="topbar-sub">'+ (subtitle || 'panel premium') +'</div>' +
+              '<h1 class="topbar-title">'+ (title || document.title) +'</h1>' +
+            '</div>' +
+            '<div class="topbar-actions">' +
+              '<a class="btn btn-ghost" href="reklama-ai.html">Reklama AI</a>' +
+              '<a class="btn btn-primary" href="stworz-aplikacje.html">Stwórz aplikację</a>' +
+            '</div>' +
+          '</header>' +
+          '<main class="page-content">' + content + '</main>' +
+        '</div>' +
+      '</div>';
+
+    var menuBtn = document.getElementById('menuBtn');
+    var sidebar = document.getElementById('sidebar');
+    if(menuBtn && sidebar){
+      menuBtn.addEventListener('click', function(){
+        sidebar.classList.toggle('open');
+      });
+    }
+  }
+
+  function requirePlans(plans, redirectHref){
+    plans = Array.isArray(plans) ? plans.map(normalizePlan) : [];
+    if(plans.indexOf(plan()) !== -1) return true;
+    alert('Ta sekcja wymaga planu: ' + plans.join(' / ').toUpperCase());
+    location.href = redirectHref || 'agent-nieruchomosci-pro.html';
+    return false;
+  }
+
+  document.addEventListener('click', function(event){
+    var trigger = event.target.closest('[data-set-plan]');
+    if(!trigger) return;
+    var nextPlan = trigger.getAttribute('data-set-plan') || 'basic';
+    setPlan(nextPlan);
+    alert('Plan ustawiony: ' + normalizePlan(nextPlan).toUpperCase());
+    location.href = trigger.getAttribute('data-redirect') || 'dashboard.html';
+  });
+
   window.QU = {
     uid: uid,
     nowIso: nowIso,
@@ -268,28 +361,22 @@
     dateTime: dateTime,
     plan: plan,
     setPlan: setPlan,
+    hasPlan: hasPlan,
     read: safeRead,
     write: safeWrite,
     readCrm: readCrm,
     writeCrm: writeCrm,
     updateCrm: updateCrm,
-    readOffers: readOffers,
-    readLeads: readLeads,
     normalizeOffer: normalizeOffer,
     normalizeLead: normalizeLead,
-    shell: buildShell,
+    normalizeApp: normalizeApp,
+    normalizeCampaign: normalizeCampaign,
+    normalizeListing: normalizeListing,
+    normalizeCar: normalizeCar,
+    shell: shell,
     requirePlans: requirePlans,
     statusBadgeClass: statusBadgeClass,
     download: download,
     leadsToCsv: leadsToCsv
   };
-
-  document.addEventListener('click', function(event){
-    var trigger = event.target.closest('[data-set-plan]');
-    if(!trigger) return;
-    var nextPlan = trigger.getAttribute('data-set-plan') || 'basic';
-    setPlan(nextPlan);
-    alert('Plan ustawiony: ' + nextPlan.toUpperCase());
-    location.href = trigger.getAttribute('data-redirect') || 'dashboard.html';
-  });
 })();

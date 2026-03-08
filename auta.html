@@ -1,20 +1,117 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auta — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auta — UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Auta','moduł aut, komisów i ogłoszeń motoryzacyjnych');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Auta</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Auta / komis','oferty aut i leady sprzedażowe');});</script>
+
+  <div class="split">
+    <section class="card">
+      <div class="section-title"><h2>Dodaj auto</h2></div>
+      <form id="carForm" class="form-grid">
+        <div class="field"><label>Marka</label><input id="brand" placeholder="BMW"></div>
+        <div class="field"><label>Model</label><input id="model" placeholder="320d"></div>
+        <div class="field"><label>Rok</label><input id="year" placeholder="2021"></div>
+        <div class="field"><label>Paliwo</label>
+          <select id="fuel">
+            <option>benzyna</option>
+            <option>diesel</option>
+            <option>hybryda</option>
+            <option>elektryk</option>
+          </select>
+        </div>
+        <div class="field"><label>Cena</label><input id="price" type="number" min="0" placeholder="89900"></div>
+        <div class="field"><label>Miasto</label><input id="city" placeholder="Łódź"></div>
+        <div class="field"><label>Status</label>
+          <select id="status">
+            <option>aktywne</option>
+            <option>rezerwacja</option>
+            <option>sprzedane</option>
+          </select>
+        </div>
+        <div class="field full"><div class="actions-row"><button class="btn btn-primary" type="submit">Zapisz auto</button><button class="btn btn-ghost" type="button" id="seedCars">Wstaw demo</button></div></div>
+      </form>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Po co ten moduł</h2></div>
+      <div class="small">Auto / komis to osobna nisza, ale logika jest podobna do nieruchomości: oferta + lead + reklama AI + abonament miesięczny.</div>
+    </section>
   </div>
+
+  <section class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Flota</h2></div>
+    <div id="carsList" class="grid grid-3"></div>
+  </section>
+
+  <script>
+  (function(){
+    var form = document.getElementById('carForm');
+    var list = document.getElementById('carsList');
+
+    function render(){
+      var items = QU.readCrm().vehicleOffers || [];
+      if(!items.length){
+        list.innerHTML = '<div class="empty">Brak aut w systemie.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function(item){
+        return '<div class="car-card">'
+          + '<div class="offer-meta"><span class="badge pro">'+ item.fuel +'</span><span class="badge '+ QU.statusBadgeClass(item.status) +'">'+ item.status +'</span></div>'
+          + '<h3 style="margin:0">' + item.brand + ' ' + item.model + '</h3>'
+          + '<div class="small">Rok: ' + (item.year || '—') + ' • ' + (item.city || '—') + '</div>'
+          + '<div class="price">' + QU.money(item.price) + '</div>'
+          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
+          + '</div>';
+      }).join('');
+      list.querySelectorAll('[data-del]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-del');
+          QU.updateCrm(function(crm){
+            crm.vehicleOffers = (crm.vehicleOffers || []).filter(function(item){ return item.id !== id; });
+            return crm;
+          });
+          render();
+        });
+      });
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var item = QU.normalizeCar({
+        brand: document.getElementById('brand').value.trim(),
+        model: document.getElementById('model').value.trim(),
+        year: document.getElementById('year').value.trim(),
+        fuel: document.getElementById('fuel').value,
+        price: document.getElementById('price').value,
+        city: document.getElementById('city').value.trim(),
+        status: document.getElementById('status').value
+      });
+      if(!item.brand || !item.model){ alert('Dodaj markę i model.'); return; }
+      QU.updateCrm(function(crm){ crm.vehicleOffers.unshift(item); return crm; });
+      form.reset();
+      render();
+    });
+
+    document.getElementById('seedCars').addEventListener('click', function(){
+      QU.updateCrm(function(crm){
+        crm.vehicleOffers = [
+          QU.normalizeCar({ brand:'BMW', model:'320d', year:'2021', fuel:'diesel', price:89900, city:'Łódź', status:'aktywne' }),
+          QU.normalizeCar({ brand:'Tesla', model:'Model 3', year:'2022', fuel:'elektryk', price:149000, city:'Warszawa', status:'rezerwacja' })
+        ];
+        return crm;
+      });
+      render();
+    });
+
+    render();
+  })();
+  </script>
 </div>
-</body></html>
+</body>
+</html>
