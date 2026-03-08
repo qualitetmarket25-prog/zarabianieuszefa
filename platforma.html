@@ -1,20 +1,111 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Platforma — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Platforma','główna platforma pracy');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Platforma</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QualitetMarket — platforma</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
+</head>
+<body>
+  <div class="app-shell" data-app-shell>
+    <main class="page-wrap">
+      <section class="hero">
+        <div class="tag">QualitetMarket • mobile first</div>
+        <h1>Pełne menu platformy</h1>
+        <p>Tu użytkownik ma wszystko: sprzedaż, AI, aplikacje, hurtownie, ogłoszenia i branże. To jest główny hub aplikacji.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="platforma.html">Otwórz pełne menu</a>
+          <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
+          <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
+        </div>
+      </section>
+      
+<section class="section-head">
+  <div>
+    <h2>Pełne menu aplikacji</h2>
+    <div class="section-copy">Wyszukiwarka działa po nazwach modułów. To jest centralny hub aplikacji pod telefon i desktop.</div>
   </div>
+  <a class="btn btn-secondary" href="dashboard.html">Przejdź do dashboardu</a>
+</section>
+
+<div class="search-box">
+  <span>🔎</span>
+  <input type="text" placeholder="Szukaj modułu, np. sklep, AI, hurtownie, nieruchomości..." data-module-search>
 </div>
-</body></html>
+
+<div class="modules-grid">
+  <article class="module-card" data-module-card data-search="sklep koszyk checkout zamowienia panel sklepu generator sklepu sklepy">
+    <div class="meta"><span class="badge green">Sprzedaż</span><span class="badge">E-commerce</span></div>
+    <h3>Sklep i sprzedaż</h3>
+    <p>Sklep, koszyk, checkout, zamówienia, panel sklepu, generator sklepu i multi-store.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="sklep.html">Sklep</a>
+      <a class="btn btn-secondary" href="panel-sklepu.html">Panel sklepu</a>
+      <a class="btn btn-secondary" href="generator-sklepu.html">Generator</a>
+    </div>
+  </article>
+
+  <article class="module-card" data-module-card data-search="hurtownie suppliers import csv qualitetmarket produkty dostawcy">
+    <div class="meta"><span class="badge green">Import</span><span class="badge gold">PRO</span></div>
+    <h3>Hurtownie i import produktów</h3>
+    <p>Produkty, dostawcy i import do sklepu. To jest baza pod zarabianie na sprzedaży produktów.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="hurtownie.html">Hurtownie</a>
+      <a class="btn btn-secondary" href="suppliers.html">Suppliers</a>
+      <a class="btn btn-secondary" href="qualitetmarket.html">QualitetMarket</a>
+    </div>
+  </article>
+
+  <article class="module-card" data-module-card data-search="ai intelligence reklama reklama ai aplikacje stworz aplikacje pobierz aplikacje blueprints">
+    <div class="meta"><span class="badge">AI</span><span class="badge gold">ELITE</span></div>
+    <h3>AI, reklama i aplikacje</h3>
+    <p>Tworzenie treści, reklam, aplikacji i procesów które mogą dawać nowe źródła przychodu.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="ai.html">AI</a>
+      <a class="btn btn-secondary" href="intelligence.html">Intelligence</a>
+      <a class="btn btn-secondary" href="aplikacje.html">Aplikacje</a>
+    </div>
+  </article>
+
+  <article class="module-card" data-module-card data-search="nieruchomosci agenci firmy agent pro ogloszenia dodaj ogloszenie">
+    <div class="meta"><span class="badge">Branża</span><span class="badge green">Leady</span></div>
+    <h3>Nieruchomości i ogłoszenia</h3>
+    <p>Moduły dla agentów, firm, płatnego PRO i marketplace ogłoszeń.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="nieruchomosci.html">Nieruchomości</a>
+      <a class="btn btn-secondary" href="agenci-nieruchomosci.html">Agenci</a>
+      <a class="btn btn-secondary" href="ogloszenia.html">Ogłoszenia</a>
+    </div>
+  </article>
+
+  <article class="module-card" data-module-card data-search="auta komis auto uzywane sprzedaż samochody">
+    <div class="meta"><span class="badge">Motoryzacja</span><span class="badge green">Sprzedaż</span></div>
+    <h3>Auta i komis</h3>
+    <p>Drugi pion sprzedażowy dla aut, ogłoszeń i komisów.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="auta.html">Auta</a>
+      <a class="btn btn-secondary" href="komis-auto.html">Komis auto</a>
+      <a class="btn btn-secondary" href="uzywane.html">Używane</a>
+    </div>
+  </article>
+
+  <article class="module-card" data-module-card data-search="cennik aktywuj pro success login onboarding zarabianie">
+    <div class="meta"><span class="badge gold">Plan</span><span class="badge">Konto</span></div>
+    <h3>Plan, konto i aktywacja</h3>
+    <p>Cennik, aktywacja PRO, logowanie, onboarding i ścieżka wejścia użytkownika.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="cennik.html">Cennik</a>
+      <a class="btn btn-secondary" href="aktywuj-pro.html">Aktywuj PRO</a>
+      <a class="btn btn-secondary" href="login.html">Login</a>
+    </div>
+  </article>
+</div>
+
+<div class="empty-message" data-empty-state style="display:none">Brak wyników. Spróbuj wpisać inną nazwę modułu.</div>
+
+    </main>
+  </div>
+</body>
+</html>

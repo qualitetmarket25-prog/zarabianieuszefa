@@ -1,260 +1,71 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UszefaQualitet — główne menu aplikacji</title>
-  <meta name="description" content="Jedna strona startowa z pełnym menu aplikacji UszefaQualitet / QualitetMarket. Mobile first, GitHub Pages friendly." />
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="app-menu.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QualitetMarket — główne menu</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
 </head>
 <body>
-  <div class="bg-orb orb-a"></div>
-  <div class="bg-orb orb-b"></div>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo" />
-      <div>
-        <strong>UszefaQualitet</strong>
-        <span>Aplikacja do zarabiania online</span>
-      </div>
-    </a>
-
-    <div class="topbar-actions">
-      <a class="ghost-btn desktop-only" href="cennik.html">Cennik</a>
-      <a class="primary-btn desktop-only" href="platforma.html">Wejdź do aplikacji</a>
-      <button id="menuToggle" class="menu-toggle" aria-label="Otwórz menu">☰</button>
-    </div>
-  </header>
-
-  <aside id="mobileMenu" class="mobile-drawer" aria-hidden="true">
-    <div class="drawer-head">
-      <strong>Menu aplikacji</strong>
-      <button id="menuClose" class="drawer-close" aria-label="Zamknij menu">×</button>
-    </div>
-    <nav class="drawer-links">
-      <a href="#moduly">Moduły</a>
-      <a href="#zarabianie">Jak pomaga zarabiać</a>
-      <a href="#sekcje">Pełne menu</a>
-      <a href="platforma.html">Platforma</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="cennik.html">Cennik</a>
-      <a href="login.html">Logowanie</a>
-    </nav>
-  </aside>
-
-  <main class="page">
-    <section class="hero card">
-      <div class="hero-copy">
-        <span class="eyebrow">MENU GŁÓWNE • MOBILE FIRST</span>
-        <h1>Jedna strona główna z pełnym menu całej aplikacji.</h1>
-        <p class="lead">
-          Ta wersja porządkuje repo i daje użytkownikowi jeden jasny start:
-          sklep, hurtownie, reklama AI, ogłoszenia, nieruchomości, aplikacje,
-          zamówienia, generator sklepu i panele sprzedażowe w jednym miejscu.
-        </p>
-
+  <div class="app-shell" data-app-shell>
+    <main class="page-wrap">
+      <section class="hero">
+        <div class="tag">QualitetMarket • mobile first</div>
+        <h1>Główne menu aplikacji do zarabiania</h1>
+        <p>Jedno wejście do całej platformy. Użytkownik ma szybko przejść do sprzedaży, importu produktów, AI, aplikacji i modułów branżowych.</p>
         <div class="hero-actions">
-          <a class="primary-btn" href="platforma.html">Otwórz platformę</a>
-          <a class="ghost-btn" href="#sekcje">Zobacz pełne menu</a>
+          <a class="btn btn-primary" href="platforma.html">Otwórz pełne menu</a>
+          <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
+          <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
         </div>
+      </section>
+      
+<section class="section-head">
+  <div>
+    <h2>Jedna główna strona do całej aplikacji</h2>
+    <div class="section-copy">To jest nowy punkt wejścia do platformy. Użytkownik ma od razu zobaczyć jak może zarabiać: sklep, hurtownie, AI, aplikacje, ogłoszenia i branże.</div>
+  </div>
+</section>
 
-        <div class="hero-points">
-          <div class="point">
-            <strong>1 link startowy</strong>
-            <span>Jeden ekran główny do całej aplikacji</span>
-          </div>
-          <div class="point">
-            <strong>Mobile friendly</strong>
-            <span>Duże kafle, szybkie kliknięcia, prosty układ</span>
-          </div>
-          <div class="point">
-            <strong>Pod sprzedaż</strong>
-            <span>Aplikacja prowadzi ludzi do rzeczy, które pomagają zarabiać</span>
-          </div>
-        </div>
-      </div>
+<div class="kpi-grid">
+  <div class="kpi"><div class="muted">Moduły w menu</div><strong>40+</strong><span>Sprzedaż, AI, sklepy, ogłoszenia</span></div>
+  <div class="kpi"><div class="muted">Tryb działania</div><strong>Mobile</strong><span>Menu działa na telefonie i desktopie</span></div>
+  <div class="kpi"><div class="muted">Cel użytkownika</div><strong>Zarabianie</strong><span>Produkty, usługi, aplikacje i leady</span></div>
+  <div class="kpi"><div class="muted">Start</div><strong>1 link</strong><span>Wejście przez index.html</span></div>
+</div>
 
-      <div class="hero-panel">
-        <div class="mini-stat">
-          <span>Znalezione strony</span>
-          <strong>33+</strong>
-        </div>
-        <div class="mini-stat">
-          <span>Główne obszary</span>
-          <strong>9</strong>
-        </div>
-        <div class="mini-stat">
-          <span>Tryb</span>
-          <strong>GitHub Pages</strong>
-        </div>
-        <div class="mini-stat">
-          <span>Cel</span>
-          <strong>Zarabianie</strong>
-        </div>
-      </div>
-    </section>
+<div class="quick-grid">
+  <article class="quick-card">
+    <div class="badge green">Szybki start</div>
+    <h3>1. Wybierz drogę zarabiania</h3>
+    <p>Sklep i hurtownie dla sprzedaży produktów, AI i reklama dla usług, nieruchomości i auta dla leadów i ogłoszeń.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="platforma.html">Pokaż wszystkie moduły</a>
+    </div>
+  </article>
+  <article class="quick-card">
+    <div class="badge">Import produktów</div>
+    <h3>2. Dodaj produkty z hurtowni</h3>
+    <p>Hurtownie i suppliers mają być prostą drogą do zasilenia sklepu i dalszej sprzedaży.</p>
+    <div class="card-actions">
+      <a class="btn btn-secondary" href="hurtownie.html">Otwórz hurtownie</a>
+      <a class="btn btn-secondary" href="suppliers.html">Otwórz suppliers</a>
+    </div>
+  </article>
+  <article class="quick-card">
+    <div class="badge gold">Skalowanie</div>
+    <h3>3. Rozwijaj własną aplikację i sklep</h3>
+    <p>Z tego miejsca użytkownik przejdzie do generatora sklepu, panelu sklepu, AI i kreatora aplikacji.</p>
+    <div class="card-actions">
+      <a class="btn btn-secondary" href="generator-sklepu.html">Generator sklepu</a>
+      <a class="btn btn-secondary" href="stworz-aplikacje.html">Stwórz aplikację</a>
+    </div>
+  </article>
+</div>
 
-    <section id="zarabianie" class="value-grid">
-      <article class="card value-card">
-        <h2>Jak ta aplikacja pomaga ludziom zarabiać</h2>
-        <ul class="clean-list">
-          <li>buduje sklep i panel sprzedażowy</li>
-          <li>obsługuje produkty, koszyk, checkout i zamówienia</li>
-          <li>łączy hurtownie i import produktów</li>
-          <li>ułatwia tworzenie ogłoszeń i reklam AI</li>
-          <li>pozwala tworzyć własne aplikacje dla klientów</li>
-          <li>rozszerza sprzedaż o nieruchomości, auta i ogłoszenia</li>
-        </ul>
-      </article>
-
-      <article class="card search-card">
-        <label for="menuSearch">Szukaj modułu</label>
-        <input id="menuSearch" type="search" placeholder="np. sklep, AI, hurtownie, zamówienia..." />
-        <p class="helper">Wpisz nazwę modułu. Kafle niżej będą filtrowane na żywo.</p>
-      </article>
-    </section>
-
-    <section id="sekcje" class="section-block">
-      <div class="section-head">
-        <h2>Pełne menu aplikacji</h2>
-        <p>Wszystkie najważniejsze rzeczy z repo zebrane w jednym ekranie.</p>
-      </div>
-
-      <div id="moduly" class="module-grid">
-        <article class="card module-card" data-tags="start platforma login dashboard cennik aktywacja success">
-          <div class="module-top">
-            <span class="module-badge">Start</span>
-            <h3>Wejście i konto</h3>
-          </div>
-          <p>Start aplikacji, logowanie, dashboard, cennik i aktywacja planu.</p>
-          <div class="link-list">
-            <a href="index.html">Strona główna</a>
-            <a href="platforma.html">Platforma</a>
-            <a href="login.html">Logowanie</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="cennik.html">Cennik</a>
-            <a href="aktywuj-pro.html">Aktywuj PRO</a>
-            <a href="success.html">Success</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="sklep koszyk checkout zamowienia sklepy panel generator">
-          <div class="module-top">
-            <span class="module-badge">E-commerce</span>
-            <h3>Sklep i sprzedaż</h3>
-          </div>
-          <p>Produkty, sklepy, koszyk, checkout, zamówienia i konfiguracja sklepu.</p>
-          <div class="link-list">
-            <a href="sklep.html">Sklep</a>
-            <a href="koszyk.html">Koszyk</a>
-            <a href="checkout.html">Checkout</a>
-            <a href="zamowienia.html">Zamówienia</a>
-            <a href="sklepy.html">Sklepy</a>
-            <a href="panel-sklepu.html">Panel sklepu</a>
-            <a href="generator-sklepu.html">Generator sklepu</a>
-            <a href="panel-zamowien-sklepu.html">Panel zamówień sklepu</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="hurtownie suppliers qualitetmarket import csv produkty">
-          <div class="module-top">
-            <span class="module-badge">Hurtownie</span>
-            <h3>Import i dostawcy</h3>
-          </div>
-          <p>Panel hurtowni, dostawcy i część marketplace / importu produktów.</p>
-          <div class="link-list">
-            <a href="hurtownie.html">Hurtownie</a>
-            <a href="suppliers.html">Suppliers</a>
-            <a href="qualitetmarket.html">QualitetMarket</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="intelligence ai reklama reklama-ai blueprints">
-          <div class="module-top">
-            <span class="module-badge">AI</span>
-            <h3>AI, reklama i intelligence</h3>
-          </div>
-          <p>Narzędzia do treści, reklam, strategii i automatyzacji działań sprzedażowych.</p>
-          <div class="link-list">
-            <a href="ai.html">AI</a>
-            <a href="reklama-ai.html">Reklama AI</a>
-            <a href="reklama.html">Reklama</a>
-            <a href="intelligence.html">Intelligence</a>
-            <a href="blueprints.html">Blueprints</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="aplikacje kreator aplikacja stworz pobierz onboarding">
-          <div class="module-top">
-            <span class="module-badge">Aplikacje</span>
-            <h3>Tworzenie własnej aplikacji</h3>
-          </div>
-          <p>Kreator aplikacji, onboarding i pobieranie gotowej aplikacji dla klienta.</p>
-          <div class="link-list">
-            <a href="aplikacje.html">Aplikacje</a>
-            <a href="stworz-aplikacje.html">Stwórz aplikację</a>
-            <a href="pobierz-aplikacje.html">Pobierz aplikację</a>
-            <a href="onboarding.html">Onboarding</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="ogloszenia dodaj nieruchomosci agent firmy">
-          <div class="module-top">
-            <span class="module-badge">Ogłoszenia</span>
-            <h3>Ogłoszenia i nieruchomości</h3>
-          </div>
-          <p>Moduły ogłoszeniowe dla nieruchomości, agentów i firm.</p>
-          <div class="link-list">
-            <a href="ogloszenia.html">Ogłoszenia</a>
-            <a href="dodaj-ogloszenie.html">Dodaj ogłoszenie</a>
-            <a href="nieruchomosci.html">Nieruchomości</a>
-            <a href="agenci-nieruchomosci.html">Agenci nieruchomości</a>
-            <a href="agent-nieruchomosci-pro.html">Agent nieruchomości PRO</a>
-            <a href="firmy-nieruchomosci.html">Firmy nieruchomości</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="auta komis uzywane motoryzacja">
-          <div class="module-top">
-            <span class="module-badge">Moto</span>
-            <h3>Auta i oferty używane</h3>
-          </div>
-          <p>Dodatkowe kategorie sprzedaży: auta, komis i rzeczy używane.</p>
-          <div class="link-list">
-            <a href="auta.html">Auta</a>
-            <a href="komis-auto.html">Komis auto</a>
-            <a href="uzywane.html">Używane</a>
-          </div>
-        </article>
-
-        <article class="card module-card" data-tags="zarabianie sprzedaz edukacja">
-          <div class="module-top">
-            <span class="module-badge">Motyw przewodni</span>
-            <h3>Zarabianie i sprzedaż</h3>
-          </div>
-          <p>Ekrany wspierające główny przekaz produktu: pomagamy ludziom zarabiać.</p>
-          <div class="link-list">
-            <a href="zarabianie.html">Zarabianie</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section-block">
-      <div class="section-head">
-        <h2>Jeden link główny</h2>
-        <p>Po podmianie index.html użytkownik startuje zawsze z tego menu.</p>
-      </div>
-      <div class="card single-link-card">
-        <code>/index.html</code>
-        <p>To ma być główny link do całej aplikacji i punkt wejścia do wszystkich modułów.</p>
-        <a class="primary-btn" href="index.html">Otwórz stronę główną</a>
-      </div>
-    </section>
-  </main>
-
-  <script src="app-menu.js"></script>
+    </main>
+  </div>
 </body>
 </html>

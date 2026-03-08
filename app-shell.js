@@ -1,357 +1,157 @@
-(function(){
-  var CRM_KEY = 'qm_crm_v1';
+(function () {
+  const MENU = [
+    { group: 'Start', items: [
+      { href: 'index.html', label: 'Strona główna', tag: 'start' },
+      { href: 'platforma.html', label: 'Platforma', tag: 'hub' },
+      { href: 'dashboard.html', label: 'Dashboard', tag: 'panel' },
+      { href: 'login.html', label: 'Logowanie', tag: 'konto' },
+      { href: 'onboarding.html', label: 'Onboarding', tag: 'start' }
+    ]},
+    { group: 'Sprzedaż', items: [
+      { href: 'sklep.html', label: 'Sklep', tag: 'sprzedaż' },
+      { href: 'koszyk.html', label: 'Koszyk', tag: 'zakup' },
+      { href: 'checkout.html', label: 'Checkout', tag: 'finalizacja' },
+      { href: 'zamowienia.html', label: 'Zamówienia', tag: 'orders' },
+      { href: 'panel-zamowien-sklepu.html', label: 'Panel zamówień sklepu', tag: 'obsługa' },
+      { href: 'sklepy.html', label: 'Sklepy', tag: 'multi-store' }
+    ]},
+    { group: 'Sklep i produkty', items: [
+      { href: 'panel-sklepu.html', label: 'Panel sklepu', tag: 'ustawienia' },
+      { href: 'generator-sklepu.html', label: 'Generator sklepu', tag: 'builder' },
+      { href: 'hurtownie.html', label: 'Hurtownie', tag: 'pro' },
+      { href: 'suppliers.html', label: 'Suppliers', tag: 'import' },
+      { href: 'qualitetmarket.html', label: 'QualitetMarket', tag: 'pro' },
+      { href: 'blueprints.html', label: 'Blueprints', tag: 'szablony' }
+    ]},
+    { group: 'AI i aplikacje', items: [
+      { href: 'ai.html', label: 'AI', tag: 'narzędzia' },
+      { href: 'intelligence.html', label: 'Intelligence', tag: 'elite' },
+      { href: 'reklama-ai.html', label: 'Reklama AI', tag: 'ads' },
+      { href: 'reklama.html', label: 'Reklama', tag: 'promo' },
+      { href: 'aplikacje.html', label: 'Aplikacje', tag: 'apps' },
+      { href: 'stworz-aplikacje.html', label: 'Stwórz aplikację', tag: 'builder' },
+      { href: 'pobierz-aplikacje.html', label: 'Pobierz aplikacje', tag: 'download' }
+    ]},
+    { group: 'Branże', items: [
+      { href: 'nieruchomosci.html', label: 'Nieruchomości', tag: 'branża' },
+      { href: 'agenci-nieruchomosci.html', label: 'Agenci nieruchomości', tag: 'pro' },
+      { href: 'firmy-nieruchomosci.html', label: 'Firmy nieruchomości', tag: 'biznes' },
+      { href: 'agent-nieruchomosci-pro.html', label: 'Agent Nieruchomości PRO', tag: 'premium' },
+      { href: 'auta.html', label: 'Auta', tag: 'branża' },
+      { href: 'komis-auto.html', label: 'Komis auto', tag: 'sprzedaż' },
+      { href: 'uzywane.html', label: 'Używane', tag: 'ogłoszenia' },
+      { href: 'ogloszenia.html', label: 'Ogłoszenia', tag: 'marketplace' },
+      { href: 'dodaj-ogloszenie.html', label: 'Dodaj ogłoszenie', tag: 'publish' }
+    ]},
+    { group: 'Plan i oferta', items: [
+      { href: 'cennik.html', label: 'Cennik', tag: 'plan' },
+      { href: 'aktywuj-pro.html', label: 'Aktywuj PRO', tag: 'upgrade' },
+      { href: 'success.html', label: 'Success', tag: 'status' },
+      { href: 'zarabianie.html', label: 'Zarabianie', tag: 'income' }
+    ]}
+  ];
 
-  function uid(){
-    return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  const BOTTOM = [
+    { href: 'index.html', label: 'Start', icon: '⌂' },
+    { href: 'platforma.html', label: 'Menu', icon: '☰' },
+    { href: 'dashboard.html', label: 'Panel', icon: '◫' },
+    { href: 'sklep.html', label: 'Sklep', icon: '🛒' },
+    { href: 'hurtownie.html', label: 'Import', icon: '⬇' }
+  ];
+
+  function getPlan() {
+    return localStorage.getItem('qm_plan') || localStorage.getItem('qm_user_plan') || 'basic';
   }
 
-  function readCrm(){
-    try{
-      var raw = localStorage.getItem(CRM_KEY);
-      var data = raw ? JSON.parse(raw) : {};
-      if (!data || typeof data !== 'object') data = {};
-      if (!Array.isArray(data.leads)) data.leads = [];
-      if (!Array.isArray(data.tasks)) data.tasks = [];
-      return data;
-    }catch(err){
-      return { leads: [], tasks: [] };
-    }
+  function activePath() {
+    const path = location.pathname.split('/').pop() || 'index.html';
+    return path.toLowerCase();
   }
 
-  function writeCrm(data){
-    localStorage.setItem(CRM_KEY, JSON.stringify(data));
-    return data;
-  }
-
-  function money(value){
-    return new Intl.NumberFormat('pl-PL',{style:'currency',currency:'PLN',maximumFractionDigits:0}).format(Number(value)||0);
-  }
-
-  function fmtDate(value){
-    if(!value) return '—';
-    var d = new Date(value);
-    if(String(d)==='Invalid Date') return value;
-    return new Intl.DateTimeFormat('pl-PL',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
-  }
-
-  function normalizeLead(item){
-    item = item || {};
-    return {
-      id: item.id || uid(),
-      clientName: item.clientName || 'Bez nazwy',
-      phone: item.phone || '',
-      email: item.email || '',
-      source: item.source || '',
-      interest: item.interest || '',
-      budget: Number(item.budget) || 0,
-      status: item.status || 'new',
-      followUpAt: item.followUpAt || '',
-      note: item.note || '',
-      createdAt: item.createdAt || new Date().toISOString()
-    };
-  }
-
-  function normalizeTask(item){
-    item = item || {};
-    return {
-      id: item.id || uid(),
-      title: item.title || 'Nowy task',
-      dueAt: item.dueAt || '',
-      priority: item.priority || 'normal',
-      leadRef: item.leadRef || '',
-      note: item.note || '',
-      done: Boolean(item.done),
-      createdAt: item.createdAt || new Date().toISOString()
-    };
-  }
-
-  function statusLabel(status){
-    return {
-      new: 'Nowy',
-      contacted: 'Kontakt',
-      qualified: 'Zakwalifikowany',
-      offer: 'Oferta',
-      won: 'Wygrany',
-      lost: 'Stracony'
-    }[status] || status;
-  }
-
-  function priorityLabel(priority){
-    return {
-      low: 'Niski',
-      normal: 'Normalny',
-      high: 'Wysoki'
-    }[priority] || priority;
-  }
-
-  function seedData(){
-    var data = readCrm();
-    if(!data.leads.length){
-      data.leads = [
-        normalizeLead({clientName:'Anna Nowak', phone:'+48 500 111 222', email:'anna@firma.pl', source:'Facebook Ads', interest:'Sklep PRO', budget:2499, status:'new', followUpAt:new Date().toISOString().slice(0,10), note:'Poprosiła o demo panelu.'}),
-        normalizeLead({clientName:'Marek Lis', phone:'+48 600 333 444', email:'marek@biz.pl', source:'Landing', interest:'Pakiet Elite', budget:4999, status:'offer', followUpAt:new Date(Date.now()+86400000).toISOString().slice(0,10), note:'Wysłana oferta + pytania o multi-store.'}),
-        normalizeLead({clientName:'Klaudia M.', phone:'+48 700 222 555', email:'klaudia@shop.pl', source:'Polecenie', interest:'Panel hurtowni', budget:1799, status:'qualified', followUpAt:new Date(Date.now()+2*86400000).toISOString().slice(0,10), note:'Chce import CSV i sklep B2B.'})
-      ];
-    }
-    if(!data.tasks.length){
-      data.tasks = [
-        normalizeTask({title:'Oddzwoń do Anny', dueAt:new Date().toISOString().slice(0,10), priority:'high', leadRef:'Anna Nowak', note:'Ustalić wdrożenie i termin startu.'}),
-        normalizeTask({title:'Wyślij follow-up do Marka', dueAt:new Date(Date.now()+86400000).toISOString().slice(0,10), priority:'normal', leadRef:'Marek Lis', note:'Dopytać o decyzję i doprecyzować pricing.'})
-      ];
-    }
-    writeCrm(data);
-    render();
-  }
-
-  function setStats(data){
-    var leads = data.leads;
-    var tasks = data.tasks;
-    var today = new Date().toISOString().slice(0,10);
-    var active = leads.filter(function(x){ return ['contacted','qualified','offer'].indexOf(x.status) >= 0; });
-    var won = leads.filter(function(x){ return x.status === 'won'; });
-    var newCount = leads.filter(function(x){ return x.status === 'new'; }).length;
-    var dueToday = leads.filter(function(x){ return x.followUpAt && x.followUpAt <= today && x.status !== 'won' && x.status !== 'lost'; }).length;
-    var openTasks = tasks.filter(function(x){ return !x.done; }).length;
-    var potential = active.reduce(function(sum, x){ return sum + (Number(x.budget) || 0); }, 0);
-
-    document.getElementById('statLeadsAll').textContent = String(leads.length);
-    document.getElementById('statLeadsActive').textContent = String(active.length);
-    document.getElementById('statWon').textContent = String(won.length);
-    document.getElementById('statPotential').textContent = money(potential);
-    document.getElementById('statLeadsNew').textContent = String(newCount);
-    document.getElementById('statFollowToday').textContent = String(dueToday);
-    document.getElementById('statTasksOpen').textContent = String(openTasks);
-  }
-
-  function renderPipeline(data){
-    var wrap = document.getElementById('pipelineBoard');
-    if(!wrap) return;
-    var groups = [
-      {key:'new', title:'Nowe'},
-      {key:'contacted', title:'Kontakt'},
-      {key:'qualified', title:'Zakwalifikowane'},
-      {key:'offer', title:'Oferta'},
-      {key:'won', title:'Wygrane'},
-      {key:'lost', title:'Stracone'}
-    ];
-    wrap.innerHTML = groups.map(function(group){
-      var list = data.leads.filter(function(item){ return item.status === group.key; });
-      return '<div class="pipeline-col">' +
-        '<h3>' + group.title + '<span class="pipeline-count">' + list.length + '</span></h3>' +
-        (list.length ? list.map(function(item){
-          return '<div class="pipeline-item">' +
-            '<strong>' + escapeHtml(item.clientName) + '</strong>' +
-            '<div class="meta">' +
-              '<span class="badge ' + item.status + '">' + statusLabel(item.status) + '</span>' +
-              '<span class="badge">' + escapeHtml(item.source || 'brak źródła') + '</span>' +
-            '</div>' +
-            '<div class="small-muted">' + escapeHtml(item.interest || 'brak oferty') + '</div>' +
-            '<p>Budżet: <strong>' + money(item.budget) + '</strong><br>Follow-up: ' + escapeHtml(fmtDate(item.followUpAt)) + '</p>' +
-          '</div>';
-        }).join('') : '<div class="empty-box">Brak leadów</div>') +
-      '</div>';
+  function groupMarkup(group) {
+    const current = activePath();
+    const links = group.items.map(function (item) {
+      const isActive = current === item.href.toLowerCase();
+      return '<a class="nav-link ' + (isActive ? 'active' : '') + '" href="' + item.href + '">' +
+        '<span>' + item.label + '</span><span>' + item.tag + '</span></a>';
     }).join('');
+    return '<div class="nav-group"><div class="nav-title">' + group.group + '</div>' + links + '</div>';
   }
 
-  function renderTasks(data){
-    var wrap = document.getElementById('tasksList');
-    if(!wrap) return;
-    var list = data.tasks.slice().sort(function(a,b){
-      return String(a.dueAt || '').localeCompare(String(b.dueAt || ''));
-    });
-    wrap.innerHTML = list.length ? list.map(function(task){
-      return '<div class="task-item">' +
-        '<strong>' + escapeHtml(task.title) + '</strong>' +
-        '<div class="meta">' +
-          '<span class="badge ' + (task.done ? 'completed' : 'processing') + '">' + (task.done ? 'Zrobione' : 'Otwarte') + '</span>' +
-          '<span class="badge">' + escapeHtml(priorityLabel(task.priority)) + '</span>' +
-          '<span class="badge">' + escapeHtml(task.leadRef || 'ogólne') + '</span>' +
+  function shellMarkup() {
+    const plan = getPlan().toUpperCase();
+    const current = activePath();
+    const bottom = BOTTOM.map(function(item){
+      const isActive = current === item.href.toLowerCase();
+      return '<a class="' + (isActive ? 'active' : '') + '" href="' + item.href + '"><span>' + item.icon + '</span><span>' + item.label + '</span></a>';
+    }).join('');
+    return '' +
+      '<div class="app-topbar">' +
+        '<div class="brand">' +
+          '<button class="menu-toggle" id="menuToggle" aria-label="Otwórz menu">☰ Menu</button>' +
+          '<a href="index.html" style="display:flex;align-items:center;gap:12px">' +
+            '<img src="uszefaqualitet-logo.svg" alt="Qualitet logo">' +
+            '<div><div>QualitetMarket</div><small>Aplikacja do zarabiania i sprzedaży</small></div>' +
+          '</a>' +
         '</div>' +
-        '<p>Termin: ' + escapeHtml(fmtDate(task.dueAt)) + '<br>' + escapeHtml(task.note || 'Brak opisu') + '</p>' +
-        '<div class="row-actions">' +
-          '<button class="btn-ghost" data-task-toggle="' + task.id + '">' + (task.done ? 'Otwórz ponownie' : 'Oznacz jako zrobione') + '</button>' +
-          '<button class="btn-ghost danger" data-task-delete="' + task.id + '">Usuń</button>' +
+        '<div class="top-actions">' +
+          '<div class="plan-pill">Plan: ' + plan + '</div>' +
+          '<a class="btn btn-primary desktop-only" href="platforma.html">Główne menu</a>' +
         '</div>' +
-      '</div>';
-    }).join('') : '<div class="empty-box">Brak tasków</div>';
+      '</div>' +
+      '<aside class="app-sidebar" id="appSidebar">' +
+        '<div class="sidebar-head">' +
+          '<div class="sidebar-brand"><img src="uszefaqualitet-logo.svg" alt="Logo"><div><strong>QualitetMarket</strong><div class="muted">Wszystko w jednym miejscu</div></div></div>' +
+          '<button class="close-sidebar" id="closeSidebar" aria-label="Zamknij menu">✕</button>' +
+        '</div>' +
+        MENU.map(groupMarkup).join('') +
+      '</aside>' +
+      '<div class="sidebar-overlay" id="sidebarOverlay"></div>' +
+      '<nav class="bottom-nav">' + bottom + '</nav>';
   }
 
-  function renderTable(data){
-    var tbody = document.getElementById('crmTableBody');
-    if(!tbody) return;
-    var q = ((document.getElementById('crmSearch') || {}).value || '').trim().toLowerCase();
-    var list = data.leads.filter(function(item){
-      if(!q) return true;
-      return [item.clientName, item.email, item.phone, item.interest, item.source]
-        .join(' ')
-        .toLowerCase()
-        .indexOf(q) >= 0;
-    });
+  function initShell() {
+    document.body.classList.add('has-app-shell');
+    var root = document.querySelector('[data-app-shell]');
+    if (!root) return;
+    root.insertAdjacentHTML('afterbegin', shellMarkup());
 
-    tbody.innerHTML = list.length ? list.map(function(item){
-      return '<tr>' +
-        '<td><strong>' + escapeHtml(item.clientName) + '</strong><div class="small-muted">' + escapeHtml(item.source || '—') + '</div></td>' +
-        '<td><span class="badge ' + item.status + '">' + statusLabel(item.status) + '</span></td>' +
-        '<td>' + escapeHtml(item.interest || '—') + '</td>' +
-        '<td>' + money(item.budget) + '</td>' +
-        '<td>' + escapeHtml(fmtDate(item.followUpAt)) + '</td>' +
-        '<td><div>' + escapeHtml(item.phone || '—') + '</div><div class="small-muted">' + escapeHtml(item.email || '—') + '</div></td>' +
-        '<td><div class="row-actions">' +
-          '<button class="btn-ghost" data-lead-next="' + item.id + '">Następny status</button>' +
-          '<button class="btn-ghost danger" data-lead-delete="' + item.id + '">Usuń</button>' +
-        '</div></td>' +
-      '</tr>';
-    }).join('') : '<tr><td colspan="7"><div class="empty-box">Brak leadów do pokazania</div></td></tr>';
-  }
+    var menuToggle = document.getElementById('menuToggle');
+    var closeSidebar = document.getElementById('closeSidebar');
+    var sidebar = document.getElementById('appSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
 
-  function nextStatus(current){
-    var order = ['new','contacted','qualified','offer','won'];
-    var idx = order.indexOf(current);
-    return idx >= 0 && idx < order.length - 1 ? order[idx + 1] : 'won';
-  }
-
-  function exportJson(){
-    var data = readCrm();
-    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'qm-crm-export.json';
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  }
-
-  function escapeHtml(value){
-    return String(value == null ? '' : value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function bindForms(){
-    var leadForm = document.getElementById('leadForm');
-    var taskForm = document.getElementById('taskForm');
-    var search = document.getElementById('crmSearch');
-    var exportBtn = document.getElementById('exportCrmBtn');
-    var clearBtn = document.getElementById('clearCrmBtn');
-    var seedBtn = document.getElementById('seedCrmBtn');
-
-    if(leadForm){
-      leadForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        var form = new FormData(leadForm);
-        var data = readCrm();
-        data.leads.unshift(normalizeLead({
-          clientName: form.get('clientName'),
-          phone: form.get('phone'),
-          email: form.get('email'),
-          source: form.get('source'),
-          interest: form.get('interest'),
-          budget: form.get('budget'),
-          status: form.get('status'),
-          followUpAt: form.get('followUpAt'),
-          note: form.get('note')
-        }));
-        writeCrm(data);
-        leadForm.reset();
-        render();
-      });
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
     }
+    function closeIt() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    if (menuToggle) menuToggle.addEventListener('click', openSidebar);
+    if (closeSidebar) closeSidebar.addEventListener('click', closeIt);
+    if (overlay) overlay.addEventListener('click', closeIt);
 
-    if(taskForm){
-      taskForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        var form = new FormData(taskForm);
-        var data = readCrm();
-        data.tasks.unshift(normalizeTask({
-          title: form.get('title'),
-          dueAt: form.get('dueAt'),
-          priority: form.get('priority'),
-          leadRef: form.get('leadRef'),
-          note: form.get('note')
-        }));
-        writeCrm(data);
-        taskForm.reset();
-        render();
-      });
-    }
-
-    if(search){
-      search.addEventListener('input', render);
-    }
-    if(exportBtn){
-      exportBtn.addEventListener('click', exportJson);
-    }
-    if(clearBtn){
-      clearBtn.addEventListener('click', function(){
-        if(confirm('Na pewno wyczyścić cały CRM?')){
-          writeCrm({leads:[], tasks:[]});
-          render();
-        }
-      });
-    }
-    if(seedBtn){
-      seedBtn.addEventListener('click', seedData);
-    }
-
-    document.addEventListener('click', function(e){
-      var nextLead = e.target.closest('[data-lead-next]');
-      if(nextLead){
-        var id = nextLead.getAttribute('data-lead-next');
-        var data = readCrm();
-        data.leads = data.leads.map(function(item){
-          if(item.id !== id) return item;
-          item.status = nextStatus(item.status);
-          return item;
+    var searchInput = document.querySelector('[data-module-search]');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        var term = (searchInput.value || '').toLowerCase().trim();
+        var cards = document.querySelectorAll('[data-module-card]');
+        var visible = 0;
+        cards.forEach(function(card){
+          var hay = (card.getAttribute('data-search') || '').toLowerCase();
+          var match = !term || hay.indexOf(term) !== -1;
+          card.style.display = match ? '' : 'none';
+          if (match) visible += 1;
         });
-        writeCrm(data);
-        render();
-        return;
-      }
-      var delLead = e.target.closest('[data-lead-delete]');
-      if(delLead){
-        var id = delLead.getAttribute('data-lead-delete');
-        var data = readCrm();
-        data.leads = data.leads.filter(function(item){ return item.id !== id; });
-        writeCrm(data);
-        render();
-        return;
-      }
-      var toggleTask = e.target.closest('[data-task-toggle]');
-      if(toggleTask){
-        var id = toggleTask.getAttribute('data-task-toggle');
-        var data = readCrm();
-        data.tasks = data.tasks.map(function(item){
-          if(item.id !== id) return item;
-          item.done = !item.done;
-          return item;
-        });
-        writeCrm(data);
-        render();
-        return;
-      }
-      var delTask = e.target.closest('[data-task-delete]');
-      if(delTask){
-        var id = delTask.getAttribute('data-task-delete');
-        var data = readCrm();
-        data.tasks = data.tasks.filter(function(item){ return item.id !== id; });
-        writeCrm(data);
-        render();
-      }
-    });
+        var empty = document.querySelector('[data-empty-state]');
+        if (empty) empty.style.display = visible ? 'none' : '';
+      });
+    }
   }
 
-  function render(){
-    var data = readCrm();
-    setStats(data);
-    renderPipeline(data);
-    renderTasks(data);
-    renderTable(data);
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    bindForms();
-    render();
-  });
+  document.addEventListener('DOMContentLoaded', initShell);
 })();

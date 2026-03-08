@@ -1,180 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard CRM MAX — QualitetMarket</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QualitetMarket — dashboard</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <link rel="stylesheet" href="css/crm.css">
   <script defer src="app-shell.js"></script>
-  <script defer src="js/crm.js"></script>
 </head>
 <body>
-  <div data-page-root>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        if (window.QU && typeof QU.shell === 'function') {
-          QU.shell('Dashboard CRM MAX', 'ETAP 10 — pipeline leadów, taski i follow-up');
-        }
-      });
-    </script>
-
-    <section class="hero">
-      <div class="card">
-        <div class="chip">ETAP 10 • CRM MAX</div>
-        <h1>Pipeline leadów, zadania i follow-up w jednym panelu.</h1>
-        <p class="lead">
-          Ten ekran zapisuje dane do <strong>qm_crm_v1</strong> i działa bez backendu,
-          w stylu MAX panel zgodnym z wcześniejszym etapem.
-        </p>
-        <div class="actions-row" style="margin-top:16px">
-          <a class="btn" href="#leadForm">Dodaj lead</a>
-          <a class="btn-gold" href="#taskForm">Dodaj task</a>
-          <a class="btn-ghost" href="zamowienia.html">Zobacz zamówienia</a>
+  <div class="app-shell" data-app-shell>
+    <main class="page-wrap">
+      <section class="hero">
+        <div class="tag">QualitetMarket • mobile first</div>
+        <h1>Dashboard użytkownika</h1>
+        <p>Szybki ekran startowy z najważniejszymi skrótami do sprzedaży, importu produktów, AI i rozwoju aplikacji.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="platforma.html">Otwórz pełne menu</a>
+          <a class="btn btn-secondary" href="sklep.html">Przejdź do sklepu</a>
+          <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
         </div>
-      </div>
+      </section>
+      
+<section class="section-head">
+  <div>
+    <h2>Dashboard zarabiania</h2>
+    <div class="section-copy">Ten ekran jest prosty i szybki. Ma kierować użytkownika do najważniejszych działań, a nie rozpraszać.</div>
+  </div>
+</section>
 
-      <div class="card">
-        <div class="section-title">
-          <h2>Szybki widok</h2>
-        </div>
-        <div class="list">
-          <div class="list-row"><div><strong>Nowe leady</strong><div class="small">Kontakt czeka na pierwszy ruch.</div></div><strong id="statLeadsNew">0</strong></div>
-          <div class="list-row"><div><strong>Follow-up dziś</strong><div class="small">Leady z terminem na dziś lub wcześniej.</div></div><strong id="statFollowToday">0</strong></div>
-          <div class="list-row"><div><strong>Otwarte taski</strong><div class="small">Zadania bez oznaczenia jako zrobione.</div></div><strong id="statTasksOpen">0</strong></div>
-        </div>
-      </div>
-    </section>
+<div class="kpi-grid">
+  <div class="kpi"><div class="muted">Sprzedaż</div><strong>Sklep</strong><span>Produkty, koszyk, checkout</span></div>
+  <div class="kpi"><div class="muted">Import</div><strong>CSV</strong><span>Produkty z hurtowni</span></div>
+  <div class="kpi"><div class="muted">Aplikacje</div><strong>AI</strong><span>Tworzenie narzędzi i reklam</span></div>
+  <div class="kpi"><div class="muted">Skalowanie</div><strong>Multi</strong><span>Sklepy i różne branże</span></div>
+</div>
 
-    <div class="stats" style="margin-top:22px">
-      <div class="stat-card">
-        <span class="small">Leady razem</span>
-        <strong id="statLeadsAll">0</strong>
-      </div>
-      <div class="stat-card">
-        <span class="small">W trakcie</span>
-        <strong id="statLeadsActive">0</strong>
-      </div>
-      <div class="stat-card">
-        <span class="small">Wygrane</span>
-        <strong id="statWon">0</strong>
-      </div>
-      <div class="stat-card">
-        <span class="small">Potencjał</span>
-        <strong id="statPotential">0 zł</strong>
-      </div>
+<div class="card-grid">
+  <article class="card">
+    <div class="badge green">Najpierw sprzedaż</div>
+    <h3>Sklep i zamówienia</h3>
+    <p>Najkrótsza droga do działania: uruchom sklep, dodaj produkty, sprawdź koszyk i checkout.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="sklep.html">Sklep</a>
+      <a class="btn btn-secondary" href="zamowienia.html">Zamówienia</a>
     </div>
+  </article>
+  <article class="card">
+    <div class="badge">Dodaj źródło produktów</div>
+    <h3>Hurtownie i suppliers</h3>
+    <p>Import produktów ma szybko zasilić sklep i skrócić drogę do pierwszej sprzedaży.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="hurtownie.html">Hurtownie</a>
+      <a class="btn btn-secondary" href="suppliers.html">Suppliers</a>
+    </div>
+  </article>
+  <article class="card">
+    <div class="badge gold">Dodatkowy przychód</div>
+    <h3>AI i aplikacje</h3>
+    <p>Twórz reklamy, aplikacje i dodatkowe usługi, które pomagają klientom zarabiać.</p>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="ai.html">AI</a>
+      <a class="btn btn-secondary" href="aplikacje.html">Aplikacje</a>
+    </div>
+  </article>
+</div>
 
-    <section class="grid grid-2" style="margin-top:22px">
-      <div class="card">
-        <div class="section-title">
-          <h2>Dodaj lead</h2>
-        </div>
-        <form id="leadForm" class="qm-form">
-          <div class="form-grid">
-            <label><span>Imię i nazwisko</span><input name="clientName" required placeholder="np. Jan Kowalski"></label>
-            <label><span>Telefon</span><input name="phone" placeholder="+48 500 000 000"></label>
-            <label><span>Email</span><input name="email" type="email" placeholder="kontakt@firma.pl"></label>
-            <label><span>Źródło</span>
-              <select name="source">
-                <option>Facebook Ads</option>
-                <option>OLX</option>
-                <option>Landing</option>
-                <option>Polecenie</option>
-                <option>Telefon</option>
-              </select>
-            </label>
-            <label><span>Oferta / produkt</span><input name="interest" placeholder="np. sklep PRO, pakiet elite"></label>
-            <label><span>Budżet / wartość</span><input name="budget" type="number" min="0" step="1" placeholder="2500"></label>
-            <label><span>Status</span>
-              <select name="status">
-                <option value="new">nowy</option>
-                <option value="contacted">kontakt</option>
-                <option value="qualified">zakwalifikowany</option>
-                <option value="offer">oferta</option>
-                <option value="won">wygrany</option>
-                <option value="lost">stracony</option>
-              </select>
-            </label>
-            <label><span>Follow-up</span><input name="followUpAt" type="date"></label>
-          </div>
-          <label><span>Notatka</span><textarea name="note" rows="4" placeholder="Krótka notatka handlowa"></textarea></label>
-          <div class="actions-row">
-            <button class="btn" type="submit">Zapisz lead</button>
-            <button class="btn-ghost" type="reset">Wyczyść</button>
-          </div>
-        </form>
-      </div>
+<div class="list-grid">
+  <article class="list-card">
+    <div class="badge">Co dalej</div>
+    <h3>Ścieżka użytkownika</h3>
+    <ul>
+      <li>Wejdź do hurtowni i dodaj produkty.</li>
+      <li>Przejdź do sklepu i sprawdź ofertę.</li>
+      <li>Skonfiguruj panel sklepu i generator.</li>
+      <li>Rozwiń ofertę przez AI, reklamy i aplikacje.</li>
+    </ul>
+  </article>
+  <article class="list-card">
+    <div class="badge green">Szybkie skróty</div>
+    <h3>Najważniejsze miejsca</h3>
+    <div class="card-actions">
+      <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
+      <a class="btn btn-secondary" href="cennik.html">Cennik</a>
+      <a class="btn btn-secondary" href="blueprints.html">Blueprints</a>
+      <a class="btn btn-secondary" href="stworz-aplikacje.html">Stwórz aplikację</a>
+    </div>
+  </article>
+</div>
 
-      <div class="card">
-        <div class="section-title">
-          <h2>Dodaj task</h2>
-        </div>
-        <form id="taskForm" class="qm-form">
-          <div class="form-grid">
-            <label><span>Tytuł</span><input name="title" required placeholder="np. oddzwoń do klienta"></label>
-            <label><span>Termin</span><input name="dueAt" type="date"></label>
-            <label><span>Priorytet</span>
-              <select name="priority">
-                <option value="low">niski</option>
-                <option value="normal" selected>normalny</option>
-                <option value="high">wysoki</option>
-              </select>
-            </label>
-            <label><span>Lead ID / klient</span><input name="leadRef" placeholder="opcjonalnie"></label>
-          </div>
-          <label><span>Opis</span><textarea name="note" rows="4" placeholder="Co trzeba zrobić"></textarea></label>
-          <div class="actions-row">
-            <button class="btn-gold" type="submit">Dodaj task</button>
-            <button class="btn-ghost" id="seedCrmBtn" type="button">Wrzuć demo dane</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <section class="grid grid-2" style="margin-top:22px">
-      <div class="card">
-        <div class="section-title">
-          <h2>Pipeline leadów</h2>
-          <div class="actions-row compact">
-            <button id="exportCrmBtn" class="btn-ghost" type="button">Export JSON</button>
-            <button id="clearCrmBtn" class="btn-ghost danger" type="button">Wyczyść CRM</button>
-          </div>
-        </div>
-        <div id="pipelineBoard" class="pipeline-board"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">
-          <h2>Taski i follow-up</h2>
-        </div>
-        <div id="tasksList" class="stack-list"></div>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top:22px">
-      <div class="section-title">
-        <h2>Lista leadów</h2>
-        <input id="crmSearch" class="table-search" placeholder="Szukaj po kliencie, emailu, telefonie lub ofercie">
-      </div>
-      <div class="table-wrap">
-        <table class="crm-table">
-          <thead>
-            <tr>
-              <th>Klient</th>
-              <th>Status</th>
-              <th>Oferta</th>
-              <th>Budżet</th>
-              <th>Follow-up</th>
-              <th>Kontakt</th>
-              <th>Akcje</th>
-            </tr>
-          </thead>
-          <tbody id="crmTableBody"></tbody>
-        </table>
-      </div>
-    </section>
+    </main>
   </div>
 </body>
 </html>
