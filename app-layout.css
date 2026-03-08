@@ -1,55 +1,71 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aktywacja planu — QualitetMarket</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
+  <link rel="stylesheet" href="app-layout.css" />
 </head>
 <body>
-  
-<main class="container">
-  <section class="hero">
-    <div class="hero-grid">
-      <div class="card pad">
-        <span class="tag">Aktywacja planu</span>
-        <h1 class="h1">Plan gotowy do uruchomienia.</h1>
-        <p class="lead">Kliknij aktywację, a system zapisze subskrypcję, marżę sklepu i od razu przeliczy produkty pod sprzedaż dropshippingową.</p>
-        <div class="actions" style="margin-top:16px">
-          <button id="activateBtn" class="btn btn-primary">Aktywuj teraz</button>
-          <a class="btn btn-secondary" href="cennik.html">Wróć do cennika</a>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo" />
+      <span>QualitetMarket</span>
+    </a>
+    <a class="btn btn-ghost" href="cennik.html">Cennik</a>
+  </header>
+
+  <main class="page narrow">
+    <section class="card">
+      <p class="eyebrow">Aktywacja</p>
+      <h1>Uruchom subskrypcję</h1>
+      <div id="selectedPlanBox" class="summary-box"></div>
+
+      <form id="activationForm" class="form-grid">
+        <label>
+          Imię i nazwisko
+          <input type="text" name="fullName" required placeholder="Jan Kowalski" />
+        </label>
+        <label>
+          E-mail
+          <input type="email" name="email" required placeholder="twoj@email.pl" />
+        </label>
+        <label>
+          Nazwa sklepu
+          <input type="text" name="storeName" required placeholder="Mój Sklep" />
+        </label>
+        <label>
+          Metoda aktywacji
+          <select name="paymentMode" id="paymentMode">
+            <option value="demo">Demo / start lokalny</option>
+            <option value="checkout_link">Link płatności</option>
+            <option value="manual">Ręczna aktywacja</option>
+          </select>
+        </label>
+
+        <div class="hint">
+          <strong>Ważne:</strong> prawdziwe pobieranie płatności kartą na GitHub Pages wymaga zewnętrznego operatora płatności i konfiguracji jego linków lub backendu.
         </div>
-      </div>
-      <div class="card pad">
-        <h2 class="h2">Co zapisuje system</h2>
-        <ul class="list">
-          <li><code>qm_subscription_v1</code> — plan i cena</li>
-          <li><code>qm_plan_v1</code> — aktywny plan</li>
-          <li><code>qm_store_margin_pct</code> — marża sklepu</li>
-          <li><code>qm_products_by_supplier_v1</code> — ceny po marży</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-</main>
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  const plan = new URLSearchParams(location.search).get('plan') || 'pro';
-  const btn = document.getElementById('activateBtn');
-  btn.textContent = 'Aktywuj plan ' + plan.toUpperCase();
-  btn.addEventListener('click', ()=>{
-    QMSubscriptions.applyPlan(plan);
-    if (window.QMAutoMargin) QMAutoMargin.applyToCatalog();
-    location.href = 'success.html?plan=' + encodeURIComponent(plan);
-  });
-});
-</script>
+
+        <div class="actions stack-mobile">
+          <button type="submit" class="btn btn-primary">Aktywuj plan</button>
+          <a class="btn btn-secondary" href="success.html">Zobacz ekran sukcesu</a>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Podpięcie płatności</h2>
+      <p>W pliku <code>js/payments.js</code> masz miejsca na linki do checkoutu dla Basic / Pro / Elite.</p>
+      <ul class="clean-list">
+        <li>PAYMENT_LINKS.basic</li>
+        <li>PAYMENT_LINKS.pro</li>
+        <li>PAYMENT_LINKS.elite</li>
+      </ul>
+    </section>
+  </main>
 
   <script src="js/subscriptions.js"></script>
-  <script src="js/planGuard.js"></script>
-  <script src="auto-margin.js"></script>
-  <script src="app-shell.js"></script>
-  
+  <script src="js/payments.js"></script>
 </body>
 </html>

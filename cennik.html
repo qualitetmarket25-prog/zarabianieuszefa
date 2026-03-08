@@ -1,85 +1,25 @@
-
-(function(){
-  const PRODUCTS_KEY = 'qm_products_by_supplier_v1';
-  const MARGIN_KEY = 'qm_store_margin_pct';
-  const SUB_KEY = 'qm_subscription_v1';
-
-  function read(key, fallback){
-    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; }
-  }
-  function write(key, value){
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-  function getMargin(){
-    const fromStore = Number(read(MARGIN_KEY, 0));
-    if (fromStore > 0) return fromStore;
-    const planMargin = Number(read(SUB_KEY, {marginPct:18}).marginPct || 18);
-    return planMargin;
-  }
-  function smartMargin(base, planMargin){
-    if (base < 20) return Math.max(planMargin, 35);
-    if (base < 60) return Math.max(planMargin, 28);
-    if (base < 150) return Math.max(planMargin, 22);
-    if (base < 400) return Math.max(planMargin, 18);
-    return Math.max(planMargin, 15);
-  }
-  function roundPrice(v){
-    const floor = Math.floor(Math.max(1, v));
-    return Number((floor + 0.99).toFixed(2));
-  }
-  function normalizeBase(p){
-    const base = Number(p.sourcePrice ?? p.supplierPrice ?? p.basePrice ?? p.originalPrice ?? p.price ?? 0);
-    return Number.isFinite(base) ? base : 0;
-  }
-  function productImage(name){
-    const n = encodeURIComponent(name || 'Produkt');
-    return `https://placehold.co/600x600/0f172a/e2e8f0?text=${n}`;
-  }
-  function enrichProduct(p, fallbackSupplier='AliExpress'){
-    const base = normalizeBase(p);
-    const planMargin = getMargin();
-    const effective = smartMargin(base, planMargin);
-    const finalPrice = roundPrice(base * (1 + effective / 100));
-    const compareAt = roundPrice(finalPrice * 1.18);
-    return {
-      ...p,
-      supplier: p.supplier || fallbackSupplier,
-      sourcePrice: base,
-      supplierPrice: base,
-      marginPct: effective,
-      price: finalPrice,
-      compareAtPrice: compareAt,
-      img: p.img || p.image || productImage(p.name),
-      _qm_margin_applied: true
-    };
-  }
-  function seedDemoIfEmpty(){
-    const curr = read(PRODUCTS_KEY, []);
-    if (Array.isArray(curr) && curr.length) return curr;
-    const demo = [
-      {name:'Organizer biurka premium', price:24.5, supplier:'CJ Dropshipping'},
-      {name:'Lampka LED do setupu', price:39.9, supplier:'AliExpress'},
-      {name:'Uchwyt samochodowy MagSafe', price:31.2, supplier:'Banggood'},
-      {name:'Plecak miejski smart', price:67.0, supplier:'EPROLO'},
-      {name:'Mata fitness premium', price:58.5, supplier:'VidaXL'},
-      {name:'Słuchawki bezprzewodowe', price:82.0, supplier:'AliExpress'}
-    ].map(enrichProduct);
-    write(PRODUCTS_KEY, demo);
-    return demo;
-  }
-  function applyToCatalog(){
-    const existing = seedDemoIfEmpty();
-    const next = existing.map(p => enrichProduct(p, p.supplier || 'AliExpress'));
-    write(PRODUCTS_KEY, next);
-    return next;
-  }
-  document.addEventListener('DOMContentLoaded',()=>{
-    document.querySelectorAll('[data-apply-margin]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        applyToCatalog();
-        alert('Gotowe. Automatyczna marża została ustawiona na wszystkich produktach.');
-      });
-    });
-  });
-  window.QMAutoMargin = { getMargin, applyToCatalog, enrichProduct, seedDemoIfEmpty };
-})();
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#08111f;color:#f8fafc}
+a{text-decoration:none;color:inherit}img{max-width:100%;display:block}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,17,31,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}.brand img{width:38px;height:38px}
+.page{max-width:1120px;margin:0 auto;padding:20px 16px 80px}.narrow{max-width:760px}
+.hero{padding:28px 0 12px}.eyebrow{color:#38bdf8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+h1,h2,h3{margin:0 0 12px}.lead{color:#cbd5e1;max-width:680px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:linear-gradient(180deg,rgba(15,23,42,.96),rgba(15,23,42,.86));border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.22);margin-bottom:16px}
+.plan-card{display:flex;flex-direction:column;gap:10px}.featured{outline:2px solid rgba(34,197,94,.55)}
+.pill{display:inline-flex;width:max-content;padding:8px 12px;border-radius:999px;background:#1e293b;color:#e2e8f0;font-size:12px;font-weight:700}
+.pill-green{background:#14532d}.pill-blue{background:#0c4a6e}
+.clean-list{margin:0;padding-left:18px;color:#cbd5e1}.clean-list li{margin:8px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border-radius:16px;font-weight:800;border:none;cursor:pointer}
+.btn-primary{background:#22c55e;color:#04110a}.btn-secondary{background:#0f172a;color:#f8fafc;border:1px solid rgba(255,255,255,.1)}.btn-ghost{background:transparent;color:#f8fafc;border:1px solid rgba(255,255,255,.12)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}.stack-mobile>*{flex:1}
+.form-grid{display:grid;gap:14px}.form-grid label{display:grid;gap:8px;color:#e2e8f0;font-weight:700}
+input,select{width:100%;min-height:48px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#0f172a;color:#fff;padding:12px 14px}
+.summary-box,.hint{padding:14px 16px;border-radius:16px;background:#0b1324;border:1px solid rgba(255,255,255,.08);margin:0 0 16px;color:#cbd5e1}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;color:#cbd5e1}
+.site-footer{padding:24px 16px 40px;border-top:1px solid rgba(255,255,255,.08)}
+.footer-links{max-width:1120px;margin:0 auto;display:flex;gap:18px;flex-wrap:wrap;color:#94a3b8}
+.success-card{text-align:center;padding:32px}.success-icon{width:72px;height:72px;border-radius:999px;display:grid;place-items:center;margin:0 auto 16px;background:#14532d;color:#bbf7d0;font-size:34px;font-weight:900}
+.is-locked{opacity:.55;filter:grayscale(.25)}
+@media (max-width:900px){.grid-3,.steps{grid-template-columns:1fr}.stack-mobile{flex-direction:column}.btn{width:100%}}

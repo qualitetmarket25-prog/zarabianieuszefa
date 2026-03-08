@@ -1,80 +1,90 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Cennik — QualitetMarket</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QualitetMarket — Cennik</title>
+  <link rel="stylesheet" href="app-layout.css" />
 </head>
 <body>
-  
-<main class="container">
-  <section class="hero">
-    <div class="card pad">
-      <span class="tag">Cennik gotowy do startu</span>
-      <h1 class="h1">Subskrypcje, które zarabiają dla Ciebie i nadal opłacają się klientowi.</h1>
-      <p class="lead">Ustawiłem plan tak, żeby wejście było lekkie, PRO dawał realny sens sprzedaży, a ELITE robił największy wynik dla power-userów.</p>
-    </div>
-  </section>
-  <section class="section">
-    <div class="grid-3">
-      <div class="card pad plan">
-        <h2 class="h2">Basic</h2>
-        <div class="price"><strong>79</strong><span>PLN / mies.</span></div>
-        <div class="muted">Na start. Dla osób, które chcą ruszyć ze sklepem i katalogiem.</div>
-        <ul class="list">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo" />
+      <span>QualitetMarket</span>
+    </a>
+    <a class="btn btn-ghost" href="platforma.html">Platforma</a>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Pakiet 15</p>
+        <h1>Subskrypcje gotowe do startu</h1>
+        <p class="lead">Wybierz plan, uruchom dropshipping i aktywuj automatyczną marżę dla sklepu.</p>
+      </div>
+    </section>
+
+    <section class="cards grid-3">
+      <article class="card plan-card">
+        <div class="pill">Basic</div>
+        <h2>79 PLN / mies.</h2>
+        <p>Na start dla jednej osoby.</p>
+        <ul class="clean-list">
+          <li>Automatyczna marża 18%</li>
           <li>1 sklep</li>
-          <li>Auto marża 18%</li>
-          <li>Import produktów</li>
-          <li>Koszyk i checkout</li>
+          <li>Podstawowe moduły</li>
         </ul>
-        <div class="actions" style="margin-top:14px">
-          <button class="btn btn-primary" data-select-plan="basic">Wybierz Basic</button>
-        </div>
-      </div>
-      <div class="card pad plan popular">
-        <div class="ribbon">Najlepszy start</div>
-        <h2 class="h2">Pro</h2>
-        <div class="price"><strong>149</strong><span>PLN / mies.</span></div>
-        <div class="muted">Najlepszy balans ceny do zysku. Dla większości użytkowników.</div>
-        <ul class="list">
-          <li>Większa marża 28%</li>
-          <li>Dostęp PRO do hurtowni</li>
-          <li>Lepszy wynik na produkcie</li>
-          <li>Większa opłacalność dropshippingu</li>
+        <button class="btn btn-primary" data-select-plan="basic" data-price="79">Wybierz Basic</button>
+      </article>
+
+      <article class="card plan-card featured">
+        <div class="pill pill-green">Pro</div>
+        <h2>149 PLN / mies.</h2>
+        <p>Najlepszy balans opłacalności.</p>
+        <ul class="clean-list">
+          <li>Automatyczna marża 28%</li>
+          <li>Hurtownie i seller tools</li>
+          <li>Lepsza opłacalność</li>
         </ul>
-        <div class="actions" style="margin-top:14px">
-          <button class="btn btn-primary" data-select-plan="pro">Wybierz Pro</button>
-        </div>
-      </div>
-      <div class="card pad plan">
-        <h2 class="h2">Elite</h2>
-        <div class="price"><strong>299</strong><span>PLN / mies.</span></div>
-        <div class="muted">Dla osób, które chcą mocniej skalować sprzedaż i używać premium modułów.</div>
-        <ul class="list">
-          <li>Marża 38%</li>
-          <li>Dostęp ELITE</li>
-          <li>AI / Intelligence</li>
-          <li>Największy potencjał zysku</li>
+        <button class="btn btn-primary" data-select-plan="pro" data-price="149">Wybierz Pro</button>
+      </article>
+
+      <article class="card plan-card">
+        <div class="pill pill-blue">Elite</div>
+        <h2>299 PLN / mies.</h2>
+        <p>Dla większej sprzedaży i automatyzacji.</p>
+        <ul class="clean-list">
+          <li>Automatyczna marża 38%</li>
+          <li>Więcej modułów premium</li>
+          <li>Lepsza skala</li>
         </ul>
-        <div class="actions" style="margin-top:14px">
-          <button class="btn btn-primary" data-select-plan="elite">Wybierz Elite</button>
-        </div>
+        <button class="btn btn-primary" data-select-plan="elite" data-price="299">Wybierz Elite</button>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>Jak to działa</h3>
+      <div class="steps">
+        <div><strong>1.</strong> Wybierasz plan</div>
+        <div><strong>2.</strong> Przechodzisz do aktywacji</div>
+        <div><strong>3.</strong> Po potwierdzeniu plan zapisuje się w aplikacji</div>
       </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="aktywuj-pro.html">Przejdź do aktywacji</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="kontakt.html">Kontakt</a>
+      <a href="regulamin.html">Regulamin</a>
+      <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+      <a href="polityka-cookies.html">Cookies</a>
     </div>
-  </section>
-  <section class="section">
-    <div class="card pad warning">
-      To jest pakiet <strong>start-ready</strong>: zapis planu, ceny i marży działa od razu. Prawdziwe pobieranie płatności kartą wymaga jeszcze osobnej integracji operatora płatności.
-    </div>
-  </section>
-</main>
+  </footer>
 
   <script src="js/subscriptions.js"></script>
-  <script src="js/planGuard.js"></script>
-  <script src="auto-margin.js"></script>
-  <script src="app-shell.js"></script>
-  
+  <script src="js/payments.js"></script>
 </body>
 </html>
