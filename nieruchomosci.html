@@ -7,24 +7,24 @@
 <script defer src="app-shell.js"></script>
 </head><body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Nieruchomości','publiczny listing ofert z leadami');});</script>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Nieruchomości','etap 7 — listing z filtrowaniem i szczegółami');});</script>
 
   <section class="hero">
     <div class="card">
-      <div class="chip">ETAP 6 • publiczny listing</div>
-      <h1>Oferty nieruchomości pobierane z panelu i zapis leadów bez backendu.</h1>
-      <p class="lead">Ta strona czyta oferty zapisane przez biuro w <strong>qm_crm_v1</strong>. Klient może zostawić zapytanie i lead od razu zapisuje się w panelu firm nieruchomości.</p>
+      <div class="chip">ETAP 7 • publiczny listing</div>
+      <h1>Publiczny listing z filtrowaniem, szczegółami oferty i szybkim formularzem leada.</h1>
+      <p class="lead">Ta strona czyta oferty z <strong>qm_crm_v1.realEstateOffers</strong>. Po kliknięciu w kartę możesz od razu podejrzeć szczegóły, a formularz zapisze leada do <strong>qm_crm_v1.realEstateLeads</strong>.</p>
       <div class="actions-row" style="margin-top:16px">
-        <a class="btn-gold" href="firmy-nieruchomosci.html">Przejdź do panelu biura</a>
-        <a class="btn-ghost" href="agent-nieruchomosci-pro.html">Aktywuj Agent PRO</a>
+        <a class="btn" href="firmy-nieruchomosci.html">Panel biura</a>
+        <a class="btn-gold" href="agent-nieruchomosci-pro.html">Pakiet Agent PRO</a>
       </div>
     </div>
     <div class="card">
-      <div class="kicker">Jak to działa</div>
+      <div class="section-title"><h2>Co działa</h2></div>
       <div class="list">
-        <div class="list-row"><div><strong>1. Biuro dodaje ofertę</strong><div class="small">Oferta trafia do qm_crm_v1.realEstateOffers.</div></div></div>
-        <div class="list-row"><div><strong>2. Klient zostawia kontakt</strong><div class="small">Lead zapisuje się w qm_crm_v1.realEstateLeads.</div></div></div>
-        <div class="list-row"><div><strong>3. Biuro obsługuje temat</strong><div class="small">Lead jest od razu widoczny w panelu firm.</div></div></div>
+        <div class="list-row"><div><strong>Filtry i sortowanie</strong><div class="small">miasto, typ, pokoje, zakres ceny i kolejność.</div></div></div>
+        <div class="list-row"><div><strong>Szczegóły oferty</strong><div class="small">opis, galeria i CTA do formularza leada.</div></div></div>
+        <div class="list-row"><div><strong>Źródło leada</strong><div class="small">zapis źródła listing + tytuł wybranej oferty.</div></div></div>
       </div>
     </div>
   </section>
@@ -33,113 +33,253 @@
     <div class="section-title">
       <h2>Filtruj oferty</h2>
       <div class="toolbar">
-        <input class="input" id="searchInput" placeholder="Szukaj po tytule lub mieście">
-        <select class="select" id="typeInput">
+        <input id="searchInput" placeholder="Szukaj po tytule, mieście, dzielnicy">
+        <select id="typeInput">
           <option value="all">Wszystkie typy</option>
-          <option value="sprzedaż">Sprzedaż</option>
-          <option value="wynajem">Wynajem</option>
-          <option value="premium">Premium</option>
+          <option value="sprzedaż">sprzedaż</option>
+          <option value="wynajem">wynajem</option>
+          <option value="premium">premium</option>
+        </select>
+        <input id="cityInput" placeholder="Miasto">
+        <input id="minPriceInput" type="number" min="0" placeholder="Cena od">
+        <input id="maxPriceInput" type="number" min="0" placeholder="Cena do">
+        <select id="roomsInput">
+          <option value="all">Pokoje</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+        <select id="sortInput">
+          <option value="newest">Najnowsze</option>
+          <option value="priceAsc">Cena rosnąco</option>
+          <option value="priceDesc">Cena malejąco</option>
         </select>
       </div>
     </div>
     <div id="offersGrid" class="grid grid-3"></div>
   </div>
 
-  <div class="card" style="margin-top:22px">
-    <div class="section-title"><h2>Zostaw lead klienta</h2></div>
-    <form id="publicLeadForm" class="form-grid">
-      <input class="input" name="clientName" placeholder="Imię i nazwisko" required>
-      <input class="input" name="phone" placeholder="Telefon" required>
-      <input class="input" name="email" placeholder="E-mail">
-      <input class="input" name="interest" placeholder="Interesująca oferta lub miasto">
-      <select class="select full" name="status">
-        <option value="nowy">Status startowy: nowy</option>
-      </select>
-      <textarea class="textarea full" name="note" placeholder="Napisz czego szukasz: zakup, wynajem, budżet, metraż, termin..."></textarea>
-      <div class="actions-row full">
-        <button class="btn" type="submit">Wyślij zapytanie</button>
-        <a class="btn-ghost" href="firmy-nieruchomosci.html">Otwórz panel biura</a>
-      </div>
-    </form>
+  <div class="detail-grid" style="margin-top:22px">
+    <div class="detail-card" id="detailCard">
+      <div class="empty-state">Wybierz ofertę, żeby zobaczyć szczegóły i szybciej zebrać leada.</div>
+    </div>
+
+    <div class="card sticky-card">
+      <div class="section-title"><h2>Zostaw lead klienta</h2></div>
+      <form id="publicLeadForm" class="form-grid">
+        <input type="hidden" name="offerId">
+        <input type="hidden" name="offerTitle">
+        <div class="field"><label>Imię i nazwisko</label><input name="clientName" placeholder="Imię i nazwisko" required></div>
+        <div class="field"><label>Telefon</label><input name="phone" placeholder="Telefon" required></div>
+        <div class="field"><label>E-mail</label><input name="email" placeholder="E-mail"></div>
+        <div class="field"><label>Miasto</label><input name="city" placeholder="Miasto docelowe"></div>
+        <div class="field"><label>Budżet</label><input name="budget" placeholder="Np. 900000"></div>
+        <div class="field"><label>Status startowy</label>
+          <select name="status">
+            <option value="nowy">nowy</option>
+          </select>
+        </div>
+        <div class="field full"><label>Interesująca oferta</label><input name="interest" placeholder="Np. apartament premium lub wynajem 3 pokoje"></div>
+        <div class="field full"><label>Notatka</label><textarea name="note" placeholder="Napisz czego szukasz: zakup, wynajem, metraż, termin..."></textarea></div>
+        <div class="actions-row full">
+          <button class="btn" type="submit">Wyślij zapytanie</button>
+          <a class="btn-ghost" href="firmy-nieruchomosci.html">Panel biura</a>
+        </div>
+      </form>
+      <hr class="sep">
+      <div class="footer-note">Lead trafia do <strong>qm_crm_v1.realEstateLeads</strong> z oznaczeniem źródła <strong>listing</strong>.</div>
+    </div>
   </div>
 
   <script>
     (function(){
       var offersGrid = document.getElementById('offersGrid');
+      var detailCard = document.getElementById('detailCard');
+      var form = document.getElementById('publicLeadForm');
+
       var searchInput = document.getElementById('searchInput');
       var typeInput = document.getElementById('typeInput');
-      var publicLeadForm = document.getElementById('publicLeadForm');
+      var cityInput = document.getElementById('cityInput');
+      var minPriceInput = document.getElementById('minPriceInput');
+      var maxPriceInput = document.getElementById('maxPriceInput');
+      var roomsInput = document.getElementById('roomsInput');
+      var sortInput = document.getElementById('sortInput');
 
-      function readCrm(){
-        return QU.readCrm();
-      }
-
-      function saveCrm(crm){
-        QU.writeCrm(crm);
-      }
+      var selectedOfferId = '';
 
       function getOffers(){
-        return readCrm().realEstateOffers.slice().sort(function(a,b){
-          return (b.createdAt||'').localeCompare(a.createdAt||'');
+        return QU.readOffers().filter(function(item){
+          return item.status !== 'archiwum';
         });
       }
 
-      function badgeClass(type){
-        if(type === 'wynajem') return 'elite';
-        if(type === 'premium') return 'boss';
-        return 'pro';
+      function filteredOffers(){
+        var term = (searchInput.value || '').trim().toLowerCase();
+        var type = typeInput.value;
+        var city = (cityInput.value || '').trim().toLowerCase();
+        var minPrice = Number(minPriceInput.value || 0);
+        var maxPrice = Number(maxPriceInput.value || 0);
+        var rooms = roomsInput.value;
+
+        var offers = getOffers().filter(function(item){
+          var text = [item.title,item.city,item.district,item.description,item.owner].join(' ').toLowerCase();
+          var itemRooms = parseInt(item.rooms, 10) || 0;
+          return (!term || text.indexOf(term) !== -1)
+            && (type === 'all' || item.type === type)
+            && (!city || String(item.city || '').toLowerCase().indexOf(city) !== -1)
+            && (!minPrice || Number(item.price) >= minPrice)
+            && (!maxPrice || Number(item.price) <= maxPrice)
+            && (rooms === 'all' || itemRooms >= Number(rooms));
+        });
+
+        if(sortInput.value === 'priceAsc'){
+          offers.sort(function(a,b){ return Number(a.price) - Number(b.price); });
+        }else if(sortInput.value === 'priceDesc'){
+          offers.sort(function(a,b){ return Number(b.price) - Number(a.price); });
+        }else{
+          offers.sort(function(a,b){ return String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || '')); });
+        }
+        return offers;
+      }
+
+      function renderDetail(offer){
+        if(!offer){
+          detailCard.innerHTML = '<div class="empty-state">Wybierz ofertę, żeby zobaczyć szczegóły i szybciej zebrać leada.</div>';
+          return;
+        }
+
+        var gallery = Array.isArray(offer.gallery) && offer.gallery.length ? offer.gallery : (offer.image ? [offer.image] : []);
+        detailCard.innerHTML = ''
+          + '<div class="offer-meta">'
+          +   '<span class="badge ' + QU.statusBadgeClass(offer.type) + '">' + offer.type + '</span>'
+          +   '<span class="badge ' + QU.statusBadgeClass(offer.status) + '">' + offer.status + '</span>'
+          +   (offer.featured ? '<span class="badge boss">premium</span>' : '')
+          + '</div>'
+          + '<h2>' + offer.title + '</h2>'
+          + '<div class="offer-price">' + QU.money(offer.price) + '</div>'
+          + '<div class="offer-sub"><span>' + offer.city + '</span><span>' + (offer.district || '—') + '</span><span>' + (offer.area || '—') + '</span><span>' + (offer.rooms || '—') + ' pokoje</span></div>'
+          + '<p class="offer-desc">' + offer.description + '</p>'
+          + '<div class="detail-stats">'
+          +   '<div class="detail-stat"><strong>Status</strong><div class="small">' + offer.status + '</div></div>'
+          +   '<div class="detail-stat"><strong>Opiekun</strong><div class="small">' + (offer.owner || 'biuro nieruchomości') + '</div></div>'
+          +   '<div class="detail-stat"><strong>Typ</strong><div class="small">' + offer.type + '</div></div>'
+          +   '<div class="detail-stat"><strong>Aktualizacja</strong><div class="small">' + QU.dateTime(offer.updatedAt) + '</div></div>'
+          + '</div>'
+          + '<hr class="sep">'
+          + '<div class="gallery-grid">' + gallery.map(function(url){
+              return '<div class="offer-media"><img src="' + url + '" alt="' + offer.title.replace(/"/g,'&quot;') + '"></div>';
+            }).join('') + '</div>'
+          + '<div class="actions-row" style="margin-top:18px">'
+          +   '<button class="btn" type="button" id="fillLeadBtn">Zapytaj o tę ofertę</button>'
+          +   '<a class="btn-ghost" href="firmy-nieruchomosci.html">Biuro</a>'
+          + '</div>';
+
+        var fillLeadBtn = document.getElementById('fillLeadBtn');
+        if(fillLeadBtn){
+          fillLeadBtn.addEventListener('click', function(){
+            form.elements.offerId.value = offer.id;
+            form.elements.offerTitle.value = offer.title;
+            form.elements.interest.value = offer.title;
+            form.elements.city.value = offer.city || '';
+            form.scrollIntoView({ behavior:'smooth', block:'start' });
+          });
+        }
       }
 
       function renderOffers(){
-        var term = (searchInput.value || '').trim().toLowerCase();
-        var type = typeInput.value;
-        var offers = getOffers().filter(function(item){
-          var text = (item.title + ' ' + item.city + ' ' + item.description).toLowerCase();
-          return (!term || text.indexOf(term) !== -1) && (type === 'all' || item.type === type);
-        });
+        var offers = filteredOffers();
 
         if(!offers.length){
-          offersGrid.innerHTML = '<div class="empty-state">Brak ofert do wyświetlenia. Dodaj je w panelu firm nieruchomości.</div>';
+          offersGrid.innerHTML = '<div class="empty-state">Brak ofert po filtrach. Dodaj je w panelu firm nieruchomości.</div>';
+          renderDetail(null);
           return;
+        }
+
+        if(!selectedOfferId || !offers.some(function(item){ return item.id === selectedOfferId; })){
+          selectedOfferId = offers[0].id;
         }
 
         offersGrid.innerHTML = offers.map(function(item){
           var media = item.image
             ? '<img class="offer-media" src="' + item.image + '" alt="' + item.title.replace(/"/g,'&quot;') + '">'
-            : '<div class="offer-media">Oferta: ' + item.city + '</div>';
+            : '<div class="offer-media">Oferta bez zdjęcia</div>';
 
           return ''
-            + '<article class="card offer-card">'
+            + '<article class="offer-card">'
             + media
-            + '<div class="offer-meta"><span class="badge ' + badgeClass(item.type) + '">' + item.type + '</span><span class="badge pro">' + item.city + '</span></div>'
-            + '<div><h3 style="margin:0 0 8px">' + item.title + '</h3><div class="price" style="font-size:30px">' + QU.money(item.price) + '</div><p class="small">' + item.description + '</p></div>'
-            + '<div class="small">Metraż: ' + (item.area || '—') + ' • Pokoje: ' + (item.rooms || '—') + '</div>'
+            + '<div class="offer-meta">'
+            +   '<span class="badge ' + QU.statusBadgeClass(item.type) + '">' + item.type + '</span>'
+            +   '<span class="badge ' + QU.statusBadgeClass(item.status) + '">' + item.status + '</span>'
+            +   (item.featured ? '<span class="badge boss">premium</span>' : '')
+            + '</div>'
+            + '<div><h3>' + item.title + '</h3><div class="offer-sub"><span>' + item.city + '</span><span>' + (item.district || '—') + '</span><span>' + (item.area || '—') + '</span></div></div>'
+            + '<div class="offer-price">' + QU.money(item.price) + '</div>'
+            + '<div class="offer-desc">' + item.description + '</div>'
+            + '<div class="offer-actions">'
+            +   '<button class="btn" type="button" data-open-offer="' + item.id + '">Szczegóły</button>'
+            +   '<button class="btn-ghost" type="button" data-ask-offer="' + item.id + '">Zapytaj</button>'
+            + '</div>'
             + '</article>';
         }).join('');
+
+        var selected = offers.find(function(item){ return item.id === selectedOfferId; }) || offers[0];
+        renderDetail(selected);
       }
 
-      publicLeadForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        var fd = new FormData(publicLeadForm);
-        var crm = readCrm();
-        crm.realEstateLeads.unshift({
-          id: QU.uid(),
-          clientName: (fd.get('clientName') || '').toString().trim(),
-          phone: (fd.get('phone') || '').toString().trim(),
-          email: (fd.get('email') || '').toString().trim(),
-          interest: (fd.get('interest') || '').toString().trim(),
-          status: 'nowy',
-          note: (fd.get('note') || '').toString().trim(),
-          source: 'nieruchomosci-public',
-          createdAt: new Date().toISOString()
-        });
-        saveCrm(crm);
-        publicLeadForm.reset();
-        alert('Zapytanie zapisane. Lead jest już widoczny w panelu firm nieruchomości.');
+      offersGrid.addEventListener('click', function(event){
+        var openBtn = event.target.closest('[data-open-offer]');
+        var askBtn = event.target.closest('[data-ask-offer]');
+
+        if(openBtn){
+          selectedOfferId = openBtn.getAttribute('data-open-offer');
+          renderOffers();
+          detailCard.scrollIntoView({ behavior:'smooth', block:'start' });
+          return;
+        }
+
+        if(askBtn){
+          var offerId = askBtn.getAttribute('data-ask-offer');
+          var offer = getOffers().find(function(item){ return item.id === offerId; });
+          if(!offer) return;
+          selectedOfferId = offer.id;
+          renderOffers();
+          form.elements.offerId.value = offer.id;
+          form.elements.offerTitle.value = offer.title;
+          form.elements.interest.value = offer.title;
+          form.elements.city.value = offer.city || '';
+          form.scrollIntoView({ behavior:'smooth', block:'start' });
+        }
       });
 
-      searchInput.addEventListener('input', renderOffers);
-      typeInput.addEventListener('change', renderOffers);
+      form.addEventListener('submit', function(event){
+        event.preventDefault();
+        var data = new FormData(form);
+        var crm = QU.readCrm();
+        crm.realEstateLeads.unshift(QU.normalizeLead({
+          clientName:data.get('clientName'),
+          phone:data.get('phone'),
+          email:data.get('email'),
+          city:data.get('city'),
+          budget:data.get('budget'),
+          interest:data.get('interest'),
+          offerId:data.get('offerId'),
+          offerTitle:data.get('offerTitle'),
+          status:data.get('status'),
+          note:data.get('note'),
+          source:'listing'
+        }));
+        QU.writeCrm(crm);
+        alert('Lead zapisany. Biuro zobaczy go w panelu firm nieruchomości.');
+        form.reset();
+        form.elements.status.value = 'nowy';
+      });
+
+      [searchInput,typeInput,cityInput,minPriceInput,maxPriceInput,roomsInput,sortInput].forEach(function(el){
+        el.addEventListener('input', renderOffers);
+        el.addEventListener('change', renderOffers);
+      });
+
       renderOffers();
     })();
   </script>

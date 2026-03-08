@@ -7,48 +7,66 @@
 <script defer src="app-shell.js"></script>
 </head><body>
 <div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Agent Nieruchomości PRO','etap 6 — realny panel biura');});</script>
+  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Agent Nieruchomości PRO','etap 7 — sprzedaż + realny moduł CRM');});</script>
+
   <section class="hero">
     <div class="card">
       <div class="badge boss">399 zł / mies.</div>
-      <h1>Agent Nieruchomości PRO z realnym panelem ofert i leadów.</h1>
-      <p class="lead">ETAP 6 zamienia sam landing w działające MVP. Po aktywacji planu biuro może dodawać oferty, publikować listing i zbierać leady zapisane do <strong>qm_crm_v1</strong>.</p>
+      <h1>Agent Nieruchomości PRO ma już realny CRM ofert i leadów.</h1>
+      <p class="lead">ETAP 7 dokłada to, czego brakowało do codziennej pracy: edycję ofert, statusy leadów, backup JSON, eksport CSV i szczegóły ofert na publicznym listingu. Nadal bez backendu i gotowe pod GitHub Pages.</p>
       <div class="actions-row" style="margin-top:16px">
-        <button class="btn-gold" data-set-plan="agentpro">Aktywuj Agent PRO</button>
-        <a class="btn" href="firmy-nieruchomosci.html">Wejdź do panelu firm</a>
-        <a class="btn-ghost" href="nieruchomosci.html">Publiczny listing</a>
+        <button class="btn-gold" data-set-plan="agentpro" data-redirect="firmy-nieruchomosci.html">Aktywuj Agent PRO</button>
+        <a class="btn" href="firmy-nieruchomosci.html">Panel firm</a>
+        <a class="btn-ghost" href="nieruchomosci.html">Listing ofert</a>
       </div>
     </div>
+
     <div class="card">
-      <div class="section-title"><h2>Co już działa w ETAP 6</h2></div>
+      <div class="section-title"><h2>Co już robi ETAP 7</h2></div>
       <ul class="features">
-        <li>dodawanie ofert nieruchomości</li>
-        <li>publiczny listing ofert</li>
-        <li>zapisy leadów klientów do qm_crm_v1</li>
-        <li>usuwanie ofert i leadów</li>
-        <li>filtry, wyszukiwarka i mobile UI</li>
-        <li>GitHub Pages friendly, bez backendu</li>
+        <li>dodawanie, edycja, duplikowanie i usuwanie ofert</li>
+        <li>statusy ofert: aktywna, rezerwacja, sprzedana, archiwum</li>
+        <li>wyróżnienie premium i listing publiczny z filtrowaniem</li>
+        <li>leady z notatkami i statusem handlowym</li>
+        <li>eksport leadów do CSV i backup JSON całego modułu</li>
+        <li>zachowany klucz <strong>qm_crm_v1</strong> bez łamania projektu</li>
       </ul>
     </div>
   </section>
 
+  <div class="pricing" style="margin-top:24px">
+    <div class="card">
+      <h3>Agent Start</h3>
+      <div class="price">399 zł <small>/ mies.</small></div>
+      <p class="small">1 agent, oferty, listing, leady, backup i CRM startowy.</p>
+      <button class="btn-gold" data-set-plan="agentpro" data-redirect="firmy-nieruchomosci.html">Aktywuj</button>
+    </div>
+    <div class="card">
+      <h3>Office 5</h3>
+      <div class="price">799 zł <small>/ mies.</small></div>
+      <p class="small">Do 5 agentów, więcej ofert, wyższy wolumen leadów, gotowe pod upsell reklamy AI.</p>
+      <a class="btn-ghost" href="reklama-ai.html">Zobacz upsell</a>
+    </div>
+    <div class="card">
+      <h3>Enterprise</h3>
+      <div class="price">1499 zł <small>/ mies.</small></div>
+      <p class="small">Wiele oddziałów, automatyzacje i dalsze etapy pod CRM, listing i multi-brand.</p>
+      <a class="btn-ghost" href="stworz-aplikacje.html">Własna aplikacja</a>
+    </div>
+  </div>
+
   <div class="grid grid-3" style="margin-top:24px">
-    <div class="card"><h3>Agent Start</h3><div class="price">399 zł <small>/ mies.</small></div><p class="small">1 agent, oferty, leady i publiczny listing.</p><button class="btn-gold" data-set-plan="agentpro">Aktywuj</button></div>
-    <div class="card"><h3>Office 5</h3><div class="price">799 zł <small>/ mies.</small></div><p class="small">Do 5 agentów i większy wolumen działań sprzedażowych.</p></div>
-    <div class="card"><h3>Enterprise</h3><div class="price">1499 zł <small>/ mies.</small></div><p class="small">Wiele oddziałów, reklamy AI i wyższy upsell.</p></div>
+    <div class="card"><h3>1. Panel ofert</h3><p class="small">Biuro dodaje nieruchomości, zdjęcia, statusy i opiekuna oferty.</p></div>
+    <div class="card"><h3>2. Listing i leady</h3><p class="small">Klient ogląda szczegóły i wysyła lead przypięty do oferty.</p></div>
+    <div class="card"><h3>3. Backup i eksport</h3><p class="small">Masz CSV dla sprzedaży i JSON backup dla bezpieczeństwa pracy.</p></div>
   </div>
 
   <div class="card" style="margin-top:24px">
-    <div class="section-title"><h2>Nowy przepływ sprzedaży</h2></div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead><tr><th>Krok</th><th>Co robi użytkownik</th><th>Efekt dla Ciebie</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Kupuje Agent PRO</td><td>abonament miesięczny</td></tr>
-          <tr><td>2</td><td>Dodaje swoje oferty w panelu</td><td>większa przywiązanie do aplikacji</td></tr>
-          <tr><td>3</td><td>Zbiera leady z listingu</td><td>łatwiejszy upsell reklamy AI i wyższych pakietów</td></tr>
-        </tbody>
-      </table>
+    <div class="section-title"><h2>Dalszy kierunek paczek</h2></div>
+    <div class="list">
+      <div class="list-row"><div><strong>ETAP 8</strong><div class="small">mini CRM pipeline, przypomnienia i follow-up</div></div><strong>następny</strong></div>
+      <div class="list-row"><div><strong>ETAP 9</strong><div class="small">media pack ofert, więcej galerii i szablony ogłoszeń</div></div><strong>po tym</strong></div>
+      <div class="list-row"><div><strong>ETAP 10+</strong><div class="small">automatyzacje, multi-office, reklamy AI i marketplace</div></div><strong>w kolejce</strong></div>
     </div>
   </div>
 </div>
