@@ -1,207 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Generator sklepu</title>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#f5f5f5;
-}
-
-header{
-background:#111;
-color:white;
-padding:14px;
-font-size:18px;
-font-weight:bold;
-}
-
-.container{
-padding:12px;
-max-width:600px;
-margin:auto;
-}
-
-.card{
-background:white;
-padding:14px;
-border-radius:12px;
-margin-bottom:12px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:6px;
-margin-bottom:10px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:16px;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:10px;
-font-size:16px;
-font-weight:bold;
-background:black;
-color:white;
-}
-
-.store{
-padding:10px;
-border-bottom:1px solid #eee;
-}
-
-.footer-space{
-height:80px;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator sklepu • QualitetMarket</title>
+  <link rel="stylesheet" href="app-layout.css">
 </head>
-
 <body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">QM</div>
+        <div>
+          <h1>QualitetMarket</h1>
+          <p>Aplikacja marketplace / dropshipping</p>
+        </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link active" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
+    </aside>
 
-<header>
-Generator sklepu
-</header>
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Generator sklepu</h2>
+            <p>Budowa sklepu bez cofania UI</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Main Store</strong></span>
+          <a class="btn btn-secondary" href="cennik.html">Cennik</a>
+          <a class="btn btn-primary" href="success.html">Publikuj</a>
+        </div>
+      </header>
 
-<div class="container">
-
-<div class="card">
-
-Nazwa sklepu
-
-<input id="storeName">
-
-<button onclick="createStore()">
-Utwórz sklep
-</button>
-
+      <section class="wrap">
+        
+<div class="hero">
+  <h3>Generator sklepu</h3>
+  <p>To jest baza pod aplikacyjny builder sklepu. Układ już jest gotowy, więc później tylko dokładamy funkcje bez cofania się.</p>
 </div>
 
-
-<div class="card">
-
-Moje sklepy
-
-<div id="storesBox"></div>
-
+<div class="grid grid-4">
+  <div class="card"><div class="muted">Produkty</div><div class="metric" data-stat-products>0</div></div>
+  <div class="card"><div class="muted">Zamówienia</div><div class="metric" data-stat-orders>0</div></div>
+  <div class="card"><div class="muted">Sklepy</div><div class="metric" data-stat-stores>0</div></div>
+  <div class="card"><div class="muted">Marża</div><div class="metric" data-stat-margin>0%</div></div>
 </div>
 
-<div class="footer-space"></div>
-
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Szkic generatora</h3>
+    <div class="list">
+      <div class="list-item"><span>Motyw</span><span class="badge ok">Dark SaaS</span></div>
+      <div class="list-item"><span>Mobile first</span><span class="badge ok">Tak</span></div>
+      <div class="list-item"><span>GitHub Pages safe</span><span class="badge ok">Tak</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Kolejny etap</h3>
+    <p class="muted">W następnym kroku można tu dołożyć formularz budowy sklepu, zapis do qm_stores_v1 i podgląd live.</p>
+  </div>
 </div>
 
-
-<script>
-
-const KEY_STORES = "qm_stores_v1"
-const KEY_ACTIVE = "qm_active_store_v1"
-
-
-function loadStores(){
-
-let stores =
-JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
-
-let box =
-document.getElementById("storesBox")
-
-box.innerHTML = ""
-
-stores.forEach((s,i)=>{
-
-let div =
-document.createElement("div")
-
-div.className = "store"
-
-div.innerHTML =
-
-s.name +
-"<br>" +
-
-"<button onclick='setActive("+i+")'>Aktywuj</button>"
-
-box.appendChild(div)
-
-})
-
-}
-
-
-
-function createStore(){
-
-let name =
-document.getElementById("storeName").value
-
-if(!name) return
-
-let stores =
-JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
-
-let store = {
-
-id: Date.now(),
-name: name
-
-}
-
-stores.push(store)
-
-localStorage.setItem(
-KEY_STORES,
-JSON.stringify(stores)
-)
-
-localStorage.setItem(
-KEY_ACTIVE,
-JSON.stringify(store)
-)
-
-document.getElementById("storeName").value=""
-
-loadStores()
-
-}
-
-
-
-function setActive(i){
-
-let stores =
-JSON.parse(localStorage.getItem(KEY_STORES) || "[]")
-
-let store = stores[i]
-
-localStorage.setItem(
-KEY_ACTIVE,
-JSON.stringify(store)
-)
-
-alert("Aktywny sklep: " + store.name)
-
-}
-
-
-loadStores()
-
-</script>
-
-
-<script src="js/config.js"></script>
-<script src="js/plan-guard.js"></script>
-
+        <div class="footer-space"></div>
+      </section>
+    </main>
+  </div>
+  <script src="app-shell.js"></script>
 </body>
 </html>

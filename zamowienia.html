@@ -1,254 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zamówienia</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-color:#111;
-}
-header{
-background:#111;
-color:#fff;
-padding:14px;
-font-size:18px;
-font-weight:bold;
-}
-.container{
-max-width:700px;
-margin:0 auto;
-padding:12px;
-}
-.card{
-background:#fff;
-border-radius:12px;
-padding:14px;
-margin-bottom:12px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-.order{
-border:1px solid #eee;
-border-radius:12px;
-padding:12px;
-margin-bottom:10px;
-}
-.title{
-font-size:17px;
-font-weight:bold;
-margin-bottom:6px;
-}
-.small{
-font-size:13px;
-color:#666;
-margin-bottom:6px;
-}
-.row{
-display:flex;
-justify-content:space-between;
-gap:10px;
-margin-top:8px;
-font-size:14px;
-}
-.item{
-padding:8px 0;
-border-top:1px solid #f0f0f0;
-font-size:14px;
-}
-.btn,
-button{
-display:block;
-width:100%;
-padding:14px;
-border:none;
-border-radius:10px;
-font-size:16px;
-font-weight:bold;
-text-align:center;
-text-decoration:none;
-box-sizing:border-box;
-cursor:pointer;
-}
-.btn-black{
-background:#111;
-color:#fff;
-}
-.btn-white{
-background:#fff;
-color:#111;
-border:1px solid #ddd;
-}
-.top-actions{
-display:flex;
-gap:10px;
-}
-.top-actions a{
-flex:1;
-}
-.empty{
-text-align:center;
-padding:20px 10px;
-color:#666;
-}
-.status{
-display:inline-block;
-padding:6px 10px;
-border-radius:999px;
-background:#efefef;
-font-size:12px;
-font-weight:bold;
-margin-top:4px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zamówienia • QualitetMarket</title>
+  <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">QM</div>
+        <div>
+          <h1>QualitetMarket</h1>
+          <p>Aplikacja marketplace / dropshipping</p>
+        </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link active" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
+    </aside>
 
-<header>
-Zamówienia
-</header>
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Zamówienia</h2>
+            <p>Obsługa zamówień z localStorage</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Main Store</strong></span>
+          <a class="btn btn-secondary" href="cennik.html">Cennik</a>
+          <a class="btn btn-primary" href="success.html">Publikuj</a>
+        </div>
+      </header>
 
-<div class="container">
+      <section class="wrap">
+        
+<div class="hero">
+  <h3>Zamówienia</h3>
+  <p>Panel zamówień czyta z <strong>qm_orders_v1</strong>. To jest gotowy ekran pod dalszą rozbudowę checkout i statusów.</p>
+</div>
 
-<div class="card">
-<div id="storeBox">Aktywny sklep: —</div>
+<div class="grid grid-4">
+  <div class="card"><div class="muted">Produkty</div><div class="metric" data-stat-products>0</div></div>
+  <div class="card"><div class="muted">Zamówienia</div><div class="metric" data-stat-orders>0</div></div>
+  <div class="card"><div class="muted">Sklepy</div><div class="metric" data-stat-stores>0</div></div>
+  <div class="card"><div class="muted">Marża</div><div class="metric" data-stat-margin>0%</div></div>
 </div>
 
 <div class="card">
-<div class="top-actions">
-<a href="sklep.html" class="btn btn-white">Sklep</a>
-<a href="koszyk.html" class="btn btn-white">Koszyk</a>
-</div>
-</div>
-
-<div class="card">
-<div id="ordersBox"></div>
+  <h3>Lista zamówień</h3>
+  <table class="table">
+    <thead><tr><th>ID</th><th>Klient</th><th>Wartość</th><th>Status</th></tr></thead>
+    <tbody id="ordersTableBody"></tbody>
+  </table>
 </div>
 
-</div>
-
-<script>
-const ORDERS_KEY = "qm_orders_v1";
-const STORE_KEY = "qm_active_store_v1";
-
-function safeParse(value, fallback){
-  try{
-    return JSON.parse(value);
-  }catch(e){
-    return fallback;
-  }
-}
-
-function formatPrice(value){
-  return Number(value || 0).toFixed(2) + " zł";
-}
-
-function formatDate(value){
-  if(!value) return "-";
-  const d = new Date(value);
-  const dd = String(d.getDate()).padStart(2,"0");
-  const mm = String(d.getMonth()+1).padStart(2,"0");
-  const yyyy = d.getFullYear();
-  const hh = String(d.getHours()).padStart(2,"0");
-  const min = String(d.getMinutes()).padStart(2,"0");
-  return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
-}
-
-function getStore(){
-  return safeParse(localStorage.getItem(STORE_KEY), null);
-}
-
-function getOrders(){
-  return safeParse(localStorage.getItem(ORDERS_KEY), []);
-}
-
-function getStoreOrders(){
-  const store = getStore();
-  const orders = getOrders();
-
-  if(!store) return [];
-
-  return orders.filter(function(order){
-    if(order.store && order.store.id){
-      return String(order.store.id) === String(store.id);
-    }
-
-    if(order.storeId){
-      return String(order.storeId) === String(store.id);
-    }
-
-    return false;
-  }).sort(function(a,b){
-    return Number(b.date || 0) - Number(a.date || 0);
-  });
-}
-
-function countItems(order){
-  return (order.items || []).reduce(function(sum,item){
-    return sum + Number(item.qty || 0);
-  }, 0);
-}
-
-function totalOrder(order){
-  return (order.items || []).reduce(function(sum,item){
-    return sum + (Number(item.price || 0) * Number(item.qty || 0));
-  }, 0);
-}
-
-function renderStore(){
-  const store = getStore();
-  document.getElementById("storeBox").innerText =
-    "Aktywny sklep: " + (store && store.name ? store.name : "brak");
-}
-
-function renderOrders(){
-  const box = document.getElementById("ordersBox");
-  const orders = getStoreOrders();
-
-  if(!orders.length){
-    box.innerHTML =
-      '<div class="empty">Brak zamówień.</div>' +
-      '<div style="margin-top:12px;"><a href="sklep.html" class="btn btn-black">Przejdź do sklepu</a></div>';
-    return;
-  }
-
-  box.innerHTML = "";
-
-  orders.forEach(function(order){
-    const div = document.createElement("div");
-    div.className = "order";
-
-    let itemsHtml = "";
-    (order.items || []).forEach(function(item){
-      itemsHtml +=
-        '<div class="item">' +
-        (item.name || "Produkt") +
-        ' × ' + Number(item.qty || 0) +
-        ' — ' + formatPrice(Number(item.price || 0) * Number(item.qty || 0)) +
-        '</div>';
-    });
-
-    div.innerHTML =
-      '<div class="title">Zamówienie #' + order.id + '</div>' +
-      '<div class="small">Data: ' + formatDate(order.date) + '</div>' +
-      '<div class="status">' + (order.status || "nowe") + '</div>' +
-      '<div class="row"><span>Liczba sztuk</span><strong>' + countItems(order) + '</strong></div>' +
-      '<div class="row"><span>Wartość</span><strong>' + formatPrice(totalOrder(order)) + '</strong></div>' +
-      '<div style="margin-top:10px;">' + itemsHtml + '</div>';
-
-    box.appendChild(div);
-  });
-}
-
-renderStore();
-renderOrders();
-</script>
-
-<script src="js/config.js"></script>
-<script src="js/planGuard.js"></script>
-
+        <div class="footer-space"></div>
+      </section>
+    </main>
+  </div>
+  <script src="app-shell.js"></script>
 </body>
 </html>
