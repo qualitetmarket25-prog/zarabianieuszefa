@@ -1,25 +1,8 @@
-<!doctype html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Logowanie • UszefaQualitet</title>
-<link rel="stylesheet" href="app-layout.css">
-<style>.auth{max-width:520px;margin:7vh auto;padding:20px}.auth .card{padding:28px}</style>
-</head>
-<body>
-  <div class="auth">
-    <div class="card center">
-      <img src="uszefaqualitet-logo.svg" alt="logo" style="width:72px;height:72px;margin:0 auto 14px">
-      <h2>Wejdź do UszefaQualitet</h2>
-      <p class="muted">Panel do budowy sklepu, ogłoszeń, AI i reklam.</p>
-      <form onsubmit="event.preventDefault(); location.href='dashboard.html';" class="grid">
-        <input class="input" type="email" placeholder="E-mail">
-        <input class="input" type="password" placeholder="Hasło">
-        <button class="btn btn-primary" type="submit">Zaloguj i przejdź do aplikacji</button>
-      </form>
-      <div class="footer-note">Demo login działa bez backendu — po kliknięciu wchodzisz do aplikacji.</div>
-    </div>
-  </div>
-</body>
-</html>
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Logowanie</title><link rel="stylesheet" href="app-layout.css"></head>
+<body><div class="container" style="max-width:660px;padding-top:60px">
+<div class="card center"><img src="uszefaqualitet-logo.svg" alt="logo" style="max-width:420px;margin-bottom:10px"><h1>Zaloguj się do aplikacji</h1><p class="footer-note">Wejście do sklepu, AI, reklam, ogłoszeń i własnej aplikacji.</p>
+<form data-login-form class="card-list" style="text-align:left">
+<input class="input" placeholder="Email">
+<input class="input" placeholder="Hasło" type="password">
+<button class="btn primary" type="submit">Wejdź do panelu</button>
+</form></div></div><script src="app-shell.js"></script></body></html>

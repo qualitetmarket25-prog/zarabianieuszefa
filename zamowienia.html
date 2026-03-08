@@ -1,71 +1,49 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zamówienia • UszefaQualitet</title>
-  <link rel="stylesheet" href="app-layout.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zamówienia — U Szefa Qualitet</title>
+<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
 </head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
-        <div>
-          <h1>UszefaQualitet</h1>
-          <p>Zarabiaj u Szefa • super app</p>
-        </div>
-      </div>
-      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
-      <p class="nav-label">Aplikacja</p>
-      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link active" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
-      <p class="nav-label">Plan testowy</p>
-      <div class="grid">
-        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
-        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
-        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
-      </div>
-      <div class="upsell">
-        <h3>Królestwo zarabiania</h3>
-        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
-        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <div style="display:flex;align-items:center;gap:12px">
-          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
-          <div class="topbar-title">
-            <h2>Zamówienia</h2>
-            <p>Przegląd zleceń i sprzedaży</p>
-          </div>
-        </div>
-        <div class="topbar-actions">
-          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
-          
-        </div>
-      </header>
-
-      <section class="wrap">
-        
-<div class="hero">
-  <h3>Zamówienia i sprzedaż</h3>
-  <p>Tu użytkownik pilnuje przychodów i realizacji. Dane są w localStorage, więc wszystko działa bez backendu.</p>
-</div>
-
-<div class="card">
-  <div class="table-wrap">
-    <table class="table">
-      <thead><tr><th>ID</th><th>Klient</th><th>Kanał</th><th>Suma</th><th>Status</th></tr></thead>
-      <tbody id="ordersTableBody"></tbody>
-    </table>
+<body class="app-body">
+<aside class="sidebar">
+  <a class="brand" href="dashboard.html">
+    <div class="brand-mark">UQ</div>
+    <div class="brand-text"><strong>U Szefa Qualitet</strong><span>Super App do zarabiania</span></div>
+  </a>
+  <div class="nav-title">Główne</div>
+  <nav class="nav-group"><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Centrum</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Sprzedaż</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Ruch</small></a><a class="nav-link" href="reklama.html"><span>Reklama</span><small>Zarabiaj</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>Moc</small></a><a class="nav-link" href="aplikacje.html"><span>Aplikacje</span><small>Nowe</small></a><a class="nav-link" href="stworz-aplikacje.html" data-require="pro"><span>Stwórz aplikację</span><small>PRO</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator sklepu</span><small>AI</small></a><a class="nav-link active" href="zamowienia.html"><span>Zamówienia</span><small>CRM</small></a><a class="nav-link" href="cennik.html"><span>Pakiety</span><small>Sub</small></a></nav>
+  <div class="nav-title">Plan</div>
+  <div class="card" style="padding:14px">
+    <div class="footer-note">Twój plan</div>
+    <strong data-plan-badge>PRO</strong>
+    <div class="card-list" style="margin-top:12px">
+      <button class="btn ghost" data-set-plan="basic">BASIC</button>
+      <button class="btn ghost" data-set-plan="pro">PRO</button>
+      <button class="btn ghost" data-set-plan="elite">ELITE</button>
+    </div>
   </div>
-</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" data-menu-toggle>☰</button>
+      <div class="search"><span>⌕</span><input placeholder="Szukaj modułów, produktów, ogłoszeń..."></div>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="aplikacje.html">Moje aplikacje</a>
+      <a class="btn primary" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
+    </div>
+  </header>
+  <main class="container">
+    
+<div class="section-title"><h2>Zamówienia</h2><a class="btn ghost" href="dashboard.html">Dashboard</a></div>
+<div class="card-list" data-orders-list></div>
 
-      </section>
-    </main>
-  </div>
-  <script src="app-shell.js"></script>
+  </main>
+</div>
+<script src="app-shell.js"></script>
 </body>
 </html>

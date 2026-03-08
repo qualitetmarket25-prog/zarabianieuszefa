@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stwórz swoją aplikację — U Szefa Qualitet</title>
+<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+</head>
+<body class="app-body">
+<aside class="sidebar">
+  <a class="brand" href="dashboard.html">
+    <div class="brand-mark">UQ</div>
+    <div class="brand-text"><strong>U Szefa Qualitet</strong><span>Super App do zarabiania</span></div>
+  </a>
+  <div class="nav-title">Główne</div>
+  <nav class="nav-group"><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Centrum</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Sprzedaż</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Ruch</small></a><a class="nav-link" href="reklama.html"><span>Reklama</span><small>Zarabiaj</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>Moc</small></a><a class="nav-link" href="aplikacje.html"><span>Aplikacje</span><small>Nowe</small></a><a class="nav-link active" href="stworz-aplikacje.html" data-require="pro"><span>Stwórz aplikację</span><small>PRO</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator sklepu</span><small>AI</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>CRM</small></a><a class="nav-link" href="cennik.html"><span>Pakiety</span><small>Sub</small></a></nav>
+  <div class="nav-title">Plan</div>
+  <div class="card" style="padding:14px">
+    <div class="footer-note">Twój plan</div>
+    <strong data-plan-badge>PRO</strong>
+    <div class="card-list" style="margin-top:12px">
+      <button class="btn ghost" data-set-plan="basic">BASIC</button>
+      <button class="btn ghost" data-set-plan="pro">PRO</button>
+      <button class="btn ghost" data-set-plan="elite">ELITE</button>
+    </div>
+  </div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" data-menu-toggle>☰</button>
+      <div class="search"><span>⌕</span><input placeholder="Szukaj modułów, produktów, ogłoszeń..."></div>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="aplikacje.html">Moje aplikacje</a>
+      <a class="btn primary" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
+    </div>
+  </header>
+  <main class="container">
+    
+<section class="hero">
+  <div class="card">
+    <div class="kicker">Kreator aplikacji</div>
+    <h1 class="hero-title">Zbuduj swoją aplikację w prosty sposób.</h1>
+    <p>Użytkownik wybiera typ, nazwę, plan i przeznaczenie. Aplikacja może być dla sklepu, usług, ogłoszeń, używanych ofert albo biznesu lokalnego. To ma być maksymalnie uproszczone.</p>
+    <div class="badges"><span class="badge">dla sklepu</span><span class="badge">dla usług</span><span class="badge">dla nieruchomości</span><span class="badge">dla auta i używanych</span></div>
+  </div>
+  <div class="card app-preview center">
+    <strong>App as a Service</strong>
+    <div class="footer-note">To jest osobny filar przychodu miesięcznego.</div>
+    <div class="price" style="margin-top:12px">79 zł / mies.</div>
+  </div>
+</section>
+
+<div class="grid cols-2">
+  <div class="card" data-require="pro">
+    <strong>Formularz tworzenia aplikacji</strong>
+    <form data-app-form class="card-list" style="margin-top:16px">
+      <input class="input" name="name" placeholder="Nazwa aplikacji">
+      <select class="select" name="type">
+        <option>Sklep</option><option>Ogłoszenia</option><option>Usługi</option><option>Nieruchomości</option><option>Motoryzacja</option>
+      </select>
+      <select class="select" name="plan">
+        <option>pro</option><option>elite</option><option>boss</option>
+      </select>
+      <textarea class="textarea" name="desc" placeholder="Co ma robić ta aplikacja?"></textarea>
+      <button class="btn primary" type="submit">Zapisz aplikację</button>
+    </form>
+  </div>
+  <div class="card">
+    <strong>Co dostaje użytkownik</strong>
+    <ul>
+      <li>ekran startowy i branding</li>
+      <li>moduł sklepu lub ogłoszeń</li>
+      <li>sekcję promocji i reklam</li>
+      <li>łatwą drogę do monetyzacji</li>
+      <li>informację, że własna aplikacja zwiększa zaufanie klientów</li>
+    </ul>
+    <p class="footer-note">To jest najlepsze miejsce na upsell i miesięczny dodatek subskrypcyjny.</p>
+  </div>
+</div>
+
+<div class="section-title"><h2>Zapisane aplikacje</h2></div>
+<div class="card-list" data-apps-list></div>
+
+  </main>
+</div>
+<script src="app-shell.js"></script>
+</body>
+</html>

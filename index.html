@@ -1,85 +1,28 @@
-<!doctype html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UszefaQualitet • Zarabiaj u Szefa</title>
-<link rel="stylesheet" href="app-layout.css">
-<style>
-body{min-height:100vh}
-.landing{max-width:1240px;margin:0 auto;padding:28px 18px 60px}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
-.mock-box{background:linear-gradient(135deg,#0f172a,#101f34);border:1px solid #223049;border-radius:28px;padding:22px;box-shadow:var(--shadow)}
-.mock-phone{width:260px;margin:18px auto 0;border-radius:34px;border:6px solid #1b2944;background:#09111f;padding:14px}
-.mock-card{background:#0f172a;border:1px solid #1f2b42;border-radius:18px;padding:14px;margin-bottom:12px}
-.top-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
-.brandline{display:flex;align-items:center;gap:14px}
-.brandline img{width:54px;height:54px}
-.price-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
-@media (max-width:900px){.hero-grid,.price-strip{grid-template-columns:1fr}}
-</style>
-</head>
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>U Szefa Qualitet</title><link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml"><link rel="stylesheet" href="app-layout.css"></head>
 <body>
-  <div class="landing">
-    <div class="top-nav">
-      <div class="brandline">
-        <img src="uszefaqualitet-logo.svg" alt="logo">
-        <div>
-          <h1 style="margin:0;font-size:26px">UszefaQualitet</h1>
-          <div class="muted">Zarabiaj u Szefa • sklepy, ogłoszenia, AI, reklama</div>
-        </div>
+<div class="container">
+  <section class="hero" style="margin-top:20px">
+    <div class="card banner">
+      <div class="kicker">Nowa generacja zarabiania</div>
+      <h1 class="hero-title">U Szefa Qualitet — aplikacja, sklep, ogłoszenia i AI w jednym miejscu.</h1>
+      <p>Platforma dla ludzi, którzy chcą szybciej wystartować z handlem, ogłoszeniami, promocją i własną aplikacją. Jedna subskrypcja. Dużo gotowych narzędzi. Minimum techniki.</p>
+      <div class="badges"><span class="badge">Sklep</span><span class="badge">Ogłoszenia</span><span class="badge">Używane</span><span class="badge">Reklamy</span><span class="badge">Stwórz swoją aplikację</span></div>
+      <div class="top-actions">
+        <a class="btn primary" href="login.html">Wejdź do aplikacji</a>
+        <a class="btn gold" href="cennik.html">Zobacz pakiety</a>
+        <a class="btn ghost" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
       </div>
-      <div class="btn-row">
-        <a class="btn btn-secondary" href="login.html">Zaloguj</a>
-        <a class="btn btn-primary" href="dashboard.html">Wejdź do aplikacji</a>
-      </div>
-    </div>
-
-    <div class="hero hero-grid">
-      <div>
-        <span class="badge ok">Nowa super aplikacja do zarabiania</span>
-        <h3>Jedna platforma, która pomaga ludziom budować sklep, wrzucać ogłoszenia, promować oferty i działać z AI.</h3>
-        <p>UszefaQualitet łączy sklep internetowy, moduł ogłoszeń typu wynajmę / sprzedam / usługi, kampanie reklamowe i narzędzia AI. To ma być aplikacja, za którą użytkownik chce płacić co miesiąc, bo realnie ułatwia zarabianie i codzienne życie.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="dashboard.html">Otwórz aplikację</a>
-          <a class="btn btn-gold" href="cennik.html">Zobacz pakiety</a>
-          <a class="btn btn-secondary" href="ogloszenia.html">Sprawdź ogłoszenia</a>
-        </div>
-        <div class="price-strip">
-          <div class="kpi"><div class="muted">Sklep + dropshipping</div><div class="value">1 klik</div><div class="muted">generator sklepu i hurtownie</div></div>
-          <div class="kpi"><div class="muted">Ogłoszenia + używane</div><div class="value">8 kategorii</div><div class="muted">auta, mieszkania, usługi i więcej</div></div>
-          <div class="kpi"><div class="muted">AI + reklama</div><div class="value">boost</div><div class="muted">opisy, kampanie, promocje</div></div>
-        </div>
-      </div>
-
-      <div class="mock-box">
-        <div class="mock-card">
-          <div class="badge">Panel premium</div>
-          <h3 style="margin:10px 0">Wygląd aplikacji jak nowoczesny SaaS</h3>
-          <p class="muted">Dark UI, mocny branding, prosty onboarding i moduły, które pchają użytkownika do subskrypcji premium.</p>
-        </div>
-        <div class="mock-phone">
-          <div class="mock-card">
-            <strong>MyUszefaShop</strong>
-            <div class="muted">sklep + ogłoszenia + reklama</div>
-          </div>
-          <div class="mock-card">
-            <strong>Wyróżnij ofertę</strong>
-            <div class="muted">użytkownik płaci za boost</div>
-          </div>
-          <div class="mock-card">
-            <strong>AI opisu</strong>
-            <div class="muted">premium feature</div>
-          </div>
-        </div>
+      <div class="logo-wall">
+        <div class="logo-pill">Sklep jak Shopify</div>
+        <div class="logo-pill">Ogłoszenia jak marketplace</div>
+        <div class="logo-pill">AI do reklam i opisów</div>
+        <div class="logo-pill">Własna aplikacja klienta</div>
       </div>
     </div>
-
-    <div class="grid grid-3" style="margin-top:22px">
-      <div class="card"><h3>Budowa sklepu</h3><p>Generator sklepu, multi-store, marża, checkout, zamówienia, hurtownie i marketplace.</p></div>
-      <div class="card"><h3>Ogłoszenia zarobkowe</h3><p>Wynajem mieszkań, używane auta, elektronika, usługi, praca i biznes w jednym miejscu.</p></div>
-      <div class="card"><h3>Monetyzacja</h3><p>Subskrypcje, promowanie ofert, reklamy, dodatkowe sklepy, AI premium i wyróżnienia.</p></div>
+    <div class="card center">
+      <img src="uszefaqualitet-logo.svg" alt="logo">
+      <div class="footer-note">Marka premium, czytelna na telefonie i desktopie.</div>
     </div>
-  </div>
-</body>
-</html>
+  </section>
+</div>
+</body></html>

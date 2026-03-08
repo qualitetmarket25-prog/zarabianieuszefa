@@ -1,6 +1,6 @@
-USZEFAQUALITET ETAP 1
+USZEFA QUALITET — ETAP 2
 
-Podmień te pliki w repo:
+Pliki do wrzucenia po rozpakowaniu:
 - index.html
 - login.html
 - dashboard.html
@@ -20,21 +20,15 @@ Podmień te pliki w repo:
 - uzywane.html
 - reklama.html
 - ai.html
+- aplikacje.html
+- stworz-aplikacje.html
 - app-layout.css
 - app-shell.js
 - uszefaqualitet-logo.svg
 
-Nowe klucze localStorage:
+Nowe localStorage:
 - qm_ads_v1
 - qm_ads_campaigns_v1
+- qm_apps_v1
 - qm_cart_v1
-
-Stare klucze projektu zostają bez zmian:
-- qm_products_by_supplier_v1
-- qm_intel_prefill_v1
-- qm_listing_prefill_v1
-- qm_crm_v1
-- qm_orders_v1
-- qm_stores_v1
-- qm_active_store_v1
-- qm_store_margin_pct
+- qm_plan_v1
