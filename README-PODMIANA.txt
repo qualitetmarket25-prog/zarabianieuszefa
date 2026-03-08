@@ -1,76 +1,18 @@
-    <!doctype html>
-    <html lang="pl">
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>QualitetMarket — Polityka prywatności</title>
-      <meta name="theme-color" content="#08111f">
-      <link rel="stylesheet" href="app-layout.css">
-    </head>
-    <body data-page="kontakt">
-      <div class="shell">
-        <div id="shell-start"></div>
-        <main class="main">
-          <header id="topbar" class="topbar"></header>
-          <div id="mobileDrawer" class="mobile-drawer"></div>
-          <div class="page">
-            <div class="container">
+PAKIET RATUNKOWY — HOMEPAGE
 
-<section class="card card-pad">
-  <div class="eyebrow">⚖️ Dokument</div>
-  <h1>Polityka prywatności</h1>
-  <p class="muted">To jest gotowy szablon startowy. Przed uruchomieniem publicznym uzupełnij dane firmy, adres, email, administratora i zakres usług.</p>
-  <div class="grid" style="margin-top:18px">
-    <div class="module-card"><h3>1. Informacje ogólne</h3><p>W tym miejscu wpisz dane właściciela serwisu oraz zakres działania aplikacji.</p></div>
-    <div class="module-card"><h3>2. Zasady korzystania</h3><p>Opisz warunki subskrypcji, odpowiedzialność użytkownika i sposób świadczenia usług.</p></div>
-    <div class="module-card"><h3>3. Dane i prywatność</h3><p>Opisz jakie dane zbierasz, jak są przetwarzane i jak użytkownik może z nich korzystać.</p></div>
-  </div>
-</section>
+Podmień:
+- index.html
+- app-layout.css
+- app-shell.js
+- uszefaqualitet-logo.svg
 
-            </div>
-          </div>
-          <footer class="footer">
-            <div class="container footer-grid">
-              <div class="card card-pad">
-                <div class="brand" style="background:none;border:none;padding:0">
-                  <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket">
-                  <div>
-                    <div class="brand-name">QualitetMarket</div>
-                    <div class="brand-sub">Nowoczesna aplikacja do zarabiania przez własny sklep i dropshipping.</div>
-                  </div>
-                </div>
-                <p class="muted" style="margin-top:12px">Uruchamiasz sklep, importujesz produkty z hurtowni, ustawiasz marżę i zbierasz zamówienia w jednym miejscu.</p>
-              </div>
-              <div>
-                <h4>Produkt</h4>
-                <a href="platforma.html">Platforma</a>
-                <a href="sklep.html">Sklep</a>
-                <a href="hurtownie.html">Hurtownie</a>
-                <a href="cennik.html">Cennik</a>
-              </div>
-              <div>
-                <h4>Pomoc</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="regulamin.html">Regulamin</a>
-                <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-                <a href="polityka-cookies.html">Polityka cookies</a>
-                <a href="rodo.html">RODO</a>
-              </div>
-              <div>
-                <h4>Start</h4>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="zamowienia.html">Zamówienia</a>
-                <a href="sklepy.html">Sklepy</a>
-                <a href="success.html">Aktywacja</a>
-              </div>
-            </div>
-            <div class="container" style="padding-top:16px;color:#94a3b8">© <span data-year></span> QualitetMarket. Wszystkie prawa zastrzeżone.</div>
-          </footer>
-        </main>
-      </div>
-      <nav id="bottomNav" class="bottom-nav"></nav>
-      <script src="auto-margin.js"></script>
-      <script src="app-shell.js"></script>
+Po wgraniu zrób twarde odświeżenie:
+Ctrl + F5
 
-    </body>
-    </html>
+Jeśli dalej widzisz stare style:
+1. Otwórz DevTools
+2. Kliknij Disable cache
+3. Odśwież stronę
+
+Główny link:
+https://qualitetmarket25-prog.github.io/zarabianieuszefa/

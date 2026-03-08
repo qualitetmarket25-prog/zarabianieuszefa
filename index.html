@@ -1,140 +1,438 @@
-    <!doctype html>
-    <html lang="pl">
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>QualitetMarket — Hurtownie</title>
-      <meta name="theme-color" content="#08111f">
-      <link rel="stylesheet" href="app-layout.css">
-    </head>
-    <body data-page="hurtownie">
-      <div class="shell">
-        <div id="shell-start"></div>
-        <main class="main">
-          <header id="topbar" class="topbar"></header>
-          <div id="mobileDrawer" class="mobile-drawer"></div>
-          <div class="page">
-            <div class="container">
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QualitetMarket — Platforma do zarabiania i dropshippingu</title>
+  <meta name="description" content="QualitetMarket — platforma do sprzedaży, dropshippingu, hurtowni, sklepu i automatycznej marży." />
+  <link rel="icon" type="image/svg+xml" href="uszefaqualitet-logo.svg" />
+  <style>
+    :root{
+      --bg:#07111f;
+      --panel:#0d1b2a;
+      --panel-2:#10243a;
+      --line:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#9db0c7;
+      --green:#22c55e;
+      --cyan:#38bdf8;
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+      --radius:22px;
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#06101d 0%,#0a1526 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{width:min(var(--max),calc(100% - 32px));margin:0 auto}
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(6,16,29,.9);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;padding:14px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-logo{
+      width:46px;height:46px;border-radius:14px;flex:0 0 46px;
+      box-shadow:var(--shadow);background:#091726;padding:6px;border:1px solid var(--line);
+    }
+    .brand-text{min-width:0}
+    .brand-title{font-size:18px;font-weight:800;line-height:1.1}
+    .brand-sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .nav-desktop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .nav-link{
+      padding:10px 14px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);font-size:14px;font-weight:600;
+    }
+    .nav-link:hover,.nav-link:focus-visible{border-color:rgba(56,189,248,.45);outline:none}
+    .menu-btn{
+      display:none;border:1px solid var(--line);background:rgba(255,255,255,.03);
+      color:var(--text);border-radius:14px;padding:10px 14px;font-weight:700;
+    }
+    .mobile-drawer{display:none}
+    .hero{padding:38px 0 22px}
+    .hero-grid{
+      display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:stretch;
+    }
+    .hero-card,.side-card,.card{
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);
+    }
+    .hero-card{padding:28px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;background:rgba(34,197,94,.12);
+      color:#bbf7d0;border:1px solid rgba(34,197,94,.22);font-size:13px;font-weight:700;
+    }
+    h1{
+      margin:16px 0 12px;font-size:clamp(30px,6vw,58px);line-height:1.02;letter-spacing:-.03em;
+    }
+    .lead{color:var(--muted);font-size:17px;line-height:1.7;max-width:760px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      min-height:52px;padding:0 18px;border-radius:16px;border:1px solid var(--line);font-weight:800;
+      box-shadow:var(--shadow);
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--green),#19a14a);color:#06110a;border:none}
+    .btn-secondary{background:rgba(255,255,255,.04)}
+    .hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+    .point{
+      padding:16px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid var(--line)
+    }
+    .point strong{display:block;font-size:16px;margin-bottom:6px}
+    .point span{color:var(--muted);font-size:14px;line-height:1.45}
+    .side-card{padding:22px;display:flex;flex-direction:column;gap:16px}
+    .status{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+    }
+    .status-box{
+      background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:16px
+    }
+    .status-label{font-size:12px;color:var(--muted)}
+    .status-value{margin-top:8px;font-weight:800;font-size:19px}
+    .section{padding:10px 0 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 0}
+    .section-title{font-size:28px;font-weight:800;letter-spacing:-.03em}
+    .section-copy{color:var(--muted);max-width:700px}
+    .modules{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+    }
+    .card{padding:22px}
+    .card-icon{
+      width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
+      background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(34,197,94,.18));
+      border:1px solid var(--line);font-size:24px
+    }
+    .card h3{margin:16px 0 10px;font-size:21px}
+    .card p{margin:0;color:var(--muted);line-height:1.65;min-height:72px}
+    .card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .chip{
+      display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:13px;font-weight:700;color:#d9e7f8
+    }
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+    .plan{position:relative;overflow:hidden}
+    .plan.popular{border-color:rgba(34,197,94,.35);box-shadow:0 20px 60px rgba(34,197,94,.15)}
+    .badge{
+      position:absolute;top:16px;right:16px;padding:7px 10px;border-radius:999px;
+      background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.25);font-size:12px;font-weight:800;color:#bbf7d0
+    }
+    .price{font-size:36px;font-weight:900;letter-spacing:-.04em;margin:6px 0}
+    .price small{font-size:14px;color:var(--muted);font-weight:700}
+    .list{display:grid;gap:10px;margin:18px 0 0;padding:0;list-style:none}
+    .list li{display:flex;gap:10px;align-items:flex-start;color:#dbe8f8}
+    .list li span{color:var(--muted)}
+    .footer{margin-top:34px;border-top:1px solid var(--line);padding:24px 0 34px}
+    .footer-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:18px}
+    .footer-links{display:grid;gap:10px}
+    .muted{color:var(--muted)}
+    .bottom-nav{
+      position:fixed;left:0;right:0;bottom:0;z-index:45;display:none;
+      background:rgba(6,16,29,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line)
+    }
+    .bottom-nav-inner{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom))
+    }
+    .bottom-link{
+      display:grid;place-items:center;text-align:center;gap:4px;color:#d8e5f6;font-size:11px;font-weight:700
+    }
+    .bottom-link .i{font-size:20px}
+    @media (max-width: 1100px){
+      .hero-grid,.footer-grid,.modules,.plans{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 860px){
+      .nav-desktop{display:none}
+      .menu-btn{display:inline-flex}
+      .mobile-drawer{
+        display:none;position:fixed;inset:72px 12px auto 12px;z-index:60;
+        background:#0b1828;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:14px;
+      }
+      .mobile-drawer.open{display:grid;gap:8px}
+      .mobile-drawer a{
+        padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-weight:700
+      }
+      .hero-grid,.modules,.plans,.hero-points,.footer-grid{grid-template-columns:1fr}
+      .hero{padding:24px 0 8px}
+      .hero-card,.side-card,.card{border-radius:24px}
+      .btn{width:100%}
+      .bottom-nav{display:block}
+      body{padding-bottom:86px}
+      .wrap{width:min(var(--max),calc(100% - 24px))}
+    }
+  </style>
+  <link rel="stylesheet" href="app-layout.css?v=fix1" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="index.html" class="brand" aria-label="QualitetMarket">
+        <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo" />
+        <div class="brand-text">
+          <div class="brand-title">QualitetMarket</div>
+          <div class="brand-sub">Aplikacja do zarabiania, dropshippingu i sprzedaży</div>
+        </div>
+      </a>
 
-<section class="card card-pad">
-  <div class="eyebrow">📦 Hurtownie</div>
-  <h1>Import produktów do sklepu</h1>
-  <p class="lead">Załaduj demo produkty od supplierów, dodaj CSV albo uruchom sprzedaż od razu. Marża policzy się sama.</p>
-  <div class="grid grid-3" style="margin-top:18px">
-    <div class="module-card"><h3>AliExpress</h3><p>Tania wejściówka i szeroki katalog produktów.</p></div>
-    <div class="module-card"><h3>CJ Dropshipping</h3><p>Popularny supplier do testów i szybkich wdrożeń.</p></div>
-    <div class="module-card"><h3>EPROLO / VidaXL / BigBuy</h3><p>Lepsze opcje pod EU i większe zamówienia.</p></div>
-  </div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
-    <button id="loadDemoProducts" class="btn btn-primary">Załaduj demo produkty</button>
-    <label class="btn btn-dark">Wczytaj CSV <input id="csvFile" type="file" accept=".csv" hidden></label>
-    <a class="btn btn-blue" href="sklep.html">Przejdź do sklepu</a>
-  </div>
-</section>
-<section style="margin-top:22px" class="card card-pad">
-  <h2>Aktualnie załadowane produkty</h2>
-  <div id="supplierProducts" class="list" style="margin-top:14px"></div>
-</section>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const demo = [
-    {id:'a1', supplier:'AliExpress', name:'Mini projektor LED', basePrice:59.00, img:'', category:'elektronika'},
-    {id:'a2', supplier:'CJ Dropshipping', name:'Słuchawki ANC', basePrice:89.00, img:'', category:'audio'},
-    {id:'a3', supplier:'VidaXL', name:'Krzesło biurowe premium', basePrice:229.00, img:'', category:'dom'},
-    {id:'a4', supplier:'BigBuy', name:'Lampa biurkowa smart', basePrice:44.00, img:'', category:'dom'},
-    {id:'a5', supplier:'EPROLO', name:'Zestaw fitness mini', basePrice:19.00, img:'', category:'sport'}
-  ];
-  const key = 'qm_products_by_supplier_v1';
-  const render = () => {
-    let list = [];
-    try{ list = JSON.parse(localStorage.getItem(key)||'[]'); } catch(e){}
-    const wrap = document.getElementById('supplierProducts');
-    if(!list.length){ wrap.innerHTML = '<div class="empty">Brak produktów. Załaduj demo albo CSV.</div>'; return; }
-    wrap.innerHTML = list.map(item => `
-      <div class="list-row">
-        <div><strong>${item.name}</strong><div class="small muted">${item.supplier || 'supplier'} · baza: ${Number(item.basePrice||0).toFixed(2)} PLN · marża: ${item.marginPct||0}%</div></div>
-        <div class="price">${Number(item.price||0).toFixed(2)} PLN</div>
-      </div>
-    `).join('');
-  };
-  document.getElementById('loadDemoProducts').addEventListener('click', function(){
-    localStorage.setItem(key, JSON.stringify(demo));
-    window.QMAutoMargin?.applyMarginToProducts();
-    render();
-  });
-  document.getElementById('csvFile').addEventListener('change', function(ev){
-    const file = ev.target.files?.[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(){
-      const rows = String(reader.result || '').trim().split(/\r?\n/).filter(Boolean);
-      const [headerLine, ...rest] = rows;
-      const headers = headerLine.split(',').map(h => h.trim().toLowerCase());
-      const items = rest.map((line, idx) => {
-        const cols = line.split(',');
-        const row = Object.fromEntries(headers.map((h,i)=>[h, cols[i]?.trim() || '']));
-        return {
-          id: row.id || 'csv_'+(idx+1),
-          supplier: row.supplier || 'CSV',
-          name: row.name || row.title || ('Produkt '+(idx+1)),
-          basePrice: Number(row.baseprice || row.price || 0),
-          img: row.img || row.image || ''
-        };
-      });
-      localStorage.setItem(key, JSON.stringify(items));
-      window.QMAutoMargin?.applyMarginToProducts();
-      render();
-    };
-    reader.readAsText(file);
-  });
-  render();
-});
-</script>
+      <nav class="nav-desktop" aria-label="Główne menu">
+        <a class="nav-link" href="platforma.html">Platforma</a>
+        <a class="nav-link" href="sklep.html">Sklep</a>
+        <a class="nav-link" href="hurtownie.html">Hurtownie</a>
+        <a class="nav-link" href="cennik.html">Cennik</a>
+        <a class="nav-link" href="dashboard.html">Dashboard</a>
+        <a class="nav-link" href="koszyk.html">Koszyk</a>
+        <a class="nav-link" href="kontakt.html">Kontakt</a>
+      </nav>
 
+      <button class="menu-btn" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
+    </div>
+    <div class="wrap">
+      <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobilne">
+        <a href="platforma.html">Platforma</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="hurtownie.html">Hurtownie</a>
+        <a href="sklep.html">Sklep</a>
+        <a href="koszyk.html">Koszyk</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="zamowienia.html">Zamówienia</a>
+        <a href="sklepy.html">Sklepy</a>
+        <a href="cennik.html">Cennik</a>
+        <a href="suppliers.html">Suppliers</a>
+        <a href="blueprints.html">Blueprints</a>
+        <a href="kontakt.html">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">🚀 Start gotowy pod GitHub Pages</div>
+          <h1>Zarabianie, sklep i dropshipping w jednej aplikacji.</h1>
+          <p class="lead">
+            To jest nowy stabilny start QualitetMarket. Masz jedno wejście do całej aplikacji,
+            działające menu, duże przyciski, sekcje pod sprzedaż, hurtownie, koszyk, checkout,
+            sklepy i subskrypcje.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="platforma.html">Wejdź do platformy</a>
+            <a class="btn btn-secondary" href="hurtownie.html">Importuj produkty</a>
+          </div>
+          <div class="hero-points">
+            <div class="point">
+              <strong>Auto marża</strong>
+              <span>Ceny mogą liczyć się automatycznie pod plan i aktywny sklep.</span>
+            </div>
+            <div class="point">
+              <strong>Mobile first</strong>
+              <span>Układ jest robiony pod telefon i GitHub Pages, bez lokalnych ścieżek.</span>
+            </div>
+            <div class="point">
+              <strong>Jeden link główny</strong>
+              <span>Strona startowa prowadzi do wszystkich modułów projektu.</span>
             </div>
           </div>
-          <footer class="footer">
-            <div class="container footer-grid">
-              <div class="card card-pad">
-                <div class="brand" style="background:none;border:none;padding:0">
-                  <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket">
-                  <div>
-                    <div class="brand-name">QualitetMarket</div>
-                    <div class="brand-sub">Nowoczesna aplikacja do zarabiania przez własny sklep i dropshipping.</div>
-                  </div>
-                </div>
-                <p class="muted" style="margin-top:12px">Uruchamiasz sklep, importujesz produkty z hurtowni, ustawiasz marżę i zbierasz zamówienia w jednym miejscu.</p>
-              </div>
-              <div>
-                <h4>Produkt</h4>
-                <a href="platforma.html">Platforma</a>
-                <a href="sklep.html">Sklep</a>
-                <a href="hurtownie.html">Hurtownie</a>
-                <a href="cennik.html">Cennik</a>
-              </div>
-              <div>
-                <h4>Pomoc</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="regulamin.html">Regulamin</a>
-                <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-                <a href="polityka-cookies.html">Polityka cookies</a>
-                <a href="rodo.html">RODO</a>
-              </div>
-              <div>
-                <h4>Start</h4>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="zamowienia.html">Zamówienia</a>
-                <a href="sklepy.html">Sklepy</a>
-                <a href="success.html">Aktywacja</a>
-              </div>
+        </div>
+
+        <aside class="side-card">
+          <div class="status">
+            <div class="status-box">
+              <div class="status-label">Plan aktywny</div>
+              <div class="status-value" id="planBadge">Basic</div>
             </div>
-            <div class="container" style="padding-top:16px;color:#94a3b8">© <span data-year></span> QualitetMarket. Wszystkie prawa zastrzeżone.</div>
-          </footer>
-        </main>
+            <div class="status-box">
+              <div class="status-label">Marża sklepu</div>
+              <div class="status-value" id="marginBadge">15%</div>
+            </div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">Szybkie wejścia</div>
+            <div class="card-actions" style="margin-top:12px">
+              <a class="btn btn-secondary" href="cennik.html">Plan i subskrypcja</a>
+              <a class="btn btn-secondary" href="sklep.html">Sklep i produkty</a>
+              <a class="btn btn-secondary" href="zamowienia.html">Zamówienia</a>
+            </div>
+          </div>
+        </aside>
       </div>
-      <nav id="bottomNav" class="bottom-nav"></nav>
-      <script src="auto-margin.js"></script>
-      <script src="app-shell.js"></script>
-      <script src="js/planGuard.js"></script>
-    </body>
-    </html>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="section-title">Najważniejsze moduły</div>
+            <div class="section-copy">Wszystko, co potrzebne do startu, jest wylistowane w jednym miejscu.</div>
+          </div>
+        </div>
+
+        <div class="modules">
+          <article class="card">
+            <div class="card-icon">🏪</div>
+            <h3>Sklep i sprzedaż</h3>
+            <p>Produkty, koszyk, checkout, zamówienia i aktywny sklep w jednym flow.</p>
+            <div class="card-actions">
+              <a class="chip" href="sklep.html">Sklep</a>
+              <a class="chip" href="koszyk.html">Koszyk</a>
+              <a class="chip" href="checkout.html">Checkout</a>
+              <a class="chip" href="zamowienia.html">Zamówienia</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">📦</div>
+            <h3>Hurtownie i import</h3>
+            <p>Importuj produkty, rozwijaj hurtownie i buduj ofertę pod dropshipping.</p>
+            <div class="card-actions">
+              <a class="chip" href="hurtownie.html">Hurtownie</a>
+              <a class="chip" href="suppliers.html">Suppliers</a>
+              <a class="chip" href="blueprints.html">Blueprints</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">💳</div>
+            <h3>Plany i marża</h3>
+            <p>Basic, Pro i Elite z automatyczną marżą i prostym onboardingiem.</p>
+            <div class="card-actions">
+              <a class="chip" href="cennik.html">Cennik</a>
+              <a class="chip" href="aktywuj-pro.html">Aktywacja</a>
+              <a class="chip" href="success.html">Success</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">📊</div>
+            <h3>Panel i dashboard</h3>
+            <p>Jedno wejście do platformy, pulpitu i podstawowych danych sklepu.</p>
+            <div class="card-actions">
+              <a class="chip" href="platforma.html">Platforma</a>
+              <a class="chip" href="dashboard.html">Dashboard</a>
+              <a class="chip" href="sklepy.html">Sklepy</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🤖</div>
+            <h3>AI i rozwój</h3>
+            <p>Moduły AI, aplikacje, reklamy i kolejne obszary rozwoju projektu.</p>
+            <div class="card-actions">
+              <a class="chip" href="ai.html">AI</a>
+              <a class="chip" href="aplikacje.html">Aplikacje</a>
+              <a class="chip" href="reklama-ai.html">Reklama AI</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🛡️</div>
+            <h3>Prawne i kontakt</h3>
+            <p>Gotowe linki do stopki, polityk, regulaminu i strony kontaktowej.</p>
+            <div class="card-actions">
+              <a class="chip" href="kontakt.html">Kontakt</a>
+              <a class="chip" href="polityka-prywatnosci.html">Prywatność</a>
+              <a class="chip" href="regulamin.html">Regulamin</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="section-title">Plany na start</div>
+            <div class="section-copy">Prosty cennik na wejście. Później podepniemy Stripe.</div>
+          </div>
+        </div>
+
+        <div class="plans">
+          <article class="card plan">
+            <h3>Basic</h3>
+            <div class="price">79 zł <small>/ mies.</small></div>
+            <ul class="list">
+              <li>✅ <span>Start sprzedaży i sklepu</span></li>
+              <li>✅ <span>Podstawowa auto marża</span></li>
+              <li>✅ <span>Dostęp do podstaw platformy</span></li>
+            </ul>
+            <div class="card-actions"><a class="btn btn-secondary" href="cennik.html">Wybierz Basic</a></div>
+          </article>
+
+          <article class="card plan popular">
+            <div class="badge">Najlepszy start</div>
+            <h3>Pro</h3>
+            <div class="price">149 zł <small>/ mies.</small></div>
+            <ul class="list">
+              <li>✅ <span>Wyższa marża i większy zarobek</span></li>
+              <li>✅ <span>Dostęp do hurtowni i sprzedaży</span></li>
+              <li>✅ <span>Lepszy plan do dropshippingu</span></li>
+            </ul>
+            <div class="card-actions"><a class="btn btn-primary" href="cennik.html">Wybierz Pro</a></div>
+          </article>
+
+          <article class="card plan">
+            <h3>Elite</h3>
+            <div class="price">299 zł <small>/ mies.</small></div>
+            <ul class="list">
+              <li>✅ <span>Najwyższa marża i pełny dostęp</span></li>
+              <li>✅ <span>Rozwój AI i zaawansowanych modułów</span></li>
+              <li>✅ <span>Plan premium pod skalowanie</span></li>
+            </ul>
+            <div class="card-actions"><a class="btn btn-secondary" href="cennik.html">Wybierz Elite</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:10px">
+          <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket logo" />
+          <div class="brand-text">
+            <div class="brand-title">QualitetMarket</div>
+            <div class="brand-sub">One link. Jedna aplikacja. Jeden start.</div>
+          </div>
+        </div>
+        <div class="muted">Platforma do zarabiania, sklepu, dropshippingu i automatycznej marży.</div>
+      </div>
+      <div class="footer-links">
+        <a href="kontakt.html">Kontakt</a>
+        <a href="cennik.html">Cennik</a>
+        <a href="platforma.html">Platforma</a>
+        <a href="hurtownie.html">Hurtownie</a>
+      </div>
+      <div class="footer-links">
+        <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+        <a href="regulamin.html">Regulamin</a>
+        <a href="polityka-cookies.html">Polityka cookies</a>
+        <a href="rodo.html">RODO</a>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Dolne menu">
+    <div class="bottom-nav-inner">
+      <a class="bottom-link" href="index.html"><span class="i">🏠</span><span>Start</span></a>
+      <a class="bottom-link" href="platforma.html"><span class="i">🧭</span><span>Panel</span></a>
+      <a class="bottom-link" href="hurtownie.html"><span class="i">📦</span><span>Import</span></a>
+      <a class="bottom-link" href="sklep.html"><span class="i">🛒</span><span>Sklep</span></a>
+      <a class="bottom-link" href="cennik.html"><span class="i">💳</span><span>Plan</span></a>
+    </div>
+  </nav>
+
+  <script src="app-shell.js?v=fix1"></script>
+</body>
+</html>
