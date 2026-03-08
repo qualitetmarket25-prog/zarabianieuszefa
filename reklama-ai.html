@@ -2,153 +2,251 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reklama AI — UszefaQualitet</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Reklama AI — QualitetMarket</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  <script defer src="app-shell.js"></script>
 </head>
 <body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Reklama AI','kampanie i gotowe CTA');});</script>
-
-  <div class="split">
-    <section class="card">
-      <div class="section-title"><h2>Zrób kampanię w 2 minuty</h2></div>
-      <form id="campaignForm" class="form-grid">
-        <div class="field"><label>Nazwa kampanii</label><input id="title" placeholder="np. Leady premium Warszawa"></div>
-        <div class="field"><label>Kanał</label>
-          <select id="channel">
-            <option>Meta Ads</option>
-            <option>Google Ads</option>
-            <option>TikTok Ads</option>
-            <option>OLX / lokalne</option>
-            <option>E-mail</option>
-          </select>
-        </div>
-        <div class="field"><label>Co promujesz</label>
-          <select id="targetType">
-            <option>Sklep</option>
-            <option>Ogłoszenie</option>
-            <option>Nieruchomość</option>
-            <option>Auta</option>
-            <option>Aplikacja klienta</option>
-          </select>
-        </div>
-        <div class="field"><label>Budżet miesięczny</label><input id="budget" type="number" min="0" placeholder="3000"></div>
-        <div class="field"><label>Miasto / rynek</label><input id="city" placeholder="Warszawa"></div>
-        <div class="field"><label>Status</label>
-          <select id="status">
-            <option>robocza</option>
-            <option>do uruchomienia</option>
-            <option>aktywna</option>
-            <option>wstrzymana</option>
-          </select>
-        </div>
-        <div class="field full"><label>Opis kampanii</label><textarea id="description" placeholder="Co obiecujesz klientowi, jaka grupa, jaki cel?"></textarea></div>
-        <div class="field full"><label>CTA</label><input id="cta" placeholder="Umów bezpłatną konsultację / Zobacz ofertę / Zostaw kontakt"></div>
-        <div class="field full">
-          <div class="actions-row">
-            <button class="btn btn-primary" type="submit">Zapisz kampanię</button>
-            <button class="btn btn-ghost" type="button" id="seedCampaigns">Wstaw demo</button>
-            <button class="btn btn-danger" type="button" id="clearCampaigns">Wyczyść kampanie</button>
+  <main data-shell data-title="Reklama AI" data-subtitle="Grafiki i kreacje sprzedażowe">
+    <div data-page-content>
+      <div class="container">
+        <section class="hero">
+          <h1>Reklama AI do szybszego ruchu</h1>
+          <p>Ten ekran zbiera działania pod reklamy, opisy i treści, żeby szybciej przyciągać klientów.</p>
+          <div class="pill-row">
+            <span class="pill">grafika</span><span class="pill">opisy</span><span class="pill">kampanie</span><span class="pill">ruch</span>
           </div>
-        </div>
-      </form>
-      <div class="footer-note">Kampanie zapisują się w <strong>qm_crm_v1.aiCampaigns</strong>.</div>
-    </section>
+          <div class="quick-actions" style="margin-top:16px">
+            <a class="primary-btn" href="index.html">Strona główna</a>
+            <a class="secondary-btn" href="platforma.html">Platforma</a>
+            <button class="ghost-btn" type="button" data-go="sklep.html">Sklep</button>
+          </div>
+        </section>
 
-    <section class="card">
-      <div class="section-title"><h2>Gotowe podpowiedzi</h2></div>
-      <div class="list">
-        <div class="list-row"><div><strong>Leady nieruchomości</strong><div class="small">CTA: Umów prezentację i odbierz shortlistę ofert.</div></div><span class="badge pro">B2C</span></div>
-        <div class="list-row"><div><strong>Sklep / dropshipping</strong><div class="small">CTA: Zobacz bestseller i odbierz darmową dostawę od 199 zł.</div></div><span class="badge pro">e-commerce</span></div>
-        <div class="list-row"><div><strong>Aplikacja dla firmy</strong><div class="small">CTA: Zamów wycenę aplikacji i zobacz demo dla swojej branży.</div></div><span class="badge boss">upsell</span></div>
+        <section class="notice">
+          <strong>Mobilny fix pakiet 10</strong>
+          Przyciski i przejścia są ustawione na pełne klikalne kafle, duże tap-targety i proste ścieżki pod GitHub Pages.
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Wyniki i szybkie skróty</h2>
+              <p>Najważniejsze akcje dla zarabiania i szybkiego startu</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Reklamy</h3>
+        <div class="kpi">szybciej</div>
+        <p>gotowe wejście do kampanii</p>
       </div>
-    </section>
-  </div>
+      <div class="stat-card">
+        <h3>Treści</h3>
+        <div class="kpi">multi</div>
+        <p>social + oferty + opisy</p>
+      </div>
+      <div class="stat-card">
+        <h3>Klikalność</h3>
+        <div class="kpi">duża</div>
+        <p>większe przyciski mobilne</p>
+      </div>
+      <div class="stat-card">
+        <h3>Start</h3>
+        <div class="kpi">1 link</div>
+        <p>jedna główna strona</p>
+      </div></div>
+        </section>
 
-  <section class="card" style="margin-top:18px">
-    <div class="section-title"><h2>Twoje kampanie</h2></div>
-    <div id="campaignList" class="list"></div>
-  </section>
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Najważniejsze akcje</h2>
+              <p>Jedno kliknięcie i przechodzisz dalej</p>
+            </div>
+          </div>
+          <div class="quick-grid">
+      <article class="quick-card">
+        <h3>Do AI</h3>
+        <p>Wróć do głównego modułu AI.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="ai.html">Otwórz AI</a>
+          
+        </div>
+      </article>
+      <article class="quick-card">
+        <h3>Do blueprints</h3>
+        <p>Zobacz gotowe schematy reklamowe.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="blueprints.html">Otwórz blueprints</a>
+          
+        </div>
+      </article>
+      <article class="quick-card">
+        <h3>Do sklepu</h3>
+        <p>Sprawdź produkty i gotowe przejścia sprzedażowe.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="sklep.html">Otwórz sklep</a>
+          
+        </div>
+      </article></div>
+        </section>
 
-  <script>
-  (function(){
-    var form = document.getElementById('campaignForm');
-    var list = document.getElementById('campaignList');
-
-    function read(){
-      return QU.readCrm().aiCampaigns || [];
-    }
-
-    function render(){
-      var items = read();
-      if(!items.length){
-        list.innerHTML = '<div class="empty">Brak kampanii. Zapisz pierwszą po lewej.</div>';
-        return;
-      }
-      list.innerHTML = items.map(function(item){
-        return '<div class="ad-card">'
-          + '<div class="offer-meta"><span class="badge '+ QU.statusBadgeClass(item.status) +'">' + item.status + '</span><span class="badge pro">' + item.channel + '</span><span class="badge boss">' + item.targetType + '</span></div>'
-          + '<h3 style="margin:0">' + item.title + '</h3>'
-          + '<div class="small">' + (item.description || 'Bez opisu') + '</div>'
-          + '<div class="list-row"><div><strong>Budżet</strong><div class="small">' + QU.money(item.budget) + '</div></div><div><strong>Miasto</strong><div class="small">' + (item.city || 'cała Polska') + '</div></div><div><strong>CTA</strong><div class="small">' + (item.cta || 'brak') + '</div></div></div>'
-          + '<div class="actions-row">'
-          + '<button class="btn btn-danger" data-del="'+ item.id +'">Usuń</button>'
-          + '</div></div>';
-      }).join('');
-      list.querySelectorAll('[data-del]').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var id = btn.getAttribute('data-del');
-          QU.updateCrm(function(crm){
-            crm.aiCampaigns = (crm.aiCampaigns || []).filter(function(item){ return item.id !== id; });
-            return crm;
-          });
-          render();
-        });
-      });
-    }
-
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var item = QU.normalizeCampaign({
-        title: document.getElementById('title').value.trim(),
-        channel: document.getElementById('channel').value,
-        targetType: document.getElementById('targetType').value,
-        budget: document.getElementById('budget').value,
-        city: document.getElementById('city').value.trim(),
-        status: document.getElementById('status').value,
-        description: document.getElementById('description').value.trim(),
-        cta: document.getElementById('cta').value.trim()
-      });
-      if(!item.title){ alert('Dodaj nazwę kampanii.'); return; }
-      QU.updateCrm(function(crm){
-        crm.aiCampaigns.unshift(item);
-        return crm;
-      });
-      form.reset();
-      render();
-    });
-
-    document.getElementById('seedCampaigns').addEventListener('click', function(){
-      QU.updateCrm(function(crm){
-        crm.aiCampaigns = [
-          QU.normalizeCampaign({ title:'Leady apartamenty premium', channel:'Meta Ads', targetType:'Nieruchomość', budget:3200, city:'Warszawa', status:'aktywna', description:'Lead generation pod mieszkania premium i wynajem inwestycyjny.', cta:'Umów prezentację' }),
-          QU.normalizeCampaign({ title:'Kreator aplikacji dla firm', channel:'Google Ads', targetType:'Aplikacja klienta', budget:1800, city:'cała Polska', status:'do uruchomienia', description:'Pozyskanie firm, które chcą własną aplikację bez dłubania w kodzie.', cta:'Zobacz demo i wycenę' })
-        ];
-        return crm;
-      });
-      render();
-    });
-
-    document.getElementById('clearCampaigns').addEventListener('click', function(){
-      QU.updateCrm(function(crm){ crm.aiCampaigns = []; return crm; });
-      render();
-    });
-
-    render();
-  })();
-  </script>
-</div>
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Moduły</h2>
+              <p>Pełna lista z filtrem i działającymi przejściami</p>
+            </div>
+            <a class="ghost-btn" href="cennik.html">Zobacz plany</a>
+          </div>
+          <div class="search-row">
+            <input class="search-input" type="search" placeholder="Szukaj modułu, np. AI, sklep, reklama..." data-filter-input>
+            <select class="select-input" data-filter-group>
+              <option value="">Wszystkie grupy</option>
+              <option value="sprzedaz">Sprzedaż</option>
+              <option value="marketing">Marketing</option>
+              <option value="ai">AI</option>
+              <option value="narzedzia">Narzędzia</option>
+            </select>
+          </div>
+          <div class="card-grid" style="margin-top:14px">
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>Sklep</h3>
+        <p>Sprzedawaj produkty z automatyczną marżą i prostym koszykiem.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">produkty</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="sklep.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Hurtownie</h3>
+        <p>Importuj produkty i zasil sklep jednym kliknięciem.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">import</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="hurtownie.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="ai">
+        <h3>AI</h3>
+        <p>Twórz treści, pomysły i procesy sprzedaży szybciej.</p>
+        <div class="pill-row">
+          <span class="tag blue">ai</span>
+          <span class="tag green">automatyzacja</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="ai.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="marketing">
+        <h3>Reklama AI</h3>
+        <p>Generuj reklamy, opisy i grafiki sprzedażowe.</p>
+        <div class="pill-row">
+          <span class="tag yellow">marketing</span>
+          <span class="tag green">ruch</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="reklama-ai.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Aplikacje</h3>
+        <p>Katalog gotowych aplikacji i narzędzi pod zarabianie.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">katalog</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="aplikacje.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Stwórz aplikację</h3>
+        <p>Buduj własną aplikację i rozwijaj sprzedaż.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">builder</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="stworz-aplikacje.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="ai">
+        <h3>Intelligence</h3>
+        <p>Wnioski, listing i szybkie analizy pod zysk.</p>
+        <div class="pill-row">
+          <span class="tag blue">ai</span>
+          <span class="tag green">analityka</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="intelligence.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>QualitetMarket</h3>
+        <p>Marketplace i główny moduł monetyzacji.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">marketplace</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="qualitetmarket.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>Suppliers</h3>
+        <p>Partnerzy, dostawcy i źródła produktów.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">dostawcy</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="suppliers.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="marketing">
+        <h3>Blueprints</h3>
+        <p>Gotowe schematy działania i ścieżki wdrożenia.</p>
+        <div class="pill-row">
+          <span class="tag yellow">marketing</span>
+          <span class="tag green">plan</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="blueprints.html">Otwórz</a>
+          
+        </div>
+      </article></div>
+        </section>
+        
+        <section class="section table-card">
+          <div class="section-title">
+            <div><h2>Szybki przegląd</h2><p>Gotowe przejścia i stany modułów</p></div>
+          </div>
+          <table class="simple-table">
+            <thead><tr><th>Moduł</th><th>Cel</th><th>Status</th></tr></thead>
+            <tbody><tr><td>Sklep</td><td>sprzedaż z marżą</td><td><span class="tag green">gotowe</span></td></tr><tr><td>Hurtownie</td><td>import produktów</td><td><span class="tag green">gotowe</span></td></tr><tr><td>AI</td><td>treści i automatyzacja</td><td><span class="tag blue">gotowe</span></td></tr><tr><td>Cennik</td><td>plany basic/pro/elite</td><td><span class="tag yellow">gotowe</span></td></tr></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>

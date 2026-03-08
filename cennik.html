@@ -2,31 +2,251 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Cennik — QualitetMarket</title>
-  <meta name="description" content="Pakiety Basic / Pro / Elite">
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="qm-shell"></div>
+  <main data-shell data-title="Cennik" data-subtitle="Plany i aktywacja">
+    <div data-page-content>
+      <div class="container">
+        <section class="hero">
+          <h1>Cennik planów i szybsze wejście do zarabiania</h1>
+          <p>Na tym ekranie użytkownik ma od razu plan, przejście do aktywacji i wejście do funkcji, które zarabiają.</p>
+          <div class="pill-row">
+            <span class="pill">basic</span><span class="pill">pro</span><span class="pill">elite</span><span class="pill">subskrypcje</span>
+          </div>
+          <div class="quick-actions" style="margin-top:16px">
+            <a class="primary-btn" href="index.html">Strona główna</a>
+            <a class="secondary-btn" href="platforma.html">Platforma</a>
+            <button class="ghost-btn" type="button" data-go="sklep.html">Sklep</button>
+          </div>
+        </section>
+
+        <section class="notice">
+          <strong>Mobilny fix pakiet 10</strong>
+          Przyciski i przejścia są ustawione na pełne klikalne kafle, duże tap-targety i proste ścieżki pod GitHub Pages.
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Wyniki i szybkie skróty</h2>
+              <p>Najważniejsze akcje dla zarabiania i szybkiego startu</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Basic</h3>
+        <div class="kpi">15%</div>
+        <p>automatyczna marża</p>
+      </div>
+      <div class="stat-card">
+        <h3>PRO</h3>
+        <div class="kpi">25%</div>
+        <p>lepsza automatyzacja</p>
+      </div>
+      <div class="stat-card">
+        <h3>ELITE</h3>
+        <div class="kpi">35%</div>
+        <p>pełny dostęp</p>
+      </div>
+      <div class="stat-card">
+        <h3>Aktywacja</h3>
+        <div class="kpi">1 klik</div>
+        <p>ustawienie planu</p>
+      </div></div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Najważniejsze akcje</h2>
+              <p>Jedno kliknięcie i przechodzisz dalej</p>
+            </div>
+          </div>
+          <div class="quick-grid">
+      <article class="quick-card">
+        <h3>Aktywuj PRO</h3>
+        <p>Plan z lepszą marżą i modułami sprzedaży.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="aktywuj-pro.html">Aktywuj PRO</a>
+          <button class="secondary-btn" type="button" data-action="activate-pro">Ustaw PRO</button>
+        </div>
+      </article>
+      <article class="quick-card">
+        <h3>Aktywuj ELITE</h3>
+        <p>Najwyższa marża i pełen dostęp.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="aktywuj-pro.html">Aktywuj ELITE</a>
+          <button class="secondary-btn" type="button" data-action="activate-elite">Ustaw ELITE</button>
+        </div>
+      </article>
+      <article class="quick-card">
+        <h3>Przejdź do onboarding</h3>
+        <p>Szybkie wejście w aplikację po aktywacji.</p>
+        <div class="quick-actions">
+          <a class="primary-btn" href="onboarding.html">Otwórz onboarding</a>
+          
+        </div>
+      </article></div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h2>Moduły</h2>
+              <p>Pełna lista z filtrem i działającymi przejściami</p>
+            </div>
+            <a class="ghost-btn" href="cennik.html">Zobacz plany</a>
+          </div>
+          <div class="search-row">
+            <input class="search-input" type="search" placeholder="Szukaj modułu, np. AI, sklep, reklama..." data-filter-input>
+            <select class="select-input" data-filter-group>
+              <option value="">Wszystkie grupy</option>
+              <option value="sprzedaz">Sprzedaż</option>
+              <option value="marketing">Marketing</option>
+              <option value="ai">AI</option>
+              <option value="narzedzia">Narzędzia</option>
+            </select>
+          </div>
+          <div class="card-grid" style="margin-top:14px">
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>Sklep</h3>
+        <p>Sprzedawaj produkty z automatyczną marżą i prostym koszykiem.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">produkty</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="sklep.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Hurtownie</h3>
+        <p>Importuj produkty i zasil sklep jednym kliknięciem.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">import</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="hurtownie.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="ai">
+        <h3>AI</h3>
+        <p>Twórz treści, pomysły i procesy sprzedaży szybciej.</p>
+        <div class="pill-row">
+          <span class="tag blue">ai</span>
+          <span class="tag green">automatyzacja</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="ai.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="marketing">
+        <h3>Reklama AI</h3>
+        <p>Generuj reklamy, opisy i grafiki sprzedażowe.</p>
+        <div class="pill-row">
+          <span class="tag yellow">marketing</span>
+          <span class="tag green">ruch</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="reklama-ai.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Aplikacje</h3>
+        <p>Katalog gotowych aplikacji i narzędzi pod zarabianie.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">katalog</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="aplikacje.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="narzedzia">
+        <h3>Stwórz aplikację</h3>
+        <p>Buduj własną aplikację i rozwijaj sprzedaż.</p>
+        <div class="pill-row">
+          <span class="tag blue">narzędzia</span>
+          <span class="tag green">builder</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="stworz-aplikacje.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="ai">
+        <h3>Intelligence</h3>
+        <p>Wnioski, listing i szybkie analizy pod zysk.</p>
+        <div class="pill-row">
+          <span class="tag blue">ai</span>
+          <span class="tag green">analityka</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="intelligence.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>QualitetMarket</h3>
+        <p>Marketplace i główny moduł monetyzacji.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">marketplace</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="qualitetmarket.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="sprzedaz">
+        <h3>Suppliers</h3>
+        <p>Partnerzy, dostawcy i źródła produktów.</p>
+        <div class="pill-row">
+          <span class="tag green">sprzedaż</span>
+          <span class="tag green">dostawcy</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="suppliers.html">Otwórz</a>
+          
+        </div>
+      </article>
+      <article class="module-card" data-filter-card data-group="marketing">
+        <h3>Blueprints</h3>
+        <p>Gotowe schematy działania i ścieżki wdrożenia.</p>
+        <div class="pill-row">
+          <span class="tag yellow">marketing</span>
+          <span class="tag green">plan</span>
+        </div>
+        <div class="module-actions">
+          <a class="primary-btn" href="blueprints.html">Otwórz</a>
+          
+        </div>
+      </article></div>
+        </section>
+        
+        <section class="section table-card">
+          <div class="section-title">
+            <div><h2>Szybki przegląd</h2><p>Gotowe przejścia i stany modułów</p></div>
+          </div>
+          <table class="simple-table">
+            <thead><tr><th>Moduł</th><th>Cel</th><th>Status</th></tr></thead>
+            <tbody><tr><td>Basic</td><td>wejście startowe</td><td><span class="tag yellow">15%</span></td></tr><tr><td>PRO</td><td>większa sprzedaż</td><td><span class="tag green">25%</span></td></tr><tr><td>ELITE</td><td>pełna automatyzacja</td><td><span class="tag blue">35%</span></td></tr></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </main>
   <script src="app-shell.js"></script>
-  <script>
-    QualitetShell.buildShell({
-      topSubtitle: "Pakiety Basic / Pro / Elite",
-      primaryHref: "aktywuj-pro.html",
-      primaryLabel: "Aktywuj PRO",
-      heroTitle: "Cennik",
-      heroText: "Cennik porządkuje dostęp do modułów i prowadzi użytkownika do aktywacji odpowiedniego planu.",
-      notice: "",
-      quickLinks: ["aktywuj-pro.html", "success.html", "platforma.html"],
-      body: `
-<section class="cards">
-  <article class="card"><h3>Pakiety użytkownika</h3><p>Basic, Pro i Elite. Menu kieruje do modułów zgodnie z planem i guardami.</p><div class="tag-row"><span class="tag">basic</span><span class="tag">pro</span><span class="tag">elite</span></div></article>
-  <article class="card"><h3>Ścieżka sprzedaży planów</h3><ul class="list"><li><div><strong>Plan PRO</strong><span>Dostęp do hurtowni i QualitetMarket</span></div><a class="primary-btn" href="aktywuj-pro.html">Aktywuj PRO</a></li><li><div><strong>Success</strong><span>Po aktywacji wróć do aplikacji</span></div><a class="primary-btn" href="success.html">Success</a></li></ul></article>
-</section>
-`
-    });
-  </script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>

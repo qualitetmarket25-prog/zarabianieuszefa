@@ -1,12 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<defs>
-  <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-    <stop offset="0%" stop-color="#22c55e"/>
-    <stop offset="100%" stop-color="#38bdf8"/>
-  </linearGradient>
-</defs>
-<rect width="512" height="512" rx="112" fill="#07111f"/>
-<path d="M110 152c0-23 19-42 42-42h208c23 0 42 19 42 42v208c0 23-19 42-42 42H152c-23 0-42-19-42-42V152z" fill="#0f172a" stroke="url(#g)" stroke-width="18"/>
-<path d="M175 319V193h56c26 0 45 15 45 39 0 16-8 28-22 35l34 52h-45l-27-42h-7v42h-34zm34-68h18c10 0 16-5 16-14s-6-14-16-14h-18v28z" fill="#e5eefb"/>
-<path d="M295 319V193h37l39 67 39-67h37v126h-34v-68l-26 44h-31l-26-44v68h-35z" fill="url(#g)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" role="img" aria-label="QualitetMarket">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="72" rx="18" fill="#0f172a"/>
+  <g transform="translate(18 14)">
+    <rect x="0" y="0" width="44" height="44" rx="14" fill="url(#g)"/>
+    <path d="M12 28V16h9.2c4.8 0 7.8 2.4 7.8 6.2 0 3.7-3 5.8-7.8 5.8H16v8h-4zM16 24.7h4.8c2.5 0 4-1 4-2.8 0-1.9-1.5-2.9-4-2.9H16v5.7z" fill="#fff"/>
+  </g>
+  <text x="74" y="31" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#f8fafc">QualitetMarket</text>
+  <text x="74" y="52" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#94a3b8">zarabianie • sprzedaż • AI • marketplace</text>
 </svg>

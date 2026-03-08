@@ -1,34 +1,29 @@
-PAKIET 9 — FIX PRZYCISKI I PRZEJŚCIA
+PAKIET 10 — PODMIANA
 
-CO PODMIENIĆ:
-- index.html
-- platforma.html
-- dashboard.html
-- sklep.html
-- koszyk.html
-- checkout.html
-- zamowienia.html
-- panel-zamowien-sklepu.html
-- sklepy.html
-- hurtownie.html
+Podmień w głównym katalogu repo:
+- ai.html
+- reklama-ai.html
+- aplikacje.html
+- stworz-aplikacje.html
+- cennik.html
+- qualitetmarket.html
+- blueprints.html
+- suppliers.html
+- intelligence.html
 - app-layout.css
 - app-shell.js
 - auto-margin.js
 - uszefaqualitet-logo.svg
 
-CO NAPRAWIA:
-- mobile-first layout
-- działające przyciski
-- działające przejścia między stronami
-- aktywny sklep i marżę
-- koszyk i checkout
-- zapis zamówień do qm_orders_v1
-- import demo i CSV do qm_products_by_supplier_v1
+Test:
+1. Otwórz index.html
+2. Wejdź w AI / Reklama AI / Aplikacje / Cennik / QualitetMarket / Suppliers / Blueprints / Intelligence
+3. Sprawdź menu mobilne
+4. Sprawdź dolne menu
+5. Sprawdź przyciski i przejścia
+6. Sprawdź czy marża zapisuje się do qm_store_margin_pct
 
-TEST:
-1. Otwórz sklepy.html i ustaw aktywny sklep oraz marżę.
-2. Otwórz hurtownie.html i kliknij "Załaduj demo produkty".
-3. Otwórz sklep.html i dodaj produkty do koszyka.
-4. Otwórz koszyk.html i sprawdź plus / minus / usuń.
-5. Otwórz checkout.html i złóż zamówienie.
-6. Otwórz zamowienia.html i panel-zamowien-sklepu.html.
+Ważne:
+- GitHub Pages -> używaj tylko ścieżek względnych
+- nie używaj sklepy.htm
+- poprawna strona to sklepy.html

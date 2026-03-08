@@ -1,139 +1,164 @@
 
 (function(){
-  "use strict";
-  const slugify = (s) => String(s || "")
-    .trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-  const storeFromUrl = () => {
-    try{
-      const u = new URL(window.location.href);
-      return slugify(u.searchParams.get('store') || '');
-    }catch(e){ return ''; }
+  const shellData = {
+    menu: [
+      {href:'index.html', title:'Start', desc:'główne wejście'},
+      {href:'platforma.html', title:'Platforma', desc:'centrum aplikacji'},
+      {href:'dashboard.html', title:'Dashboard', desc:'wyniki i szybkie akcje'},
+      {href:'sklep.html', title:'Sklep', desc:'produkty i sprzedaż'},
+      {href:'hurtownie.html', title:'Hurtownie', desc:'import i dostawcy'},
+      {href:'koszyk.html', title:'Koszyk', desc:'produkty do zamówienia'},
+      {href:'checkout.html', title:'Checkout', desc:'finalizacja zamówień'},
+      {href:'zamowienia.html', title:'Zamówienia', desc:'lista sprzedaży'},
+      {href:'sklepy.html', title:'Sklepy', desc:'multi-store i marża'},
+      {href:'panel-sklepu.html', title:'Panel sklepu', desc:'ustawienia sklepu'},
+      {href:'generator-sklepu.html', title:'Generator', desc:'tworzenie sklepu'},
+      {href:'ai.html', title:'AI', desc:'narzędzia AI'},
+      {href:'reklama-ai.html', title:'Reklama AI', desc:'materiały sprzedażowe'},
+      {href:'aplikacje.html', title:'Aplikacje', desc:'katalog aplikacji'},
+      {href:'stworz-aplikacje.html', title:'Stwórz aplikację', desc:'generator aplikacji'},
+      {href:'intelligence.html', title:'Intelligence', desc:'analiza i listing'},
+      {href:'qualitetmarket.html', title:'QualitetMarket', desc:'marketplace i sprzedaż'},
+      {href:'suppliers.html', title:'Suppliers', desc:'partnerzy i dostawcy'},
+      {href:'blueprints.html', title:'Blueprints', desc:'gotowe schematy'},
+      {href:'cennik.html', title:'Cennik', desc:'plany i aktywacja'},
+      {href:'login.html', title:'Login', desc:'wejście do aplikacji'}
+    ],
+    bottom: [
+      {href:'index.html', label:'Start', icon:'⌂'},
+      {href:'platforma.html', label:'Panel', icon:'▣'},
+      {href:'sklep.html', label:'Sklep', icon:'🛒'},
+      {href:'hurtownie.html', label:'Import', icon:'⬇'},
+      {href:'zamowienia.html', label:'Zamów.', icon:'✓'},
+      {href:'sklepy.html', label:'Sklepy', icon:'◫'}
+    ]
   };
-  const activeStore = () => slugify(localStorage.getItem('qm_active_store_v1') || '') || storeFromUrl() || 'default';
-  const withStore = (href) => {
-    if(!href) return href;
-    if(/^https?:/i.test(href) && !href.includes(location.host)) return href;
-    if(href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return href;
-    const store = activeStore();
-    if(!store || store === 'default') return href;
-    try{
-      const u = new URL(href, window.location.href);
-      if(!u.searchParams.get('store')) u.searchParams.set('store', store);
-      const base = u.pathname.split('/').pop() + (u.search ? u.search : '') + (u.hash ? u.hash : '');
-      return base;
-    }catch(e){
-      return href;
-    }
-  };
-  const links = [
-    ['index.html','Start','⌂'],
-    ['platforma.html','Platforma','⬢'],
-    ['dashboard.html','Panel','⚙'],
-    ['sklep.html','Sklep','🛒'],
-    ['koszyk.html','Koszyk','＋'],
-    ['checkout.html','Checkout','✓'],
-    ['zamowienia.html','Zamówienia','☰'],
-    ['sklepy.html','Sklepy','🏪'],
-    ['hurtownie.html','Hurtownie','📦'],
-    ['aplikacje.html','Aplikacje','📱'],
-    ['ai.html','AI','✦'],
-    ['cennik.html','Cennik','💳']
-  ];
-  const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  function shell(title, subtitle){
-    const header = `
-      <header class="topbar">
-        <div class="container topbar-inner">
+
+  function currentPage(){
+    const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    return path || 'index.html';
+  }
+
+  function renderShell(){
+    const root = document.querySelector('[data-shell]');
+    if(!root) return;
+
+    const page = currentPage();
+    const title = root.getAttribute('data-title') || 'QualitetMarket';
+    const subtitle = root.getAttribute('data-subtitle') || 'Aplikacja do zarabiania';
+    const hero = root.querySelector('[data-page-content]');
+
+    root.innerHTML = `
+      <div class="app-shell">
+        <header class="topbar">
           <div class="brand">
             <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-            <div>
-              <div class="brand-title">${title || 'QualitetMarket'}</div>
-              <div class="brand-sub">${subtitle || 'Mobile-first • GitHub Pages • Zarabianie u Szefa'}</div>
+            <div class="brand-text">
+              <strong>${title}</strong>
+              <span>${subtitle}</span>
             </div>
           </div>
           <div class="top-actions">
-            <a class="chip desktop-only" href="${withStore('sklepy.html')}">Aktywny sklep: <strong id="topbarStoreName">default</strong></a>
-            <button class="menu-toggle mobile-only" id="openMenuBtn" aria-label="Otwórz menu">☰</button>
+            <a class="secondary-btn" href="index.html">Start</a>
+            <button class="icon-btn" type="button" data-open-menu aria-label="Otwórz menu">☰</button>
           </div>
-        </div>
-      </header>`;
-    const sidebar = `
-      <aside class="sidebar desktop-only">
-        <h3>Start</h3>
-        <div class="nav-list">
-          ${links.slice(0,3).map(([href,label,icon])=>`<a class="nav-link ${current===href?'active':''}" href="${withStore(href)}"><span>${icon} ${label}</span><span>→</span></a>`).join('')}
-        </div>
-        <h3>Sprzedaż</h3>
-        <div class="nav-list">
-          ${links.slice(3,7).map(([href,label,icon])=>`<a class="nav-link ${current===href?'active':''}" href="${withStore(href)}"><span>${icon} ${label}</span><span>→</span></a>`).join('')}
-        </div>
-        <h3>Rozwój</h3>
-        <div class="nav-list">
-          ${links.slice(7).map(([href,label,icon])=>`<a class="nav-link ${current===href?'active':''}" href="${withStore(href)}"><span>${icon} ${label}</span><span>→</span></a>`).join('')}
-        </div>
-      </aside>`;
-    const drawer = `
-      <div class="drawer" id="appDrawer">
-        <div class="drawer-panel">
-          <div class="drawer-head">
-            <div class="brand">
-              <img src="uszefaqualitet-logo.svg" alt="logo">
+        </header>
+
+        <div class="drawer" data-drawer>
+          <div class="drawer-backdrop" data-close-menu></div>
+          <aside class="drawer-panel">
+            <div class="section-title">
               <div>
-                <div class="brand-title">Menu główne</div>
-                <div class="brand-sub">Wszystkie moduły aplikacji</div>
+                <h2>Główne menu</h2>
+                <p>Wszystko w jednym miejscu</p>
               </div>
+              <button class="icon-btn" type="button" data-close-menu aria-label="Zamknij menu">×</button>
             </div>
-            <button class="menu-toggle" id="closeMenuBtn">✕</button>
-          </div>
-          <div class="nav-list">
-            ${links.map(([href,label,icon])=>`<a class="nav-link ${current===href?'active':''}" href="${withStore(href)}"><span>${icon} ${label}</span><span>→</span></a>`).join('')}
-          </div>
+            <div class="drawer-grid">
+              ${shellData.menu.map(item => `
+                <a class="drawer-link" href="${item.href}">
+                  ${item.title}
+                  <small>${item.desc}</small>
+                </a>
+              `).join('')}
+            </div>
+          </aside>
         </div>
-      </div>`;
-    const bottom = `
-      <nav class="bottom-nav mobile-only">
-        <div class="bottom-nav-inner">
-          ${[
-            ['index.html','Start','⌂'],
-            ['sklep.html','Sklep','🛒'],
-            ['koszyk.html','Koszyk','＋'],
-            ['zamowienia.html','Zam.','☰'],
-            ['sklepy.html','Sklepy','🏪'],
-          ].map(([href,label,icon])=>`<a class="bottom-link ${current===href?'active':''}" href="${withStore(href)}"><div>${icon}</div><div>${label}</div></a>`).join('')}
-        </div>
-      </nav>`;
-    return {header, sidebar, drawer, bottom};
+
+        ${hero ? hero.outerHTML : ''}
+
+        <nav class="bottom-nav">
+          <div class="bottom-nav-grid">
+            ${shellData.bottom.map(item => `
+              <a href="${item.href}" class="${page === item.href.toLowerCase() ? 'active' : ''}">
+                <span>${item.icon}</span>
+                <span>${item.label}</span>
+              </a>
+            `).join('')}
+          </div>
+        </nav>
+      </div>
+    `;
+
+    root.querySelector('[data-open-menu]').addEventListener('click', ()=> root.querySelector('[data-drawer]').classList.add('open'));
+    root.querySelectorAll('[data-close-menu]').forEach(el=> el.addEventListener('click', ()=> root.querySelector('[data-drawer]').classList.remove('open')));
   }
-  function mount(opts){
-    const slot = document.getElementById('appShell');
-    if(!slot) return;
-    const parts = shell(opts?.title, opts?.subtitle);
-    slot.innerHTML = parts.header + `<div class="container layout">${parts.sidebar}<main class="main" id="pageContent"></main></div>` + parts.drawer + parts.bottom;
-    const content = document.getElementById('pageContent');
-    const page = document.getElementById('pageBody');
-    if(page && content){ content.append(...Array.from(page.childNodes)); }
-    document.getElementById('openMenuBtn')?.addEventListener('click', ()=>document.getElementById('appDrawer')?.classList.add('open'));
-    document.getElementById('closeMenuBtn')?.addEventListener('click', ()=>document.getElementById('appDrawer')?.classList.remove('open'));
-    document.getElementById('appDrawer')?.addEventListener('click', (e)=>{ if(e.target.id==='appDrawer') e.currentTarget.classList.remove('open'); });
-    document.getElementById('topbarStoreName')?.replaceChildren(document.createTextNode(activeStore()));
-    document.querySelectorAll('a[href]').forEach(a=>{
-      const raw = a.getAttribute('href') || '';
-      if(raw && /\.html(\?|$)|\/$/.test(raw)) a.setAttribute('href', withStore(raw));
+
+  function applyAutolinks(){
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('[data-go]');
+      if(btn){
+        const href = btn.getAttribute('data-go');
+        if(href) location.href = href;
+      }
+      const action = e.target.closest('[data-action]');
+      if(!action) return;
+      const name = action.getAttribute('data-action');
+      if(name === 'load-demo-products'){
+        const demo = [
+          {name:'Smartwatch Sport', price:79, img:'https://via.placeholder.com/300x200?text=Smartwatch'},
+          {name:'Lampa LED Biurko', price:49, img:'https://via.placeholder.com/300x200?text=Lampa+LED'},
+          {name:'Kamera Auto', price:129, img:'https://via.placeholder.com/300x200?text=Kamera+Auto'}
+        ];
+        localStorage.setItem('qm_products_by_supplier_v1', JSON.stringify(demo));
+        alert('Załadowano demo produkty do qm_products_by_supplier_v1');
+      }
+      if(name === 'activate-pro'){
+        localStorage.setItem('qm_user_plan_v1', 'pro');
+        localStorage.setItem('qm_store_margin_pct', '25');
+        alert('Aktywowano plan PRO i marżę 25%');
+      }
+      if(name === 'activate-elite'){
+        localStorage.setItem('qm_user_plan_v1', 'elite');
+        localStorage.setItem('qm_store_margin_pct', '35');
+        alert('Aktywowano plan ELITE i marżę 35%');
+      }
     });
   }
-  function readJSON(key, fallback){ try { const x = JSON.parse(localStorage.getItem(key) || ''); return x ?? fallback; } catch { return fallback; } }
-  function writeJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
-  function money(n){ return (Number(n||0)).toLocaleString('pl-PL',{minimumFractionDigits:2, maximumFractionDigits:2}) + ' zł'; }
-  function getStoreRecord(){
-    const slug = activeStore();
-    const stores = readJSON('qm_stores_v1', []);
-    if(Array.isArray(stores)){
-      const hit = stores.find(s => slugify(s.slug || s.name || s.id || '') === slug);
-      if(hit) return hit;
+
+  function filterCards(){
+    const input = document.querySelector('[data-filter-input]');
+    const cards = Array.from(document.querySelectorAll('[data-filter-card]'));
+    const select = document.querySelector('[data-filter-group]');
+    if(!input && !select) return;
+    function run(){
+      const q = (input?.value || '').trim().toLowerCase();
+      const g = (select?.value || '').trim().toLowerCase();
+      cards.forEach(card=>{
+        const text = card.innerText.toLowerCase();
+        const group = (card.getAttribute('data-group') || '').toLowerCase();
+        const okQ = !q || text.includes(q);
+        const okG = !g || group === g;
+        card.classList.toggle('hidden', !(okQ && okG));
+      });
     }
-    return { slug, name: slug, marginPct: Number(localStorage.getItem('qm_store_margin_pct') || 20) || 20 };
+    input && input.addEventListener('input', run);
+    select && select.addEventListener('change', run);
   }
-  window.QM_APP = { slugify, activeStore, withStore, mount, readJSON, writeJSON, money, getStoreRecord };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    renderShell();
+    applyAutolinks();
+    filterCards();
+  });
 })();
