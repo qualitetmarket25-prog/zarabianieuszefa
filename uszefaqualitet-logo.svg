@@ -1,10 +1,8 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="512" height="512" rx="112" fill="#0F172A"/>
-<rect x="72" y="72" width="368" height="368" rx="88" fill="#111827"/>
-<path d="M161 180C161 156.252 180.252 137 204 137H308C331.748 137 351 156.252 351 180V332C351 355.748 331.748 375 308 375H204C180.252 375 161 355.748 161 332V180Z" fill="#1E293B"/>
-<path d="M202 190H309C322.807 190 334 201.193 334 215V295C334 308.807 322.807 320 309 320H202C188.193 320 177 308.807 177 295V215C177 201.193 188.193 190 202 190Z" fill="#0F172A"/>
-<path d="M215 232C215 213.775 229.775 199 248 199H264C282.225 199 297 213.775 297 232V280C297 298.225 282.225 313 264 313H248C229.775 313 215 298.225 215 280V232Z" fill="#22C55E"/>
-<path d="M196 354H317" stroke="#38BDF8" stroke-width="18" stroke-linecap="round"/>
-<path d="M228 160H284" stroke="#4ADE80" stroke-width="16" stroke-linecap="round"/>
-<text x="256" y="465" text-anchor="middle" fill="#F8FAFC" font-size="56" font-family="Arial, Helvetica, sans-serif" font-weight="700">QM</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <rect x="72" y="72" width="368" height="368" rx="88" fill="#111827" stroke="#22c55e" stroke-width="10"/>
+  <path d="M168 196C168 168.386 190.386 146 218 146H294C321.614 146 344 168.386 344 196V224H312V202C312 188.745 301.255 178 288 178H224C210.745 178 200 188.745 200 202V310C200 323.255 210.745 334 224 334H288C301.255 334 312 323.255 312 310V286H344V316C344 343.614 321.614 366 294 366H218C190.386 366 168 343.614 168 316V196Z" fill="#E5E7EB"/>
+  <path d="M257 228H374" stroke="#38BDF8" stroke-width="28" stroke-linecap="round"/>
+  <path d="M333 188L374 228L333 268" stroke="#22C55E" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="256" y="422" text-anchor="middle" fill="#F8FAFC" font-size="46" font-family="Arial, Helvetica, sans-serif" font-weight="700">QM</text>
 </svg>

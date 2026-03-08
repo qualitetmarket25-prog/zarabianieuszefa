@@ -1,74 +1,142 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Panel zamówień sklepu – QualitetMarket</title>
-  <link rel="stylesheet" href="/styles.css" />
-  <style>
-    .wrap{max-width:1100px;margin:26px auto;padding:0 14px}
-    .card{border:1px solid rgba(0,0,0,.1);border-radius:14px;padding:14px;background:#fff}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:0;cursor:pointer;font-weight:900}
-    .btn.primary{background:#111;color:#fff}
-    .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,.14)}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid rgba(0,0,0,.08);vertical-align:top;text-align:left}
-    .muted{opacity:.75}
-    select,input{padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,.14)}
-    .pill{display:inline-flex;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,0,0,.14);font-size:12px}
-  </style>
-  <script defer src="./js/panelOrders.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel zamówień sklepu — QualitetMarket</title>
+  <meta name="description" content="Wewnętrzny moduł do obsługi sprzedaży dla właściciela sklepu.">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
 </head>
-<body>
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <div class="pill" id="storeInfo">Sklep: …</div>
-        <h1 style="margin:6px 0 0;">Panel zamówień</h1>
-        <div class="muted">Zmiana statusów + eksport</div>
+<body data-page="panel-zamowien-sklepu.html">
+  <div class="mobile-overlay" data-menu-overlay></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+<a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div class="brand-text"><strong>QualitetMarket</strong><span>Zarabianie u Szefa</span></div></a>
+<div class="side-section">
+<div class="side-label">Start</div>
+<a class="side-link" href="index.html" data-nav><span class="dot"></span><span>Strona główna</span></a>
+<a class="side-link" href="platforma.html" data-nav><span class="dot"></span><span>Platforma</span></a>
+<a class="side-link" href="dashboard.html" data-nav><span class="dot"></span><span>Dashboard</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Sprzedaż</div>
+<a class="side-link" href="sklep.html" data-nav><span class="dot"></span><span>Sklep</span></a>
+<a class="side-link" href="koszyk.html" data-nav><span class="dot"></span><span>Koszyk</span></a>
+<a class="side-link" href="checkout.html" data-nav><span class="dot"></span><span>Checkout</span></a>
+<a class="side-link" href="zamowienia.html" data-nav><span class="dot"></span><span>Zamówienia</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Sklepy</div>
+<a class="side-link" href="panel-sklepu.html" data-nav><span class="dot"></span><span>Panel sklepu</span></a>
+<a class="side-link" href="generator-sklepu.html" data-nav><span class="dot"></span><span>Generator sklepu</span></a>
+<a class="side-link" href="sklepy.html" data-nav><span class="dot"></span><span>Sklepy</span></a>
+<a class="side-link active" href="panel-zamowien-sklepu.html" data-nav><span class="dot"></span><span>Panel zamówień sklepu</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Rozwój</div>
+<a class="side-link" href="hurtownie.html" data-nav><span class="dot"></span><span>Hurtownie</span></a>
+<a class="side-link" href="ai.html" data-nav><span class="dot"></span><span>AI</span></a>
+<a class="side-link" href="aplikacje.html" data-nav><span class="dot"></span><span>Aplikacje</span></a>
+<a class="side-link" href="cennik.html" data-nav><span class="dot"></span><span>Cennik</span></a>
+</div>
+</aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left">
+          <button class="menu-toggle" type="button" data-menu-toggle>☰ Menu</button>
+          <div>
+            <div class="page-title">Panel zamówień sklepu</div>
+            <div class="page-subtitle">Wewnętrzny moduł do obsługi sprzedaży dla właściciela sklepu.</div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <a class="quick-link" href="index.html">Strona główna</a>
+          <a class="quick-link" href="platforma.html">Pełne menu</a>
+          <a class="btn primary" href="dashboard.html">Panel główny</a>
+        </div>
+      </header>
+      <div class="container">
+        <section class="hero">
+          <div class="hero-grid">
+            <div>
+              <h1>Panel zamówień sklepu gotowy do codziennej pracy sprzedawcy.</h1>
+              <p>To jest ekran operacyjny. Ma dawać szybkie decyzje: co wysłać, co opłacone, co wymaga kontaktu i jak przejść do sklepu albo listy wszystkich zamówień.</p>
+              
+      <div class="hero-points">
+        <div class="hero-point"><strong>Produkty z hurtowni</strong><span>Licznik aktywnych produktów w localStorage: <b data-bind="products-count">0</b></span></div>
+        <div class="hero-point"><strong>Zamówienia w systemie</strong><span>Licznik zamówień klienta i sklepu: <b data-bind="orders-count">0</b></span></div>
+        <div class="hero-point"><strong>Aktywny sklep</strong><span>Obecnie wybrany sklep: <b data-bind="active-store">Brak</b></span></div>
+        <div class="hero-point"><strong>Domyślna marża</strong><span>Ustawienie zapisane w localStorage: <b data-bind="margin">20%</b></span></div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <a class="btn ghost" href="./platforma.html">← Platforma</a>
-        <button class="btn ghost" id="btnExportCsv">Eksport CSV</button>
-        <button class="btn ghost" id="btnExportJson">Eksport JSON</button>
+    
+            </div>
+            <div class="hero-side">
+              <div class="kpi"><div class="kpi-label">Aktywne produkty</div><div class="kpi-value" data-bind="products-count">0</div><div class="kpi-note">Import z hurtowni zapisany pod kluczem <b>qm_products_by_supplier_v1</b>.</div></div>
+              <div class="kpi"><div class="kpi-label">Aktywne sklepy</div><div class="kpi-value" data-bind="stores-count">0</div><div class="kpi-note">Sklepy zapisane pod kluczem <b>qm_stores_v1</b>.</div></div>
+              <div class="kpi"><div class="kpi-label">Zamówienia</div><div class="kpi-value" data-bind="orders-count">0</div><div class="kpi-note">Checkout i historia zamówień korzystają z <b>qm_orders_v1</b>.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <h2>Najważniejsze moduły</h2>
+              <p>Jedno miejsce do sprzedaży, checkoutu, obsługi zamówień i zarządzania sklepem.</p>
+            </div>
+          </div>
+          <div class="grid cols-4"><article class="card">
+              <div class="card-icon">🏬</div>
+              <h3>Operacje sklepu</h3>
+              <p>Widok nastawiony na właściciela sklepu i obsługę sprzedaży dzień po dniu.</p>
+              <div class="card-tags"><span class="tag">właściciel sklepu</span><span class="tag">operacje</span></div>
+              <div class="card-actions"><a class="btn primary" href="panel-sklepu.html">Panel sklepu</a><a class="btn " href="sklepy.html">Sklepy</a></div>
+            </article><article class="card">
+              <div class="card-icon">📬</div>
+              <h3>Realizacja</h3>
+              <p>Miejsce na statusy, wysyłki i porządek w zamówieniach.</p>
+              <div class="card-tags"><span class="tag">wysyłka</span><span class="tag">statusy</span><span class="tag">obsługa</span></div>
+              <div class="card-actions"><a class="btn primary" href="zamowienia.html">Zamówienia</a><a class="btn " href="checkout.html">Checkout</a></div>
+            </article><article class="card">
+              <div class="card-icon">🧠</div>
+              <h3>Lepsza decyzja</h3>
+              <p>Połącz ten ekran z AI, CRM i reklamą, żeby szybciej zwiększać sprzedaż.</p>
+              <div class="card-tags"><span class="tag">AI</span><span class="tag">CRM</span><span class="tag">rozwój</span></div>
+              <div class="card-actions"><a class="btn primary" href="ai.html">AI</a><a class="btn " href="aplikacje.html">Aplikacje</a></div>
+            </article><article class="card">
+              <div class="card-icon">📱</div>
+              <h3>Praca z telefonu</h3>
+              <p>Układ jest prosty i szybki także na mobilu, bez ciężkiego panelu.</p>
+              <div class="card-tags"><span class="tag">mobile</span><span class="tag">szybkość</span></div>
+              <div class="card-actions"><a class="btn primary" href="index.html">Strona główna</a><a class="btn " href="dashboard.html">Dashboard</a></div>
+            </article></div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <h2>Status modułu</h2>
+              <p>Najważniejsze elementy do sprawdzenia po wrzuceniu paczki na GitHub Pages.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-list"><div class="metric-row"><strong>Sprawdź panel → sklep</strong><span>Przejście do panelu sklepu nie może gubić ścieżki.</span></div><div class="metric-row"><strong>Sprawdź panel → zamówienia</strong><span>Widok użytkownika i widok sklepu powinny się logicznie uzupełniać.</span></div><div class="metric-row"><strong>Sprawdź liczniki</strong><span>Zamówienia i sklepy powinny mieć prawidłowe wartości.</span></div><div class="metric-row"><strong>Sprawdź responsive</strong><span>Na 360 px szerokości przyciski muszą pozostać klikalne.</span></div></div>
+          </div>
+        </section>
+
+        <section class="section"><div class="cta-banner"><div><strong style="font-size:20px;display:block;margin-bottom:6px">Najważniejszy efekt</strong><span style="color:#cbd5e1">Sprzedawca ma szybciej ogarniać zamówienia i nie tracić czasu na szukanie modułów.</span></div><div class="card-actions"><a class="btn secondary" href="panel-sklepu.html">Panel sklepu</a><a class="btn primary" href="sklepy.html">Sklepy</a></div></div></section>
+
+        <section class="section">
+          <div class="card" style="text-align:center">
+            <strong style="display:block;font-size:18px;margin-bottom:8px">QualitetMarket • Zarabianie u Szefa</strong>
+            <span style="color:var(--muted)">Mobile-first, GitHub Pages friendly, localStorage ready. © <span data-bind="year"></span></span>
+          </div>
+        </section>
       </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <label class="muted">Status:</label>
-        <select id="statusFilter">
-          <option value="">Wszystkie</option>
-          <option>NEW</option>
-          <option>CONFIRMED</option>
-          <option>SENT</option>
-          <option>DONE</option>
-        </select>
-
-        <label class="muted">Szukaj:</label>
-        <input id="q" placeholder="ID / email / nazwisko" />
-
-        <span class="muted" id="kpi"></span>
-      </div>
-    </div>
-
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>ID</th>
-            <th>Klient</th>
-            <th>Razem brutto</th>
-            <th>Prowizja</th>
-            <th>Status</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    </main>
   </div>
+  <nav class="bottom-nav"><div class="bottom-nav-grid"><a class="bottom-link" href="index.html" data-nav><span>⌂</span><span>Start</span></a><a class="bottom-link" href="sklep.html" data-nav><span>🛒</span><span>Sprzedaż</span></a><a class="bottom-link" href="zamowienia.html" data-nav><span>📦</span><span>Zamówienia</span></a><a class="bottom-link" href="sklepy.html" data-nav><span>🏬</span><span>Sklepy</span></a><a class="bottom-link" href="dashboard.html" data-nav><span>⚙️</span><span>Panel</span></a></div></nav>
+  <script src="app-shell.js"></script>
 </body>
 </html>

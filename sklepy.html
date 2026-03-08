@@ -1,288 +1,142 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sklepy – QualitetMarket</title>
-
-  <link rel="stylesheet" href="/styles.css" />
-
-  <style>
-    .muted-xs{opacity:.75;font-size:12px}
-    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
-    .row .field{flex:1;min-width:220px}
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{
-      border-bottom:1px solid rgba(255,255,255,.10);
-      padding:10px 8px;
-      text-align:left;
-      font-size:13px;
-      vertical-align:top;
-    }
-    th{
-      color:rgba(234,240,255,.78);
-      font-weight:800;
-    }
-    td{
-      color:var(--text);
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      font-size:12px;
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-    }
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .soft{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow:none;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sklepy — QualitetMarket</title>
+  <meta name="description" content="Manager sklepów, aktywnego store i przejście do panelu.">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
 </head>
-
-<body data-noShell="1">
-  <div class="wrap">
-    <div class="card">
-      <span class="badge">QualitetMarket • Multi-Store</span>
-      <h1 style="margin-top:10px;">Katalog sklepów</h1>
-      <p class="muted">Tu widzisz wszystkie sklepy zapisane lokalnie (<span class="mono">qm_stores_v1</span>). Każdy sklep ma własną marżę.</p>
-      <div class="muted-xs">MVP: localStorage. Następny etap: logowanie i baza.</div>
-    </div>
-
-    <div class="card">
-      <h2 style="margin:0 0 10px;">Dodaj sklep</h2>
-
-      <div class="row">
-        <div class="field">
-          <label class="muted-xs">Slug sklepu</label>
-          <input id="newSlug" class="input" placeholder="np. bar-u-szefa" />
-          <div class="muted-xs" style="margin-top:6px;">Będzie w linku: <span class="mono">sklep.html?store=slug</span></div>
+<body data-page="sklepy.html">
+  <div class="mobile-overlay" data-menu-overlay></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+<a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div class="brand-text"><strong>QualitetMarket</strong><span>Zarabianie u Szefa</span></div></a>
+<div class="side-section">
+<div class="side-label">Start</div>
+<a class="side-link" href="index.html" data-nav><span class="dot"></span><span>Strona główna</span></a>
+<a class="side-link" href="platforma.html" data-nav><span class="dot"></span><span>Platforma</span></a>
+<a class="side-link" href="dashboard.html" data-nav><span class="dot"></span><span>Dashboard</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Sprzedaż</div>
+<a class="side-link" href="sklep.html" data-nav><span class="dot"></span><span>Sklep</span></a>
+<a class="side-link" href="koszyk.html" data-nav><span class="dot"></span><span>Koszyk</span></a>
+<a class="side-link" href="checkout.html" data-nav><span class="dot"></span><span>Checkout</span></a>
+<a class="side-link" href="zamowienia.html" data-nav><span class="dot"></span><span>Zamówienia</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Sklepy</div>
+<a class="side-link" href="panel-sklepu.html" data-nav><span class="dot"></span><span>Panel sklepu</span></a>
+<a class="side-link" href="generator-sklepu.html" data-nav><span class="dot"></span><span>Generator sklepu</span></a>
+<a class="side-link active" href="sklepy.html" data-nav><span class="dot"></span><span>Sklepy</span></a>
+<a class="side-link" href="panel-zamowien-sklepu.html" data-nav><span class="dot"></span><span>Panel zamówień sklepu</span></a>
+</div>
+<div class="side-section">
+<div class="side-label">Rozwój</div>
+<a class="side-link" href="hurtownie.html" data-nav><span class="dot"></span><span>Hurtownie</span></a>
+<a class="side-link" href="ai.html" data-nav><span class="dot"></span><span>AI</span></a>
+<a class="side-link" href="aplikacje.html" data-nav><span class="dot"></span><span>Aplikacje</span></a>
+<a class="side-link" href="cennik.html" data-nav><span class="dot"></span><span>Cennik</span></a>
+</div>
+</aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left">
+          <button class="menu-toggle" type="button" data-menu-toggle>☰ Menu</button>
+          <div>
+            <div class="page-title">Sklepy</div>
+            <div class="page-subtitle">Manager sklepów, aktywnego store i przejście do panelu.</div>
+          </div>
         </div>
-
-        <div class="field">
-          <label class="muted-xs">Marża sklepu (%)</label>
-          <input id="newMargin" class="input" placeholder="np. 12" inputmode="decimal" />
-          <div class="muted-xs" style="margin-top:6px;">Zapiszemy jako <span class="mono">0.12</span></div>
+        <div class="top-actions">
+          <a class="quick-link" href="index.html">Strona główna</a>
+          <a class="quick-link" href="platforma.html">Pełne menu</a>
+          <a class="btn primary" href="dashboard.html">Panel główny</a>
         </div>
-
-        <div class="field" style="flex:0;min-width:220px;">
-          <button class="btn btn-primary" id="addBtn" type="button" style="width:100%;">Dodaj</button>
-          <div class="muted-xs" style="margin-top:6px;"><span class="pill">rejestr sklepów</span> <span class="pill">marże</span></div>
-        </div>
+      </header>
+      <div class="container">
+        <section class="hero">
+          <div class="hero-grid">
+            <div>
+              <h1>Wszystkie sklepy w jednym miejscu, gotowe do pracy i skalowania.</h1>
+              <p>Ten ekran porządkuje multi-store. Użytkownik ma widzieć aktywny sklep, przejść do panelu, generatora i zamówień bez przeklikiwania się po całej aplikacji.</p>
+              
+      <div class="hero-points">
+        <div class="hero-point"><strong>Produkty z hurtowni</strong><span>Licznik aktywnych produktów w localStorage: <b data-bind="products-count">0</b></span></div>
+        <div class="hero-point"><strong>Zamówienia w systemie</strong><span>Licznik zamówień klienta i sklepu: <b data-bind="orders-count">0</b></span></div>
+        <div class="hero-point"><strong>Aktywny sklep</strong><span>Obecnie wybrany sklep: <b data-bind="active-store">Brak</b></span></div>
+        <div class="hero-point"><strong>Domyślna marża</strong><span>Ustawienie zapisane w localStorage: <b data-bind="margin">20%</b></span></div>
       </div>
+    
+            </div>
+            <div class="hero-side">
+              <div class="kpi"><div class="kpi-label">Aktywne produkty</div><div class="kpi-value" data-bind="products-count">0</div><div class="kpi-note">Import z hurtowni zapisany pod kluczem <b>qm_products_by_supplier_v1</b>.</div></div>
+              <div class="kpi"><div class="kpi-label">Aktywne sklepy</div><div class="kpi-value" data-bind="stores-count">0</div><div class="kpi-note">Sklepy zapisane pod kluczem <b>qm_stores_v1</b>.</div></div>
+              <div class="kpi"><div class="kpi-label">Zamówienia</div><div class="kpi-value" data-bind="orders-count">0</div><div class="kpi-note">Checkout i historia zamówień korzystają z <b>qm_orders_v1</b>.</div></div>
+            </div>
+          </div>
+        </section>
 
-      <div id="addStatus" class="muted-xs" style="margin-top:10px;"></div>
-    </div>
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <h2>Najważniejsze moduły</h2>
+              <p>Jedno miejsce do sprzedaży, checkoutu, obsługi zamówień i zarządzania sklepem.</p>
+            </div>
+          </div>
+          <div class="grid cols-4"><article class="card">
+              <div class="card-icon">🏪</div>
+              <h3>Lista sklepów</h3>
+              <p>Centralne wejście do każdego sklepu, aktywnego store i ustawień.</p>
+              <div class="card-tags"><span class="tag">multi-store</span><span class="tag">qm_stores_v1</span></div>
+              <div class="card-actions"><a class="btn primary" href="panel-sklepu.html">Panel sklepu</a><a class="btn " href="generator-sklepu.html">Generator sklepu</a></div>
+            </article><article class="card">
+              <div class="card-icon">🎯</div>
+              <h3>Aktywny sklep</h3>
+              <p>Wyraźne miejsce na aktualny sklep i szybkie przełączenie kontekstu pracy.</p>
+              <div class="card-tags"><span class="tag">qm_active_store_v1</span><span class="tag">slug</span></div>
+              <div class="card-actions"><a class="btn primary" href="sklep.html">Sklep</a><a class="btn " href="zamowienia.html">Zamówienia</a></div>
+            </article><article class="card">
+              <div class="card-icon">💹</div>
+              <h3>Marża i rozwój</h3>
+              <p>Sklep ma wspierać zarabianie przez prostą kontrolę marży, produktów i checkoutu.</p>
+              <div class="card-tags"><span class="tag">marża</span><span class="tag">produkty</span><span class="tag">dochód</span></div>
+              <div class="card-actions"><a class="btn primary" href="hurtownie.html">Hurtownie</a><a class="btn " href="koszyk.html">Koszyk</a></div>
+            </article><article class="card">
+              <div class="card-icon">🧩</div>
+              <h3>Jedna aplikacja</h3>
+              <p>To menu spina wszystkie moduły w jedną mobilną platformę.</p>
+              <div class="card-tags"><span class="tag">platforma</span><span class="tag">menu globalne</span></div>
+              <div class="card-actions"><a class="btn primary" href="platforma.html">Platforma</a><a class="btn " href="index.html">Strona główna</a></div>
+            </article></div>
+        </section>
 
-    <div class="card">
-      <div class="row" style="justify-content:space-between;align-items:center;">
-        <div>
-          <h2 style="margin:0 0 6px;">Lista sklepów</h2>
-          <div class="muted-xs">Edytuj marżę, otwórz sklep, ustaw aktywny.</div>
-        </div>
-        <div class="actions">
-          <a class="btn" href="./panel-sklepu.html">Panel sklepu</a>
-          <a class="btn" href="./sklep.html">Sklep (bez parametru)</a>
-          <button class="btn btn-danger" id="wipeBtn" type="button">Wyczyść rejestr</button>
-        </div>
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <h2>Status modułu</h2>
+              <p>Najważniejsze elementy do sprawdzenia po wrzuceniu paczki na GitHub Pages.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-list"><div class="metric-row"><strong>Sprawdź odczyt qm_stores_v1</strong><span>Licznik sklepów ma pokazać ile sklepów jest zapisanych.</span></div><div class="metric-row"><strong>Sprawdź qm_active_store_v1</strong><span>Aktywny sklep ma być widoczny w hero i licznikach.</span></div><div class="metric-row"><strong>Sprawdź przejścia panelowe</strong><span>Linki do panelu, generatora i sklepu muszą działać.</span></div><div class="metric-row"><strong>Sprawdź mobile</strong><span>Lista kart i CTA nie może się rozjechać na telefonie.</span></div></div>
+          </div>
+        </section>
+
+        <section class="section"><div class="cta-banner"><div><strong style="font-size:20px;display:block;margin-bottom:6px">Najważniejszy kierunek</strong><span style="color:#cbd5e1">Multi-store ma być prosty. Jeden sklep aktywny, szybkie przejście do sprzedaży, zamówień i ustawień.</span></div><div class="card-actions"><a class="btn secondary" href="panel-sklepu.html">Panel sklepu</a><a class="btn primary" href="generator-sklepu.html">Generator sklepu</a></div></div></section>
+
+        <section class="section">
+          <div class="card" style="text-align:center">
+            <strong style="display:block;font-size:18px;margin-bottom:8px">QualitetMarket • Zarabianie u Szefa</strong>
+            <span style="color:var(--muted)">Mobile-first, GitHub Pages friendly, localStorage ready. © <span data-bind="year"></span></span>
+          </div>
+        </section>
       </div>
-
-      <div id="emptyBox" class="card soft" style="display:none;margin-top:12px;">
-        <strong>Brak sklepów</strong>
-        <div class="muted-xs" style="margin-top:6px;">Dodaj pierwszy sklep powyżej.</div>
-      </div>
-
-      <div id="tableWrap" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="footer">QualitetMarket • sklepy (MVP)</div>
+    </main>
   </div>
-
-<script>
-(function(){
-  const LS_STORES = "qm_stores_v1";
-  const LS_ACTIVE = "qm_active_store_v1";
-  const LS_STORE_MARGIN = "qm_store_margin_pct";
-
-  const $ = (id) => document.getElementById(id);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-  const slugify = (s) => String(s || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[ąćęłńóśźż]/g, (m) => ({ "ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z" }[m] || m))
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-
-  const readJSON = (k, fallback) => {
-    try { return JSON.parse(localStorage.getItem(k) || ""); } catch { return fallback; }
-  };
-  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-
-  const pctFromInput = (raw) => {
-    let n = Number(String(raw || "").replace(",", "."));
-    if (!isFinite(n) || n < 0) n = 0;
-    const pct = n > 1 ? (n / 100) : n;
-    return Math.max(0, Math.min(1, pct));
-  };
-
-  const getBaseShopUrl = () => {
-    const u = new URL(window.location.href);
-    u.pathname = u.pathname.replace(/\/[^\/]*$/, "/sklep.html");
-    u.search = "";
-    u.hash = "";
-    return u.toString();
-  };
-
-  const setActive = (slug) => {
-    localStorage.setItem(LS_ACTIVE, slug);
-    const reg = readJSON(LS_STORES, {});
-    const m = Number(reg[slug]?.marginPct || 0) || 0;
-    localStorage.setItem(LS_STORE_MARGIN, String(Math.max(0, Math.min(1, m))));
-  };
-
-  const render = () => {
-    const reg = readJSON(LS_STORES, {});
-    const active = slugify(localStorage.getItem(LS_ACTIVE) || "");
-    const keys = Object.keys(reg).sort((a,b)=>a.localeCompare(b,"pl"));
-
-    $("emptyBox").style.display = keys.length ? "none" : "";
-    $("tableWrap").innerHTML = "";
-
-    if (!keys.length) return;
-
-    const base = getBaseShopUrl();
-
-    $("tableWrap").innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Sklep</th>
-            <th>Marża</th>
-            <th>Link</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${keys.map(k => {
-            const st = reg[k] || {};
-            const m = Number(st.marginPct || 0) || 0;
-            const pct = Math.round(m * 10000) / 100;
-            const link = \`${base}?store=\${encodeURIComponent(k)}\`;
-            const isActive = (k === active);
-            return `
-              <tr>
-                <td>
-                  <strong>${k}</strong>
-                  ${isActive ? `<div class="muted-xs" style="margin-top:6px;"><span class="pill">aktywny</span></div>` : ``}
-                </td>
-                <td>
-                  <input class="input" style="max-width:140px" data-margin="${k}" value="${pct}" inputmode="decimal" />
-                  <div class="muted-xs" style="margin-top:4px;">%</div>
-                </td>
-                <td>
-                  <input class="input mono" data-link="${k}" value="${link}" readonly />
-                </td>
-                <td>
-                  <div class="actions">
-                    <button class="btn btn-primary btn-sm" data-save="${k}" type="button">Zapisz</button>
-                    <button class="btn btn-sm" data-active="${k}" type="button">Ustaw aktywny</button>
-                    <a class="btn btn-sm" href="${link}">Otwórz</a>
-                    <button class="btn btn-danger btn-sm" data-del="${k}" type="button">Usuń</button>
-                  </div>
-                </td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    `;
-
-    $$("[data-save]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const k = btn.getAttribute("data-save");
-        const inp = document.querySelector(\`[data-margin="\${CSS.escape(k)}"]\`);
-        const pct = pctFromInput(inp?.value || "");
-        const reg2 = readJSON(LS_STORES, {});
-        reg2[k] = reg2[k] || { title: k.replaceAll("-"," "), theme:"default" };
-        reg2[k].marginPct = pct;
-        writeJSON(LS_STORES, reg2);
-
-        const activeNow = slugify(localStorage.getItem(LS_ACTIVE) || "");
-        if (activeNow === k) {
-          localStorage.setItem(LS_STORE_MARGIN, String(pct));
-        }
-
-        alert("Zapisano marżę.");
-        render();
-      });
-    });
-
-    $$("[data-active]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const k = btn.getAttribute("data-active");
-        setActive(k);
-        alert("Ustawiono aktywny sklep.");
-        render();
-      });
-    });
-
-    $$("[data-del]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const k = btn.getAttribute("data-del");
-        const reg2 = readJSON(LS_STORES, {});
-        delete reg2[k];
-        writeJSON(LS_STORES, reg2);
-
-        const activeNow = slugify(localStorage.getItem(LS_ACTIVE) || "");
-        if (activeNow === k) {
-          localStorage.removeItem(LS_ACTIVE);
-          localStorage.setItem(LS_STORE_MARGIN, "0");
-        }
-        render();
-      });
-    });
-  };
-
-  $("addBtn").addEventListener("click", () => {
-    const slug = slugify($("newSlug").value);
-    const pct = pctFromInput($("newMargin").value);
-
-    if (!slug) {
-      $("addStatus").textContent = "Podaj slug sklepu.";
-      return;
-    }
-
-    const reg = readJSON(LS_STORES, {});
-    if (!reg[slug]) reg[slug] = { title: slug.replaceAll("-"," "), theme:"default", marginPct: pct };
-    else reg[slug].marginPct = pct;
-
-    writeJSON(LS_STORES, reg);
-
-    $("addStatus").innerHTML = \`Dodano/zaktualizowano: <span class="mono">\${slug}</span> (marża: \${(pct*100).toFixed(2)}%)\`;
-    $("newSlug").value = "";
-    $("newMargin").value = "";
-
-    render();
-  });
-
-  $("wipeBtn").addEventListener("click", () => {
-    localStorage.removeItem(LS_STORES);
-    localStorage.removeItem(LS_ACTIVE);
-    localStorage.setItem(LS_STORE_MARGIN, "0");
-    render();
-  });
-
-  render();
-})();
-</script>
-
+  <nav class="bottom-nav"><div class="bottom-nav-grid"><a class="bottom-link" href="index.html" data-nav><span>⌂</span><span>Start</span></a><a class="bottom-link" href="sklep.html" data-nav><span>🛒</span><span>Sprzedaż</span></a><a class="bottom-link" href="zamowienia.html" data-nav><span>📦</span><span>Zamówienia</span></a><a class="bottom-link active" href="sklepy.html" data-nav><span>🏬</span><span>Sklepy</span></a><a class="bottom-link" href="dashboard.html" data-nav><span>⚙️</span><span>Panel</span></a></div></nav>
+  <script src="app-shell.js"></script>
 </body>
 </html>

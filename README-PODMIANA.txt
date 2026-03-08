@@ -1,29 +1,34 @@
-PAKIET 4 — BRANŻE / OGŁOSZENIA / MARKETPLACE
+PAKIET 5 — COMMERCE / CHECKOUT / ZAMÓWIENIA / SKLEPY
 
-Podmień w głównym katalogu repo:
-- nieruchomosci.html
-- agenci-nieruchomosci.html
-- firmy-nieruchomosci.html
-- agent-nieruchomosci-pro.html
-- auta.html
-- komis-auto.html
-- uzywane.html
-- ogloszenia.html
-- dodaj-ogloszenie.html
-- suppliers.html
-- blueprints.html
-- qualitetmarket.html
+Pliki do podmiany:
+- koszyk.html
+- checkout.html
+- zamowienia.html
+- panel-zamowien-sklepu.html
+- sklepy.html
 - app-layout.css
 - app-shell.js
 - uszefaqualitet-logo.svg
 
-Po wrzuceniu do repo sprawdź:
-- /nieruchomosci.html
-- /auta.html
-- /ogloszenia.html
-- /suppliers.html
-- /blueprints.html
-- /qualitetmarket.html
+Instrukcja:
+1. Otwórz główny katalog repo.
+2. Nadpisz powyższe pliki.
+3. Zacommituj i wypchnij na GitHub.
+4. Sprawdź po deployu linki:
+   /koszyk.html
+   /checkout.html
+   /zamowienia.html
+   /panel-zamowien-sklepu.html
+   /sklepy.html
 
-Główne wejście do aplikacji:
-- /index.html
+Test:
+- działa menu na telefonie
+- działa dolna nawigacja
+- nie ma 404
+- nie ma Unexpected token <
+- liczniki czytają localStorage:
+  qm_products_by_supplier_v1
+  qm_orders_v1
+  qm_stores_v1
+  qm_active_store_v1
+  qm_store_margin_pct
