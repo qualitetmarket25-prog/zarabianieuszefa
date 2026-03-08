@@ -1,58 +1,41 @@
-<!doctype html>
-<html lang="pl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Aktywuj PRO</title>
-  <meta name="theme-color" content="#0b1020">
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-</head>
-<body>
-  <div class="page">
-    <div data-topbar></div>
-    <main class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <article class="card hero-card">
-            <div class="badge">Plan i marża</div>
-            <h1>Włącz PRO lub ELITE i podbij marżę</h1>
-            <p class="lead">Jednym kliknięciem ustawiasz plan i automatyczne przeliczenie marży.</p>
-          </article>
-          <aside class="card hero-card">
-            <div class="kicker">Automatyzacja zarabiania</div>
-            <div data-margin-summary></div>
-          </aside>
-        </div>
-      </section>
-      
-<section class="section">
-  <div class="grid grid-2">
-    <article class="card module">
-      <h2>Aktywuj PRO lub ELITE</h2>
-      <p>Na tej stronie ustawiasz plan, a system od razu daje wyższą marżę i gotowość do większego zarobku.</p>
-      <div class="actions">
-        <button class="btn btn-primary" data-set-plan="pro">Włącz PRO + 25%</button>
-        <button class="btn btn-secondary" data-set-plan="elite">Włącz ELITE + 35%</button>
-        <button class="btn" data-set-plan="basic">Wróć do BASIC 15%</button>
-      </div>
-      <p class="note">Po kliknięciu plan zapisuje się lokalnie i przelicza produkty.</p>
-    </article>
-    <article class="card module">
-      <h2>Szybkie wejścia</h2>
-      <div class="actions">
-        <a class="btn" href="cennik.html">Zobacz cennik</a>
-        <a class="btn" href="platforma.html">Menu główne</a>
-        <a class="btn" href="success.html">Ekran sukcesu</a>
-      </div>
-    </article>
-  </div>
-</section>
 
-    </main>
-    <div data-bottom-nav></div>
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
-</body>
-</html>
+(function(){
+  const rank = { basic:1, pro:2, elite:3 };
+  function getPlan(){
+    try {
+      return JSON.parse(localStorage.getItem('qm_subscription_v1')||'null')?.plan ||
+             localStorage.getItem('qm_plan_v1') ||
+             'basic';
+    } catch(e){ return 'basic'; }
+  }
+  function allow(required){
+    return rank[getPlan()] >= rank[required];
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('[data-require]').forEach(el=>{
+      const required = el.getAttribute('data-require');
+      if (!allow(required)) {
+        el.classList.add('locked');
+        if (el.tagName === 'A') {
+          el.setAttribute('href','cennik.html');
+          el.setAttribute('title', 'Wymagany plan ' + required.toUpperCase());
+        }
+        if (el.tagName === 'BUTTON') {
+          el.disabled = false;
+          el.addEventListener('click', ()=> location.href = 'cennik.html');
+        }
+        if (!el.querySelector('.qm-lock-label')) {
+          const span = document.createElement('span');
+          span.className = 'qm-lock-label';
+          span.style.marginLeft = '8px';
+          span.style.fontWeight = '800';
+          span.textContent = '🔒 ' + required.toUpperCase();
+          el.appendChild(span);
+        }
+      }
+    });
+  });
+
+  window.QMPlanGuard = { getPlan, allow };
+})();

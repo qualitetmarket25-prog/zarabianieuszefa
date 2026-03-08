@@ -1,44 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Platforma — QualitetMarket</title>
-  <meta name="description" content="Menu aplikacji">
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div data-app-header></div>
-  <main class="page">
-    <div class="container">
-      
-<section class="panel hero-card">
-  <span class="eyebrow">Menu aplikacji</span>
-  <h1>Platforma zarabiania online</h1>
-  <p>Pełne menu do startu. Na telefonie działa jako prosty launcher całej aplikacji. Wyszukiwarka filtruje moduły.</p>
-  <div class="searchbar">
-    <input class="input" data-filter-input placeholder="Szukaj modułu, np. sklep, hurtownie, AI, reklama...">
-    <a class="btn secondary" href="index.html">Wróć na start</a>
-  </div>
-</section>
-
-<section class="section">
-  <div class="grid">
-    <article class="card" data-filter-card><div class="icon">📦</div><h3>Hurtownie</h3><p>Import produktów i start ze sprzedażą.</p><a class="btn wide" href="hurtownie.html">Wejdź</a></article>
-    <article class="card" data-filter-card><div class="icon">🛒</div><h3>Sklep</h3><p>Prezentacja produktów i szybka sprzedaż.</p><a class="btn wide" href="sklep.html">Wejdź</a></article>
-    <article class="card" data-filter-card><div class="icon">💳</div><h3>Koszyk i checkout</h3><p>Flow sprzedaży dla użytkownika końcowego.</p><a class="btn wide" href="checkout.html">Wejdź</a></article>
-    <article class="card" data-filter-card><div class="icon">📋</div><h3>Zamówienia</h3><p>Historia sprzedaży i obsługa realizacji.</p><a class="btn wide" href="zamowienia.html">Wejdź</a></article>
-    <article class="card" data-filter-card><div class="icon">💎</div><h3>Cennik</h3><p>Wybór planu i auto marży dla Twojego sklepu.</p><a class="btn wide" href="cennik.html">Wejdź</a></article>
-    <article class="card" data-filter-card><div class="icon">🔗</div><h3>Linki hurtowni</h3><p>Lista partnerów i ważnych linków startowych.</p><a class="btn wide" href="suppliers.html">Wejdź</a></article>
-  </div>
-</section>
-
+  
+<main class="container">
+  <section class="hero">
+    <div class="card pad">
+      <span class="tag">Menu główne</span>
+      <h1 class="h1">Cała aplikacja w jednym miejscu.</h1>
+      <p class="lead">To jest główne wejście do projektu. Moduły PRO i ELITE mają guardy. Użytkownik z niższym planem trafia do cennika.</p>
     </div>
-  </main>
-  <div data-app-footer></div>
-  <div data-app-bottomnav></div>
-  <script src="app-shell.js"></script>
+  </section>
+  <section class="section">
+    <div class="grid-4">
+      <a class="card pad" href="sklep.html"><h2 class="h2">Sklep</h2><p class="muted">Katalog, ceny po marży i dodawanie do koszyka.</p></a>
+      <a class="card pad" href="hurtownie.html"><h2 class="h2">Hurtownie</h2><p class="muted">Import dostawców i produktów.</p></a>
+      <a class="card pad" href="koszyk.html"><h2 class="h2">Koszyk</h2><p class="muted">Zakupy klienta i zamówienia.</p></a>
+      <a class="card pad" href="cennik.html"><h2 class="h2">Subskrypcje</h2><p class="muted">Basic, Pro, Elite.</p></a>
+      <a class="card pad" data-require="pro" href="qualitetmarket.html"><h2 class="h2">QualitetMarket</h2><p class="muted">Dostęp PRO do modułu sprzedaży.</p></a>
+      <a class="card pad" data-require="elite" href="intelligence.html"><h2 class="h2">Intelligence</h2><p class="muted">Dostęp ELITE do premium modułu.</p></a>
+      <a class="card pad" href="dashboard.html"><h2 class="h2">Dashboard</h2><p class="muted">Szybki przegląd liczb.</p></a>
+      <a class="card pad" href="success.html"><h2 class="h2">Success</h2><p class="muted">Potwierdzenie uruchomienia planu.</p></a>
+    </div>
+  </section>
+</main>
+
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
   <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>

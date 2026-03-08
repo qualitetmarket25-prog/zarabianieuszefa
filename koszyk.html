@@ -3,133 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Koszyk — QualitetMarket</title>
+  <title>Kontakt — QualitetMarket</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="appShell"></div>
-  <div id="pageBody" class="hidden">
-    
-<section class="hero">
-  <div class="hero-grid">
-    <div>
-      <h1>Koszyk</h1>
-      <p>Naprawione przyciski plus, minus, usuń i przejście do checkoutu. Wszystko jest wygodne do kliknięcia na telefonie.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
-        <a class="btn" href="sklep.html">Wróć do sklepu</a>
-      </div>
-    </div>
-    <div class="kpis">
-      <div class="kpi"><strong id="cartItemsCount">0</strong><span>Ilość sztuk</span></div>
-      <div class="kpi"><strong id="cartSubtotal">0,00 zł</strong><span>Razem</span></div>
-      <div class="kpi"><strong id="cartMargin">20%</strong><span>Marża</span></div>
-      <div class="kpi"><strong id="cartStore">default</strong><span>Sklep</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <div class="toolbar">
-    <div class="toolbar-left"><span class="badge">Koszyk działa w localStorage</span></div>
-    <div class="toolbar-right">
-      <a class="btn" href="sklep.html">Dodaj więcej produktów</a>
-      <button class="btn btn-danger" id="clearCartBtn">Wyczyść koszyk</button>
-      <a class="btn btn-primary" href="checkout.html">Checkout</a>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Pozycje w koszyku</h2>
-  <div id="cartList"></div>
-  <div class="empty hidden" id="cartEmpty">Koszyk jest pusty. Wejdź do sklepu i dodaj produkty.</div>
-</section>
-
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
-  <script>window.QM_APP.mount({title:'Koszyk', subtitle:'Działające przyciski plus minus usuń'});</script>
   
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const slug = QM_APP.activeStore();
-  const CART_KEY = `qm_shop_cart_v1__${slug}`;
-  const $ = s => document.querySelector(s);
-  function readCart(){
-    const current = QM_APP.readJSON(CART_KEY, null);
-    if(current && Array.isArray(current.items)) return current;
-    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
-    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
-  }
-  function writeCart(cart){
-    QM_APP.writeJSON(CART_KEY, cart);
-    QM_APP.writeJSON('qm_cart_v1', cart);
-  }
-  function totals(items){
-    let qty = 0, sum = 0;
-    items.forEach(it => {
-      const q = Number(it.qty || 0) || 0;
-      const p = Number(it.priceRetail || it.price || 0) || 0;
-      qty += q; sum += q * p;
-    });
-    return {qty, sum};
-  }
-  function render(){
-    const wrap = $('#cartList');
-    const empty = $('#cartEmpty');
-    const cart = readCart();
-    const items = Array.isArray(cart.items) ? cart.items : [];
-    const t = totals(items);
-    $('#cartItemsCount').textContent = t.qty;
-    $('#cartSubtotal').textContent = QM_APP.money(t.sum);
-    $('#cartMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
-    $('#cartStore').textContent = slug;
-    if(!items.length){
-      wrap.innerHTML = '';
-      empty.classList.remove('hidden');
-      return;
-    }
-    empty.classList.add('hidden');
-    wrap.innerHTML = `
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Produkt</th><th>Cena</th><th>Ilość</th><th>Razem</th><th>Akcja</th></tr></thead>
-          <tbody>
-            ${items.map(it => `
-              <tr>
-                <td><strong>${it.name}</strong><div class="muted">${it.supplier || ''}</div></td>
-                <td>${QM_APP.money(it.priceRetail || it.price || 0)}</td>
-                <td>
-                  <div class="qty">
-                    <button class="btn" data-minus="${it.id}">−</button>
-                    <strong>${Number(it.qty||0)}</strong>
-                    <button class="btn" data-plus="${it.id}">+</button>
-                  </div>
-                </td>
-                <td>${QM_APP.money((Number(it.qty||0)||0) * (Number(it.priceRetail || it.price || 0)||0))}</td>
-                <td><button class="btn btn-danger" data-remove="${it.id}">Usuń</button></td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>`;
-    wrap.querySelectorAll('[data-plus]').forEach(btn => btn.addEventListener('click', ()=>{
-      const cart = readCart(); const it = cart.items.find(x => String(x.id)===String(btn.dataset.plus));
-      if(it){ it.qty = (Number(it.qty)||0)+1; writeCart(cart); render(); }
-    }));
-    wrap.querySelectorAll('[data-minus]').forEach(btn => btn.addEventListener('click', ()=>{
-      const cart = readCart(); const it = cart.items.find(x => String(x.id)===String(btn.dataset.minus));
-      if(it){ it.qty = Math.max(1,(Number(it.qty)||1)-1); writeCart(cart); render(); }
-    }));
-    wrap.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', ()=>{
-      const cart = readCart(); cart.items = cart.items.filter(x => String(x.id)!==String(btn.dataset.remove)); writeCart(cart); render();
-    }));
-  }
-  $('#clearCartBtn').addEventListener('click', ()=>{ writeCart({items:[]}); render(); });
-  render();
-});
-</script>
+<main class="container"><section class="hero"><div class="card pad"><h1 class="h1">Kontakt</h1><p class="lead">Uzupełnij tu swoje dane firmy, e-mail i telefon przed startem sprzedaży.</p></div></section></main>
 
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
+  <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>

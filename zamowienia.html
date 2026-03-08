@@ -4,111 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Zamówienia — QualitetMarket</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="appShell"></div>
-  <div id="pageBody" class="hidden">
-    
-<section class="hero">
-  <div class="hero-grid">
-    <div>
-      <h1>Zamówienia</h1>
-      <p>Wszystkie zamówienia dla aktywnego sklepu. Działają filtry i statusy, a przejścia nie wywalają się na telefonie.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="sklep.html">Wróć do sklepu</a>
-        <a class="btn" href="panel-zamowien-sklepu.html">Panel zamówień sklepu</a>
-      </div>
-    </div>
-    <div class="kpis">
-      <div class="kpi"><strong id="ordersCount">0</strong><span>Zamówienia</span></div>
-      <div class="kpi"><strong id="ordersValue">0,00 zł</strong><span>Obrót</span></div>
-      <div class="kpi"><strong id="ordersStore">default</strong><span>Sklep</span></div>
-      <div class="kpi"><strong id="ordersNew">0</strong><span>Nowe</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <input class="search" id="orderSearch" placeholder="Szukaj po numerze, kliencie lub telefonie">
-    </div>
-    <div class="toolbar-right">
-      <select class="select" id="orderStatus">
-        <option value="all">Wszystkie statusy</option>
-        <option value="new">Nowe</option>
-        <option value="paid">Opłacone</option>
-        <option value="shipped">Wysłane</option>
-        <option value="cancelled">Anulowane</option>
-      </select>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <div id="ordersTable"></div>
-  <div class="empty hidden" id="ordersEmpty">Brak zamówień dla tego sklepu.</div>
-</section>
-
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
-  <script>window.QM_APP.mount({title:'Zamówienia', subtitle:'Lista zamówień aktywnego sklepu'});</script>
   
+<main class="container">
+  <section class="hero">
+    <div class="card pad">
+      <h1 class="h1">Zamówienia</h1>
+      <div id="ordersWrap"></div>
+    </div>
+  </section>
+</main>
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const slug = QM_APP.activeStore();
-  const $ = s => document.querySelector(s);
-  function readOrders(){
-    const all = QM_APP.readJSON('qm_orders_v1', []);
-    return Array.isArray(all) ? all.filter(o => String(o.storeSlug || 'default') === slug) : [];
+document.addEventListener('DOMContentLoaded',()=>{
+  const orders = JSON.parse(localStorage.getItem('qm_orders_v1')||'[]');
+  const wrap = document.getElementById('ordersWrap');
+  if (!orders.length){
+    wrap.innerHTML = '<div class="empty">Brak zamówień.</div>';
+    return;
   }
-  function writeOrders(next){
-    const all = QM_APP.readJSON('qm_orders_v1', []);
-    const other = Array.isArray(all) ? all.filter(o => String(o.storeSlug || 'default') !== slug) : [];
-    QM_APP.writeJSON('qm_orders_v1', [...next, ...other]);
-  }
-  function render(){
-    const q = ($('#orderSearch').value || '').trim().toLowerCase();
-    const st = $('#orderStatus').value;
-    let arr = readOrders();
-    if(st !== 'all') arr = arr.filter(o => String(o.status || 'new') === st);
-    if(q) arr = arr.filter(o => [o.orderNo, o.customer?.name, o.customer?.phone].join(' ').toLowerCase().includes(q));
-    $('#ordersCount').textContent = arr.length;
-    $('#ordersValue').textContent = QM_APP.money(arr.reduce((a,b)=>a + (Number(b.totals?.gross || 0)||0),0));
-    $('#ordersStore').textContent = slug;
-    $('#ordersNew').textContent = readOrders().filter(o => String(o.status || 'new') === 'new').length;
-    const wrap = $('#ordersTable'); const empty = $('#ordersEmpty');
-    if(!arr.length){
-      wrap.innerHTML = ''; empty.classList.remove('hidden'); return;
-    }
-    empty.classList.add('hidden');
-    wrap.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Numer</th><th>Klient</th><th>Status</th><th>Kwota</th><th>Akcja</th></tr></thead><tbody>
-      ${arr.map(o => `<tr>
-        <td><strong>${o.orderNo || o.id}</strong><div class="muted">${String(o.createdAt || '').slice(0,16).replace('T',' ')}</div></td>
-        <td>${o.customer?.name || '-'}<div class="muted">${o.customer?.phone || ''}</div></td>
-        <td><span class="tag">${o.status || 'new'}</span></td>
-        <td>${QM_APP.money(o.totals?.gross || 0)}</td>
-        <td><div class="action-row">
-          <button class="btn" data-status="${o.id}|paid">Opłacone</button>
-          <button class="btn" data-status="${o.id}|shipped">Wysłane</button>
-          <button class="btn btn-danger" data-status="${o.id}|cancelled">Anuluj</button>
-        </div></td>
-      </tr>`).join('')}
-    </tbody></table></div>`;
-    wrap.querySelectorAll('[data-status]').forEach(btn => btn.addEventListener('click', ()=>{
-      const [id, status] = btn.dataset.status.split('|');
-      const list = readOrders().map(o => String(o.id) === String(id) ? {...o, status, updatedAt:new Date().toISOString()} : o);
-      writeOrders(list);
-      render();
-    }));
-  }
-  $('#orderSearch').addEventListener('input', render);
-  $('#orderStatus').addEventListener('change', render);
-  render();
+  wrap.innerHTML = `
+    <table class="table">
+      <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Kwota</th></tr></thead>
+      <tbody>${orders.map(o=>`<tr><td>${o.id}</td><td>${new Date(o.createdAt).toLocaleString('pl-PL')}</td><td>${o.customer.name}</td><td>${o.total.toFixed(2)} PLN</td></tr>`).join('')}</tbody>
+    </table>
+  `;
 });
 </script>
 
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
+  <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>

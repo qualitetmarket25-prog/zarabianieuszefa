@@ -1,41 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hurtownie — QualitetMarket</title>
-  <meta name="description" content="Linki i start">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Dashboard — QualitetMarket</title>
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div data-app-header></div>
-  <main class="page">
-    <div class="container">
-      
-<section class="panel hero-card">
-  <span class="eyebrow">Hurtownie do startu</span>
-  <h1>Gotowe kierunki pod import i zarabianie</h1>
-  <p>Tu masz prosty start: najpierw wybierz hurtownię, potem przejdź do linków, dodaj produkty i sprzedawaj z automatyczną marżą.</p>
-  <div class="actions">
-    <a class="btn" href="suppliers.html">Otwórz linki hurtowni</a>
-    <a class="btn secondary" href="sklep.html">Przejdź do sklepu</a>
-  </div>
-</section>
-<section class="section suppliers">
-  <article class="supplier"><div class="icon">🌍</div><h3>AliExpress</h3><p>Dobre na tani start i testowanie kategorii.</p><a class="btn wide secondary" href="https://www.aliexpress.com/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-  <article class="supplier"><div class="icon">📦</div><h3>CJ Dropshipping</h3><p>Popularny wybór pod dropshipping i integracje.</p><a class="btn wide secondary" href="https://www.cjdropshipping.com/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-  <article class="supplier"><div class="icon">⚡</div><h3>EPROLO</h3><p>Prosty start, szybkie testy produktów.</p><a class="btn wide secondary" href="https://eprolo.com/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-  <article class="supplier"><div class="icon">🏠</div><h3>VidaXL</h3><p>Dom i ogród, mocne kategorie do sklepu.</p><a class="btn wide secondary" href="https://www.vidaxl.com/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-  <article class="supplier"><div class="icon">🛠️</div><h3>Banggood</h3><p>Elektronika i produkty impulsowe.</p><a class="btn wide secondary" href="https://www.banggood.com/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-  <article class="supplier"><div class="icon">🚚</div><h3>BigBuy</h3><p>UE i marketplace, dobry kierunek do rozwoju.</p><a class="btn wide secondary" href="https://www.bigbuy.eu/" target="_blank" rel="noopener noreferrer">Otwórz</a></article>
-</section>
-
+  
+<main class="container">
+  <section class="hero">
+    <div class="kpi-grid">
+      <div class="card pad kpi"><div class="label">Plan</div><div class="value" id="planKpi">—</div></div>
+      <div class="card pad kpi"><div class="label">Marża</div><div class="value" id="marginKpi">—</div></div>
+      <div class="card pad kpi"><div class="label">Produkty</div><div class="value" id="productsKpi">—</div></div>
+      <div class="card pad kpi"><div class="label">Zamówienia</div><div class="value" id="ordersKpi">—</div></div>
     </div>
-  </main>
-  <div data-app-footer></div>
-  <div data-app-bottomnav></div>
-  <script src="app-shell.js"></script>
+  </section>
+  <section class="section">
+    <div class="grid-2">
+      <div class="card pad">
+        <h2 class="h2">Status biznesu</h2>
+        <div class="notice success">Subskrypcje i automatyczna marża są gotowe do startu. Po imporcie produktów system sam przelicza ceny pod sprzedaż.</div>
+      </div>
+      <div class="card pad">
+        <h2 class="h2">Szybkie akcje</h2>
+        <div class="actions">
+          <a class="btn btn-primary" href="cennik.html">Zmień plan</a>
+          <button class="btn btn-secondary" data-apply-margin>Przelicz cały katalog</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const s = QMSubscriptions.getSubscription();
+  document.getElementById('planKpi').textContent = s.plan.toUpperCase();
+  document.getElementById('marginKpi').textContent = s.marginPct + '%';
+  document.getElementById('productsKpi').textContent = (JSON.parse(localStorage.getItem('qm_products_by_supplier_v1')||'[]')||[]).length;
+  document.getElementById('ordersKpi').textContent = (JSON.parse(localStorage.getItem('qm_orders_v1')||'[]')||[]).length;
+});
+</script>
+
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
   <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>

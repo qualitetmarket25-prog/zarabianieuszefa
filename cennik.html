@@ -1,55 +1,85 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cennik — QualitetMarket</title>
-  <meta name="description" content="Plany i marża">
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app-layout.css">
-</head>
-<body>
-  <div data-app-header></div>
-  <main class="page">
-    <div class="container">
-      
-<section class="panel hero-card">
-  <span class="eyebrow">Cennik i marża</span>
-  <h1>Wybierz plan i ustaw zysk automatycznie</h1>
-  <p>Każdy plan ustawia gotową marżę dla sklepu. To najprostszy start pod sprzedaż online bez ręcznego liczenia cen.</p>
-</section>
-<section class="section plans">
-  <article class="plan">
-    <div class="icon">🌱</div>
-    <h3>Basic</h3>
-    <div class="price">49 zł</div>
-    <p class="small">na start / miesiąc</p>
-    <ul><li>Auto marża 15%</li><li>Start sklepu</li><li>Podstawowe moduły</li></ul>
-    <div class="actions"><button class="btn wide secondary" onclick="localStorage.setItem('qm_user_plan_v1','basic');location.href='success.html'">Wybierz Basic</button></div>
-  </article>
-  <article class="plan popular">
-    <div class="icon">🚀</div>
-    <h3>Pro</h3>
-    <div class="price">149 zł</div>
-    <p class="small">sprzedaż / miesiąc</p>
-    <ul><li>Auto marża 25%</li><li>Hurtownie i sklep</li><li>Lepszy potencjał zysku</li></ul>
-    <div class="actions"><button class="btn wide" onclick="localStorage.setItem('qm_user_plan_v1','pro');location.href='success.html'">Wybierz Pro</button></div>
-  </article>
-  <article class="plan">
-    <div class="icon">👑</div>
-    <h3>Elite</h3>
-    <div class="price">299 zł</div>
-    <p class="small">skalowanie / miesiąc</p>
-    <ul><li>Auto marża 35%</li><li>Priorytet na rozwój</li><li>Większy zysk na produktach</li></ul>
-    <div class="actions"><button class="btn wide secondary" onclick="localStorage.setItem('qm_user_plan_v1','elite');location.href='success.html'">Wybierz Elite</button></div>
-  </article>
-</section>
 
-    </div>
-  </main>
-  <div data-app-footer></div>
-  <div data-app-bottomnav></div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
-</body>
-</html>
+(function(){
+  const PRODUCTS_KEY = 'qm_products_by_supplier_v1';
+  const MARGIN_KEY = 'qm_store_margin_pct';
+  const SUB_KEY = 'qm_subscription_v1';
+
+  function read(key, fallback){
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; }
+  }
+  function write(key, value){
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+  function getMargin(){
+    const fromStore = Number(read(MARGIN_KEY, 0));
+    if (fromStore > 0) return fromStore;
+    const planMargin = Number(read(SUB_KEY, {marginPct:18}).marginPct || 18);
+    return planMargin;
+  }
+  function smartMargin(base, planMargin){
+    if (base < 20) return Math.max(planMargin, 35);
+    if (base < 60) return Math.max(planMargin, 28);
+    if (base < 150) return Math.max(planMargin, 22);
+    if (base < 400) return Math.max(planMargin, 18);
+    return Math.max(planMargin, 15);
+  }
+  function roundPrice(v){
+    const floor = Math.floor(Math.max(1, v));
+    return Number((floor + 0.99).toFixed(2));
+  }
+  function normalizeBase(p){
+    const base = Number(p.sourcePrice ?? p.supplierPrice ?? p.basePrice ?? p.originalPrice ?? p.price ?? 0);
+    return Number.isFinite(base) ? base : 0;
+  }
+  function productImage(name){
+    const n = encodeURIComponent(name || 'Produkt');
+    return `https://placehold.co/600x600/0f172a/e2e8f0?text=${n}`;
+  }
+  function enrichProduct(p, fallbackSupplier='AliExpress'){
+    const base = normalizeBase(p);
+    const planMargin = getMargin();
+    const effective = smartMargin(base, planMargin);
+    const finalPrice = roundPrice(base * (1 + effective / 100));
+    const compareAt = roundPrice(finalPrice * 1.18);
+    return {
+      ...p,
+      supplier: p.supplier || fallbackSupplier,
+      sourcePrice: base,
+      supplierPrice: base,
+      marginPct: effective,
+      price: finalPrice,
+      compareAtPrice: compareAt,
+      img: p.img || p.image || productImage(p.name),
+      _qm_margin_applied: true
+    };
+  }
+  function seedDemoIfEmpty(){
+    const curr = read(PRODUCTS_KEY, []);
+    if (Array.isArray(curr) && curr.length) return curr;
+    const demo = [
+      {name:'Organizer biurka premium', price:24.5, supplier:'CJ Dropshipping'},
+      {name:'Lampka LED do setupu', price:39.9, supplier:'AliExpress'},
+      {name:'Uchwyt samochodowy MagSafe', price:31.2, supplier:'Banggood'},
+      {name:'Plecak miejski smart', price:67.0, supplier:'EPROLO'},
+      {name:'Mata fitness premium', price:58.5, supplier:'VidaXL'},
+      {name:'Słuchawki bezprzewodowe', price:82.0, supplier:'AliExpress'}
+    ].map(enrichProduct);
+    write(PRODUCTS_KEY, demo);
+    return demo;
+  }
+  function applyToCatalog(){
+    const existing = seedDemoIfEmpty();
+    const next = existing.map(p => enrichProduct(p, p.supplier || 'AliExpress'));
+    write(PRODUCTS_KEY, next);
+    return next;
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('[data-apply-margin]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        applyToCatalog();
+        alert('Gotowe. Automatyczna marża została ustawiona na wszystkich produktach.');
+      });
+    });
+  });
+  window.QMAutoMargin = { getMargin, applyToCatalog, enrichProduct, seedDemoIfEmpty };
+})();

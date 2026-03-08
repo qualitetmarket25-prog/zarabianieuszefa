@@ -4,166 +4,65 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Sklep — QualitetMarket</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="appShell"></div>
-  <div id="pageBody" class="hidden">
-    
-<section class="hero">
-  <div class="hero-grid">
-    <div>
-      <span class="badge">Automatyczna marża aktywna</span>
-      <h1>Sklep mobile-first z działającymi przyciskami</h1>
-      <p>Tu sprzedajesz produkty z hurtowni. Ceny liczą się z automatyczną marżą dla aktywnego sklepu. Przyciski dodawania do koszyka i przejścia dalej są ustawione pod telefon.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="koszyk.html">Przejdź do koszyka</a>
-        <a class="btn btn-secondary" href="hurtownie.html">Dodaj produkty</a>
-      </div>
-    </div>
-    <div class="kpis">
-      <div class="kpi"><strong id="shopProducts">0</strong><span>Produkty</span></div>
-      <div class="kpi"><strong id="shopMargin">20%</strong><span>Marża</span></div>
-      <div class="kpi"><strong id="shopStore">default</strong><span>Sklep</span></div>
-      <div class="kpi"><strong id="shopCartCount">0</strong><span>Pozycje w koszyku</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <input class="search" id="searchProducts" placeholder="Szukaj produktu, dostawcy lub kategorii">
-    </div>
-    <div class="toolbar-right">
-      <select class="select" id="sortProducts">
-        <option value="default">Sortowanie domyślne</option>
-        <option value="price-asc">Cena rosnąco</option>
-        <option value="price-desc">Cena malejąco</option>
-        <option value="name-asc">Nazwa A-Z</option>
-      </select>
-      <a class="btn btn-primary" href="koszyk.html">Koszyk</a>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Produkty</h2>
-  <div class="product-grid" id="productGrid"></div>
-  <div class="empty hidden" id="productEmpty">Brak produktów. Wejdź do hurtowni i zaimportuj dane demo albo CSV.</div>
-</section>
-
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
-  <script>window.QM_APP.mount({title:'Sklep', subtitle:'Sprzedaż produktów z automatyczną marżą'});</script>
   
+<main class="container">
+  <section class="hero">
+    <div class="card pad">
+      <span class="tag">Sklep</span>
+      <h1 class="h1">Produkty z gotową marżą pod sprzedaż.</h1>
+      <p class="lead">Ceny są liczone automatycznie na podstawie planu i logiki opłacalności dla tańszych oraz średnich produktów.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div id="products" class="product-grid"></div>
+  </section>
+</main>
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const CART_BASE = 'qm_shop_cart_v1';
-  const slug = QM_APP.activeStore();
-  const CART_KEY = `${CART_BASE}__${slug}`;
-  const $ = (s)=>document.querySelector(s);
-  const productsRaw = QM_APP.readJSON('qm_products_by_supplier_v1', []);
-  const normalize = (p, idx) => QM_MARGIN.normalizeProduct({
-    id: p.id || p.sku || ('prod-'+idx),
-    name: p.name || p.title || 'Produkt',
-    supplier: p.supplier || 'Supplier',
-    category: p.category || 'Ogólne',
-    img: p.img || p.image,
-    image: p.image || p.img,
-    price: p.price || p.priceRetail || p.buyNet || 0,
-    buyNet: p.buyNet || p.cost || p.price || 0,
-    moq: p.moq || 1
-  });
-  const state = {
-    items: Array.isArray(productsRaw) ? productsRaw.map(normalize) : [],
-    view: []
-  };
-  function readCart(){
-    const current = QM_APP.readJSON(CART_KEY, null);
-    if(current && Array.isArray(current.items)) return current;
-    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
-    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
+document.addEventListener('DOMContentLoaded',()=>{
+  const CART_KEY = 'qm_cart_v1';
+  const productsEl = document.getElementById('products');
+  const products = QMAutoMargin.applyToCatalog();
+  if (!products.length) {
+    productsEl.innerHTML = '<div class="empty">Brak produktów. Wejdź do hurtowni i załaduj demo produkty.</div>';
+    return;
   }
-  function writeCart(cart){
-    QM_APP.writeJSON(CART_KEY, cart);
-    QM_APP.writeJSON('qm_cart_v1', cart);
-  }
-  function cartCount(){
-    return readCart().items.reduce((a,b)=>a + (Number(b.qty)||0),0);
-  }
-  function addToCart(item){
-    const cart = readCart();
-    const idx = cart.items.findIndex(x => String(x.id) === String(item.id));
-    if(idx === -1){
-      cart.items.push({
-        id:item.id, sku:item.sku, name:item.name, supplier:item.supplier, category:item.category,
-        image:item.image, moq:item.moq, buyNet:item.buyNet, priceRetail:item.priceRetail, priceB2B:item.priceB2B, qty:1
-      });
-    }else{
-      cart.items[idx].qty = (Number(cart.items[idx].qty)||0) + 1;
-    }
-    writeCart(cart);
-    updateTop();
-  }
-  function updateTop(){
-    $('#shopProducts').textContent = state.items.length;
-    $('#shopMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
-    $('#shopStore').textContent = slug;
-    $('#shopCartCount').textContent = cartCount();
-  }
-  function render(){
-    const grid = $('#productGrid');
-    const empty = $('#productEmpty');
-    const q = ($('#searchProducts').value || '').trim().toLowerCase();
-    const sort = $('#sortProducts').value;
-    let arr = state.items.filter(p => !q || [p.name,p.supplier,p.category].join(' ').toLowerCase().includes(q));
-    if(sort === 'price-asc') arr.sort((a,b)=>a.priceRetail-b.priceRetail);
-    if(sort === 'price-desc') arr.sort((a,b)=>b.priceRetail-a.priceRetail);
-    if(sort === 'name-asc') arr.sort((a,b)=>String(a.name).localeCompare(String(b.name),'pl'));
-    state.view = arr;
-    if(!arr.length){
-      grid.innerHTML = '';
-      empty.classList.remove('hidden');
-      return;
-    }
-    empty.classList.add('hidden');
-    grid.innerHTML = arr.map(p => `
-      <article class="product-card">
-        <img src="${p.image}" alt="${p.name}">
-        <div>
-          <h3 style="margin:0 0 6px">${p.name}</h3>
-          <div class="tag-row">
-            <span class="tag">${p.supplier}</span>
-            <span class="tag">${p.category}</span>
-            <span class="tag">MOQ ${p.moq}</span>
-          </div>
-        </div>
-        <div class="price-row">
-          <div>
-            <div class="price-main">${QM_APP.money(p.priceRetail)}</div>
-            <div class="muted">B2B: ${QM_APP.money(p.priceB2B)}</div>
-          </div>
-          <button class="btn btn-primary" data-add="${p.id}">Dodaj do koszyka</button>
-        </div>
-      </article>
-    `).join('');
-    grid.querySelectorAll('[data-add]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const item = state.items.find(x => String(x.id) === String(btn.dataset.add));
-        if(item) addToCart(item);
-        btn.textContent = 'Dodano';
-        setTimeout(()=>btn.textContent='Dodaj do koszyka', 900);
-      });
+  productsEl.innerHTML = products.map((p, idx)=>`
+    <article class="card pad product-card">
+      <div class="product-hero">📦</div>
+      <div>
+        <h3 style="margin:0 0 6px">${p.name}</h3>
+        <div class="muted">${p.supplier || 'Supplier'} • marża ${p.marginPct}%</div>
+      </div>
+      <div class="price-row">
+        <span class="price-old">${Number(p.sourcePrice).toFixed(2)} PLN</span>
+        <span class="price-new">${Number(p.price).toFixed(2)} PLN</span>
+      </div>
+      <button class="btn btn-primary" data-add="${idx}">Dodaj do koszyka</button>
+    </article>
+  `).join('');
+  productsEl.querySelectorAll('[data-add]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = Number(btn.getAttribute('data-add'));
+      const item = products[idx];
+      const cart = JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+      const found = cart.find(x=>x.name===item.name);
+      if (found) found.qty += 1;
+      else cart.push({name:item.name, price:item.price, qty:1});
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      location.href = 'koszyk.html';
     });
-  }
-  document.getElementById('searchProducts').addEventListener('input', render);
-  document.getElementById('sortProducts').addEventListener('change', render);
-  updateTop();
-  render();
+  });
 });
 </script>
 
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
+  <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>

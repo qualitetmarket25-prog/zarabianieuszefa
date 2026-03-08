@@ -3,135 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Checkout — QualitetMarket</title>
+  <title>Cennik — QualitetMarket</title>
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="appShell"></div>
-  <div id="pageBody" class="hidden">
-    
-<section class="hero">
-  <div class="hero-grid">
-    <div>
-      <h1>Checkout</h1>
-      <p>Naprawiony formularz zamówienia. Zapisuje do <strong>qm_orders_v1</strong> i czyści koszyk po zapisaniu.</p>
-      <div class="hero-actions">
-        <a class="btn" href="koszyk.html">Wróć do koszyka</a>
-        <a class="btn btn-secondary" href="zamowienia.html">Zobacz zamówienia</a>
+  
+<main class="container">
+  <section class="hero">
+    <div class="card pad">
+      <span class="tag">Cennik gotowy do startu</span>
+      <h1 class="h1">Subskrypcje, które zarabiają dla Ciebie i nadal opłacają się klientowi.</h1>
+      <p class="lead">Ustawiłem plan tak, żeby wejście było lekkie, PRO dawał realny sens sprzedaży, a ELITE robił największy wynik dla power-userów.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="grid-3">
+      <div class="card pad plan">
+        <h2 class="h2">Basic</h2>
+        <div class="price"><strong>79</strong><span>PLN / mies.</span></div>
+        <div class="muted">Na start. Dla osób, które chcą ruszyć ze sklepem i katalogiem.</div>
+        <ul class="list">
+          <li>1 sklep</li>
+          <li>Auto marża 18%</li>
+          <li>Import produktów</li>
+          <li>Koszyk i checkout</li>
+        </ul>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-primary" data-select-plan="basic">Wybierz Basic</button>
+        </div>
+      </div>
+      <div class="card pad plan popular">
+        <div class="ribbon">Najlepszy start</div>
+        <h2 class="h2">Pro</h2>
+        <div class="price"><strong>149</strong><span>PLN / mies.</span></div>
+        <div class="muted">Najlepszy balans ceny do zysku. Dla większości użytkowników.</div>
+        <ul class="list">
+          <li>Większa marża 28%</li>
+          <li>Dostęp PRO do hurtowni</li>
+          <li>Lepszy wynik na produkcie</li>
+          <li>Większa opłacalność dropshippingu</li>
+        </ul>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-primary" data-select-plan="pro">Wybierz Pro</button>
+        </div>
+      </div>
+      <div class="card pad plan">
+        <h2 class="h2">Elite</h2>
+        <div class="price"><strong>299</strong><span>PLN / mies.</span></div>
+        <div class="muted">Dla osób, które chcą mocniej skalować sprzedaż i używać premium modułów.</div>
+        <ul class="list">
+          <li>Marża 38%</li>
+          <li>Dostęp ELITE</li>
+          <li>AI / Intelligence</li>
+          <li>Największy potencjał zysku</li>
+        </ul>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-primary" data-select-plan="elite">Wybierz Elite</button>
+        </div>
       </div>
     </div>
-    <div class="notice" id="checkoutMsg">Wypełnij dane klienta i kliknij Złóż zamówienie.</div>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Dane klienta</h2>
-  <div class="form-grid">
-    <input class="input" id="fullName" placeholder="Imię i nazwisko">
-    <input class="input" id="phone" placeholder="Telefon">
-    <input class="input" id="email" placeholder="E-mail">
-    <input class="input" id="city" placeholder="Miasto">
-    <input class="input form-full" id="address" placeholder="Adres dostawy">
-    <textarea class="textarea form-full" id="note" placeholder="Uwagi do zamówienia"></textarea>
-  </div>
-</section>
-
-<section class="grid grid-2">
-  <article class="card">
-    <h2>Podsumowanie</h2>
-    <div class="kpis">
-      <div class="kpi"><strong id="coItems">0</strong><span>Sztuk</span></div>
-      <div class="kpi"><strong id="coValue">0,00 zł</strong><span>Wartość</span></div>
-      <div class="kpi"><strong id="coStore">default</strong><span>Sklep</span></div>
-      <div class="kpi"><strong id="coMargin">20%</strong><span>Marża</span></div>
+  </section>
+  <section class="section">
+    <div class="card pad warning">
+      To jest pakiet <strong>start-ready</strong>: zapis planu, ceny i marży działa od razu. Prawdziwe pobieranie płatności kartą wymaga jeszcze osobnej integracji operatora płatności.
     </div>
-    <div class="action-row" style="margin-top:12px">
-      <button class="btn btn-primary" id="placeOrderBtn">Złóż zamówienie</button>
-      <a class="btn" href="koszyk.html">Edytuj koszyk</a>
-    </div>
-  </article>
-  <article class="card">
-    <h2>Produkty w zamówieniu</h2>
-    <div id="checkoutItems"></div>
-  </article>
-</section>
+  </section>
+</main>
 
-  </div>
-  <script src="app-shell.js"></script>
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
   <script src="auto-margin.js"></script>
-  <script>window.QM_APP.mount({title:'Checkout', subtitle:'Zapis zamówienia do localStorage'});</script>
+  <script src="app-shell.js"></script>
   
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const slug = QM_APP.activeStore();
-  const CART_KEY = `qm_shop_cart_v1__${slug}`;
-  const $ = s => document.querySelector(s);
-  const readCart = () => {
-    const current = QM_APP.readJSON(CART_KEY, null);
-    if(current && Array.isArray(current.items)) return current;
-    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
-    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
-  };
-  const writeCart = (cart) => { QM_APP.writeJSON(CART_KEY, cart); QM_APP.writeJSON('qm_cart_v1', cart); };
-  function render(){
-    const items = readCart().items || [];
-    const qty = items.reduce((a,b)=>a + (Number(b.qty)||0),0);
-    const sum = items.reduce((a,b)=>a + ((Number(b.qty)||0) * (Number(b.priceRetail || b.price || 0)||0)),0);
-    $('#coItems').textContent = qty;
-    $('#coValue').textContent = QM_APP.money(sum);
-    $('#coStore').textContent = slug;
-    $('#coMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
-    $('#checkoutItems').innerHTML = items.length ? `
-      <div class="table-wrap"><table><thead><tr><th>Produkt</th><th>Ilość</th><th>Cena</th></tr></thead><tbody>
-      ${items.map(it => `<tr><td><strong>${it.name}</strong><div class="muted">${it.supplier || ''}</div></td><td>${it.qty}</td><td>${QM_APP.money((Number(it.qty)||0)*(Number(it.priceRetail || it.price || 0)||0))}</td></tr>`).join('')}
-      </tbody></table></div>` : '<div class="empty">Koszyk jest pusty. Wróć do sklepu.</div>';
-  }
-  $('#placeOrderBtn').addEventListener('click', ()=>{
-    const cart = readCart();
-    if(!cart.items || !cart.items.length){
-      $('#checkoutMsg').className = 'notice warn';
-      $('#checkoutMsg').textContent = 'Koszyk jest pusty.';
-      return;
-    }
-    const name = $('#fullName').value.trim();
-    const phone = $('#phone').value.trim();
-    if(!name || !phone){
-      $('#checkoutMsg').className = 'notice warn';
-      $('#checkoutMsg').textContent = 'Uzupełnij imię i telefon.';
-      return;
-    }
-    const orders = QM_APP.readJSON('qm_orders_v1', []);
-    const totalGross = cart.items.reduce((a,b)=>a + ((Number(b.qty)||0)*(Number(b.priceRetail || b.price || 0)||0)),0);
-    const order = {
-      id: 'QM-' + Date.now(),
-      orderNo: 'QM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + String((orders.length||0)+1).padStart(4,'0'),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      status: 'new',
-      storeSlug: slug,
-      customer: {
-        name, phone,
-        email: $('#email').value.trim(),
-        city: $('#city').value.trim(),
-        address: $('#address').value.trim(),
-        note: $('#note').value.trim()
-      },
-      totals: {
-        items: cart.items.reduce((a,b)=>a + (Number(b.qty)||0),0),
-        gross: +totalGross.toFixed(2)
-      },
-      items: cart.items
-    };
-    orders.unshift(order);
-    QM_APP.writeJSON('qm_orders_v1', orders);
-    writeCart({items:[]});
-    $('#checkoutMsg').className = 'notice';
-    $('#checkoutMsg').textContent = 'Zamówienie zapisane. Przechodzę do listy zamówień.';
-    setTimeout(()=>location.href = QM_APP.withStore('zamowienia.html'), 500);
-  });
-  render();
-});
-</script>
-
 </body>
 </html>

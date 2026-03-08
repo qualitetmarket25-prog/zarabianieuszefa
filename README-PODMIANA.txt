@@ -1,46 +1,35 @@
-PAKIET 13 — START READY
 
-Podmień w repo:
-- index.html
-- platforma.html
-- cennik.html
-- hurtownie.html
-- suppliers.html
-- dashboard.html
-- kontakt.html
-- polityka-prywatnosci.html
-- regulamin.html
-- polityka-cookies.html
-- rodo.html
-- success.html
-- app-layout.css
-- app-shell.js
-- auto-margin.js
-- uszefaqualitet-logo.svg
+PAKIET 14 — SUBSKRYPCJE + AUTO MARŻA
 
-Co daje paczka:
-- jedno główne menu
-- mobile-first UI
-- gotowe linki do hurtowni
-- stopka z linkami prawnymi
-- automatyczna marża basic/pro/elite
-- prosty start do wdrożenia
+CO PODMIENIĆ
+1. app-layout.css
+2. app-shell.js
+3. auto-margin.js
+4. uszefaqualitet-logo.svg
+5. index.html
+6. cennik.html
+7. aktywuj-pro.html
+8. success.html
+9. platforma.html
+10. dashboard.html
+11. hurtownie.html
+12. sklep.html
+13. koszyk.html
+14. checkout.html
+15. zamowienia.html
+16. kontakt.html
+17. regulamin.html
+18. polityka-prywatnosci.html
+19. polityka-cookies.html
+20. js/subscriptions.js
+21. js/planGuard.js
 
-WAŻNE:
-1. Uzupełnij swoje dane firmy w kontakt.html i plikach prawnych.
-2. Jeśli chcesz mieć te same stopki i header na innych stronach, podepnij app-layout.css + app-shell.js.
-3. Link startowy strony:
-   https://qualitetmarket25-prog.github.io/zarabianieuszefa/
+JAK TO DZIAŁA
+- Basic: 79 PLN / mies. / marża 18%
+- Pro: 149 PLN / mies. / marża 28%
+- Elite: 299 PLN / mies. / marża 38%
 
-Test po wgraniu:
-- index.html
-- platforma.html
-- cennik.html
-- hurtownie.html
-- suppliers.html
-- dashboard.html
-- kontakt.html
-- polityka-prywatnosci.html
-- regulamin.html
-- polityka-cookies.html
-- rodo.html
+WAŻNE
+- To jest gotowy start subskrypcji i logiki planów.
+- Prawdziwe pobieranie płatności kartą wymaga osobnej integracji operatora płatności.
+- Szablony prawne trzeba uzupełnić własnymi danymi firmy.

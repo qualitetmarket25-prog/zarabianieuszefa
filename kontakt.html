@@ -1,35 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kontakt — QualitetMarket</title>
-  <meta name="description" content="Kontakt do firmy i obsługi">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>QualitetMarket — start</title>
   <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div data-app-header></div>
-  <main class="page">
-    <div class="container">
-      
-<section class="panel hero-card">
-  <span class="eyebrow">Kontakt</span>
-  <h1>Kontakt i dane firmy</h1>
-  <p>Tu wpisz swoje dane przed startem: e-mail, numer telefonu, adres i dane firmy.</p>
-  <div class="form">
-    <input class="input" value="kontakt@twojadomena.pl" aria-label="Email">
-    <input class="input" value="+48 000 000 000" aria-label="Telefon">
-    <input class="input" value="Nazwa firmy / adres / NIP" aria-label="Dane firmy">
-  </div>
-  <div class="actions"><a class="btn" href="mailto:kontakt@twojadomena.pl">Napisz e-mail</a></div>
-</section>
-
+  
+<main class="container">
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="card pad">
+        <span class="tag">Start-ready • subskrypcje • automatyczna marża</span>
+        <h1 class="h1">Uruchom ludziom dropshipping przez Twój sklep i zarabiaj na każdej aktywacji.</h1>
+        <p class="lead">Ten build ustawia plan, marżę i gotowy katalog produktów. Użytkownik wybiera subskrypcję, dostaje swój plan, a system automatycznie ustawia ceny na produktach tak, żeby jemu też się opłacało, a Tobie zostawał zysk.</p>
+        <div class="cta-row" style="margin-top:16px">
+          <a class="btn btn-primary" href="cennik.html">Włącz subskrypcje</a>
+          <a class="btn btn-secondary" href="platforma.html">Zobacz platformę</a>
+          <button class="btn btn-ghost" data-apply-margin>Ustaw marżę na produktach</button>
+        </div>
+        <hr class="sep">
+        <div class="badge-row">
+          <span class="badge">Basic 79 PLN / mies.</span>
+          <span class="badge">Pro 149 PLN / mies.</span>
+          <span class="badge">Elite 299 PLN / mies.</span>
+          <span class="badge">Auto marża na katalogu</span>
+        </div>
+      </div>
+      <div class="card pad">
+        <h2 class="h2">Jak zarabiasz</h2>
+        <ul class="list">
+          <li>Na subskrypcji miesięcznej użytkownika.</li>
+          <li>Na automatycznej marży ustawianej na produktach w katalogu.</li>
+          <li>Na planach PRO i ELITE z większym dostępem do modułów.</li>
+        </ul>
+        <div class="notice success" style="margin-top:14px">
+          Domyślna strategia: <strong>Basic 18%</strong>, <strong>Pro 28%</strong>, <strong>Elite 38%</strong>. Dodatkowo system podnosi marżę bardziej dla tańszych produktów, żeby nie sprzedawać za grosze.
+        </div>
+      </div>
     </div>
-  </main>
-  <div data-app-footer></div>
-  <div data-app-bottomnav></div>
-  <script src="app-shell.js"></script>
+  </section>
+  <section class="section">
+    <div class="kpi-grid">
+      <div class="card pad kpi"><div class="label">Aktywny plan</div><div class="value" data-current-plan>Basic</div></div>
+      <div class="card pad kpi"><div class="label">Marża sklepu</div><div class="value" id="kpiMargin">18%</div></div>
+      <div class="card pad kpi"><div class="label">Produkty w katalogu</div><div class="value" id="kpiProducts">0</div></div>
+      <div class="card pad kpi"><div class="label">Gotowość startu</div><div class="value">100%</div></div>
+    </div>
+  </section>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const margin = JSON.parse(localStorage.getItem('qm_store_margin_pct')||'18');
+  document.getElementById('kpiMargin').textContent = margin + '%';
+  const products = JSON.parse(localStorage.getItem('qm_products_by_supplier_v1')||'[]');
+  document.getElementById('kpiProducts').textContent = Array.isArray(products) ? products.length : 0;
+});
+</script>
+
+  <script src="js/subscriptions.js"></script>
+  <script src="js/planGuard.js"></script>
   <script src="auto-margin.js"></script>
+  <script src="app-shell.js"></script>
+  
 </body>
 </html>
