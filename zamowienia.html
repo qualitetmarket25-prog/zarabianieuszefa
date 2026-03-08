@@ -1,20 +1,69 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zamówienia — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Zamówienia','lista zamówień');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Zamówienia</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zamówienia MAX — QualitetMarket</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+  <link rel="stylesheet" href="css/crm.css">
+  <script defer src="app-shell.js"></script>
+  <script defer src="js/orders.js"></script>
+</head>
+<body>
+  <div data-page-root>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (window.QU && typeof QU.shell === 'function') {
+          QU.shell('Panel zamówień MAX', 'ETAP 11 — lista zamówień, statusy i podsumowanie');
+        }
+      });
+    </script>
+
+    <section class="hero">
+      <div class="card">
+        <div class="chip">ETAP 11 • ORDERS MAX</div>
+        <h1>Panel zamówień sklepu z zapisaniem do <strong>qm_orders_v1</strong>.</h1>
+        <p class="lead">Widok czyta zamówienia z localStorage, pozwala zmieniać status i pokazuje proste podsumowanie sprzedaży.</p>
+        <div class="actions-row" style="margin-top:16px">
+          <a class="btn" href="dashboard.html">Dashboard CRM</a>
+          <button id="seedOrdersBtn" class="btn-gold" type="button">Wrzuć demo zamówienia</button>
+          <button id="clearOrdersBtn" class="btn-ghost danger" type="button">Wyczyść zamówienia</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>Podsumowanie</h2></div>
+        <div class="list">
+          <div class="list-row"><div><strong>Zamówienia razem</strong><div class="small">Wszystkie rekordy w localStorage.</div></div><strong id="ordersCount">0</strong></div>
+          <div class="list-row"><div><strong>Nowe / w realizacji</strong><div class="small">Status pending lub processing.</div></div><strong id="ordersOpen">0</strong></div>
+          <div class="list-row"><div><strong>Przychód łączny</strong><div class="small">Suma ze wszystkich zamówień.</div></div><strong id="ordersRevenue">0 zł</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <div class="section-title">
+        <h2>Lista zamówień</h2>
+        <input id="ordersSearch" class="table-search" placeholder="Szukaj po numerze, kliencie, emailu lub produkcie">
+      </div>
+      <div class="table-wrap">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Nr</th>
+              <th>Data</th>
+              <th>Klient</th>
+              <th>Produkty</th>
+              <th>Suma</th>
+              <th>Status</th>
+              <th>Akcje</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
-</div>
-</body></html>
+</body>
+</html>
