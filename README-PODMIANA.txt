@@ -1,27 +1,16 @@
-PAKIET RATUNKOWY 2 — CORE
+PAKIET FIX — PLATFORMA
 
-Podmień w głównym katalogu repo:
-- index.html
-- platforma.html
-- cennik.html
-- hurtownie.html
-- sklep.html
-- koszyk.html
-- checkout.html
-- zamowienia.html
-- sklepy.html
-- kontakt.html
-- polityka-prywatnosci.html
-- regulamin.html
-- app-layout.css
-- app-shell.js
-- uszefaqualitet-logo.svg
+CO PODMIENIĆ:
+1. platforma.html
+2. app-layout.css
+3. app-shell.js
 
-Po wgraniu:
-1. commit
-2. push
-3. odczekaj GitHub Pages
-4. Ctrl+F5
+KROKI:
+1. Otwórz repo
+2. Nadpisz te 3 pliki
+3. Commit
+4. Push
+5. Po wdrożeniu na GitHub Pages zrób Ctrl+F5
 
-Główny link:
-https://qualitetmarket25-prog.github.io/zarabianieuszefa/
+TEST:
+https://qualitetmarket25-prog.github.io/zarabianieuszefa/platforma.html
