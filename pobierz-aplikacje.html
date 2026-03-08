@@ -2,30 +2,64 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pobierz aplikację — UszefaQualitet</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>QualitetMarket — Pobierz aplikacje</title>
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
-  
 </head>
-<body class="app-page" data-title="Pobierz aplikację">
-
-<section class="hero">
-  <div class="card">
-    <h1>Pobierz aplikację</h1>
-    <p class="muted">To ekran premium pod pobieranie i zachętę do instalacji. Ma budować wizerunek prawdziwej platformy mobilnej.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="index.html">Pobierz na telefon</a>
-      <a class="btn secondary" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-    </div>
+<body>
+  <div class="page">
+    <div data-topbar></div>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <article class="card hero-card">
+            <div class="badge">Moduły aplikacji</div>
+            <h1>Jedno miejsce do wejścia w narzędzia zarabiania</h1>
+            <p class="lead">Masz tu szybki dostęp do aplikacji, AI, reklam, branż i sklepu.</p>
+          </article>
+          <aside class="card hero-card">
+            <div class="kicker">Automatyzacja zarabiania</div>
+            <div data-margin-summary></div>
+          </aside>
+        </div>
+      </section>
+      
+<section class="section">
+  <div class="grid grid-3">
+    <article class="card module">
+      <h2>Pobierz aplikacje i moduły</h2>
+      <p>Jedno miejsce do wejścia w najważniejsze narzędzia zarabiania.</p>
+      <div class="actions">
+        <a class="btn" href="aplikacje.html">Aplikacje</a>
+        <a class="btn" href="ai.html">AI</a>
+        <a class="btn" href="reklama-ai.html">Reklama AI</a>
+      </div>
+    </article>
+    <article class="card module">
+      <h2>Branże i zarabianie</h2>
+      <div class="actions">
+        <a class="btn" href="nieruchomosci.html">Nieruchomości</a>
+        <a class="btn" href="auta.html">Auta</a>
+        <a class="btn" href="ogloszenia.html">Ogłoszenia</a>
+      </div>
+    </article>
+    <article class="card module">
+      <h2>Commerce</h2>
+      <div class="actions">
+        <a class="btn" href="sklep.html">Sklep</a>
+        <a class="btn" href="koszyk.html">Koszyk</a>
+        <a class="btn" href="checkout.html">Checkout</a>
+      </div>
+    </article>
   </div>
-  <div class="card"><h2>Co daje aplikacja</h2><div class="list">
-    <div class="list-item"><strong>Szybszy dostęp</strong><span class="tag">mobile</span></div>
-    <div class="list-item"><strong>Lepszy wizerunek</strong><span class="tag">premium</span></div>
-    <div class="list-item"><strong>Własna marka</strong><span class="tag">boss</span></div>
-  </div></div>
 </section>
 
-<script src="app-shell.js"></script>
+    </main>
+    <div data-bottom-nav></div>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>

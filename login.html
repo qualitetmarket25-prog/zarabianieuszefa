@@ -1,22 +1,67 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Logowanie — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <div class="card" style="max-width:560px;margin:40px auto">
-    <div class="center"><img src="uszefaqualitet-logo.svg" alt="" style="width:72px;height:72px;margin:0 auto 12px"><h1 style="margin:0 0 10px">Wejdź do aplikacji</h1><p class="lead">Prosty start. Po wejściu trafiasz do premium dashboardu.</p></div>
-    <div class="form-grid" style="grid-template-columns:1fr">
-      <div class="field"><label>E-mail</label><input type="email" placeholder="twoj@email.pl"></div>
-      <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••"></div>
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="dashboard.html">Wejdź do panelu</a>
-      <a class="btn-ghost" href="cennik.html">Wybierz plan</a>
-    </div>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>QualitetMarket — Logowanie</title>
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div class="page">
+    <div data-topbar></div>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <article class="card hero-card">
+            <div class="badge">Start aplikacji</div>
+            <h1>Wejdź do platformy i zacznij zarabiać</h1>
+            <p class="lead">Szybkie wejście do menu głównego, planów i modułów sprzedaży.</p>
+          </article>
+          <aside class="card hero-card">
+            <div class="kicker">Automatyzacja zarabiania</div>
+            <div data-margin-summary></div>
+          </aside>
+        </div>
+      </section>
+      
+<section class="section">
+  <div class="grid grid-2">
+    <article class="card module">
+      <h2>Wejście do aplikacji</h2>
+      <p class="muted">Szybkie logowanie do platformy, sklepu i panelu sprzedaży. Po wejściu użytkownik przechodzi dalej do onboardingu i wyboru planu.</p>
+      <form class="grid" onsubmit="event.preventDefault(); localStorage.setItem('qm_last_login_email', this.email.value); alert('Zapisano lokalnie. Przejdź do onboardingu.'); location.href='onboarding.html';">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" name="email" placeholder="twoj@email.pl" required>
+        </label>
+        <label class="field">
+          <span>Hasło</span>
+          <input type="password" placeholder="••••••••" required>
+        </label>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Wejdź do aplikacji</button>
+          <a class="btn" href="platforma.html">Otwórz menu główne</a>
+        </div>
+      </form>
+    </article>
+    <article class="card module">
+      <h2>Co daje ten ekran</h2>
+      <ul class="list">
+        <li>start do zarabiania online</li>
+        <li>dostęp do sklepu, hurtowni i AI</li>
+        <li>przejście do planu BASIC / PRO / ELITE</li>
+        <li>gotowość pod telefon i GitHub Pages</li>
+      </ul>
+    </article>
   </div>
-</div>
-</body></html>
+</section>
+
+    </main>
+    <div data-bottom-nav></div>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+</body>
+</html>

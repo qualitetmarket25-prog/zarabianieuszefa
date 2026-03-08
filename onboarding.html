@@ -1,20 +1,69 @@
-<!doctype html><html lang='pl'><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Onboarding — UszefaQualitet</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="app-layout.css">
-<script defer src="app-shell.js"></script>
-</head><body>
-<div data-page-root>
-  <script>document.addEventListener('DOMContentLoaded',function(){QU.shell('Onboarding','szybki start użytkownika');});</script>
-  <div class="card">
-    <div class="section-title"><h2>Onboarding</h2></div>
-    <p class="lead">Ten ekran jest gotowy jako baza premium pod dalszą rozbudowę. W ETAPIE 5 najważniejsze dodatki to płatny Agent Nieruchomości PRO, reklama AI i kreator własnej aplikacji.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-      <a class="btn-gold" href="agent-nieruchomosci-pro.html">Agent Nieruchomości PRO</a>
-    </div>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>QualitetMarket — Onboarding</title>
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div class="page">
+    <div data-topbar></div>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <article class="card hero-card">
+            <div class="badge">Konfiguracja startowa</div>
+            <h1>Ustaw plan i automatyczną marżę</h1>
+            <p class="lead">Na starcie ustawiamy wszystko, co da się zautomatyzować pod sklep i zarabianie.</p>
+          </article>
+          <aside class="card hero-card">
+            <div class="kicker">Automatyzacja zarabiania</div>
+            <div data-margin-summary></div>
+          </aside>
+        </div>
+      </section>
+      
+<section class="section">
+  <div class="grid grid-3">
+    <article class="card module">
+      <h2>1. Wybierz plan</h2>
+      <p>Ustawiam od razu automatyczne marże:</p>
+      <div class="actions">
+        <button class="btn" data-set-plan="basic">BASIC 15%</button>
+        <button class="btn btn-primary" data-set-plan="pro">PRO 25%</button>
+        <button class="btn btn-secondary" data-set-plan="elite">ELITE 35%</button>
+      </div>
+      <p class="muted">Plan zapisuje się lokalnie i od razu ustawia marżę sklepu.</p>
+    </article>
+    <article class="card module">
+      <h2>2. Ustaw własną marżę</h2>
+      <form class="grid" data-custom-margin-form>
+        <label class="field">
+          <span>Marża %</span>
+          <input type="number" name="marginPct" min="0" max="500" step="1" value="25">
+        </label>
+        <button class="btn btn-primary" type="submit">Zapisz własną marżę</button>
+      </form>
+    </article>
+    <article class="card module">
+      <h2>3. Przejdź dalej</h2>
+      <p>Po ustawieniu planu i marży możesz od razu wejść do hurtowni, sklepu albo aktywować PRO.</p>
+      <div class="actions">
+        <a class="btn" href="hurtownie.html">Import z hurtowni</a>
+        <a class="btn" href="sklep.html">Sklep</a>
+        <a class="btn btn-primary" href="aktywuj-pro.html">Aktywuj PRO</a>
+      </div>
+    </article>
   </div>
-</div>
-</body></html>
+</section>
+
+    </main>
+    <div data-bottom-nav></div>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+</body>
+</html>

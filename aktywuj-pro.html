@@ -1,215 +1,58 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>QualitetMarket — aktywacja planu</title>
-  <meta name="description" content="Aktywacja planu BASIC, PRO lub ELITE w QualitetMarket." />
-  <link rel="stylesheet" href="./styles.css" />
-  <script defer src="./js/subscriptions.js"></script>
-
-  <style>
-    :root{
-      color-scheme:dark;
-      --bg:#08111f;
-      --stroke:rgba(255,255,255,.08);
-      --text:#eef4ff;
-      --muted:#9db0cf;
-      --brand:#55e7a7;
-      --brand2:#66b6ff;
-      --shadow:0 20px 50px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100svh;
-      color:var(--text);
-      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(102,182,255,.14), transparent 26%),
-        radial-gradient(circle at top left, rgba(85,231,167,.12), transparent 24%),
-        linear-gradient(180deg,#08111f,#050a12);
-    }
-    a{text-decoration:none;color:inherit}
-    .wrap{max-width:860px;margin:0 auto;padding:18px}
-    .back{display:inline-flex;align-items:center;gap:8px;color:#b9ddff;font-weight:900;margin-bottom:16px}
-    .card{
-      padding:28px;border-radius:28px;border:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
-      box-shadow:var(--shadow);
-    }
-    .eyebrow{
-      display:inline-flex;padding:8px 12px;border-radius:999px;
-      background:rgba(85,231,167,.12);color:#98f0c9;
-      font-weight:900;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    }
-    .plan{font-size:46px;font-weight:1000;margin:16px 0 4px;letter-spacing:-.04em}
-    .price{font-size:24px;font-weight:900}
-    .muted{color:var(--muted);line-height:1.75}
-    .features{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
-    .f{
-      padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--stroke);
-      color:var(--muted);line-height:1.6;
-    }
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .btn{
-      display:inline-flex;justify-content:center;align-items:center;min-height:52px;padding:14px 18px;
-      border-radius:16px;font-weight:900;border:1px solid transparent;cursor:pointer;
-    }
-    .btn-main{background:linear-gradient(135deg,var(--brand),#71ffd1);color:#032317}
-    .btn-ghost{background:#131f34;border-color:var(--stroke)}
-    .status{
-      margin-top:16px;padding:14px 16px;border-radius:16px;
-      background:rgba(255,255,255,.04);border:1px solid var(--stroke);font-weight:700
-    }
-    .ok{color:#9cf1cd}
-    .warn{color:#ffe29a}
-    .bad{color:#ff9e9e}
-    .mini{
-      margin-top:14px;
-      padding:14px 16px;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--stroke);
-      color:var(--muted);
-      line-height:1.7;
-      font-size:14px;
-    }
-    @media (max-width: 760px){
-      .features{grid-template-columns:1fr}
-      .wrap{padding:14px}
-      .card{padding:18px}
-      .btn{width:100%}
-      .plan{font-size:36px}
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>QualitetMarket — Aktywuj PRO</title>
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <main class="wrap">
-    <a class="back" href="./cennik.html">← Wróć do planów</a>
-
-    <section class="card">
-      <div class="eyebrow">aktywacja planu</div>
-      <div class="plan" id="planName">PRO</div>
-      <div class="price" id="planPrice">149 zł / mies.</div>
-
-      <p class="muted" id="planDesc">
-        Po kliknięciu użytkownik przechodzi do checkoutu Stripe. Jeżeli link dla danego planu nie jest jeszcze ustawiony,
-        aktywacja zadziała lokalnie tylko do testów.
-      </p>
-
-      <div class="features" id="featureGrid"></div>
-
+  <div class="page">
+    <div data-topbar></div>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <article class="card hero-card">
+            <div class="badge">Plan i marża</div>
+            <h1>Włącz PRO lub ELITE i podbij marżę</h1>
+            <p class="lead">Jednym kliknięciem ustawiasz plan i automatyczne przeliczenie marży.</p>
+          </article>
+          <aside class="card hero-card">
+            <div class="kicker">Automatyzacja zarabiania</div>
+            <div data-margin-summary></div>
+          </aside>
+        </div>
+      </section>
+      
+<section class="section">
+  <div class="grid grid-2">
+    <article class="card module">
+      <h2>Aktywuj PRO lub ELITE</h2>
+      <p>Na tej stronie ustawiasz plan, a system od razu daje wyższą marżę i gotowość do większego zarobku.</p>
       <div class="actions">
-        <button class="btn btn-main" id="activateBtn" type="button">Aktywuj plan</button>
-        <a class="btn btn-ghost" href="./platforma.html">Mam już plan</a>
+        <button class="btn btn-primary" data-set-plan="pro">Włącz PRO + 25%</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Włącz ELITE + 35%</button>
+        <button class="btn" data-set-plan="basic">Wróć do BASIC 15%</button>
       </div>
-
-      <div class="status" id="statusBox">Ładowanie planu...</div>
-
-      <div class="mini">
-        <strong>Tryb testowy:</strong> BASIC i ELITE są już podpięte do Stripe test.  
-        PRO czeka na poprawny osobny link checkout.
+      <p class="note">Po kliknięciu plan zapisuje się lokalnie i przelicza produkty.</p>
+    </article>
+    <article class="card module">
+      <h2>Szybkie wejścia</h2>
+      <div class="actions">
+        <a class="btn" href="cennik.html">Zobacz cennik</a>
+        <a class="btn" href="platforma.html">Menu główne</a>
+        <a class="btn" href="success.html">Ekran sukcesu</a>
       </div>
-    </section>
-  </main>
+    </article>
+  </div>
+</section>
 
-  <script>
-    (function(){
-      "use strict";
-
-      var plans = {
-        basic: {
-          label: "BASIC",
-          price: "49 zł / mies.",
-          desc: "Plan startowy do wejścia w system i pierwszego działania bez dużego kosztu.",
-          features: [
-            "Dostęp startowy do platformy",
-            "Podgląd podstawowych modułów",
-            "Niski próg wejścia",
-            "Domyślna marża planu: 12%"
-          ]
-        },
-        pro: {
-          label: "PRO",
-          price: "149 zł / mies.",
-          desc: "Główny plan sprzedażowy z panelem sprzedawcy i dostępem do hurtowni premium.",
-          features: [
-            "Pełny panel sklepu i sprzedaży",
-            "Dostęp do hurtowni premium",
-            "Lepsza domyślna marża: 18%",
-            "Mocniejszy plan do realnej sprzedaży"
-          ]
-        },
-        elite: {
-          label: "ELITE",
-          price: "299 zł / mies.",
-          desc: "Najmocniejszy plan pod skalowanie, AI i największą automatyzację działań.",
-          features: [
-            "Wszystko z PRO",
-            "Dostęp do AI pomocnika",
-            "Najwyższa domyślna marża: 24%",
-            "Najmocniejszy status dla rozwoju"
-          ]
-        }
-      };
-
-      function getPlanFromUrl(){
-        try{
-          var url = new URL(window.location.href);
-          var p = String(url.searchParams.get("plan") || "pro").toLowerCase();
-          return plans[p] ? p : "pro";
-        }catch(e){
-          return "pro";
-        }
-      }
-
-      var planId = getPlanFromUrl();
-      var plan = plans[planId];
-
-      var nameNode = document.getElementById("planName");
-      var priceNode = document.getElementById("planPrice");
-      var descNode = document.getElementById("planDesc");
-      var featuresNode = document.getElementById("featureGrid");
-      var activateBtn = document.getElementById("activateBtn");
-      var statusBox = document.getElementById("statusBox");
-
-      nameNode.textContent = plan.label;
-      priceNode.textContent = plan.price;
-      descNode.textContent = plan.desc;
-
-      featuresNode.innerHTML = plan.features.map(function(item){
-        return '<div class="f">' + item + '</div>';
-      }).join("");
-
-      function setStatus(html){
-        statusBox.innerHTML = html;
-      }
-
-      activateBtn.addEventListener("click", function(){
-        if(!window.QM_SUBS || typeof window.QM_SUBS.openCheckout !== "function"){
-          setStatus('<span class="bad">Brak modułu subskrypcji. Sprawdź plik js/subscriptions.js.</span>');
-          return;
-        }
-
-        var hasRealLink = !!window.QM_SUBS.getCheckoutUrl(planId);
-        var result = window.QM_SUBS.openCheckout(planId);
-
-        if(result && result.mode === "checkout" && hasRealLink){
-          setStatus('<span class="ok">Przekierowanie do Stripe...</span>');
-          return;
-        }
-
-        if(result && result.mode === "local"){
-          setStatus('<span class="warn">Brak realnego linku checkout dla tego planu. Aktywacja przeszła lokalnie tylko do testów.</span>');
-          return;
-        }
-
-        setStatus('<span class="bad">Nie udało się aktywować planu. Sprawdź konfigurację subskrypcji.</span>');
-      });
-
-      setStatus('Plan gotowy do aktywacji: <strong>' + plan.label + '</strong>.');
-    })();
-  </script>
+    </main>
+    <div data-bottom-nav></div>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
 </body>
 </html>
