@@ -1,144 +1,123 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sukces</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-color:#111;
-}
-header{
-background:#111;
-color:#fff;
-padding:14px;
-font-size:18px;
-font-weight:bold;
-}
-.container{
-max-width:700px;
-margin:0 auto;
-padding:12px;
-}
-.card{
-background:#fff;
-border-radius:12px;
-padding:18px 14px;
-margin-bottom:12px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-text-align:center;
-}
-.ok{
-font-size:48px;
-margin-bottom:12px;
-}
-.title{
-font-size:22px;
-font-weight:bold;
-margin-bottom:10px;
-}
-.text{
-font-size:15px;
-color:#555;
-line-height:1.5;
-margin-bottom:16px;
-}
-.btn,
-button{
-display:block;
-width:100%;
-padding:14px;
-border:none;
-border-radius:10px;
-font-size:16px;
-font-weight:bold;
-text-align:center;
-text-decoration:none;
-box-sizing:border-box;
-cursor:pointer;
-}
-.btn-black{
-background:#111;
-color:#fff;
-}
-.btn-white{
-background:#fff;
-color:#111;
-border:1px solid #ddd;
-}
-.actions{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-.info{
-font-size:14px;
-color:#666;
-margin-top:10px;
-}
-</style>
+<link rel="stylesheet" href="app-layout.css">
+  <title>Sukces - QualitetMarket</title>
+  <style>
+    .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
+    .stack {display:grid;gap:20px}
+    .grid-2 {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .grid-3 {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+    .muted {color:#94a3b8}
+    .btn-row {display:flex;gap:12px;flex-wrap:wrap}
+    .btn {display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;border:none;cursor:pointer}
+    .btn.secondary {background:#1e293b;color:#e2e8f0;border:1px solid #334155}
+    .btn.full {width:100%}
+    .input,.select,.textarea {width:100%;padding:14px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
+    .textarea {min-height:100px;resize:vertical}
+    .badge {display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
+    .price {font-size:40px;font-weight:800;margin:8px 0}
+    .kpi {font-size:30px;font-weight:800}
+    .list {display:grid;gap:12px}
+    .list-item {display:flex;justify-content:space-between;gap:16px;padding:14px;border-radius:12px;background:#0f172a;border:1px solid #1e293b}
+    .center {text-align:center}
+    .logo-box {width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;color:#082f49;font-size:24px;font-weight:800}
+    .auth-wrap {max-width:460px;margin:0 auto}
+    .landing-top {display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
+    .table {width:100%;border-collapse:collapse}
+    .table th,.table td {padding:12px;border-bottom:1px solid #1e293b;text-align:left}
+    @media (max-width: 920px) {
+      .hero,.grid-2,.grid-3 {grid-template-columns:1fr}
+      .landing-top {flex-direction:column;align-items:flex-start}
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">QM App</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+<a href="platforma.html">Platforma</a>
+<a href="hurtownie.html">Hurtownie</a>
+<a href="sklep.html">Sklep</a>
+<a href="zamowienia.html">Zamówienia</a>
+<a href="panel-sklepu.html">Panel sklepu</a>
+<a href="generator-sklepu.html">Generator</a>
+<a href="qualitetmarket.html">QualitetMarket</a>
+<a href="intelligence.html">Intelligence</a>
+<a href="cennik.html">Cennik</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="plan-box">
+          <small>Plan</small>
+          <strong id="userPlanLabel">basic</strong>
+        </div>
+      </div>
+    </aside>
 
-<header>
-Płatność zakończona
-</header>
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+          <div>
+            <div class="topbar-title">Sukces</div>
+            <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="plan-switch" data-set-plan="basic">Basic</button>
+          <button class="plan-switch" data-set-plan="pro">PRO</button>
+          <button class="plan-switch" data-set-plan="elite">ELITE</button>
+        </div>
+      </header>
 
-<div class="container">
+      <main class="content">
+        
+<section class="auth-wrap">
+  <div class="card center">
+    <div class="logo-box" style="margin:0 auto 16px;">✓</div>
+    <h1>Sukces</h1>
+    <p class="muted" id="successText">Operacja zakończona poprawnie.</p>
+    <div class="btn-row" style="justify-content:center;margin-top:14px;">
+      <a class="btn" href="dashboard.html">Przejdź do dashboardu</a>
+      <a class="btn secondary" href="zamowienia.html">Zamówienia</a>
+    </div>
+  </div>
+</section>
 
-<div class="card">
-<div class="ok">✅</div>
-<div class="title">Zamówienie zostało zapisane</div>
-<div class="text">
-Dziękujemy. Zamówienie trafiło do systemu i możesz je zobaczyć na liście zamówień.
-</div>
+      </main>
+    </div>
+  </div>
 
-<div class="actions">
-<a href="zamowienia.html" class="btn btn-black">Zobacz zamówienia</a>
-<a href="sklep.html" class="btn btn-white">Wróć do sklepu</a>
-</div>
-
-<div class="info" id="orderInfo">
-Status: nowe zamówienie
-</div>
-</div>
-
-</div>
-
-<script>
-const CART_KEY = "qm_cart_v1";
-const LAST_ORDER_KEY = "qm_last_order_v1";
-
-function safeParse(value, fallback){
-  try{
-    return JSON.parse(value);
-  }catch(e){
-    return fallback;
+  <script src="app-shell.js"></script>
+  <script>
+    (function(){
+      const planKey='qm_user_plan_v1';
+      const current=localStorage.getItem(planKey)||'basic';
+      const label=document.getElementById('userPlanLabel');
+      if(label) label.textContent=current;
+      document.querySelectorAll('[data-set-plan]').forEach(btn=>btn.addEventListener('click',()=>{
+        const plan=btn.getAttribute('data-set-plan');
+        localStorage.setItem(planKey,plan);
+        if(label) label.textContent=plan;
+        alert('Plan ustawiony: '+plan);
+      }));
+    })();
+    
+(function(){
+  const params=new URLSearchParams(location.search);
+  const order=params.get('order');
+  const plan=params.get('plan');
+  const el=document.getElementById('successText');
+  if(el){
+    if(order) el.textContent='Zamówienie zapisane: '+order;
+    else if(plan) el.textContent='Plan aktywowany: '+plan;
   }
-}
+})();
 
-function clearCart(){
-  localStorage.removeItem(CART_KEY);
-}
-
-function showLastOrder(){
-  const order = safeParse(localStorage.getItem(LAST_ORDER_KEY), null);
-  if(!order) return;
-
-  const info = document.getElementById("orderInfo");
-  info.innerText = "Zamówienie #" + order.id + " • status: " + (order.status || "nowe");
-}
-
-clearCart();
-showLastOrder();
-</script>
-
-<script src="js/config.js"></script>
-<script src="js/planGuard.js"></script>
-
+  </script>
 </body>
 </html>

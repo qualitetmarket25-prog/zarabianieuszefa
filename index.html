@@ -1,474 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>QualitetMarket — start</title>
-  <meta name="description" content="QualitetMarket — jedno wejście do platformy, sklepu, hurtowni i subskrypcji." />
-  <link rel="stylesheet" href="./styles.css" />
-  <script src="./js/config.js"></script>
-  <script defer src="./js/planGuard.js"></script>
-
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="app-layout.css">
+  <title>Start aplikacji - QualitetMarket</title>
   <style>
-    :root{
-      color-scheme:dark;
-      --bg:#07101c;
-      --bg2:#0b1627;
-      --panel:#101b2e;
-      --panel2:#13233a;
-      --stroke:rgba(255,255,255,.09);
-      --text:#eef4ff;
-      --muted:#9db0cf;
-      --brand:#58e6aa;
-      --brand2:#69b7ff;
-      --warn:#ffd166;
-      --danger:#ff7b7b;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --radius:24px;
-      --radius-sm:16px;
-      --max:1180px;
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      color:var(--text);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(105,183,255,.18), transparent 28%),
-        radial-gradient(circle at top left, rgba(88,230,170,.14), transparent 24%),
-        linear-gradient(180deg,var(--bg),#050a12 72%);
-    }
-
-    a{text-decoration:none;color:inherit}
-    img{max-width:100%;display:block}
-    .wrap{max-width:var(--max);margin:0 auto;padding:18px}
-    .topbar{
-      position:sticky; top:0; z-index:30;
-      backdrop-filter:blur(14px);
-      background:rgba(7,16,28,.78);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .topbar-in{
-      max-width:var(--max);margin:0 auto;padding:12px 18px;
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.01em;
-    }
-    .brand-badge{
-      width:42px;height:42px;border-radius:14px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#042031;font-weight:1000;box-shadow:var(--shadow);
-    }
-    .brand-text small{display:block;color:var(--muted);font-size:12px;font-weight:700}
-    .nav{
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-    }
-    .nav a{
-      min-height:42px;padding:10px 14px;border-radius:999px;
-      border:1px solid var(--stroke);background:rgba(255,255,255,.04);
-      display:inline-flex;align-items:center;justify-content:center;
-      font-weight:800;font-size:14px;
-    }
-
-    .hero{
-      padding:26px 0 10px;
-      display:grid;grid-template-columns:1.2fr .8fr;gap:18px;
-    }
-    .card{
-      border:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    .hero-main{padding:28px}
-    .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;
-      background:rgba(88,230,170,.12);color:#9cf1cd;
-      font-weight:900;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    }
-    h1{
-      margin:16px 0 12px;
-      font-size:clamp(34px,6vw,58px);
-      line-height:1.02;
-      letter-spacing:-.03em;
-    }
-    .lead{
-      margin:0 0 18px;color:var(--muted);font-size:17px;line-height:1.7;max-width:720px;
-    }
-    .cta-row{
-      display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;
-    }
-    .btn{
-      min-height:52px;padding:14px 18px;border-radius:18px;
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      font-weight:900;border:1px solid transparent;
-    }
-    .btn-main{
-      background:linear-gradient(135deg,var(--brand),#7bffd7);
-      color:#042031;
-    }
-    .btn-ghost{
-      background:#122036;border-color:var(--stroke);color:var(--text);
-    }
-
-    .hero-side{padding:20px;display:grid;gap:14px}
-    .status-box,.quick-box{
-      border-radius:20px;padding:18px;border:1px solid var(--stroke);
-      background:rgba(255,255,255,.035);
-    }
-    .status-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-    .pill{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:34px;padding:6px 12px;border-radius:999px;
-      font-weight:900;font-size:12px;border:1px solid var(--stroke);
-      background:rgba(255,255,255,.05);
-    }
-    .pill.pro{background:rgba(88,230,170,.16);color:#a8f4d2}
-    .pill.elite{background:rgba(105,183,255,.16);color:#b9ddff}
-    .pill.basic{background:rgba(255,209,102,.14);color:#ffe29a}
-    .mini-list{display:grid;gap:10px;margin-top:12px}
-    .mini-item{
-      display:flex;justify-content:space-between;gap:10px;
-      padding:12px 14px;border-radius:16px;background:#0f1a2c;border:1px solid var(--stroke);
-      font-size:14px;
-    }
-    .muted{color:var(--muted)}
-
-    .section{padding:10px 0}
-    .section-head{
-      display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      margin:8px 0 16px;
-    }
-    .section h2{margin:0;font-size:28px;letter-spacing:-.02em}
-    .section p{margin:0;color:var(--muted);line-height:1.7}
-
-    .grid{
-      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;
-    }
-    .feature, .step, .plan, .module{
-      padding:20px;border-radius:22px;border:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));
-      min-height:100%;
-    }
-    .feature strong,.step strong,.plan strong,.module strong{
-      display:block;font-size:18px;margin-bottom:10px;
-    }
-    .feature p,.step p,.plan p,.module p{margin:0;color:var(--muted);line-height:1.65}
-    .list{
-      margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;
-    }
-    .list li{
-      padding-left:18px;position:relative;color:var(--muted);line-height:1.55;
-    }
-    .list li::before{
-      content:"•";position:absolute;left:0;top:0;color:var(--brand);font-weight:900;
-    }
-
-    .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .plan.highlight{
-      outline:2px solid rgba(88,230,170,.35);
-      background:
-        radial-gradient(circle at top right, rgba(88,230,170,.13), transparent 30%),
-        linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
-    }
-    .price{
-      margin:8px 0 12px;font-size:34px;font-weight:1000;letter-spacing:-.04em;
-    }
-    .sub{
-      display:inline-flex;padding:7px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);font-size:12px;font-weight:900;color:var(--muted);
-    }
-
-    .modules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-    .module a{
-      margin-top:14px;display:inline-flex;padding:12px 14px;border-radius:14px;
-      background:#122036;border:1px solid var(--stroke);font-weight:900;
-    }
-
-    .footer{
-      margin:28px 0 18px;padding:18px;border:1px solid var(--stroke);
-      border-radius:22px;background:rgba(255,255,255,.03);
-      display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      color:var(--muted);font-size:14px;
-    }
-
-    @media (max-width: 980px){
-      .hero{grid-template-columns:1fr}
-      .grid,.plans{grid-template-columns:1fr}
-      .modules{grid-template-columns:1fr 1fr}
-    }
-    @media (max-width: 640px){
-      .wrap,.topbar-in{padding-left:14px;padding-right:14px}
-      .nav{display:none}
-      .hero-main,.hero-side,.feature,.step,.plan,.module{padding:18px}
-      .cta-row .btn{width:100%}
-      .modules{grid-template-columns:1fr}
-      h1{font-size:36px}
+    .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
+    .stack {display:grid;gap:20px}
+    .grid-2 {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .grid-3 {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+    .muted {color:#94a3b8}
+    .btn-row {display:flex;gap:12px;flex-wrap:wrap}
+    .btn {display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;border:none;cursor:pointer}
+    .btn.secondary {background:#1e293b;color:#e2e8f0;border:1px solid #334155}
+    .btn.full {width:100%}
+    .input,.select,.textarea {width:100%;padding:14px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
+    .textarea {min-height:100px;resize:vertical}
+    .badge {display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
+    .price {font-size:40px;font-weight:800;margin:8px 0}
+    .kpi {font-size:30px;font-weight:800}
+    .list {display:grid;gap:12px}
+    .list-item {display:flex;justify-content:space-between;gap:16px;padding:14px;border-radius:12px;background:#0f172a;border:1px solid #1e293b}
+    .center {text-align:center}
+    .logo-box {width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;color:#082f49;font-size:24px;font-weight:800}
+    .auth-wrap {max-width:460px;margin:0 auto}
+    .landing-top {display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
+    .table {width:100%;border-collapse:collapse}
+    .table th,.table td {padding:12px;border-bottom:1px solid #1e293b;text-align:left}
+    @media (max-width: 920px) {
+      .hero,.grid-2,.grid-3 {grid-template-columns:1fr}
+      .landing-top {flex-direction:column;align-items:flex-start}
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-in">
-      <a class="brand" href="./index.html">
-        <span class="brand-badge">Q</span>
-        <span class="brand-text">
-          QualitetMarket
-          <small>jedno wejście do całego systemu</small>
-        </span>
-      </a>
-
-      <nav class="nav">
-        <a href="./platforma.html">Platforma</a>
-        <a href="./hurtownie.html">Hurtownie</a>
-        <a href="./sklep.html">Sklep</a>
-        <a href="./panel-sklepu.html">Panel</a>
-        <a href="./intelligence.html">AI</a>
-        <a href="./cennik.html">Plany</a>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">QM App</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+<a href="platforma.html">Platforma</a>
+<a href="hurtownie.html">Hurtownie</a>
+<a href="sklep.html">Sklep</a>
+<a href="zamowienia.html">Zamówienia</a>
+<a href="panel-sklepu.html">Panel sklepu</a>
+<a href="generator-sklepu.html">Generator</a>
+<a href="qualitetmarket.html">QualitetMarket</a>
+<a href="intelligence.html">Intelligence</a>
+<a href="cennik.html">Cennik</a>
       </nav>
+      <div class="sidebar-footer">
+        <div class="plan-box">
+          <small>Plan</small>
+          <strong id="userPlanLabel">basic</strong>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+          <div>
+            <div class="topbar-title">Start aplikacji</div>
+            <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="plan-switch" data-set-plan="basic">Basic</button>
+          <button class="plan-switch" data-set-plan="pro">PRO</button>
+          <button class="plan-switch" data-set-plan="elite">ELITE</button>
+        </div>
+      </header>
+
+      <main class="content">
+        
+<section class="landing-top">
+  <div>
+    <span class="badge">Aplikacja marketplace / dropshipping</span>
+    <h1 style="font-size:42px;margin:14px 0 10px;">QualitetMarket jako gotowa aplikacja do sprzedaży</h1>
+    <p class="muted" style="max-width:760px;">Buduj sklep, importuj produkty z hurtowni, zarządzaj zamówieniami i rozwijaj multi-store w jednym panelu. Wszystko działa na GitHub Pages i localStorage.</p>
+  </div>
+  <div class="btn-row">
+    <a class="btn" href="login.html">Wejdź do aplikacji</a>
+    <a class="btn secondary" href="cennik.html">Zobacz cennik</a>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="card">
+    <div class="badge">APP MODE</div>
+    <h2>Jedna baza pod desktop i mobile</h2>
+    <p class="muted">Ta wersja przerabia projekt na aplikację z panelem, modułami i prostą ścieżką do PWA / wrappera APK.</p>
+    <div class="btn-row">
+      <a class="btn" href="dashboard.html">Otwórz dashboard</a>
+      <a class="btn secondary" href="hurtownie.html">Importuj produkty</a>
     </div>
-  </header>
+  </div>
+  <div class="stack">
+    <div class="card">
+      <div class="muted">Produkty</div>
+      <div class="kpi" id="kpiProducts">0</div>
+    </div>
+    <div class="card">
+      <div class="muted">Zamówienia</div>
+      <div class="kpi" id="kpiOrders">0</div>
+    </div>
+  </div>
+</section>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="card hero-main">
-        <div class="eyebrow">mobile-first • sprzedaż • automatyzacja</div>
-        <h1>Od wejścia do działania w jednym miejscu.</h1>
-        <p class="lead">
-          Tu masz całe QualitetMarket spięte pod prosty start: platforma, hurtownie,
-          sklep, plany, panel sprzedawcy i AI. Bez chaosu, bez szukania po linkach,
-          z priorytetem na telefon, szybkie kliknięcia i sprzedaż.
-        </p>
+<section class="grid-3" style="margin-top:20px;">
+  <div class="card"><h3>Hurtownie</h3><p class="muted">Import CSV i zapis do qm_products_by_supplier_v1.</p></div>
+  <div class="card"><h3>Sklep</h3><p class="muted">Produkty, koszyk, checkout i zamówienia pod jeden flow.</p></div>
+  <div class="card"><h3>Multi-store</h3><p class="muted">Gotowość pod qm_stores_v1, qm_active_store_v1 i marżę.</p></div>
+</section>
 
-        <div class="cta-row">
-          <a class="btn btn-main" href="./platforma.html">Wejdź do platformy</a>
-          <a class="btn btn-ghost" href="./hurtownie.html">Przejdź do hurtowni</a>
-          <a class="btn btn-ghost" href="./cennik.html">Zobacz plany</a>
-        </div>
-      </div>
+      </main>
+    </div>
+  </div>
 
-      <aside class="card hero-side">
-        <div class="status-box">
-          <div class="status-top">
-            <strong>Twój plan</strong>
-            <span class="pill basic" data-current-plan-pill>BASIC</span>
-          </div>
-          <div class="muted" style="line-height:1.7">
-            Status planu i dostępów aktualizuje się automatycznie po aktywacji.
-          </div>
-
-          <div class="mini-list">
-            <div class="mini-item">
-              <span>Dostęp do hurtowni premium</span>
-              <strong data-access-pro>Nie</strong>
-            </div>
-            <div class="mini-item">
-              <span>Dostęp do AI pomocnika</span>
-              <strong data-access-elite>Nie</strong>
-            </div>
-            <div class="mini-item">
-              <span>Domyślna marża</span>
-              <strong data-current-margin>12%</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="quick-box">
-          <strong>Szybkie wejścia</strong>
-          <div class="mini-list">
-            <a class="mini-item" href="./sklep.html"><span>Sklep LIVE</span><strong>Otwórz</strong></a>
-            <a class="mini-item" href="./panel-sklepu.html"><span>Panel sprzedawcy</span><strong>Wejdź</strong></a>
-            <a class="mini-item" href="./intelligence.html"><span>AI pomocnik</span><strong>Start</strong></a>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Co użytkownik ma zrobić po wejściu</h2>
-          <p>Bez zbędnego myślenia. Jeden flow od startu do płatnego działania.</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <article class="step">
-          <strong>1. Wchodzi z index.html</strong>
-          <p>Od razu widzi gdzie kliknąć: platforma, hurtownie, plany, sklep i panel.</p>
-        </article>
-        <article class="step">
-          <strong>2. Wybiera plan</strong>
-          <p>BASIC na wejście. PRO do sprzedaży. ELITE do skali i AI.</p>
-        </article>
-        <article class="step">
-          <strong>3. Odpala ofertę</strong>
-          <p>Import hurtowni, marża, sklep i sprzedaż z telefonu bez kombinowania.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Najważniejsze moduły</h2>
-          <p>Cały system ma prowadzić do prostego działania i upgrade’u planu.</p>
-        </div>
-      </div>
-
-      <div class="modules">
-        <article class="module">
-          <strong>Platforma</strong>
-          <p>Główne centrum użytkownika, wejście do modułów i dalszych działań.</p>
-          <a href="./platforma.html">Otwórz platformę</a>
-        </article>
-
-        <article class="module">
-          <strong>Hurtownie</strong>
-          <p>Dostawcy standardowi i premium spięci w jednym miejscu.</p>
-          <a href="./hurtownie.html">Przejdź do hurtowni</a>
-        </article>
-
-        <article class="module">
-          <strong>Sklep</strong>
-          <p>Gotowy katalog sprzedażowy z automatyczną marżą i prostym UX.</p>
-          <a href="./sklep.html">Otwórz sklep</a>
-        </article>
-
-        <article class="module">
-          <strong>AI pomocnik</strong>
-          <p>Moduł premium do szybszego działania użytkowników i mniejszego oporu.</p>
-          <a href="./intelligence.html">Wejdź do AI</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Plany, które mają sprzedawać</h2>
-          <p>PRO ma być głównym wyborem. BASIC obniża próg wejścia. ELITE robi skalę.</p>
-        </div>
-      </div>
-
-      <div class="plans">
-        <article class="plan">
-          <span class="sub">na wejście</span>
-          <strong>BASIC</strong>
-          <div class="price">49 zł<span style="font-size:16px;font-weight:800;color:var(--muted)"> / mies.</span></div>
-          <ul class="list">
-            <li>Wejście do systemu</li>
-            <li>Podgląd modułów i sklepu</li>
-            <li>Plan startowy pod pierwsze kliknięcia</li>
-          </ul>
-          <div class="cta-row">
-            <a class="btn btn-ghost" href="./aktywuj-pro.html?plan=basic">Aktywuj BASIC</a>
-          </div>
-        </article>
-
-        <article class="plan highlight">
-          <span class="sub">najczęściej wybierany</span>
-          <strong>PRO</strong>
-          <div class="price">149 zł<span style="font-size:16px;font-weight:800;color:var(--muted)"> / mies.</span></div>
-          <ul class="list">
-            <li>Panel sprzedawcy</li>
-            <li>Hurtownie premium</li>
-            <li>Lepsza domyślna marża i większa sprzedażowość</li>
-          </ul>
-          <div class="cta-row">
-            <a class="btn btn-main" href="./aktywuj-pro.html?plan=pro">Aktywuj PRO</a>
-          </div>
-        </article>
-
-        <article class="plan">
-          <span class="sub">skala i automatyzacja</span>
-          <strong>ELITE</strong>
-          <div class="price">299 zł<span style="font-size:16px;font-weight:800;color:var(--muted)"> / mies.</span></div>
-          <ul class="list">
-            <li>Wszystko z PRO</li>
-            <li>AI pomocnik</li>
-            <li>Najmocniejszy plan do skalowania</li>
-          </ul>
-          <div class="cta-row">
-            <a class="btn btn-ghost" href="./aktywuj-pro.html?plan=elite">Aktywuj ELITE</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Dlaczego to ma konwertować</h2>
-          <p>Użytkownik nie ma się zastanawiać gdzie wejść. Ma od razu widzieć wartość i kolejne kroki.</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <article class="feature">
-          <strong>Jedno wejście</strong>
-          <p>Index prowadzi do wszystkiego i porządkuje ruch od pierwszego wejścia.</p>
-        </article>
-        <article class="feature">
-          <strong>Mobile-first</strong>
-          <p>Przyciski, sekcje i kolejność działań są ustawione pod telefon i szybkie klikanie.</p>
-        </article>
-        <article class="feature">
-          <strong>Naturalny upsell</strong>
-          <p>Blokady premium i korzyści planów robią upgrade bez tłumaczenia ściany tekstu.</p>
-        </article>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <span>QualitetMarket — prosty start, szybkie wejście, większa szansa na płatne działanie.</span>
-      <a href="./cennik.html">Przejdź do planów</a>
-    </footer>
-  </main>
-
+  <script src="app-shell.js"></script>
   <script>
     (function(){
-      "use strict";
-
-      function read(key, fallback){
-        try{
-          const v = localStorage.getItem(key);
-          return v == null ? fallback : v;
-        }catch(e){
-          return fallback;
-        }
-      }
-
-      var plan = String(read("qm_plan_v1","basic") || "basic").toLowerCase();
-      if(!["basic","pro","elite"].includes(plan)) plan = "basic";
-
-      var marginRaw = read("qm_store_margin_pct", "");
-      var margin = parseFloat(marginRaw);
-
-      if(!Number.isFinite(margin)){
-        margin = plan === "elite" ? 24 : plan === "pro" ? 18 : 12;
-      }
-
-      var planPill = document.querySelector("[data-current-plan-pill]");
-      var marginNode = document.querySelector("[data-current-margin]");
-      var proNode = document.querySelector("[data-access-pro]");
-      var eliteNode = document.querySelector("[data-access-elite]");
-
-      if(planPill){
-        planPill.textContent = plan.toUpperCase();
-        planPill.classList.remove("basic","pro","elite");
-        planPill.classList.add(plan);
-      }
-      if(marginNode) marginNode.textContent = Math.round(margin) + "%";
-      if(proNode) proNode.textContent = (plan === "pro" || plan === "elite") ? "Tak" : "Nie";
-      if(eliteNode) eliteNode.textContent = (plan === "elite") ? "Tak" : "Nie";
+      const planKey='qm_user_plan_v1';
+      const current=localStorage.getItem(planKey)||'basic';
+      const label=document.getElementById('userPlanLabel');
+      if(label) label.textContent=current;
+      document.querySelectorAll('[data-set-plan]').forEach(btn=>btn.addEventListener('click',()=>{
+        const plan=btn.getAttribute('data-set-plan');
+        localStorage.setItem(planKey,plan);
+        if(label) label.textContent=plan;
+        alert('Plan ustawiony: '+plan);
+      }));
     })();
+    
+(function(){
+  try{
+    const p=JSON.parse(localStorage.getItem('qm_products_by_supplier_v1')||'[]');
+    const o=JSON.parse(localStorage.getItem('qm_orders_v1')||'[]');
+    const a=document.getElementById('kpiProducts');
+    const b=document.getElementById('kpiOrders');
+    if(a) a.textContent=Array.isArray(p)?p.length:0;
+    if(b) b.textContent=Array.isArray(o)?o.length:0;
+  }catch(e){}
+})();
+
   </script>
-  <script src="js/loader.js"></script>
 </body>
 </html>
