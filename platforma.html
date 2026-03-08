@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Platforma • QualitetMarket</title>
+  <title>Panel sklepu • QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
-      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link active" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
+      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link active" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
     </aside>
 
     <main class="main">
@@ -25,8 +25,8 @@
         <div style="display:flex;align-items:center;gap:12px">
           <button id="mobileMenuBtn" class="mobile-menu">☰</button>
           <div class="topbar-title">
-            <h2>Platforma</h2>
-            <p>Główne centrum modułów</p>
+            <h2>Panel sklepu</h2>
+            <p>Ustawienia i zarządzanie sklepem</p>
           </div>
         </div>
         <div class="topbar-actions">
@@ -39,8 +39,8 @@
       <section class="wrap">
         
 <div class="hero">
-  <h3>Platforma użytkownika</h3>
-  <p>Centralne miejsce do zarządzania modułami projektu: hurtownie, sklep, zamówienia, marketplace i generator sklepu.</p>
+  <h3>Panel sklepu</h3>
+  <p>Tu trzymamy ustawienia sklepu, marżę i podstawowe akcje sprzedażowe.</p>
 </div>
 
 <div class="grid grid-4">
@@ -52,17 +52,19 @@
 
 <div class="grid grid-2">
   <div class="card">
-    <h3>Moduły aplikacji</h3>
+    <h3>Ustawienia sklepu</h3>
     <div class="list">
-      <a class="list-item" href="hurtownie.html"><span>Hurtownie i import</span><span class="badge ok">PRO</span></a>
-      <a class="list-item" href="sklep.html"><span>Sklep i oferta</span><span class="badge ok">LIVE</span></a>
-      <a class="list-item" href="zamowienia.html"><span>Zamówienia</span><span class="badge ok">READY</span></a>
-      <a class="list-item" href="panel-sklepu.html"><span>Panel sklepu</span><span class="badge ok">ADMIN</span></a>
+      <div class="list-item"><span>Nazwa aktywnego sklepu</span><strong data-active-store-name>Main Store</strong></div>
+      <div class="list-item"><span>Marża</span><strong data-stat-margin>0%</strong></div>
+      <div class="list-item"><span>Plan</span><strong data-plan-badge>PRO</strong></div>
     </div>
   </div>
   <div class="card">
-    <h3>App status</h3>
-    <p class="muted">Ta strona jest już zrobiona pod układ aplikacji i nie wymaga dopinania ręcznie do każdej sekcji.</p>
+    <h3>Szybkie przejścia</h3>
+    <div class="toolbar">
+      <a class="btn btn-primary" href="generator-sklepu.html">Generator</a>
+      <a class="btn btn-secondary" href="sklep.html">Podgląd sklepu</a>
+    </div>
   </div>
 </div>
 

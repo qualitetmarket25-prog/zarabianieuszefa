@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="app-layout.css">
-  <title>Checkout - QualitetMarket</title>
+  <title>Cennik - QualitetMarket</title>
   <style>
     .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
     .stack {display:grid;gap:20px}
@@ -42,13 +42,13 @@
         <a href="dashboard.html">Dashboard</a>
 <a href="platforma.html">Platforma</a>
 <a href="hurtownie.html">Hurtownie</a>
-<a href="sklep.html" class="active">Sklep</a>
+<a href="sklep.html">Sklep</a>
 <a href="zamowienia.html">Zamówienia</a>
 <a href="panel-sklepu.html">Panel sklepu</a>
 <a href="generator-sklepu.html">Generator</a>
 <a href="qualitetmarket.html">QualitetMarket</a>
 <a href="intelligence.html">Intelligence</a>
-<a href="cennik.html">Cennik</a>
+<a href="cennik.html" class="active">Cennik</a>
       </nav>
       <div class="sidebar-footer">
         <div class="plan-box">
@@ -63,7 +63,7 @@
         <div class="topbar-left">
           <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
           <div>
-            <div class="topbar-title">Checkout</div>
+            <div class="topbar-title">Cennik</div>
             <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
           </div>
         </div>
@@ -76,25 +76,30 @@
 
       <main class="content">
         
-<section class="hero">
+<section class="center" style="margin-bottom:20px;">
+  <span class="badge">Plan system</span>
+  <h1 style="font-size:40px;margin:12px 0;">Cennik aplikacji</h1>
+  <p class="muted">Plany zgodne z projektem: basic / pro / elite.</p>
+</section>
+
+<section class="grid-3">
   <div class="card">
-    <h2>Checkout</h2>
-    <div class="stack">
-      <input class="input" id="name" placeholder="Imię i nazwisko">
-      <input class="input" id="email" placeholder="E-mail">
-      <input class="input" id="phone" placeholder="Telefon">
-      <textarea class="textarea" id="address" placeholder="Adres dostawy"></textarea>
-    </div>
+    <div class="badge">basic</div>
+    <div class="price">0 zł</div>
+    <p class="muted">Start, podstawowy panel i prosty sklep.</p>
+    <div class="btn-row"><button class="btn full secondary" data-plan="basic">Aktywuj Basic</button></div>
   </div>
-  <div class="stack">
-    <div class="card">
-      <div class="muted">Do zapłaty</div>
-      <div class="kpi" id="checkoutTotal">0 zł</div>
-      <div class="btn-row" style="margin-top:12px;">
-        <button class="btn full" id="placeOrderBtn">Złóż zamówienie</button>
-        <a class="btn full secondary" href="koszyk.html">Wróć do koszyka</a>
-      </div>
-    </div>
+  <div class="card">
+    <div class="badge">pro</div>
+    <div class="price">99 zł</div>
+    <p class="muted">Hurtownie, import i lepszy panel sprzedaży.</p>
+    <div class="btn-row"><button class="btn full" data-plan="pro">Aktywuj PRO</button></div>
+  </div>
+  <div class="card">
+    <div class="badge">elite</div>
+    <div class="price">199 zł</div>
+    <p class="muted">Intelligence, zaawansowane moduły i pełny dostęp.</p>
+    <div class="btn-row"><button class="btn full" data-plan="elite">Aktywuj ELITE</button></div>
   </div>
 </section>
 
@@ -117,39 +122,11 @@
       }));
     })();
     
-(function(){
-  const cartKey='qm_cart_v1';
-  const ordersKey='qm_orders_v1';
-  function total(){
-    let cart=[];
-    try{cart=JSON.parse(localStorage.getItem(cartKey)||'[]')}catch(e){}
-    return cart.reduce((s,i)=>s+(Number(i.price||0)*(Number(i.qty||1))),0);
-  }
-  const totalEl=document.getElementById('checkoutTotal');
-  if(totalEl) totalEl.textContent=total().toFixed(2)+' zł';
-  document.getElementById('placeOrderBtn')?.addEventListener('click', function(){
-    let cart=[];
-    try{cart=JSON.parse(localStorage.getItem(cartKey)||'[]')}catch(e){}
-    if(!cart.length){ alert('Koszyk jest pusty'); return; }
-    const order = {
-      id: 'ORD-' + Date.now(),
-      name: document.getElementById('name')?.value || '',
-      email: document.getElementById('email')?.value || '',
-      phone: document.getElementById('phone')?.value || '',
-      address: document.getElementById('address')?.value || '',
-      items: cart,
-      total: total(),
-      createdAt: new Date().toISOString()
-    };
-    let orders=[];
-    try{orders=JSON.parse(localStorage.getItem(ordersKey)||'[]')}catch(e){}
-    if(!Array.isArray(orders)) orders=[];
-    orders.unshift(order);
-    localStorage.setItem(ordersKey, JSON.stringify(orders));
-    localStorage.removeItem(cartKey);
-    window.location.href='success.html?order='+encodeURIComponent(order.id);
-  });
-})();
+document.querySelectorAll('[data-plan]').forEach(btn => btn.addEventListener('click', function(){
+  const plan=this.getAttribute('data-plan');
+  localStorage.setItem('qm_user_plan_v1', plan);
+  window.location.href='success.html?plan='+encodeURIComponent(plan);
+}));
 
   </script>
 </body>

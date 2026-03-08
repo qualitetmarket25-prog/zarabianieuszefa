@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="app-layout.css">
-  <title>Logowanie - QualitetMarket</title>
+  <title>Koszyk - QualitetMarket</title>
   <style>
     .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
     .stack {display:grid;gap:20px}
@@ -39,10 +39,10 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">QM App</div>
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="dashboard.html">Dashboard</a>
 <a href="platforma.html">Platforma</a>
 <a href="hurtownie.html">Hurtownie</a>
-<a href="sklep.html">Sklep</a>
+<a href="sklep.html" class="active">Sklep</a>
 <a href="zamowienia.html">Zamówienia</a>
 <a href="panel-sklepu.html">Panel sklepu</a>
 <a href="generator-sklepu.html">Generator</a>
@@ -63,7 +63,7 @@
         <div class="topbar-left">
           <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
           <div>
-            <div class="topbar-title">Logowanie</div>
+            <div class="topbar-title">Koszyk</div>
             <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
           </div>
         </div>
@@ -76,16 +76,19 @@
 
       <main class="content">
         
-<section class="auth-wrap">
-  <div class="card center">
-    <div class="logo-box" style="margin:0 auto 16px;">QM</div>
-    <h1>Zaloguj się do aplikacji</h1>
-    <p class="muted">Prosty ekran wejścia pod panel QualitetMarket.</p>
-    <div class="stack" style="margin-top:18px;">
-      <input class="input" id="email" type="email" placeholder="E-mail">
-      <input class="input" id="password" type="password" placeholder="Hasło">
-      <button class="btn full" id="loginBtn">Zaloguj</button>
-      <a class="btn secondary full" href="index.html">Wróć na start</a>
+<section class="hero">
+  <div class="card">
+    <h2>Koszyk</h2>
+    <div id="cartList" class="list"></div>
+  </div>
+  <div class="stack">
+    <div class="card">
+      <div class="muted">Suma</div>
+      <div class="kpi" id="cartTotal">0 zł</div>
+      <div class="btn-row" style="margin-top:12px;">
+        <a class="btn full" href="checkout.html">Przejdź do checkout</a>
+        <button class="btn full secondary" id="clearCartBtn">Wyczyść koszyk</button>
+      </div>
     </div>
   </div>
 </section>
@@ -109,12 +112,28 @@
       }));
     })();
     
-document.getElementById('loginBtn')?.addEventListener('click', function(){
-  const email = document.getElementById('email')?.value?.trim() || 'demo@qualitet.app';
-  localStorage.setItem('qm_user_email_v1', email);
-  localStorage.setItem('qm_logged_in_v1', '1');
-  window.location.href = 'dashboard.html';
-});
+(function(){
+  const key='qm_cart_v1';
+  function load(){
+    let cart=[];
+    try{cart=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
+    const list=document.getElementById('cartList');
+    const totalEl=document.getElementById('cartTotal');
+    if(!list || !totalEl) return;
+    if(!cart.length){
+      list.innerHTML='<div class="list-item"><span>Koszyk jest pusty</span><a href="sklep.html">Przejdź do sklepu</a></div>';
+      totalEl.textContent='0 zł';
+      return;
+    }
+    list.innerHTML=cart.map((item,idx)=>`<div class="list-item"><div><strong>${item.name||'Produkt'}</strong><div class="muted">Ilość: ${item.qty||1}</div></div><div>${Number(item.price||0).toFixed(2)} zł</div></div>`).join('');
+    const total=cart.reduce((s,i)=>s+(Number(i.price||0)*(Number(i.qty||1))),0);
+    totalEl.textContent=total.toFixed(2)+' zł';
+  }
+  document.getElementById('clearCartBtn')?.addEventListener('click', function(){
+    localStorage.removeItem(key); load();
+  });
+  load();
+})();
 
   </script>
 </body>
