@@ -1,32 +1,34 @@
-PAKIET 6 — LOGIN / ONBOARDING / POBIERZ-APLIKACJE / SUCCESS / AKTYWUJ-PRO + AUTO MARŻA
+PAKIET 7 — FIX MOBILE COMMERCE
 
-PLIKI DO PODMIANY:
-- login.html
-- onboarding.html
-- pobierz-aplikacje.html
-- success.html
-- aktywuj-pro.html
+Co podmienić w repo:
+- koszyk.html
+- checkout.html
+- zamowienia.html
+- panel-zamowien-sklepu.html
+- sklepy.html
 - app-layout.css
 - app-shell.js
 - auto-margin.js
 - uszefaqualitet-logo.svg
 
-CO ROBI PAKIET:
-- daje spójny mobile-first layout
-- dodaje topbar i dolne menu
-- ustawia automatyczną marżę wg planu:
-  BASIC = 15%
-  PRO = 25%
-  ELITE = 35%
-- zapisuje marżę do qm_store_margin_pct
-- aktualizuje produkty w qm_products_by_supplier_v1
-- próbuje ustawić marżę aktywnego sklepu w qm_stores_v1
+Najważniejsza poprawka:
+- używaj sklepy.html
+- nie używaj sklepy.htm
 
-TEST:
-1. otwórz onboarding.html
-2. kliknij BASIC / PRO / ELITE
-3. sprawdź localStorage:
-   - qm_store_margin_pct
-   - qm_products_by_supplier_v1
-4. otwórz aktywuj-pro.html i success.html
-5. sprawdź mobile menu
+Test po wgraniu:
+1. Otwórz koszyk.html
+2. Sprawdź przyciski plus / minus / usuń / checkout
+3. Otwórz checkout.html
+4. Wyślij formularz
+5. Sprawdź zamowienia.html i panel-zamowien-sklepu.html
+6. Otwórz sklepy.html i ustaw aktywny sklep
+7. Sprawdź na telefonie 360 px szerokości
+
+LocalStorage używane:
+- qm_products_by_supplier_v1
+- qm_orders_v1
+- qm_stores_v1
+- qm_active_store_v1
+- qm_store_margin_pct
+- qm_cart_v1
+- qm_plan_v1

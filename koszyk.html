@@ -2,141 +2,125 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Koszyk — QualitetMarket</title>
-  <meta name="description" content="Produkty wybrane przez klienta przed przejściem do płatności.">
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="koszyk.html">
-  <div class="mobile-overlay" data-menu-overlay></div>
-  <div class="app-shell">
-    <aside class="sidebar">
-<a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo"><div class="brand-text"><strong>QualitetMarket</strong><span>Zarabianie u Szefa</span></div></a>
-<div class="side-section">
-<div class="side-label">Start</div>
-<a class="side-link" href="index.html" data-nav><span class="dot"></span><span>Strona główna</span></a>
-<a class="side-link" href="platforma.html" data-nav><span class="dot"></span><span>Platforma</span></a>
-<a class="side-link" href="dashboard.html" data-nav><span class="dot"></span><span>Dashboard</span></a>
-</div>
-<div class="side-section">
-<div class="side-label">Sprzedaż</div>
-<a class="side-link" href="sklep.html" data-nav><span class="dot"></span><span>Sklep</span></a>
-<a class="side-link active" href="koszyk.html" data-nav><span class="dot"></span><span>Koszyk</span></a>
-<a class="side-link" href="checkout.html" data-nav><span class="dot"></span><span>Checkout</span></a>
-<a class="side-link" href="zamowienia.html" data-nav><span class="dot"></span><span>Zamówienia</span></a>
-</div>
-<div class="side-section">
-<div class="side-label">Sklepy</div>
-<a class="side-link" href="panel-sklepu.html" data-nav><span class="dot"></span><span>Panel sklepu</span></a>
-<a class="side-link" href="generator-sklepu.html" data-nav><span class="dot"></span><span>Generator sklepu</span></a>
-<a class="side-link" href="sklepy.html" data-nav><span class="dot"></span><span>Sklepy</span></a>
-<a class="side-link" href="panel-zamowien-sklepu.html" data-nav><span class="dot"></span><span>Panel zamówień sklepu</span></a>
-</div>
-<div class="side-section">
-<div class="side-label">Rozwój</div>
-<a class="side-link" href="hurtownie.html" data-nav><span class="dot"></span><span>Hurtownie</span></a>
-<a class="side-link" href="ai.html" data-nav><span class="dot"></span><span>AI</span></a>
-<a class="side-link" href="aplikacje.html" data-nav><span class="dot"></span><span>Aplikacje</span></a>
-<a class="side-link" href="cennik.html" data-nav><span class="dot"></span><span>Cennik</span></a>
-</div>
-</aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="top-left">
-          <button class="menu-toggle" type="button" data-menu-toggle>☰ Menu</button>
-          <div>
-            <div class="page-title">Koszyk</div>
-            <div class="page-subtitle">Produkty wybrane przez klienta przed przejściem do płatności.</div>
-          </div>
-        </div>
-        <div class="top-actions">
-          <a class="quick-link" href="index.html">Strona główna</a>
-          <a class="quick-link" href="platforma.html">Pełne menu</a>
-          <a class="btn primary" href="dashboard.html">Panel główny</a>
-        </div>
-      </header>
-      <div class="container">
-        <section class="hero">
-          <div class="hero-grid">
-            <div>
-              <h1>Koszyk sprzedażowy gotowy pod mobile i szybkie zamknięcie zamówienia.</h1>
-              <p>Ta strona ma prowadzić użytkownika prosto do checkoutu. Zostawiłem jasne sekcje, akcje i skróty do sklepu oraz płatności, żeby łatwiej domykać sprzedaż i pomagać ludziom szybciej zarabiać.</p>
-              
-      <div class="hero-points">
-        <div class="hero-point"><strong>Produkty z hurtowni</strong><span>Licznik aktywnych produktów w localStorage: <b data-bind="products-count">0</b></span></div>
-        <div class="hero-point"><strong>Zamówienia w systemie</strong><span>Licznik zamówień klienta i sklepu: <b data-bind="orders-count">0</b></span></div>
-        <div class="hero-point"><strong>Aktywny sklep</strong><span>Obecnie wybrany sklep: <b data-bind="active-store">Brak</b></span></div>
-        <div class="hero-point"><strong>Domyślna marża</strong><span>Ustawienie zapisane w localStorage: <b data-bind="margin">20%</b></span></div>
+<body data-page="koszyk">
+
+<div class="page-shell">
+  <div class="backdrop"></div>
+  <aside class="sidebar">
+    <div class="brand" style="margin-bottom:18px">
+      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
+      <div class="brand-text">
+        <div class="brand-title">QualitetMarket</div>
+        <div class="brand-sub">Menu główne aplikacji</div>
       </div>
-    
-            </div>
-            <div class="hero-side">
-              <div class="kpi"><div class="kpi-label">Aktywne produkty</div><div class="kpi-value" data-bind="products-count">0</div><div class="kpi-note">Import z hurtowni zapisany pod kluczem <b>qm_products_by_supplier_v1</b>.</div></div>
-              <div class="kpi"><div class="kpi-label">Aktywne sklepy</div><div class="kpi-value" data-bind="stores-count">0</div><div class="kpi-note">Sklepy zapisane pod kluczem <b>qm_stores_v1</b>.</div></div>
-              <div class="kpi"><div class="kpi-label">Zamówienia</div><div class="kpi-value" data-bind="orders-count">0</div><div class="kpi-note">Checkout i historia zamówień korzystają z <b>qm_orders_v1</b>.</div></div>
-            </div>
-          </div>
-        </section>
+    </div>
 
-        <section class="section">
-          <div class="section-head">
-            <div>
-              <h2>Najważniejsze moduły</h2>
-              <p>Jedno miejsce do sprzedaży, checkoutu, obsługi zamówień i zarządzania sklepem.</p>
-            </div>
-          </div>
-          <div class="grid cols-4"><article class="card">
-              <div class="card-icon">🛒</div>
-              <h3>Przegląd koszyka</h3>
-              <p>Czytelny ekran z miejscem na produkty, podsumowanie i wyraźny przycisk przejścia do checkoutu.</p>
-              <div class="card-tags"><span class="tag">mobile</span><span class="tag">sprzedaż</span><span class="tag">konwersja</span></div>
-              <div class="card-actions"><a class="btn primary" href="checkout.html">Idź do checkoutu</a><a class="btn " href="sklep.html">Wróć do sklepu</a></div>
-            </article><article class="card">
-              <div class="card-icon">💰</div>
-              <h3>Wartość sprzedaży</h3>
-              <p>Szybkie miejsce do pokazania sumy zamówienia i zachęcenia do dokończenia zakupu.</p>
-              <div class="card-tags"><span class="tag">AOV</span><span class="tag">upsell</span><span class="tag">checkout</span></div>
-              <div class="card-actions"><a class="btn primary" href="zamowienia.html">Zobacz zamówienia</a><a class="btn " href="panel-sklepu.html">Panel sklepu</a></div>
-            </article><article class="card">
-              <div class="card-icon">🏷️</div>
-              <h3>Marża sklepu</h3>
-              <p>Koszyk spina się z marżą sklepu i aktywnym sklepem zapisanym w localStorage.</p>
-              <div class="card-tags"><span class="tag">qm_store_margin_pct</span><span class="tag">multi-store</span></div>
-              <div class="card-actions"><a class="btn primary" href="sklepy.html">Sklepy</a><a class="btn " href="generator-sklepu.html">Generator sklepu</a></div>
-            </article><article class="card">
-              <div class="card-icon">📱</div>
-              <h3>Mobile first</h3>
-              <p>Duże przyciski, szerokie odstępy i prosty układ na telefonie.</p>
-              <div class="card-tags"><span class="tag">UX</span><span class="tag">telefon</span><span class="tag">GitHub Pages</span></div>
-              <div class="card-actions"><a class="btn primary" href="index.html">Strona główna</a><a class="btn " href="dashboard.html">Dashboard</a></div>
-            </article></div>
-        </section>
+    <div class="nav-group">
+      <p class="nav-label">Start</p>
+      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
+      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
+      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
+    </div>
 
-        <section class="section">
-          <div class="section-head">
-            <div>
-              <h2>Status modułu</h2>
-              <p>Najważniejsze elementy do sprawdzenia po wrzuceniu paczki na GitHub Pages.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="metric-list"><div class="metric-row"><strong>Sprawdź przejście koszyk → checkout</strong><span>Kliknij przycisk i potwierdź brak 404.</span></div><div class="metric-row"><strong>Sprawdź licznik produktów</strong><span>LocalStorage qm_products_by_supplier_v1 powinien być odczytywany poprawnie.</span></div><div class="metric-row"><strong>Sprawdź mobile</strong><span>Na telefonie menu i przyciski muszą być wygodne do kliknięcia.</span></div><div class="metric-row"><strong>Sprawdź linki sklepu</strong><span>Powrót do sklep.html ma działać bez błędów ścieżek.</span></div></div>
-          </div>
-        </section>
+    <div class="nav-group">
+      <p class="nav-label">Sprzedaż</p>
+      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
+      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
+      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
+      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
+    </div>
 
-        <section class="section"><div class="cta-banner"><div><strong style="font-size:20px;display:block;margin-bottom:6px">Cel tej strony</strong><span style="color:#cbd5e1">Domknąć sprzedaż bez chaosu. Użytkownik ma od razu wiedzieć co kupuje i jak zapłacić.</span></div><div class="card-actions"><a class="btn secondary" href="checkout.html">Otwórz checkout</a><a class="btn primary" href="sklep.html">Otwórz sklep</a></div></div></section>
+    <div class="nav-group">
+      <p class="nav-label">Sklepy</p>
+      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
+      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
+      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
+      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
+    </div>
 
-        <section class="section">
-          <div class="card" style="text-align:center">
-            <strong style="display:block;font-size:18px;margin-bottom:8px">QualitetMarket • Zarabianie u Szefa</strong>
-            <span style="color:var(--muted)">Mobile-first, GitHub Pages friendly, localStorage ready. © <span data-bind="year"></span></span>
-          </div>
-        </section>
+    <div class="nav-group">
+      <p class="nav-label">Rozwój</p>
+      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
+      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
+      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
+      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
+      <div class="brand-text">
+        <div class="brand-title">QualitetMarket</div>
+        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
       </div>
-    </main>
-  </div>
-  <nav class="bottom-nav"><div class="bottom-nav-grid"><a class="bottom-link" href="index.html" data-nav><span>⌂</span><span>Start</span></a><a class="bottom-link" href="sklep.html" data-nav><span>🛒</span><span>Sprzedaż</span></a><a class="bottom-link" href="zamowienia.html" data-nav><span>📦</span><span>Zamówienia</span></a><a class="bottom-link" href="sklepy.html" data-nav><span>🏬</span><span>Sklepy</span></a><a class="bottom-link" href="dashboard.html" data-nav><span>⚙️</span><span>Panel</span></a></div></nav>
-  <script src="app-shell.js"></script>
+    </a>
+    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
+  </header>
+
+  <main class="layout">
+    <section class="content">
+      <section class="hero">
+        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
+        <h1>Koszyk sprzedażowy gotowy pod telefon</h1>
+        <p>Naprawiłem układ mobilny, duże przyciski i działające akcje koszyka. Ten ekran ma prowadzić prosto do checkoutu i nie rozjeżdżać się na małych ekranach.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="index.html">Strona główna</a>
+          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
+        </div>
+      </section>
+
+      <section class="grid stats">
+        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
+        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
+        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
+        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
+      </section>
+
+      
+<section class="grid split-2">
+  <article class="card">
+    <h2 class="section-title">Produkty w koszyku</h2>
+    <p class="meta">Duże klikalne przyciski, wygodne pola ilości i prosty układ na telefonie.</p>
+    <div class="notice red" data-moq-warning style="display:none">Uwaga: część pozycji jest poniżej MOQ. Podbij ilość przed checkoutem.</div>
+    <div class="list" data-cart-list></div>
+  </article>
+
+  <article class="card">
+    <h2 class="section-title">Podsumowanie</h2>
+    <div class="total-box">
+      <div class="total-line"><span>Pozycje</span><strong data-cart-count>0</strong></div>
+      <div class="total-line"><span>Suma netto</span><strong data-subtotal>0,00 zł</strong></div>
+      <div class="total-line"><span>VAT 23%</span><strong data-vat>0,00 zł</strong></div>
+      <div class="total-line"><span>Prowizja platformy</span><strong data-platform-fee>0,00 zł</strong></div>
+      <div class="total-line"><span>Twoja marża</span><strong data-seller-margin>0,00 zł</strong></div>
+      <div class="total-line"><span>Razem brutto</span><strong data-total>0,00 zł</strong></div>
+    </div>
+    <div class="top-actions" style="margin-top:14px">
+      <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
+      <a class="btn btn-secondary" href="sklep.html">Wróć do sklepu</a>
+      <button class="btn btn-danger" data-clear-cart>Wyczyść koszyk</button>
+    </div>
+  </article>
+</section>
+
+    </section>
+  </main>
+
+  <nav class="footer-nav">
+    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
+    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
+    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
+    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
+    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
+  </nav>
+</div>
+
+<script src="auto-margin.js"></script>
+<script src="app-shell.js"></script>
 </body>
 </html>
