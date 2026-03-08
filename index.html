@@ -3,111 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Start</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <title>Start — QualitetMarket</title>
+  <meta name="description" content="QualitetMarket pomaga budować sklep, sprzedawać, importować produkty i zarabiać online.">
   <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
 </head>
-<body data-page="home">
-  <div class="app-shell">
-    <main class="page">
-      <section class="hero">
-        <div class="card hero-copy">
-          <span class="eyebrow">QualitetMarket • mobile first</span>
-          <h1>Jedno główne menu do zarabiania online.</h1>
-          <p class="lead">Tu masz główny start całej aplikacji. Użytkownik od razu widzi moduły sprzedaży, AI, sklepu, hurtowni i planów. Wszystko jest większe, czytelniejsze i gotowe pod telefon.</p>
-          <div class="hero-actions">
-            <a class="cta-btn" href="platforma.html">Zarabiaj teraz</a>
-            <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
-          </div>
-        </div>
-        <aside class="card hero-panel">
-          <div class="metric-grid">
-            <div class="metric"><strong>1 link</strong><span class="muted">główne wejście do całej aplikacji</span></div>
-            <div class="metric"><strong>Mobile</strong><span class="muted">duże CTA i łatwe klikanie</span></div>
-            <div class="metric"><strong>GitHub Pages</strong><span class="muted">proste ścieżki i szybkie wdrożenie</span></div>
-          </div>
-          <div class="notice">Przyciski są spięte prostymi linkami i atrybutem <b>data-link</b>, więc na telefonie działają pewniej niż stare klikalne divy.</div>
-        </aside>
-      </section>
-
-      <div class="section-title">
-        <h2>Najważniejsze moduły</h2>
-        <span class="muted">wszystko w jednym stylu</span>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket"><span>QualitetMarket</span></a>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="ghost-btn" href="platforma.html">Platforma</a>
+        <a class="cta-btn" href="cennik.html">Wybierz plan</a>
       </div>
-      <section class="link-grid">
-        
-      <article class="link-card">
-        <div class="icon">🧭</div>
-        <span class="badge">Start pracy</span>
-        <h3>Platforma</h3>
-        <p>Pełne menu modułów i przejść.</p>
-        <div class="actions">
-          <a class="cta-btn" href="platforma.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/platforma.html">Kopiuj link</button>
+    </div>
+  </header>
+  
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <h1>Zarabiaj online szybciej z jednego panelu</h1>
+        <p>Sprzedaż, sklep, hurtownie, AI, automatyczna marża, checkout, zamówienia i narzędzia do budowy własnej aplikacji w jednym miejscu.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
+          <a class="cta-btn" href="platforma.html">Wejdź do platformy</a>
+          <a class="ghost-btn" href="cennik.html">Zobacz cennik</a>
         </div>
-      </article>
+      </div>
+    </div>
+  </section>
+  <section class="quick-nav">
+    <div class="container grid grid-3">
+      <div class="card kpi"><div class="kpi-icon">🛍️</div><div><h3>Sklep i sprzedaż</h3><p>Produkty, koszyk, checkout i zamówienia gotowe do użycia na telefonie.</p></div></div>
+      <div class="card kpi"><div class="kpi-icon">🤖</div><div><h3>AI i aplikacje</h3><p>Generator treści, reklamy i moduły, które pomagają szybciej tworzyć ofertę.</p></div></div>
+      <div class="card kpi"><div class="kpi-icon">📈</div><div><h3>Marża i skalowanie</h3><p>Automatyczne ustawienia planów basic, pro i elite oraz rozwój multi-store.</p></div></div>
+    </div>
+  </section>
+  <section class="quick-nav">
+    <div class="container grid grid-2">
+      <a class="tile" href="sklep.html"><div><strong>Sklep</strong><span>Produkty, ceny, koszyk i szybkie CTA</span></div><div>→</div></a>
+      <a class="tile" href="hurtownie.html"><div><strong>Hurtownie</strong><span>Import produktów i źródła do dropshippingu</span></div><div>→</div></a>
+      <a class="tile" href="ai.html"><div><strong>AI</strong><span>Narzędzia do reklam, treści i automatyzacji</span></div><div>→</div></a>
+      <a class="tile" href="aplikacje.html"><div><strong>Aplikacje</strong><span>Moduły i gotowe ekrany do rozwoju platformy</span></div><div>→</div></a>
+      <a class="tile" href="cennik.html"><div><strong>Cennik</strong><span>Plany, marże i ścieżki rozwoju</span></div><div>→</div></a>
+      <a class="tile" href="kontakt.html"><div><strong>Kontakt i pomoc</strong><span>Dane kontaktowe i dokumenty prawne</span></div><div>→</div></a>
+    </div>
+  </section>
+</main>
 
-      <article class="link-card">
-        <div class="icon">🛍️</div>
-        <span class="badge">Sprzedaż</span>
-        <h3>Sklep</h3>
-        <p>Produkty, ceny i koszyk pod mobile.</p>
-        <div class="actions">
-          <a class="cta-btn" href="sklep.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/sklep.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📦</div>
-        <span class="badge">Import</span>
-        <h3>Hurtownie</h3>
-        <p>Dostawcy, CSV i import produktów.</p>
-        <div class="actions">
-          <a class="cta-btn" href="hurtownie.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/hurtownie.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">💎</div>
-        <span class="badge">Plany</span>
-        <h3>Cennik</h3>
-        <p>Basic, Pro i Elite z automatyczną marżą.</p>
-        <div class="actions">
-          <a class="cta-btn" href="cennik.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/cennik.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🤖</div>
-        <span class="badge">AI</span>
-        <h3>AI</h3>
-        <p>Narzędzia AI do treści, reklam i automatyzacji.</p>
-        <div class="actions">
-          <a class="cta-btn" href="ai.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/ai.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📱</div>
-        <span class="badge">Aplikacje</span>
-        <h3>Aplikacje</h3>
-        <p>Gotowe ekrany i generatory pod zarabianie.</p>
-        <div class="actions">
-          <a class="cta-btn" href="aplikacje.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/aplikacje.html">Kopiuj link</button>
-        </div>
-      </article>
-      </section>
-
-      
-      <div class="footer-space"></div>
-    </main>
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
+  <div data-site-footer></div>
 </body>
 </html>

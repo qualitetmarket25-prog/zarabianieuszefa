@@ -3,170 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QualitetMarket — Cennik</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <title>Cennik — QualitetMarket</title>
+  <meta name="description" content="QualitetMarket pomaga budować sklep, sprzedawać, importować produkty i zarabiać online.">
   <link rel="stylesheet" href="app-layout.css">
+  <script defer src="app-shell.js"></script>
 </head>
-<body data-page="cennik">
-  <div class="app-shell">
-    <main class="page">
-      <section class="hero">
-        <div class="card hero-copy">
-          <span class="eyebrow">QualitetMarket • mobile first</span>
-          <h1>Cennik, który prowadzi do działania.</h1>
-          <p class="lead">Tu poprawiłem grafikę, badge, ikony, CTA i przejścia. Użytkownik ma od razu rozumieć, który plan daje większy potencjał zarabiania i co dokładnie dostaje.</p>
-          <div class="hero-actions">
-            <a class="cta-btn" href="aktywuj-pro.html">Wybierz plan</a>
-            <a class="ghost-btn" href="pobierz-aplikacje.html">Pobierz aplikację</a>
-          </div>
-        </div>
-        <aside class="card hero-panel">
-          <div class="metric-grid">
-            <div class="metric"><strong>1 link</strong><span class="muted">główne wejście do całej aplikacji</span></div>
-            <div class="metric"><strong>Mobile</strong><span class="muted">duże CTA i łatwe klikanie</span></div>
-            <div class="metric"><strong>GitHub Pages</strong><span class="muted">proste ścieżki i szybkie wdrożenie</span></div>
-          </div>
-          <div class="notice">Przyciski są spięte prostymi linkami i atrybutem <b>data-link</b>, więc na telefonie działają pewniej niż stare klikalne divy.</div>
-        </aside>
-      </section>
-
-      <div class="section-title">
-        <h2>Najważniejsze moduły</h2>
-        <span class="muted">wszystko w jednym stylu</span>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="index.html"><img src="uszefaqualitet-logo.svg" alt="QualitetMarket"><span>QualitetMarket</span></a>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="ghost-btn" href="platforma.html">Platforma</a>
+        <a class="cta-btn" href="cennik.html">Wybierz plan</a>
       </div>
-      <section class="link-grid">
-        
-      <article class="link-card">
-        <div class="icon">💎</div>
-        <span class="badge">Basic</span>
-        <h3>Plan Basic</h3>
-        <p>Start sprzedaży z marżą 15%.</p>
-        <div class="actions">
-          <a class="cta-btn" href="aktywuj-pro.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/aktywuj-pro.html">Kopiuj link</button>
-        </div>
-      </article>
+    </div>
+  </header>
+  
+<main class="container">
+  <section class="page-title"><h1>Cennik</h1><p>Prosty podział planów z automatyczną marżą i dużymi CTA na telefonie.</p></section>
+  <section class="grid grid-3">
+    <div class="card"><div class="kpi"><div class="kpi-icon">🌱</div><div><h3>Basic</h3><p>Dla startu i testów.</p></div></div><div class="notice">Automatyczna marża: 15%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Start Basic</a></div></div>
+    <div class="card"><div class="kpi"><div class="kpi-icon">🚀</div><div><h3>Pro</h3><p>Dla sprzedaży i hurtowni.</p></div></div><div class="notice">Automatyczna marża: 25%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Wejdź w Pro</a></div></div>
+    <div class="card"><div class="kpi"><div class="kpi-icon">👑</div><div><h3>Elite</h3><p>Dla pełnej automatyzacji i rozwoju.</p></div></div><div class="notice">Automatyczna marża: 35%</div><div style="margin-top:16px"><a class="cta-btn" href="aktywuj-pro.html">Wybierz Elite</a></div></div>
+  </section>
+</main>
 
-      <article class="link-card">
-        <div class="icon">🚀</div>
-        <span class="badge">Pro</span>
-        <h3>Plan Pro</h3>
-        <p>Więcej modułów, hurtownie i mocniejsze wejście.</p>
-        <div class="actions">
-          <a class="cta-btn" href="aktywuj-pro.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/aktywuj-pro.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">👑</div>
-        <span class="badge">Elite</span>
-        <h3>Plan Elite</h3>
-        <p>AI, premium i automatyzacja na maksa.</p>
-        <div class="actions">
-          <a class="cta-btn" href="aktywuj-pro.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/aktywuj-pro.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">🧾</div>
-        <span class="badge">Checkout</span>
-        <h3>Kup dostęp</h3>
-        <p>Przejście do finalizacji zamówienia.</p>
-        <div class="actions">
-          <a class="cta-btn" href="checkout.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/checkout.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">📲</div>
-        <span class="badge">Aplikacja</span>
-        <h3>Pobierz aplikację</h3>
-        <p>Szybki dostęp po aktywacji.</p>
-        <div class="actions">
-          <a class="cta-btn" href="pobierz-aplikacje.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/pobierz-aplikacje.html">Kopiuj link</button>
-        </div>
-      </article>
-
-      <article class="link-card">
-        <div class="icon">✅</div>
-        <span class="badge">Gotowe</span>
-        <h3>Aktywacja</h3>
-        <p>Strona sukcesu po wyborze planu.</p>
-        <div class="actions">
-          <a class="cta-btn" href="success.html">Otwórz</a>
-          <button class="ghost-btn" data-copy-link="https://qualitetmarket25-prog.github.io/zarabianieuszefa/success.html">Kopiuj link</button>
-        </div>
-      </article>
-      </section>
-
-      
-<section class="card" style="padding:20px;margin-top:22px">
-  <div class="section-title" style="margin-top:0">
-    <h2>Cennik i plany</h2>
-    <span class="muted">automatyczna marża ustawiana po wyborze planu</span>
-  </div>
-  <div class="pricing-wrap">
-    <article class="pricing">
-      <span class="badge">Basic</span>
-      <h3>Na start</h3>
-      <div class="price">49 zł <small>/ mies.</small></div>
-      <p>Dla osób, które chcą wejść w sprzedaż i zacząć działać bez dużych kosztów.</p>
-      <ul class="ul">
-        <li>start platformy</li>
-        <li>sklep i koszyk</li>
-        <li>marża auto 15%</li>
-        <li>podstawowe moduły</li>
-      </ul>
-      <div class="actions">
-        <button class="cta-btn" data-plan="basic">Wybieram Basic</button>
-      </div>
-    </article>
-    <article class="pricing highlight">
-      <span class="badge">Pro</span>
-      <h3>Najlepszy do sprzedaży</h3>
-      <div class="price">149 zł <small>/ mies.</small></div>
-      <p>Najmocniejszy wybór dla osób, które chcą sprzedawać więcej i korzystać z hurtowni.</p>
-      <ul class="ul">
-        <li>hurtownie i import CSV</li>
-        <li>plan guard Pro</li>
-        <li>marża auto 25%</li>
-        <li>większe możliwości sprzedaży</li>
-      </ul>
-      <div class="actions">
-        <button class="cta-btn" data-plan="pro">Wybieram Pro</button>
-      </div>
-    </article>
-    <article class="pricing">
-      <span class="badge">Elite</span>
-      <h3>Dla najmocniejszych</h3>
-      <div class="price">299 zł <small>/ mies.</small></div>
-      <p>Dla osób, które chcą automatyzacji, AI i pracy na wyższym poziomie.</p>
-      <ul class="ul">
-        <li>intelligence i AI</li>
-        <li>pełny rozwój modułów</li>
-        <li>marża auto 35%</li>
-        <li>największy potencjał zarobku</li>
-      </ul>
-      <div class="actions">
-        <button class="cta-btn" data-plan="elite">Wybieram Elite</button>
-      </div>
-    </article>
-  </div>
-</section>
-<section class="grid-3" style="margin-top:18px">
-  <article class="feature"><h3>Ikony i grafika</h3><p>Poprawiłem wygląd cennika: mocne badge, wyraźne CTA, sekcje premium i estetyczne proporcje na telefonie.</p></article>
-  <article class="feature"><h3>Przyciski</h3><p>Każdy główny przycisk ma min. 48 px wysokości, wyraźny kontrast i prosty link lub akcję, żeby nie siadał na mobile.</p></article>
-  <article class="feature"><h3>Marża</h3><p>Po wyborze planu zapisuje się <b>qm_store_margin_pct</b> i próbuje ustawić aktywny sklep oraz produkty.</p></article>
-</section>
-
-      <div class="footer-space"></div>
-    </main>
-  </div>
-  <script src="app-shell.js"></script>
-  <script src="auto-margin.js"></script>
+  <div data-site-footer></div>
 </body>
 </html>
