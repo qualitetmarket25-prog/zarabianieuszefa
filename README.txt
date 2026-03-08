@@ -1,18 +1,21 @@
 
-USZEFAQUALITET — ETAP 3
+USZEFAQUALITET ETAP 4
 
-Nowe moduły:
-- onboarding.html
-- zarabianie.html
-- nieruchomosci.html
-- auta.html
+Podmień w repo wszystkie pliki z tej paczki.
+Najważniejsze nowe ekrany:
+- pobierz-aplikacje.html
+- agenci-nieruchomosci.html
+- komis-auto.html
 - dodaj-ogloszenie.html
-- aplikacje.html
 - stworz-aplikacje.html
 
-Najważniejsze:
-- przycisk "Stwórz swoją aplikację"
-- osobny moduł do aplikacji klienta
-- moduł ogłoszeń, używane, nieruchomości i auta
-- monetyzacja: pakiety, reklamy, boost, AI, app setup
-- logo + favicon
+Główne wejścia do testu:
+- index.html
+- dashboard.html
+- cennik.html
+- ogloszenia.html
+- nieruchomosci.html
+- auta.html
+- reklama.html
+- aplikacje.html
+- pobierz-aplikacje.html

@@ -1,170 +1,268 @@
 
 (function(){
-  const $ = (s, p=document) => p.querySelector(s);
-  const $$ = (s, p=document) => Array.from(p.querySelectorAll(s));
-  const STORE_KEYS = {
-    products:"qm_products_by_supplier_v1",
-    intel:"qm_intel_prefill_v1",
-    listing:"qm_listing_prefill_v1",
-    crm:"qm_crm_v1",
-    orders:"qm_orders_v1",
-    stores:"qm_stores_v1",
-    activeStore:"qm_active_store_v1",
-    margin:"qm_store_margin_pct",
-    plan:"qm_plan_v1",
-    ads:"qm_ads_v1",
-    campaigns:"qm_ads_campaigns_v1",
-    cart:"qm_cart_v1",
-    apps:"qm_apps_v1"
+  const KEYS = {
+    products:'qm_products_by_supplier_v1',
+    intel:'qm_intel_prefill_v1',
+    listing:'qm_listing_prefill_v1',
+    crm:'qm_crm_v1',
+    orders:'qm_orders_v1',
+    stores:'qm_stores_v1',
+    activeStore:'qm_active_store_v1',
+    margin:'qm_store_margin_pct',
+    ads:'qm_ads_v1',
+    campaigns:'qm_ads_campaigns_v1',
+    cart:'qm_cart_v1',
+    apps:'qm_apps_v1',
+    plan:'qm_plan_v1'
   };
-  function getJson(k,fallback){ try{return JSON.parse(localStorage.getItem(k)) ?? fallback;}catch(e){return fallback;} }
-  function setJson(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-  function currentPlan(){ return localStorage.getItem(STORE_KEYS.plan) || "basic"; }
-  function setPlan(plan){ localStorage.setItem(STORE_KEYS.plan, plan); applyGuards(); const planEl=$("#plan-pill"); if(planEl) planEl.textContent=plan.toUpperCase(); }
-  function applyGuards(){
-    const plan = currentPlan();
-    const rank = {basic:1, pro:2, elite:3, boss:4};
-    $$("[data-require]").forEach(el=>{
-      const need = el.getAttribute("data-require");
-      const ok = (rank[plan]||1) >= (rank[need]||9);
-      el.classList.toggle("locked", !ok);
-      if(!ok){
-        el.setAttribute("aria-disabled","true");
-        if(el.dataset.guardProcessed) return;
-        el.dataset.guardProcessed = "1";
-        const badge = document.createElement("span");
-        badge.className = "nav-mini";
-        badge.textContent = need.toUpperCase();
-        if(el.classList.contains("nav-link")) el.appendChild(badge);
+
+  function read(key, fallback){
+    try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+  }
+  function write(key, value){
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+  function ensureSeed(){
+    if(!localStorage.getItem(KEYS.plan)) localStorage.setItem(KEYS.plan, JSON.stringify('pro'));
+    if(!localStorage.getItem(KEYS.margin)) localStorage.setItem(KEYS.margin, JSON.stringify(22));
+    if(!localStorage.getItem(KEYS.products)) write(KEYS.products, [
+      {name:'Kurtka premium', price:199, img:'https://placehold.co/300x220/png?text=Produkt+1'},
+      {name:'Lampa loft', price:149, img:'https://placehold.co/300x220/png?text=Produkt+2'},
+      {name:'Krzesło biurowe', price:349, img:'https://placehold.co/300x220/png?text=Produkt+3'}
+    ]);
+    if(!localStorage.getItem(KEYS.orders)) write(KEYS.orders, [
+      {id:'UZ-1001', customer:'Anna Nowak', total:249, status:'Nowe'},
+      {id:'UZ-1002', customer:'Michał Lis', total:589, status:'Wysłane'}
+    ]);
+    if(!localStorage.getItem(KEYS.stores)) write(KEYS.stores, [
+      {name:'Mój sklep premium', slug:'moj-sklep', niche:'home'},
+      {name:'Auto Profit', slug:'auto-profit', niche:'motoryzacja'}
+    ]);
+    if(!localStorage.getItem(KEYS.activeStore)) write(KEYS.activeStore, 'moj-sklep');
+    if(!localStorage.getItem(KEYS.ads)) write(KEYS.ads, [
+      {title:'Sprzedam auto miejskie', category:'Auta', price:'24900 zł', city:'Warszawa'},
+      {title:'Wynajmę mieszkanie 2 pokoje', category:'Nieruchomości', price:'2800 zł', city:'Gdańsk'}
+    ]);
+    if(!localStorage.getItem(KEYS.campaigns)) write(KEYS.campaigns, [
+      {name:'Reklama sklepu', budget:300, status:'Aktywna'},
+      {name:'Promocja ogłoszenia', budget:90, status:'Szkic'}
+    ]);
+    if(!localStorage.getItem(KEYS.apps)) write(KEYS.apps, [
+      {name:'App Mojego Sklepu', type:'Sklep', plan:'Pro', status:'Gotowa'},
+      {name:'Auta Express', type:'Ogłoszenia', plan:'Boss', status:'Budowa'}
+    ]);
+    if(!localStorage.getItem(KEYS.cart)) write(KEYS.cart, [{name:'Kurtka premium', price:199, qty:1}]);
+  }
+
+  function shellTitle(page){
+    return document.body.dataset.title || 'UszefaQualitet';
+  }
+
+  function plan(){
+    return (read(KEYS.plan, 'pro') || 'pro').toLowerCase();
+  }
+
+  function navItems(){
+    return [
+      ['dashboard.html','Dashboard',''],
+      ['platforma.html','Platforma',''],
+      ['sklep.html','Sklep',''],
+      ['ogloszenia.html','Ogłoszenia','HOT'],
+      ['uzywane.html','Używane',''],
+      ['nieruchomosci.html','Nieruchomości',''],
+      ['auta.html','Auta',''],
+      ['reklama.html','Reklama','PRO'],
+      ['ai.html','AI','ELITE'],
+      ['zarabianie.html','Zarabianie',''],
+      ['aplikacje.html','Aplikacje','NOWE'],
+      ['stworz-aplikacje.html','Stwórz appkę','BOSS'],
+      ['hurtownie.html','Hurtownie','PRO'],
+      ['generator-sklepu.html','Generator sklepu',''],
+      ['zamowienia.html','Zamówienia',''],
+      ['cennik.html','Pakiety','']
+    ];
+  }
+
+  function buildShell(){
+    if(!document.body.classList.contains('app-page')) return;
+    const current = location.pathname.split('/').pop() || 'dashboard.html';
+    const app = document.createElement('div');
+    app.className = 'app-shell';
+    const side = document.createElement('aside');
+    side.className = 'sidebar';
+    side.innerHTML = `
+      <a href="dashboard.html" class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="logo">
+        <div>
+          <div class="title">UszefaQualitet</div>
+          <div class="sub">aplikacja do zarabiania</div>
+        </div>
+      </a>
+      <div class="plan-badge">Plan: <strong style="text-transform:uppercase">${plan()}</strong></div>
+      <div class="nav-group">
+        <div class="nav-label">Menu</div>
+        ${navItems().map(([href,label,pill]) => `<a class="nav-link ${current===href?'active':''}" href="${href}"><span>${label}</span>${pill?`<span class="pill">${pill}</span>`:''}</a>`).join('')}
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Szybkie akcje</div>
+        <a class="nav-link" href="dodaj-ogloszenie.html"><span>Dodaj ogłoszenie</span></a>
+        <a class="nav-link" href="stworz-aplikacje.html"><span>Stwórz swoją aplikację</span></a>
+        <a class="nav-link" href="pobierz-aplikacje.html"><span>Pobierz aplikację</span></a>
+      </div>
+    `;
+    const wrap = document.createElement('div');
+    wrap.className='content-wrap';
+    const top = document.createElement('header');
+    top.className='topbar';
+    top.innerHTML = `
+      <div class="topbar-left">
+        <button class="menu-btn" id="menuToggle">☰</button>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem">${shellTitle()}</div>
+          <div class="muted">Buduj sklep, ogłoszenia, reklamę i własną aplikację</div>
+        </div>
+      </div>
+      <div class="search">🔎 Szukaj: sklep, reklama, auta, mieszkania, AI</div>
+      <div class="top-actions">
+        <a class="btn secondary" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
+        <a class="btn-ghost" href="dodaj-ogloszenie.html">Dodaj ogłoszenie</a>
+        <a class="btn" href="reklama.html">Zrób reklamę</a>
+      </div>
+    `;
+    const page = document.createElement('main');
+    page.className='page';
+    while(document.body.firstChild) page.appendChild(document.body.firstChild);
+    wrap.appendChild(top); wrap.appendChild(page);
+    app.appendChild(side); app.appendChild(wrap);
+    document.body.appendChild(app);
+    const t = document.getElementById('menuToggle');
+    if(t) t.addEventListener('click', ()=> side.classList.toggle('open'));
+  }
+
+  function fillStats(){
+    const map = {
+      products: read(KEYS.products, []).length,
+      orders: read(KEYS.orders, []).length,
+      ads: read(KEYS.ads, []).length,
+      apps: read(KEYS.apps, []).length,
+      campaigns: read(KEYS.campaigns, []).length,
+      stores: read(KEYS.stores, []).length,
+      plan: plan().toUpperCase(),
+      margin: `${read(KEYS.margin, 22)}%`
+    };
+    document.querySelectorAll('[data-stat]').forEach(el=>{
+      const k = el.getAttribute('data-stat');
+      if(map[k] !== undefined) el.textContent = map[k];
+    });
+  }
+
+  function renderList(key, targetId, tpl){
+    const list = read(key, []);
+    const box = document.getElementById(targetId);
+    if(!box) return;
+    box.innerHTML = list.map(tpl).join('') || `<div class="notice">Brak danych jeszcze.</div>`;
+  }
+
+  function bindPlanButtons(){
+    document.querySelectorAll('[data-set-plan]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        localStorage.setItem(KEYS.plan, JSON.stringify(btn.dataset.setPlan));
+        location.href = 'success.html?type=plan';
+      });
+    });
+  }
+
+  function requirePlans(){
+    const p = plan();
+    document.querySelectorAll('[data-require]').forEach(el=>{
+      const need = el.getAttribute('data-require');
+      const hide = (need==='elite' && p!=='elite' && p!=='boss') || (need==='pro' && !['pro','elite','boss'].includes(p));
+      if(hide){
+        el.style.opacity = '.55';
+        const msg = document.createElement('div');
+        msg.className = 'notice';
+        msg.textContent = `Dostęp wymaga planu ${need.toUpperCase()}.`;
+        el.appendChild(msg);
       }
     });
-    const planEl=$("#plan-pill"); if(planEl) planEl.textContent=plan.toUpperCase();
   }
-  function toggleMenu(){ $(".sidebar")?.classList.toggle("open"); }
-  function seed(){
-    if(!localStorage.getItem(STORE_KEYS.products)){
-      setJson(STORE_KEYS.products, [
-        {name:"SmartWatch Pro", price:199, img:"", supplier:"CJ"},
-        {name:"Lampa LED Home", price:89, img:"", supplier:"AliExpress"},
-        {name:"Organizer Premium", price:49, img:"", supplier:"VidaXL"}
-      ]);
-    }
-    if(!localStorage.getItem(STORE_KEYS.orders)){
-      setJson(STORE_KEYS.orders, [
-        {id:"#1001", customer:"Anna Kowalska", total:249, status:"Opłacone"},
-        {id:"#1002", customer:"Piotr Nowak", total:89, status:"W realizacji"}
-      ]);
-    }
-    if(!localStorage.getItem(STORE_KEYS.stores)){
-      setJson(STORE_KEYS.stores, [
-        {name:"Uszefa Home", slug:"uszefa-home", niche:"Dom"},
-        {name:"Auto Market", slug:"auto-market", niche:"Motoryzacja"}
-      ]);
-      localStorage.setItem(STORE_KEYS.activeStore, "uszefa-home");
-    }
-    if(!localStorage.getItem(STORE_KEYS.ads)){
-      setJson(STORE_KEYS.ads, [
-        {title:"Sprzedam BMW 320d 2018", category:"Auta", price:"69 900 zł", city:"Warszawa"},
-        {title:"Wynajmę mieszkanie 2 pokoje", category:"Nieruchomości", price:"2 900 zł / mies.", city:"Kraków"}
-      ]);
-    }
-    if(!localStorage.getItem(STORE_KEYS.apps)){
-      setJson(STORE_KEYS.apps, [
-        {name:"Sklep Fashion App", type:"Sklep", model:"PWA", status:"Gotowa"},
-        {name:"Nieruchomości Premium", type:"Ogłoszenia", model:"PWA", status:"W budowie"}
-      ]);
-    }
-    if(!localStorage.getItem(STORE_KEYS.campaigns)){
-      setJson(STORE_KEYS.campaigns, [
-        {name:"Promocja sklepu maj", budget:300, result:"12 zamówień"},
-        {name:"Auto premium boost", budget:150, result:"34 leady"}
-      ]);
-    }
-    if(!localStorage.getItem(STORE_KEYS.margin)){ localStorage.setItem(STORE_KEYS.margin, "25"); }
-    if(!localStorage.getItem(STORE_KEYS.plan)){ localStorage.setItem(STORE_KEYS.plan, "pro"); }
-  }
-  function fillStats(){
-    const products = getJson(STORE_KEYS.products, []);
-    const orders = getJson(STORE_KEYS.orders, []);
-    const ads = getJson(STORE_KEYS.ads, []);
-    const apps = getJson(STORE_KEYS.apps, []);
-    $("#stat-products") && ($("#stat-products").textContent = products.length);
-    $("#stat-orders") && ($("#stat-orders").textContent = orders.length);
-    $("#stat-ads") && ($("#stat-ads").textContent = ads.length);
-    $("#stat-apps") && ($("#stat-apps").textContent = apps.length);
-  }
-  function renderList(id, items, map){
-    const el = document.getElementById(id); if(!el) return;
-    el.innerHTML = items.map(map).join("");
-  }
-  function bindPlanButtons(){
-    $$("[data-set-plan]").forEach(btn=>btn.addEventListener("click", ()=>setPlan(btn.dataset.setPlan)));
-  }
+
   function bindForms(){
-    $("#ad-form")?.addEventListener("submit", e=>{
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const ads = getJson(STORE_KEYS.ads, []);
-      ads.unshift({
-        title:fd.get("title")||"",
-        category:fd.get("category")||"",
-        price:fd.get("price")||"",
-        city:fd.get("city")||"Online"
+    const adForm = document.getElementById('addAdForm');
+    if(adForm){
+      adForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        const data = new FormData(adForm);
+        const item = {
+          title:data.get('title'),
+          category:data.get('category'),
+          price:data.get('price'),
+          city:data.get('city')
+        };
+        const ads = read(KEYS.ads, []);
+        ads.unshift(item); write(KEYS.ads, ads);
+        location.href = 'ogloszenia.html';
       });
-      setJson(STORE_KEYS.ads, ads);
-      location.href="ogloszenia.html";
-    });
-    $("#campaign-form")?.addEventListener("submit", e=>{
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const campaigns = getJson(STORE_KEYS.campaigns, []);
-      campaigns.unshift({
-        name:fd.get("name"),
-        budget:fd.get("budget"),
-        result:"Nowa kampania"
+    }
+    const appForm = document.getElementById('createAppForm');
+    if(appForm){
+      appForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        const data = new FormData(appForm);
+        const apps = read(KEYS.apps, []);
+        apps.unshift({
+          name:data.get('name'),
+          type:data.get('type'),
+          plan:data.get('plan'),
+          status:'Budowa'
+        });
+        write(KEYS.apps, apps);
+        location.href = 'aplikacje.html';
       });
-      setJson(STORE_KEYS.campaigns, campaigns);
-      location.href="reklama.html";
-    });
-    $("#app-form")?.addEventListener("submit", e=>{
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const apps = getJson(STORE_KEYS.apps, []);
-      apps.unshift({
-        name:fd.get("name"),
-        type:fd.get("type"),
-        model:fd.get("model"),
-        status:"Nowa"
+    }
+    const checkout = document.getElementById('checkoutForm');
+    if(checkout){
+      checkout.addEventListener('submit', e=>{
+        e.preventDefault();
+        const data = new FormData(checkout);
+        const orders = read(KEYS.orders, []);
+        orders.unshift({
+          id:'UZ-'+Math.floor(Math.random()*9000+1000),
+          customer:data.get('name'),
+          total: read(KEYS.cart, []).reduce((s,i)=>s + Number(i.price||0) * Number(i.qty||1), 0),
+          status:'Nowe'
+        });
+        write(KEYS.orders, orders);
+        write(KEYS.cart, []);
+        location.href = 'success.html?type=order';
       });
-      setJson(STORE_KEYS.apps, apps);
-      location.href="aplikacje.html";
-    });
-    $("#checkout-form")?.addEventListener("submit", e=>{
-      e.preventDefault();
-      const orders = getJson(STORE_KEYS.orders, []);
-      orders.unshift({id:"#"+Math.floor(Math.random()*9000+1000), customer:($("#client-name")||{}).value||"Nowy klient", total:($("#client-total")||{}).value||99, status:"Opłacone"});
-      setJson(STORE_KEYS.orders, orders);
-      localStorage.removeItem(STORE_KEYS.cart);
-      location.href="success.html";
-    });
+    }
+    const login = document.getElementById('loginForm');
+    if(login){
+      login.addEventListener('submit', e=>{ e.preventDefault(); location.href='dashboard.html'; });
+    }
   }
-  function render(){
-    renderList("orders-list", getJson(STORE_KEYS.orders, []), o=>`<tr><td>${o.id}</td><td>${o.customer}</td><td>${o.total} zł</td><td><span class="tag ${o.status==='Opłacone'?'green':'blue'}">${o.status}</span></td></tr>`);
-    renderList("products-list", getJson(STORE_KEYS.products, []), p=>`<div class="list-item"><div><strong>${p.name}</strong><div class="muted">${p.supplier||'Supplier'}</div></div><div><strong>${p.price} zł</strong></div></div>`);
-    renderList("ads-list", getJson(STORE_KEYS.ads, []), a=>`<div class="list-item"><div><strong>${a.title}</strong><div class="muted">${a.category} · ${a.city}</div></div><div><strong>${a.price}</strong></div></div>`);
-    renderList("apps-list", getJson(STORE_KEYS.apps, []), a=>`<div class="list-item"><div><strong>${a.name}</strong><div class="muted">${a.type} · ${a.model}</div></div><div><span class="tag blue">${a.status}</span></div></div>`);
-    renderList("campaigns-list", getJson(STORE_KEYS.campaigns, []), c=>`<div class="list-item"><div><strong>${c.name}</strong><div class="muted">Budżet: ${c.budget} zł</div></div><div><span class="tag amber">${c.result}</span></div></div>`);
+
+  function renderAll(){
+    renderList(KEYS.orders,'ordersList', x => `<div class="list-item"><strong>${x.id}</strong><span>${x.customer}</span><span>${x.total} zł</span><span class="tag">${x.status}</span></div>`);
+    renderList(KEYS.ads,'adsList', x => `<div class="list-item"><div><strong>${x.title}</strong><div class="muted">${x.category} • ${x.city||''}</div></div><div><strong>${x.price||''}</strong></div></div>`);
+    renderList(KEYS.apps,'appsList', x => `<div class="list-item"><div><strong>${x.name}</strong><div class="muted">${x.type} • plan ${x.plan}</div></div><span class="tag">${x.status}</span></div>`);
+    renderList(KEYS.campaigns,'campaignsList', x => `<div class="list-item"><div><strong>${x.name}</strong><div class="muted">Budżet ${x.budget} zł</div></div><span class="tag">${x.status}</span></div>`);
+    renderList(KEYS.products,'productsList', x => `<div class="list-item"><div><strong>${x.name}</strong><div class="muted">Sklep / Produkt</div></div><strong>${x.price} zł</strong></div>`);
+    const cart = read(KEYS.cart, []);
+    const cartBox = document.getElementById('cartList');
+    const cartTotal = cart.reduce((s,i)=>s + Number(i.price||0)*Number(i.qty||1),0);
+    if(cartBox) cartBox.innerHTML = cart.map(x => `<div class="list-item"><div><strong>${x.name}</strong><div class="muted">Ilość ${x.qty}</div></div><strong>${x.price} zł</strong></div>`).join('') || `<div class="notice">Koszyk jest pusty.</div>`;
+    document.querySelectorAll('[data-cart-total]').forEach(el=> el.textContent = cartTotal + ' zł');
   }
-  document.addEventListener("DOMContentLoaded", ()=>{
-    seed();
-    applyGuards();
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    ensureSeed();
+    buildShell();
     fillStats();
-    render();
+    renderAll();
     bindPlanButtons();
     bindForms();
-    $(".menu-toggle")?.addEventListener("click", toggleMenu);
-    document.addEventListener("click", e=>{
-      if(e.target.matches(".sidebar.open a")) $(".sidebar")?.classList.remove("open");
-    });
+    requirePlans();
   });
 })();
