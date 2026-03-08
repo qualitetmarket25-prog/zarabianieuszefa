@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nieruchomości — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app-layout.css">
+</head>
+<body class="app-body">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">
+      <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+      <div class="brand-text">
+        <h1>UszefaQualitet</h1>
+        <p>super app do zarabiania</p>
+      </div>
+    </a>
+    <div class="badge">AI + sklepy + ogłoszenia + aplikacje</div>
+    <div class="nav-group">
+      <p class="nav-label">Menu główne</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><span class="nav-mini">Start</span></a><a class="nav-link" href="platforma.html"><span>Platforma</span><span class="nav-mini">Core</span></a><a class="nav-link" href="sklep.html"><span>Sklep</span><span class="nav-mini">Sprzedaż</span></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><span class="nav-mini">Leady</span></a><a class="nav-link" href="uzywane.html"><span>Używane</span><span class="nav-mini">Hot</span></a><a class="nav-link active" href="nieruchomosci.html"><span>Nieruchomości</span><span class="nav-mini">Nowe</span></a><a class="nav-link" href="auta.html"><span>Auta</span><span class="nav-mini">Nowe</span></a><a class="nav-link" href="reklama.html"><span>Reklama</span><span class="nav-mini">Ads</span></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><span class="nav-mini">AI</span></a><a class="nav-link" href="zarabianie.html"><span>Zarabianie</span><span class="nav-mini">Monetyzacja</span></a><a class="nav-link" href="aplikacje.html"><span>Aplikacje</span><span class="nav-mini">App</span></a><a class="nav-link" href="stworz-aplikacje.html"><span>Stwórz aplikację</span><span class="nav-mini">Creator</span></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><span class="nav-mini">PRO</span></a><a class="nav-link" href="generator-sklepu.html"><span>Generator sklepu</span><span class="nav-mini">Builder</span></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><span class="nav-mini">Orders</span></a><a class="nav-link" href="cennik.html"><span>Cennik</span><span class="nav-mini">Plan</span></a><a class="nav-link" href="onboarding.html"><span>Onboarding</span><span class="nav-mini">New</span></a>
+    </div>
+    <div class="sidebar-cta">
+      <h3>Stwórz swoją aplikację</h3>
+      <p>Zrób własny sklep, platformę ogłoszeń, katalog usług albo aplikację premium pod swój biznes.</p>
+      <a class="btn btn-primary btn-block" href="stworz-aplikacje.html">Uruchom kreator</a>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn menu-toggle">☰</button>
+        <div class="search"><span>⌕</span><input placeholder="Szukaj modułu, sklepu, reklamy, produktu..."></div>
+      </div>
+      <div class="topbar-right">
+        <a href="reklama.html" class="btn btn-ghost">Zrób reklamę</a>
+        <a href="ai.html" class="btn btn-secondary">AI Creator</a>
+        <a href="stworz-aplikacje.html" class="btn btn-primary">Stwórz swoją aplikację</a>
+        <div class="plan-pill" id="plan-pill">PRO</div>
+      </div>
+    </div>
+    <div class="container">
+<div class="hero">
+  <div class="panel hero-card"><div class="eyebrow">Nieruchomości</div><h1 class="big">Mieszkania, domy, wynajem i inwestycje.</h1><p class="sub">Osobny moduł premium pod wynajem, sprzedaż, leady i pakiety dla biur nieruchomości.</p></div>
+  <div class="panel pad"><div class="list"><div class="list-item"><div><strong>Dodaj ofertę</strong><div class="muted">dla właściciela lub agencji</div></div><span>→</span></div><div class="list-item"><div><strong>Promuj inwestycję</strong><div class="muted">kampania premium</div></div><span>→</span></div></div></div>
+</div>
+<div class="panel pad"><div id="ads-list" class="list"></div></div>
+</div>
+    <div class="footer">UszefaQualitet — buduj sklep, ogłoszenia, reklamę i aplikację w jednym miejscu.</div>
+  </main>
+</div>
+<script src="app-shell.js"></script>
+</body>
+</html>

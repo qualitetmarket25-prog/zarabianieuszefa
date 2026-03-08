@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Logowanie — UszefaQualitet</title>
+<title>Dodaj ogłoszenie — UszefaQualitet</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
@@ -42,21 +42,18 @@
       </div>
     </div>
     <div class="container">
-<div class="hero">
-  <div class="panel hero-card">
-    <div class="eyebrow">Logowanie</div>
-    <h1 class="big">Wejdź do swojego królestwa.</h1>
-    <p class="sub">Panel, reklamy, AI, aplikacje, ogłoszenia i sklep w jednym miejscu. Po wejściu trafiasz od razu do dashboardu.</p>
-  </div>
-  <div class="panel pad">
-    <div class="section-head"><div><h2 class="title">Logowanie</h2><p class="muted">Demo wejście do aplikacji</p></div></div>
-    <form onsubmit="event.preventDefault();location.href='dashboard.html';">
-      <div class="field"><label>E-mail</label><input type="email" placeholder="twoj@email.pl" required></div>
-      <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
-      <div style="height:14px"></div>
-      <button class="btn btn-primary btn-block">Wejdź do dashboardu</button>
-    </form>
-  </div>
+<div class="panel pad">
+  <div class="section-head"><div><h2 class="title">Dodaj ogłoszenie</h2><p class="muted">szybki formularz</p></div></div>
+  <form id="ad-form">
+    <div class="form-grid">
+      <div class="field"><label>Tytuł</label><input name="title" required placeholder="Sprzedam Audi A4"></div>
+      <div class="field"><label>Kategoria</label><select name="category"><option>Auta</option><option>Nieruchomości</option><option>Używane</option><option>Usługi</option></select></div>
+      <div class="field"><label>Cena</label><input name="price" placeholder="35 000 zł"></div>
+      <div class="field"><label>Miasto</label><input name="city" placeholder="Wrocław"></div>
+    </div>
+    <div style="height:16px"></div>
+    <button class="btn btn-primary">Zapisz ogłoszenie</button>
+  </form>
 </div>
 </div>
     <div class="footer">UszefaQualitet — buduj sklep, ogłoszenia, reklamę i aplikację w jednym miejscu.</div>

@@ -2,50 +2,59 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sklep — U Szefa Qualitet</title>
-<link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sklep — UszefaQualitet</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app-layout.css">
 </head>
 <body class="app-body">
-<aside class="sidebar">
-  <a class="brand" href="dashboard.html">
-    <div class="brand-mark">UQ</div>
-    <div class="brand-text"><strong>U Szefa Qualitet</strong><span>Super App do zarabiania</span></div>
-  </a>
-  <div class="nav-title">Główne</div>
-  <nav class="nav-group"><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Centrum</small></a><a class="nav-link active" href="sklep.html"><span>Sklep</span><small>Sprzedaż</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Ruch</small></a><a class="nav-link" href="reklama.html"><span>Reklama</span><small>Zarabiaj</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>Moc</small></a><a class="nav-link" href="aplikacje.html"><span>Aplikacje</span><small>Nowe</small></a><a class="nav-link" href="stworz-aplikacje.html" data-require="pro"><span>Stwórz aplikację</span><small>PRO</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator sklepu</span><small>AI</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>CRM</small></a><a class="nav-link" href="cennik.html"><span>Pakiety</span><small>Sub</small></a></nav>
-  <div class="nav-title">Plan</div>
-  <div class="card" style="padding:14px">
-    <div class="footer-note">Twój plan</div>
-    <strong data-plan-badge>PRO</strong>
-    <div class="card-list" style="margin-top:12px">
-      <button class="btn ghost" data-set-plan="basic">BASIC</button>
-      <button class="btn ghost" data-set-plan="pro">PRO</button>
-      <button class="btn ghost" data-set-plan="elite">ELITE</button>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">
+      <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+      <div class="brand-text">
+        <h1>UszefaQualitet</h1>
+        <p>super app do zarabiania</p>
+      </div>
+    </a>
+    <div class="badge">AI + sklepy + ogłoszenia + aplikacje</div>
+    <div class="nav-group">
+      <p class="nav-label">Menu główne</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><span class="nav-mini">Start</span></a><a class="nav-link" href="platforma.html"><span>Platforma</span><span class="nav-mini">Core</span></a><a class="nav-link active" href="sklep.html"><span>Sklep</span><span class="nav-mini">Sprzedaż</span></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><span class="nav-mini">Leady</span></a><a class="nav-link" href="uzywane.html"><span>Używane</span><span class="nav-mini">Hot</span></a><a class="nav-link" href="nieruchomosci.html"><span>Nieruchomości</span><span class="nav-mini">Nowe</span></a><a class="nav-link" href="auta.html"><span>Auta</span><span class="nav-mini">Nowe</span></a><a class="nav-link" href="reklama.html"><span>Reklama</span><span class="nav-mini">Ads</span></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><span class="nav-mini">AI</span></a><a class="nav-link" href="zarabianie.html"><span>Zarabianie</span><span class="nav-mini">Monetyzacja</span></a><a class="nav-link" href="aplikacje.html"><span>Aplikacje</span><span class="nav-mini">App</span></a><a class="nav-link" href="stworz-aplikacje.html"><span>Stwórz aplikację</span><span class="nav-mini">Creator</span></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><span class="nav-mini">PRO</span></a><a class="nav-link" href="generator-sklepu.html"><span>Generator sklepu</span><span class="nav-mini">Builder</span></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><span class="nav-mini">Orders</span></a><a class="nav-link" href="cennik.html"><span>Cennik</span><span class="nav-mini">Plan</span></a><a class="nav-link" href="onboarding.html"><span>Onboarding</span><span class="nav-mini">New</span></a>
+    </div>
+    <div class="sidebar-cta">
+      <h3>Stwórz swoją aplikację</h3>
+      <p>Zrób własny sklep, platformę ogłoszeń, katalog usług albo aplikację premium pod swój biznes.</p>
+      <a class="btn btn-primary btn-block" href="stworz-aplikacje.html">Uruchom kreator</a>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn menu-toggle">☰</button>
+        <div class="search"><span>⌕</span><input placeholder="Szukaj modułu, sklepu, reklamy, produktu..."></div>
+      </div>
+      <div class="topbar-right">
+        <a href="reklama.html" class="btn btn-ghost">Zrób reklamę</a>
+        <a href="ai.html" class="btn btn-secondary">AI Creator</a>
+        <a href="stworz-aplikacje.html" class="btn btn-primary">Stwórz swoją aplikację</a>
+        <div class="plan-pill" id="plan-pill">PRO</div>
+      </div>
+    </div>
+    <div class="container">
+<div class="hero">
+  <div class="panel hero-card"><div class="eyebrow">Sklep</div><h1 class="big">Sprzedawaj szybciej niż na ciężkich platformach.</h1><p class="sub">Produkty, marża, checkout i zamówienia. Prosto, mobilnie, gotowe do wrzucenia klientom jako własna aplikacja sklepu.</p></div>
+  <div class="panel pad"><div class="section-head"><div><h2 class="title">Akcje</h2><p class="muted">najkrótsza droga do sprzedaży</p></div></div>
+    <div class="list">
+      <a class="list-item" href="generator-sklepu.html"><div><strong>Generator sklepu</strong><div class="muted">ustaw sklep i marżę</div></div><span>→</span></a>
+      <a class="list-item" href="checkout.html"><div><strong>Przejdź do checkoutu</strong><div class="muted">symulacja zakupu</div></div><span>→</span></a>
+      <a class="list-item" href="stworz-aplikacje.html"><div><strong>Stwórz appkę sklepu</strong><div class="muted">dla siebie lub klienta</div></div><span>→</span></a>
     </div>
   </div>
-</aside>
-<div class="main">
-  <header class="topbar">
-    <div class="topbar-left">
-      <button class="menu-btn" data-menu-toggle>☰</button>
-      <div class="search"><span>⌕</span><input placeholder="Szukaj modułów, produktów, ogłoszeń..."></div>
-    </div>
-    <div class="top-actions">
-      <a class="btn ghost" href="aplikacje.html">Moje aplikacje</a>
-      <a class="btn primary" href="stworz-aplikacje.html">Stwórz swoją aplikację</a>
-    </div>
-  </header>
-  <main class="container">
-    
-<div class="section-title"><h2>Twój sklep</h2><a class="btn primary" href="checkout.html">Przejdź do checkout</a></div>
-<div class="card banner">
-  <strong>Sklep ma ułatwiać ludziom zarabianie.</strong>
-  <p class="footer-note">Produkty czytane z qm_products_by_supplier_v1, gotowe pod mobile i GitHub Pages.</p>
 </div>
-<div class="card-list" data-products-list style="margin-top:18px"></div>
-
+<div class="panel pad"><div class="section-head"><div><h2 class="title">Produkty</h2><p class="muted">czytane z qm_products_by_supplier_v1</p></div></div><div id="products-list" class="list"></div></div>
+</div>
+    <div class="footer">UszefaQualitet — buduj sklep, ogłoszenia, reklamę i aplikację w jednym miejscu.</div>
   </main>
 </div>
 <script src="app-shell.js"></script>
