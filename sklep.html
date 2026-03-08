@@ -3,21 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sklep • QualitetMarket</title>
+  <title>Sklep i sprzedaż • UszefaQualitet</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">QM</div>
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
         <div>
-          <h1>QualitetMarket</h1>
-          <p>Aplikacja marketplace / dropshipping</p>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
         </div>
       </div>
       <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
-      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link active" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link active" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
+      </div>
     </aside>
 
     <main class="main">
@@ -25,40 +37,33 @@
         <div style="display:flex;align-items:center;gap:12px">
           <button id="mobileMenuBtn" class="mobile-menu">☰</button>
           <div class="topbar-title">
-            <h2>Sklep</h2>
-            <p>Oferta aktywnego sklepu</p>
+            <h2>Sklep i sprzedaż</h2>
+            <p>Sklep gotowy pod sprzedaż produktów i ofert</p>
           </div>
         </div>
         <div class="topbar-actions">
-          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Main Store</strong></span>
-          <a class="btn btn-secondary" href="cennik.html">Cennik</a>
-          <a class="btn btn-primary" href="success.html">Publikuj</a>
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          <a class="btn btn-secondary" href="uzywane.html">Używane</a><a class="btn btn-primary" href="koszyk.html">Koszyk</a>
         </div>
       </header>
 
       <section class="wrap">
         
 <div class="hero">
-  <h3>Sklep aplikacji</h3>
-  <p>Widok sklepu korzysta z produktów zapisanych w <strong>qm_products_by_supplier_v1</strong> i aktywnego sklepu z <strong>qm_active_store_v1</strong>.</p>
+  <h3>Sklep użytkownika</h3>
+  <p>Ten moduł ma sprzedawać produkty z hurtowni i kierować użytkownika do checkoutu. W przyszłości możesz połączyć go z ofertami premium i reklamą.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" data-add-demo-cart>Dodaj demo produkt</button>
+    <a class="btn btn-secondary" href="koszyk.html">Przejdź do koszyka</a>
+  </div>
 </div>
 
-<div class="grid grid-4">
-  <div class="card"><div class="muted">Produkty</div><div class="metric" data-stat-products>0</div></div>
-  <div class="card"><div class="muted">Zamówienia</div><div class="metric" data-stat-orders>0</div></div>
-  <div class="card"><div class="muted">Sklepy</div><div class="metric" data-stat-stores>0</div></div>
-  <div class="card"><div class="muted">Marża</div><div class="metric" data-stat-margin>0%</div></div>
+<div class="grid grid-3">
+  <div class="ad-card"><div class="badge ok">Bestseller</div><strong>Smart Watch Pro</strong><div class="price">199 zł</div><div class="muted">Elektronika • dropshipping</div><button class="btn btn-primary" data-add-demo-cart>Dodaj do koszyka</button></div>
+  <div class="ad-card"><div class="badge">Dom</div><strong>Lampka LED RGB</strong><div class="price">79 zł</div><div class="muted">Szybki produkt na reklamę</div><button class="btn btn-primary" data-add-demo-cart>Dodaj do koszyka</button></div>
+  <div class="ad-card"><div class="badge warn">Używane</div><strong>Używany laptop biurowy</strong><div class="price">1200 zł</div><div class="muted">Przykład łączenia sklepu z używanymi ofertami</div><a class="btn btn-secondary" href="uzywane.html">Zobacz dział używane</a></div>
 </div>
 
-<div class="card">
-  <h3>Oferta sklepu</h3>
-  <table class="table">
-    <thead><tr><th>#</th><th>Produkt</th><th>Dostawca</th><th>Cena</th><th>Status</th></tr></thead>
-    <tbody id="productsTableBody"></tbody>
-  </table>
-</div>
-
-        <div class="footer-space"></div>
       </section>
     </main>
   </div>

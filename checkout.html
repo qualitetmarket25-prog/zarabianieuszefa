@@ -1,133 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="app-layout.css">
-  <title>Cennik - QualitetMarket</title>
-  <style>
-    .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
-    .stack {display:grid;gap:20px}
-    .grid-2 {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-    .grid-3 {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-    .muted {color:#94a3b8}
-    .btn-row {display:flex;gap:12px;flex-wrap:wrap}
-    .btn {display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;border:none;cursor:pointer}
-    .btn.secondary {background:#1e293b;color:#e2e8f0;border:1px solid #334155}
-    .btn.full {width:100%}
-    .input,.select,.textarea {width:100%;padding:14px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
-    .textarea {min-height:100px;resize:vertical}
-    .badge {display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
-    .price {font-size:40px;font-weight:800;margin:8px 0}
-    .kpi {font-size:30px;font-weight:800}
-    .list {display:grid;gap:12px}
-    .list-item {display:flex;justify-content:space-between;gap:16px;padding:14px;border-radius:12px;background:#0f172a;border:1px solid #1e293b}
-    .center {text-align:center}
-    .logo-box {width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;color:#082f49;font-size:24px;font-weight:800}
-    .auth-wrap {max-width:460px;margin:0 auto}
-    .landing-top {display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
-    .table {width:100%;border-collapse:collapse}
-    .table th,.table td {padding:12px;border-bottom:1px solid #1e293b;text-align:left}
-    @media (max-width: 920px) {
-      .hero,.grid-2,.grid-3 {grid-template-columns:1fr}
-      .landing-top {flex-direction:column;align-items:flex-start}
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout • UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">QM App</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html">Dashboard</a>
-<a href="platforma.html">Platforma</a>
-<a href="hurtownie.html">Hurtownie</a>
-<a href="sklep.html">Sklep</a>
-<a href="zamowienia.html">Zamówienia</a>
-<a href="panel-sklepu.html">Panel sklepu</a>
-<a href="generator-sklepu.html">Generator</a>
-<a href="qualitetmarket.html">QualitetMarket</a>
-<a href="intelligence.html">Intelligence</a>
-<a href="cennik.html" class="active">Cennik</a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="plan-box">
-          <small>Plan</small>
-          <strong id="userPlanLabel">basic</strong>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+        <div>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
         </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
       </div>
     </aside>
 
-    <div class="main">
+    <main class="main">
       <header class="topbar">
-        <div class="topbar-left">
-          <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-          <div>
-            <div class="topbar-title">Cennik</div>
-            <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Checkout</h2>
+            <p>Finalizacja zamówienia i zapis do qm_orders_v1</p>
           </div>
         </div>
-        <div class="topbar-right">
-          <button class="plan-switch" data-set-plan="basic">Basic</button>
-          <button class="plan-switch" data-set-plan="pro">PRO</button>
-          <button class="plan-switch" data-set-plan="elite">ELITE</button>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          
         </div>
       </header>
 
-      <main class="content">
+      <section class="wrap">
         
-<section class="center" style="margin-bottom:20px;">
-  <span class="badge">Plan system</span>
-  <h1 style="font-size:40px;margin:12px 0;">Cennik aplikacji</h1>
-  <p class="muted">Plany zgodne z projektem: basic / pro / elite.</p>
-</section>
+<div class="hero">
+  <h3>Finalizacja zakupu</h3>
+  <p>Po wysłaniu formularza zamówienie zapisuje się do <strong>qm_orders_v1</strong>, a użytkownik trafia na stronę sukcesu.</p>
+</div>
 
-<section class="grid-3">
-  <div class="card">
-    <div class="badge">basic</div>
-    <div class="price">0 zł</div>
-    <p class="muted">Start, podstawowy panel i prosty sklep.</p>
-    <div class="btn-row"><button class="btn full secondary" data-plan="basic">Aktywuj Basic</button></div>
-  </div>
-  <div class="card">
-    <div class="badge">pro</div>
-    <div class="price">99 zł</div>
-    <p class="muted">Hurtownie, import i lepszy panel sprzedaży.</p>
-    <div class="btn-row"><button class="btn full" data-plan="pro">Aktywuj PRO</button></div>
-  </div>
-  <div class="card">
-    <div class="badge">elite</div>
-    <div class="price">199 zł</div>
-    <p class="muted">Intelligence, zaawansowane moduły i pełny dostęp.</p>
-    <div class="btn-row"><button class="btn full" data-plan="elite">Aktywuj ELITE</button></div>
-  </div>
-</section>
-
-      </main>
+<div class="card">
+  <form id="checkoutForm" class="grid grid-2">
+    <input class="input" name="fullname" placeholder="Imię i nazwisko">
+    <input class="input" name="email" placeholder="E-mail">
+    <input class="input" name="phone" placeholder="Telefon">
+    <input class="input" name="city" placeholder="Miasto">
+    <textarea class="textarea" name="notes" placeholder="Uwagi do zamówienia"></textarea>
+    <div class="grid">
+      <div class="badge ok">Bezpieczny zapis demo</div>
+      <button class="btn btn-primary" type="submit">Zapisz zamówienie</button>
     </div>
+  </form>
+</div>
+
+      </section>
+    </main>
   </div>
-
   <script src="app-shell.js"></script>
-  <script>
-    (function(){
-      const planKey='qm_user_plan_v1';
-      const current=localStorage.getItem(planKey)||'basic';
-      const label=document.getElementById('userPlanLabel');
-      if(label) label.textContent=current;
-      document.querySelectorAll('[data-set-plan]').forEach(btn=>btn.addEventListener('click',()=>{
-        const plan=btn.getAttribute('data-set-plan');
-        localStorage.setItem(planKey,plan);
-        if(label) label.textContent=plan;
-        alert('Plan ustawiony: '+plan);
-      }));
-    })();
-    
-document.querySelectorAll('[data-plan]').forEach(btn => btn.addEventListener('click', function(){
-  const plan=this.getAttribute('data-plan');
-  localStorage.setItem('qm_user_plan_v1', plan);
-  window.location.href='success.html?plan='+encodeURIComponent(plan);
-}));
-
-  </script>
 </body>
 </html>

@@ -1,88 +1,85 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hurtownie • QualitetMarket</title>
-  <link rel="stylesheet" href="app-layout.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UszefaQualitet • Zarabiaj u Szefa</title>
+<link rel="stylesheet" href="app-layout.css">
+<style>
+body{min-height:100vh}
+.landing{max-width:1240px;margin:0 auto;padding:28px 18px 60px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
+.mock-box{background:linear-gradient(135deg,#0f172a,#101f34);border:1px solid #223049;border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+.mock-phone{width:260px;margin:18px auto 0;border-radius:34px;border:6px solid #1b2944;background:#09111f;padding:14px}
+.mock-card{background:#0f172a;border:1px solid #1f2b42;border-radius:18px;padding:14px;margin-bottom:12px}
+.top-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+.brandline{display:flex;align-items:center;gap:14px}
+.brandline img{width:54px;height:54px}
+.price-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+@media (max-width:900px){.hero-grid,.price-strip{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">QM</div>
+  <div class="landing">
+    <div class="top-nav">
+      <div class="brandline">
+        <img src="uszefaqualitet-logo.svg" alt="logo">
         <div>
-          <h1>QualitetMarket</h1>
-          <p>Aplikacja marketplace / dropshipping</p>
+          <h1 style="margin:0;font-size:26px">UszefaQualitet</h1>
+          <div class="muted">Zarabiaj u Szefa • sklepy, ogłoszenia, AI, reklama</div>
         </div>
       </div>
-      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
-      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link active" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
-    </aside>
+      <div class="btn-row">
+        <a class="btn btn-secondary" href="login.html">Zaloguj</a>
+        <a class="btn btn-primary" href="dashboard.html">Wejdź do aplikacji</a>
+      </div>
+    </div>
 
-    <main class="main">
-      <header class="topbar">
-        <div style="display:flex;align-items:center;gap:12px">
-          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
-          <div class="topbar-title">
-            <h2>Hurtownie</h2>
-            <p>Import produktów i supplierzy</p>
+    <div class="hero hero-grid">
+      <div>
+        <span class="badge ok">Nowa super aplikacja do zarabiania</span>
+        <h3>Jedna platforma, która pomaga ludziom budować sklep, wrzucać ogłoszenia, promować oferty i działać z AI.</h3>
+        <p>UszefaQualitet łączy sklep internetowy, moduł ogłoszeń typu wynajmę / sprzedam / usługi, kampanie reklamowe i narzędzia AI. To ma być aplikacja, za którą użytkownik chce płacić co miesiąc, bo realnie ułatwia zarabianie i codzienne życie.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="dashboard.html">Otwórz aplikację</a>
+          <a class="btn btn-gold" href="cennik.html">Zobacz pakiety</a>
+          <a class="btn btn-secondary" href="ogloszenia.html">Sprawdź ogłoszenia</a>
+        </div>
+        <div class="price-strip">
+          <div class="kpi"><div class="muted">Sklep + dropshipping</div><div class="value">1 klik</div><div class="muted">generator sklepu i hurtownie</div></div>
+          <div class="kpi"><div class="muted">Ogłoszenia + używane</div><div class="value">8 kategorii</div><div class="muted">auta, mieszkania, usługi i więcej</div></div>
+          <div class="kpi"><div class="muted">AI + reklama</div><div class="value">boost</div><div class="muted">opisy, kampanie, promocje</div></div>
+        </div>
+      </div>
+
+      <div class="mock-box">
+        <div class="mock-card">
+          <div class="badge">Panel premium</div>
+          <h3 style="margin:10px 0">Wygląd aplikacji jak nowoczesny SaaS</h3>
+          <p class="muted">Dark UI, mocny branding, prosty onboarding i moduły, które pchają użytkownika do subskrypcji premium.</p>
+        </div>
+        <div class="mock-phone">
+          <div class="mock-card">
+            <strong>MyUszefaShop</strong>
+            <div class="muted">sklep + ogłoszenia + reklama</div>
+          </div>
+          <div class="mock-card">
+            <strong>Wyróżnij ofertę</strong>
+            <div class="muted">użytkownik płaci za boost</div>
+          </div>
+          <div class="mock-card">
+            <strong>AI opisu</strong>
+            <div class="muted">premium feature</div>
           </div>
         </div>
-        <div class="topbar-actions">
-          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Main Store</strong></span>
-          <a class="btn btn-secondary" href="cennik.html">Cennik</a>
-          <a class="btn btn-primary" href="success.html">Publikuj</a>
-        </div>
-      </header>
+      </div>
+    </div>
 
-      <section class="wrap">
-        
-<div class="hero">
-  <h3>Hurtownie i import produktów</h3>
-  <p>Panel czyta i zapisuje do <strong>qm_products_by_supplier_v1</strong>. Zostawiamy nazwę klucza bez zmian.</p>
-</div>
-
-<div class="grid grid-4">
-  <div class="card"><div class="muted">Produkty</div><div class="metric" data-stat-products>0</div></div>
-  <div class="card"><div class="muted">Zamówienia</div><div class="metric" data-stat-orders>0</div></div>
-  <div class="card"><div class="muted">Sklepy</div><div class="metric" data-stat-stores>0</div></div>
-  <div class="card"><div class="muted">Marża</div><div class="metric" data-stat-margin>0%</div></div>
-</div>
-
-<div class="grid grid-2">
-  <div class="card">
-    <h3>Domyślne hurtownie</h3>
-    <div class="list">
-      <div class="list-item"><span>AliExpress</span><span class="badge ok">FREE</span></div>
-      <div class="list-item"><span>CJ Dropshipping</span><span class="badge ok">POPULAR</span></div>
-      <div class="list-item"><span>EPROLO</span><span class="badge ok">FAST</span></div>
-      <div class="list-item"><span>VidaXL</span><span class="badge warn">EU</span></div>
-      <div class="list-item"><span>Banggood</span><span class="badge ok">LOW COST</span></div>
+    <div class="grid grid-3" style="margin-top:22px">
+      <div class="card"><h3>Budowa sklepu</h3><p>Generator sklepu, multi-store, marża, checkout, zamówienia, hurtownie i marketplace.</p></div>
+      <div class="card"><h3>Ogłoszenia zarobkowe</h3><p>Wynajem mieszkań, używane auta, elektronika, usługi, praca i biznes w jednym miejscu.</p></div>
+      <div class="card"><h3>Monetyzacja</h3><p>Subskrypcje, promowanie ofert, reklamy, dodatkowe sklepy, AI premium i wyróżnienia.</p></div>
     </div>
   </div>
-  <div class="card">
-    <h3>Akcje</h3>
-    <div class="toolbar">
-      <button class="btn btn-primary" data-demo-import>Import demo</button>
-      <button class="btn btn-secondary">Upload CSV później</button>
-    </div>
-    <p class="muted">Import demo od razu dopisuje produkt do localStorage, żeby było co testować.</p>
-  </div>
-</div>
-
-<div class="card">
-  <h3>Produkty po imporcie</h3>
-  <table class="table">
-    <thead><tr><th>#</th><th>Nazwa</th><th>Hurtownia</th><th>Cena</th><th>Status</th></tr></thead>
-    <tbody id="productsTableBody"></tbody>
-  </table>
-</div>
-
-        <div class="footer-space"></div>
-      </section>
-    </main>
-  </div>
-  <script src="app-shell.js"></script>
 </body>
 </html>

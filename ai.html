@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI zarabiania • UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+        <div>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
+        </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link active" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>AI zarabiania</h2>
+            <p>Generator treści, opisów i reklam premium</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          <a class="btn btn-secondary" href="ogloszenia.html">Ogłoszenia</a><a class="btn btn-primary" href="cennik.html">Odblokuj AI</a>
+        </div>
+      </header>
+
+      <section class="wrap">
+        
+<div class="hero">
+  <h3>AI, które przyspiesza sprzedaż</h3>
+  <p>Tu użytkownik generuje opisy sklepu, produktów i ogłoszeń. To jedna z najmocniejszych sekcji premium, bo realnie oszczędza czas i poprawia konwersję.</p>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Generator opisu ogłoszenia</h3>
+    <textarea id="aiOutput1" class="textarea" placeholder="Tu pojawi się wygenerowany tekst"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-primary" data-ai-fill="aiOutput1">Generuj opis AI</button>
+      <button class="btn btn-secondary" data-ai-fill="aiOutput1">Wersja sprzedażowa</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Generator reklamy sklepu</h3>
+    <textarea id="aiOutput2" class="textarea" placeholder="Nagłówek, CTA i opis reklamy"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-gold" data-ai-fill="aiOutput2">Generuj reklamę AI</button>
+      <a class="btn btn-secondary" href="reklama.html">Przejdź do reklamy</a>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-3" style="margin-top:18px">
+  <div class="card"><h3>Basic</h3><p>Brak AI lub bardzo mały limit.</p></div>
+  <div class="card"><h3>PRO</h3><p>AI do opisów produktów i ofert.</p></div>
+  <div class="card"><h3>ELITE</h3><p>Pełny generator reklam, copy i pomysłów sprzedażowych.</p></div>
+</div>
+
+      </section>
+    </main>
+  </div>
+  <script src="app-shell.js"></script>
+</body>
+</html>

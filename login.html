@@ -1,140 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logowanie • UszefaQualitet</title>
 <link rel="stylesheet" href="app-layout.css">
-  <title>Koszyk - QualitetMarket</title>
-  <style>
-    .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
-    .stack {display:grid;gap:20px}
-    .grid-2 {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-    .grid-3 {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-    .muted {color:#94a3b8}
-    .btn-row {display:flex;gap:12px;flex-wrap:wrap}
-    .btn {display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;border:none;cursor:pointer}
-    .btn.secondary {background:#1e293b;color:#e2e8f0;border:1px solid #334155}
-    .btn.full {width:100%}
-    .input,.select,.textarea {width:100%;padding:14px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
-    .textarea {min-height:100px;resize:vertical}
-    .badge {display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
-    .price {font-size:40px;font-weight:800;margin:8px 0}
-    .kpi {font-size:30px;font-weight:800}
-    .list {display:grid;gap:12px}
-    .list-item {display:flex;justify-content:space-between;gap:16px;padding:14px;border-radius:12px;background:#0f172a;border:1px solid #1e293b}
-    .center {text-align:center}
-    .logo-box {width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;color:#082f49;font-size:24px;font-weight:800}
-    .auth-wrap {max-width:460px;margin:0 auto}
-    .landing-top {display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
-    .table {width:100%;border-collapse:collapse}
-    .table th,.table td {padding:12px;border-bottom:1px solid #1e293b;text-align:left}
-    @media (max-width: 920px) {
-      .hero,.grid-2,.grid-3 {grid-template-columns:1fr}
-      .landing-top {flex-direction:column;align-items:flex-start}
-    }
-  </style>
+<style>.auth{max-width:520px;margin:7vh auto;padding:20px}.auth .card{padding:28px}</style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">QM App</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html">Dashboard</a>
-<a href="platforma.html">Platforma</a>
-<a href="hurtownie.html">Hurtownie</a>
-<a href="sklep.html" class="active">Sklep</a>
-<a href="zamowienia.html">Zamówienia</a>
-<a href="panel-sklepu.html">Panel sklepu</a>
-<a href="generator-sklepu.html">Generator</a>
-<a href="qualitetmarket.html">QualitetMarket</a>
-<a href="intelligence.html">Intelligence</a>
-<a href="cennik.html">Cennik</a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="plan-box">
-          <small>Plan</small>
-          <strong id="userPlanLabel">basic</strong>
-        </div>
-      </div>
-    </aside>
-
-    <div class="main">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-          <div>
-            <div class="topbar-title">Koszyk</div>
-            <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <button class="plan-switch" data-set-plan="basic">Basic</button>
-          <button class="plan-switch" data-set-plan="pro">PRO</button>
-          <button class="plan-switch" data-set-plan="elite">ELITE</button>
-        </div>
-      </header>
-
-      <main class="content">
-        
-<section class="hero">
-  <div class="card">
-    <h2>Koszyk</h2>
-    <div id="cartList" class="list"></div>
-  </div>
-  <div class="stack">
-    <div class="card">
-      <div class="muted">Suma</div>
-      <div class="kpi" id="cartTotal">0 zł</div>
-      <div class="btn-row" style="margin-top:12px;">
-        <a class="btn full" href="checkout.html">Przejdź do checkout</a>
-        <button class="btn full secondary" id="clearCartBtn">Wyczyść koszyk</button>
-      </div>
+  <div class="auth">
+    <div class="card center">
+      <img src="uszefaqualitet-logo.svg" alt="logo" style="width:72px;height:72px;margin:0 auto 14px">
+      <h2>Wejdź do UszefaQualitet</h2>
+      <p class="muted">Panel do budowy sklepu, ogłoszeń, AI i reklam.</p>
+      <form onsubmit="event.preventDefault(); location.href='dashboard.html';" class="grid">
+        <input class="input" type="email" placeholder="E-mail">
+        <input class="input" type="password" placeholder="Hasło">
+        <button class="btn btn-primary" type="submit">Zaloguj i przejdź do aplikacji</button>
+      </form>
+      <div class="footer-note">Demo login działa bez backendu — po kliknięciu wchodzisz do aplikacji.</div>
     </div>
   </div>
-</section>
-
-      </main>
-    </div>
-  </div>
-
-  <script src="app-shell.js"></script>
-  <script>
-    (function(){
-      const planKey='qm_user_plan_v1';
-      const current=localStorage.getItem(planKey)||'basic';
-      const label=document.getElementById('userPlanLabel');
-      if(label) label.textContent=current;
-      document.querySelectorAll('[data-set-plan]').forEach(btn=>btn.addEventListener('click',()=>{
-        const plan=btn.getAttribute('data-set-plan');
-        localStorage.setItem(planKey,plan);
-        if(label) label.textContent=plan;
-        alert('Plan ustawiony: '+plan);
-      }));
-    })();
-    
-(function(){
-  const key='qm_cart_v1';
-  function load(){
-    let cart=[];
-    try{cart=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
-    const list=document.getElementById('cartList');
-    const totalEl=document.getElementById('cartTotal');
-    if(!list || !totalEl) return;
-    if(!cart.length){
-      list.innerHTML='<div class="list-item"><span>Koszyk jest pusty</span><a href="sklep.html">Przejdź do sklepu</a></div>';
-      totalEl.textContent='0 zł';
-      return;
-    }
-    list.innerHTML=cart.map((item,idx)=>`<div class="list-item"><div><strong>${item.name||'Produkt'}</strong><div class="muted">Ilość: ${item.qty||1}</div></div><div>${Number(item.price||0).toFixed(2)} zł</div></div>`).join('');
-    const total=cart.reduce((s,i)=>s+(Number(i.price||0)*(Number(i.qty||1))),0);
-    totalEl.textContent=total.toFixed(2)+' zł';
-  }
-  document.getElementById('clearCartBtn')?.addEventListener('click', function(){
-    localStorage.removeItem(key); load();
-  });
-  load();
-})();
-
-  </script>
 </body>
 </html>

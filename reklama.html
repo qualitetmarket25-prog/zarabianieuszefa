@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reklama i boost • UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+        <div>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
+        </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link active" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Reklama i boost</h2>
+            <p>Proste promowanie sklepu, produktów i ogłoszeń</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          <a class="btn btn-secondary" href="ogloszenia.html">Ogłoszenia</a><a class="btn btn-primary" href="cennik.html">Pakiety reklam</a>
+        </div>
+      </header>
+
+      <section class="wrap">
+        
+<div class="hero">
+  <h3>Uruchom reklamę bez kombinowania</h3>
+  <p>Użytkownik wybiera cel, budżet i publikuje kampanię. To jedna z najważniejszych funkcji monetyzacji, bo można ją sprzedawać jako wygodę i szybszy wynik.</p>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Nowa kampania</h3>
+    <form id="campaignForm" class="grid">
+      <input class="input" name="name" placeholder="Nazwa kampanii">
+      <select class="select" name="target">
+        <option>Sklep</option><option>Ogłoszenia</option><option>Produkt</option><option>Używane</option>
+      </select>
+      <input class="input" name="budget" placeholder="Budżet w zł">
+      <button class="btn btn-primary" type="submit">Uruchom kampanię</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Lista kampanii</h3>
+    <div id="campaignsList" class="list"></div>
+  </div>
+</div>
+
+<div class="grid grid-3" style="margin-top:18px">
+  <div class="card"><h3>Boost ogłoszenia</h3><p>9–19 zł za krótkie wyróżnienie.</p></div>
+  <div class="card"><h3>Promocja sklepu</h3><p>39–99 zł za pakiet reklamowy.</p></div>
+  <div class="card"><h3>Reklama premium</h3><p>Pakiet dla planów PRO i ELITE.</p></div>
+</div>
+
+      </section>
+    </main>
+  </div>
+  <script src="app-shell.js"></script>
+</body>
+</html>

@@ -1,36 +1,40 @@
-USZEFAQUALITET — FULL APP PACK
+USZEFAQUALITET ETAP 1
 
-WGRYWASZ TYLKO PLIKI ZE ŚRODKA, NIE ZIPA.
-
-PLIKI DO REPO:
-- app-layout.css
-- app-shell.js
+Podmień te pliki w repo:
+- index.html
+- login.html
 - dashboard.html
 - platforma.html
 - hurtownie.html
 - sklep.html
+- koszyk.html
+- checkout.html
 - zamowienia.html
 - panel-sklepu.html
 - generator-sklepu.html
 - qualitetmarket.html
 - intelligence.html
-- index.html
-- login.html
-- cennik.html
-- koszyk.html
-- checkout.html
 - success.html
+- cennik.html
+- ogloszenia.html
+- uzywane.html
+- reklama.html
+- ai.html
+- app-layout.css
+- app-shell.js
+- uszefaqualitet-logo.svg
 
-GRAFIKI:
-folder /branding/
+Nowe klucze localStorage:
+- qm_ads_v1
+- qm_ads_campaigns_v1
+- qm_cart_v1
 
-JAK WRZUCIĆ:
-1. rozpakuj zip na komputerze
-2. otwórz GitHub repo
-3. Add file → Upload files
-4. wrzuć wszystkie pliki HTML/CSS/JS ze środka folderu głównego
-5. jeśli chcesz grafiki też w repo, wrzuć zawartość folderu branding
-6. Commit changes
-
-UWAGA:
-GitHub nie rozpakowuje ZIP automatycznie.
+Stare klucze projektu zostają bez zmian:
+- qm_products_by_supplier_v1
+- qm_intel_prefill_v1
+- qm_listing_prefill_v1
+- qm_crm_v1
+- qm_orders_v1
+- qm_stores_v1
+- qm_active_store_v1
+- qm_store_margin_pct

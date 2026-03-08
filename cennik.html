@@ -1,126 +1,86 @@
-(function(){
-  var KEY_PLAN = 'qm_plan_v1';
-  var KEY_PRODUCTS = 'qm_products_by_supplier_v1';
-  var KEY_ORDERS = 'qm_orders_v1';
-  var KEY_STORES = 'qm_stores_v1';
-  var KEY_ACTIVE_STORE = 'qm_active_store_v1';
-  var KEY_MARGIN = 'qm_store_margin_pct';
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cennik i subskrypcje • UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+        <div>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
+        </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link active" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
+      </div>
+    </aside>
 
-  function safeRead(key, fallback){
-    try{
-      var raw = localStorage.getItem(key);
-      if(!raw){ return fallback; }
-      return JSON.parse(raw);
-    }catch(e){
-      return fallback;
-    }
-  }
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Cennik i subskrypcje</h2>
+            <p>Pakiety zaprojektowane tak, żeby użytkownicy chcieli zostać na miesiące</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          
+        </div>
+      </header>
 
-  function ensureDefaults(){
-    if(!localStorage.getItem(KEY_PLAN)){ localStorage.setItem(KEY_PLAN, JSON.stringify({ plan:'pro' })); }
-    if(!localStorage.getItem(KEY_PRODUCTS)){ localStorage.setItem(KEY_PRODUCTS, JSON.stringify([
-      { name:'Smart Watch Pro', price:199, img:'', supplier:'CJ Dropshipping' },
-      { name:'Lampka LED RGB', price:79, img:'', supplier:'AliExpress' },
-      { name:'Organizer biurkowy', price:49, img:'', supplier:'VidaXL' }
-    ])); }
-    if(!localStorage.getItem(KEY_ORDERS)){ localStorage.setItem(KEY_ORDERS, JSON.stringify([
-      { id:'QM-1001', customer:'Anna Nowak', total:249, status:'Nowe' },
-      { id:'QM-1002', customer:'Marek Krawczyk', total:399, status:'Opłacone' }
-    ])); }
-    if(!localStorage.getItem(KEY_STORES)){ localStorage.setItem(KEY_STORES, JSON.stringify([
-      { slug:'main-store', name:'Main Store', status:'active' }
-    ])); }
-    if(!localStorage.getItem(KEY_ACTIVE_STORE)){ localStorage.setItem(KEY_ACTIVE_STORE, JSON.stringify({ slug:'main-store', name:'Main Store' })); }
-    if(!localStorage.getItem(KEY_MARGIN)){ localStorage.setItem(KEY_MARGIN, JSON.stringify(25)); }
-  }
+      <section class="wrap">
+        
+<div class="hero">
+  <h3>Pakiety, które sprzedają się naturalnie</h3>
+  <p>Model opiera się o prosty start, ale mocne korzyści w wyższych planach: reklama, AI, marketplace, dodatkowe sklepy i wyróżnienia. Dzięki temu zarabiasz miesięcznie bez agresywnego odczucia po stronie użytkownika.</p>
+</div>
 
-  function getPlan(){
-    var data = safeRead(KEY_PLAN, { plan:'basic' });
-    if(typeof data === 'string') return data;
-    return data && data.plan ? data.plan : 'basic';
-  }
+<div class="grid grid-4">
+  <div class="card"><div class="badge">FREE</div><h3>0 zł</h3><p>Tylko podstawowe ogłoszenia i podgląd aplikacji.</p><button class="btn btn-secondary" data-set-plan="basic">Start</button></div>
+  <div class="card"><div class="badge ok">BASIC</div><h3>29 zł</h3><p>1 sklep, koszyk, checkout, podstawowe ogłoszenia.</p><button class="btn btn-primary" data-set-plan="basic">Włącz BASIC</button></div>
+  <div class="card"><div class="badge ok">PRO</div><h3>59 zł</h3><p>Hurtownie, reklama, marketplace, boost ofert.</p><button class="btn btn-primary" data-set-plan="pro">Włącz PRO</button></div>
+  <div class="card"><div class="badge warn">ELITE</div><h3>99 zł</h3><p>AI, Intelligence, więcej sklepów, większa automatyzacja.</p><button class="btn btn-gold" data-set-plan="elite">Włącz ELITE</button></div>
+</div>
 
-  function updateStats(){
-    var products = safeRead(KEY_PRODUCTS, []);
-    var orders = safeRead(KEY_ORDERS, []);
-    var stores = safeRead(KEY_STORES, []);
-    var activeStore = safeRead(KEY_ACTIVE_STORE, { name:'Brak sklepu' });
-    var margin = safeRead(KEY_MARGIN, 0);
-    var plan = getPlan();
+<div class="grid grid-2" style="margin-top:18px">
+  <div class="card">
+    <h3>Dodatkowe monetyzacje</h3>
+    <div class="list">
+      <div class="list-item"><span>Wyróżnienie ogłoszenia na 7 dni</span><strong>9 zł</strong></div>
+      <div class="list-item"><span>Boost reklamy sklepu</span><strong>39 zł</strong></div>
+      <div class="list-item"><span>Dodatkowy sklep</span><strong>19 zł / mies.</strong></div>
+      <div class="list-item"><span>Pakiet AI PRO</span><strong>29 zł / mies.</strong></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Rekomendacja dla Ciebie</h3>
+    <p><strong>Najmocniejszy start:</strong> BASIC 29 zł, PRO 59 zł, ELITE 99 zł.</p>
+    <p class="muted">To dobre widełki na start MVP. Nie są za ciężkie dla użytkownika, ale dają regularny przychód miesięczny i miejsce na dalsze dodatki.</p>
+  </div>
+</div>
 
-    document.querySelectorAll('[data-plan-badge]').forEach(function(el){ el.textContent = plan.toUpperCase(); });
-    document.querySelectorAll('[data-stat-products]').forEach(function(el){ el.textContent = products.length; });
-    document.querySelectorAll('[data-stat-orders]').forEach(function(el){ el.textContent = orders.length; });
-    document.querySelectorAll('[data-stat-stores]').forEach(function(el){ el.textContent = stores.length; });
-    document.querySelectorAll('[data-stat-margin]').forEach(function(el){ el.textContent = String(margin) + '%'; });
-    document.querySelectorAll('[data-active-store-name]').forEach(function(el){ el.textContent = activeStore && activeStore.name ? activeStore.name : 'Brak sklepu'; });
-
-    var productsTable = document.getElementById('productsTableBody');
-    if(productsTable){
-      productsTable.innerHTML = products.length ? products.slice(0,8).map(function(item, index){
-        return '<tr><td>'+(index+1)+'</td><td>'+(item.name || 'Produkt')+'</td><td>'+(item.supplier || 'Supplier')+'</td><td>'+(item.price || 0)+' zł</td><td><span class="badge ok">Aktywny</span></td></tr>';
-      }).join('') : '<tr><td colspan="5"><div class="empty">Brak produktów w localStorage</div></td></tr>';
-    }
-
-    var ordersTable = document.getElementById('ordersTableBody');
-    if(ordersTable){
-      ordersTable.innerHTML = orders.length ? orders.slice(0,8).map(function(item){
-        return '<tr><td>'+(item.id || 'QM')+'</td><td>'+(item.customer || 'Klient')+'</td><td>'+(item.total || 0)+' zł</td><td><span class="badge pro">'+(item.status || 'Nowe')+'</span></td></tr>';
-      }).join('') : '<tr><td colspan="4"><div class="empty">Brak zamówień w localStorage</div></td></tr>';
-    }
-  }
-
-  function applyGuards(){
-    var plan = getPlan();
-    var order = { basic:1, pro:2, elite:3 };
-    document.querySelectorAll('[data-require]').forEach(function(el){
-      var req = el.getAttribute('data-require');
-      if((order[plan] || 1) < (order[req] || 1)){
-        el.classList.add('is-locked');
-        if(el.tagName === 'A'){
-          el.addEventListener('click', function(ev){
-            ev.preventDefault();
-            alert('Ta sekcja wymaga planu ' + req.toUpperCase());
-          });
-        }
-      }
-    });
-  }
-
-  function bindEvents(){
-    var menuBtn = document.getElementById('mobileMenuBtn');
-    if(menuBtn){
-      menuBtn.addEventListener('click', function(){
-        document.body.classList.toggle('sidebar-open');
-      });
-    }
-    document.querySelectorAll('[data-set-plan]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var plan = btn.getAttribute('data-set-plan');
-        localStorage.setItem(KEY_PLAN, JSON.stringify({ plan: plan }));
-        location.reload();
-      });
-    });
-    document.querySelectorAll('[data-demo-import]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var products = safeRead(KEY_PRODUCTS, []);
-        products.unshift({
-          name:'Nowy produkt ' + (products.length + 1),
-          price: Math.floor(Math.random() * 200) + 40,
-          img:'',
-          supplier:'EPROLO'
-        });
-        localStorage.setItem(KEY_PRODUCTS, JSON.stringify(products));
-        updateStats();
-        alert('Dodano przykładowy produkt do qm_products_by_supplier_v1');
-      });
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureDefaults();
-    bindEvents();
-    updateStats();
-    applyGuards();
-  });
-})();
+      </section>
+    </main>
+  </div>
+  <script src="app-shell.js"></script>
+</body>
+</html>

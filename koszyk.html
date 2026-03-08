@@ -3,21 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intelligence • QualitetMarket</title>
+  <title>Koszyk • UszefaQualitet</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">QM</div>
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
         <div>
-          <h1>QualitetMarket</h1>
-          <p>Aplikacja marketplace / dropshipping</p>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
         </div>
       </div>
       <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
-      <div class="nav-group"><p class="nav-label">Aplikacja</p><a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel główny</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link active" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a></div><div class="nav-group"><p class="nav-label">Plan testowy</p><div class="list"><button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button><button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button><button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button></div></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
+      </div>
     </aside>
 
     <main class="main">
@@ -25,41 +37,37 @@
         <div style="display:flex;align-items:center;gap:12px">
           <button id="mobileMenuBtn" class="mobile-menu">☰</button>
           <div class="topbar-title">
-            <h2>Intelligence</h2>
-            <p>Sekcja AI / listing / CRM</p>
+            <h2>Koszyk</h2>
+            <p>Przegląd produktów przed zakupem</p>
           </div>
         </div>
         <div class="topbar-actions">
-          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Main Store</strong></span>
-          <a class="btn btn-secondary" href="cennik.html">Cennik</a>
-          <a class="btn btn-primary" href="success.html">Publikuj</a>
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          
         </div>
       </header>
 
       <section class="wrap">
         
 <div class="hero">
-  <h3>Intelligence</h3>
-  <p data-require="elite">Ta sekcja jest przygotowana pod plan ELITE i późniejsze moduły AI / listing / CRM.</p>
+  <h3>Koszyk użytkownika</h3>
+  <p>Tu użytkownik widzi wszystkie produkty przed checkoutem. Koszyk działa w localStorage i nadaje się do GitHub Pages.</p>
 </div>
 
-<div class="grid grid-4">
-  <div class="card"><div class="muted">Produkty</div><div class="metric" data-stat-products>0</div></div>
-  <div class="card"><div class="muted">Zamówienia</div><div class="metric" data-stat-orders>0</div></div>
-  <div class="card"><div class="muted">Sklepy</div><div class="metric" data-stat-stores>0</div></div>
-  <div class="card"><div class="muted">Marża</div><div class="metric" data-stat-margin>0%</div></div>
-</div>
-
-<div class="card">
-  <h3>Moduły ELITE</h3>
-  <div class="list">
-    <div class="list-item"><span>Intelligence prefill</span><span class="badge pro">qm_intel_prefill_v1</span></div>
-    <div class="list-item"><span>Listing prefill</span><span class="badge pro">qm_listing_prefill_v1</span></div>
-    <div class="list-item"><span>CRM</span><span class="badge pro">qm_crm_v1</span></div>
+<div class="grid grid-2">
+  <div id="cartItems" class="grid"></div>
+  <div class="card">
+    <h3>Podsumowanie</h3>
+    <div class="list">
+      <div class="list-item"><span>Łącznie</span><strong id="cartTotal">0.00 zł</strong></div>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <a class="btn btn-secondary" href="sklep.html">Wróć do sklepu</a>
+      <a class="btn btn-primary" href="checkout.html">Przejdź do płatności</a>
+    </div>
   </div>
 </div>
 
-        <div class="footer-space"></div>
       </section>
     </main>
   </div>

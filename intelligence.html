@@ -1,151 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="app-layout.css">
-  <title>Start aplikacji - QualitetMarket</title>
-  <style>
-    .hero {display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
-    .stack {display:grid;gap:20px}
-    .grid-2 {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-    .grid-3 {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-    .muted {color:#94a3b8}
-    .btn-row {display:flex;gap:12px;flex-wrap:wrap}
-    .btn {display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;border:none;cursor:pointer}
-    .btn.secondary {background:#1e293b;color:#e2e8f0;border:1px solid #334155}
-    .btn.full {width:100%}
-    .input,.select,.textarea {width:100%;padding:14px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
-    .textarea {min-height:100px;resize:vertical}
-    .badge {display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
-    .price {font-size:40px;font-weight:800;margin:8px 0}
-    .kpi {font-size:30px;font-weight:800}
-    .list {display:grid;gap:12px}
-    .list-item {display:flex;justify-content:space-between;gap:16px;padding:14px;border-radius:12px;background:#0f172a;border:1px solid #1e293b}
-    .center {text-align:center}
-    .logo-box {width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;color:#082f49;font-size:24px;font-weight:800}
-    .auth-wrap {max-width:460px;margin:0 auto}
-    .landing-top {display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
-    .table {width:100%;border-collapse:collapse}
-    .table th,.table td {padding:12px;border-bottom:1px solid #1e293b;text-align:left}
-    @media (max-width: 920px) {
-      .hero,.grid-2,.grid-3 {grid-template-columns:1fr}
-      .landing-top {flex-direction:column;align-items:flex-start}
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence • UszefaQualitet</title>
+  <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">QM App</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html" class="active">Dashboard</a>
-<a href="platforma.html">Platforma</a>
-<a href="hurtownie.html">Hurtownie</a>
-<a href="sklep.html">Sklep</a>
-<a href="zamowienia.html">Zamówienia</a>
-<a href="panel-sklepu.html">Panel sklepu</a>
-<a href="generator-sklepu.html">Generator</a>
-<a href="qualitetmarket.html">QualitetMarket</a>
-<a href="intelligence.html">Intelligence</a>
-<a href="cennik.html">Cennik</a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="plan-box">
-          <small>Plan</small>
-          <strong id="userPlanLabel">basic</strong>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="uszefaqualitet-logo.svg" alt="UszefaQualitet logo">
+        <div>
+          <h1>UszefaQualitet</h1>
+          <p>Zarabiaj u Szefa • super app</p>
         </div>
+      </div>
+      <div class="plan-chip">Plan: <span data-plan-badge>PRO</span></div>
+      <p class="nav-label">Aplikacja</p>
+      <a class="nav-link" href="dashboard.html"><span>Dashboard</span><small>Start</small></a><a class="nav-link" href="platforma.html"><span>Platforma</span><small>Panel</small></a><a class="nav-link" href="hurtownie.html" data-require="pro"><span>Hurtownie</span><small>PRO</small></a><a class="nav-link" href="sklep.html"><span>Sklep</span><small>Store</small></a><a class="nav-link" href="ogloszenia.html"><span>Ogłoszenia</span><small>Nowe</small></a><a class="nav-link" href="uzywane.html"><span>Używane</span><small>Resale</small></a><a class="nav-link" href="reklama.html" data-require="pro"><span>Reklama</span><small>Ads</small></a><a class="nav-link" href="ai.html" data-require="elite"><span>AI</span><small>ELITE</small></a><a class="nav-link" href="zamowienia.html"><span>Zamówienia</span><small>Orders</small></a><a class="nav-link" href="panel-sklepu.html"><span>Panel sklepu</span><small>Admin</small></a><a class="nav-link" href="generator-sklepu.html"><span>Generator</span><small>Builder</small></a><a class="nav-link" href="qualitetmarket.html" data-require="pro"><span>Marketplace</span><small>PRO</small></a><a class="nav-link active" href="intelligence.html" data-require="elite"><span>Intelligence</span><small>ELITE</small></a><a class="nav-link" href="cennik.html"><span>Cennik</span><small>Plany</small></a>
+      <p class="nav-label">Plan testowy</p>
+      <div class="grid">
+        <button class="btn btn-secondary" data-set-plan="basic">Ustaw BASIC</button>
+        <button class="btn btn-secondary" data-set-plan="pro">Ustaw PRO</button>
+        <button class="btn btn-secondary" data-set-plan="elite">Ustaw ELITE</button>
+      </div>
+      <div class="upsell">
+        <h3>Królestwo zarabiania</h3>
+        <p>Sklepy, ogłoszenia, reklamy, AI i marketplace w jednej aplikacji. Buduj dochód z wielu źródeł jednocześnie.</p>
+        <a class="btn btn-primary" href="cennik.html">Włącz plan premium</a>
       </div>
     </aside>
 
-    <div class="main">
+    <main class="main">
       <header class="topbar">
-        <div class="topbar-left">
-          <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-          <div>
-            <div class="topbar-title">Start aplikacji</div>
-            <div class="topbar-subtitle">QualitetMarket / Zarabianie u Szefa</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="mobileMenuBtn" class="mobile-menu">☰</button>
+          <div class="topbar-title">
+            <h2>Intelligence</h2>
+            <p>Analiza sprzedaży, reklam i popytu</p>
           </div>
         </div>
-        <div class="topbar-right">
-          <button class="plan-switch" data-set-plan="basic">Basic</button>
-          <button class="plan-switch" data-set-plan="pro">PRO</button>
-          <button class="plan-switch" data-set-plan="elite">ELITE</button>
+        <div class="topbar-actions">
+          <span class="badge ok">Aktywny sklep: <strong data-active-store-name>Uszefa Store</strong></span>
+          
         </div>
       </header>
 
-      <main class="content">
+      <section class="wrap">
         
-<section class="landing-top">
-  <div>
-    <span class="badge">Aplikacja marketplace / dropshipping</span>
-    <h1 style="font-size:42px;margin:14px 0 10px;">QualitetMarket jako gotowa aplikacja do sprzedaży</h1>
-    <p class="muted" style="max-width:760px;">Buduj sklep, importuj produkty z hurtowni, zarządzaj zamówieniami i rozwijaj multi-store w jednym panelu. Wszystko działa na GitHub Pages i localStorage.</p>
-  </div>
-  <div class="btn-row">
-    <a class="btn" href="login.html">Wejdź do aplikacji</a>
-    <a class="btn secondary" href="cennik.html">Zobacz cennik</a>
-  </div>
-</section>
+<div class="hero">
+  <h3>Intelligence premium</h3>
+  <p>Ta sekcja jest pod plan ELITE. Użytkownik dostaje insighty, top kategorie, pomysły na promocję i dane do szybszego wzrostu.</p>
+</div>
 
-<section class="hero">
-  <div class="card">
-    <div class="badge">APP MODE</div>
-    <h2>Jedna baza pod desktop i mobile</h2>
-    <p class="muted">Ta wersja przerabia projekt na aplikację z panelem, modułami i prostą ścieżką do PWA / wrappera APK.</p>
-    <div class="btn-row">
-      <a class="btn" href="dashboard.html">Otwórz dashboard</a>
-      <a class="btn secondary" href="hurtownie.html">Importuj produkty</a>
-    </div>
-  </div>
-  <div class="stack">
-    <div class="card">
-      <div class="muted">Produkty</div>
-      <div class="kpi" id="kpiProducts">0</div>
-    </div>
-    <div class="card">
-      <div class="muted">Zamówienia</div>
-      <div class="kpi" id="kpiOrders">0</div>
-    </div>
-  </div>
-</section>
+<div class="grid grid-3">
+  <div class="card"><h3>Trendy</h3><p>Co teraz rośnie w sprzedaży i ogłoszeniach.</p></div>
+  <div class="card"><h3>Konwersja</h3><p>Które oferty warto wyróżnić i reklamować.</p></div>
+  <div class="card"><h3>AI insight</h3><p>Podpowiedzi do cen, tekstów i kierunków rozwoju.</p></div>
+</div>
 
-<section class="grid-3" style="margin-top:20px;">
-  <div class="card"><h3>Hurtownie</h3><p class="muted">Import CSV i zapis do qm_products_by_supplier_v1.</p></div>
-  <div class="card"><h3>Sklep</h3><p class="muted">Produkty, koszyk, checkout i zamówienia pod jeden flow.</p></div>
-  <div class="card"><h3>Multi-store</h3><p class="muted">Gotowość pod qm_stores_v1, qm_active_store_v1 i marżę.</p></div>
-</section>
-
-      </main>
-    </div>
+      </section>
+    </main>
   </div>
-
   <script src="app-shell.js"></script>
-  <script>
-    (function(){
-      const planKey='qm_user_plan_v1';
-      const current=localStorage.getItem(planKey)||'basic';
-      const label=document.getElementById('userPlanLabel');
-      if(label) label.textContent=current;
-      document.querySelectorAll('[data-set-plan]').forEach(btn=>btn.addEventListener('click',()=>{
-        const plan=btn.getAttribute('data-set-plan');
-        localStorage.setItem(planKey,plan);
-        if(label) label.textContent=plan;
-        alert('Plan ustawiony: '+plan);
-      }));
-    })();
-    
-(function(){
-  try{
-    const p=JSON.parse(localStorage.getItem('qm_products_by_supplier_v1')||'[]');
-    const o=JSON.parse(localStorage.getItem('qm_orders_v1')||'[]');
-    const a=document.getElementById('kpiProducts');
-    const b=document.getElementById('kpiOrders');
-    if(a) a.textContent=Array.isArray(p)?p.length:0;
-    if(b) b.textContent=Array.isArray(o)?o.length:0;
-  }catch(e){}
-})();
-
-  </script>
 </body>
 </html>
