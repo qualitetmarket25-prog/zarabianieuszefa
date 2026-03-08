@@ -6,119 +6,124 @@
   <title>Sklepy — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="sklepy">
-
-<div class="page-shell">
-  <div class="backdrop"></div>
-  <aside class="sidebar">
-    <div class="brand" style="margin-bottom:18px">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Menu główne aplikacji</div>
+<body>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Sklepy i automatyczna marża</h1>
+      <p>Tu ustawiasz aktywny sklep i marżę. Po zapisaniu ceny produktów w sklepie przeliczają się automatycznie.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="saveStoreBtn">Zapisz sklep</button>
+        <a class="btn" href="sklep.html">Przejdź do sklepu</a>
       </div>
     </div>
+    <div class="notice">Klucze localStorage: <strong>qm_stores_v1</strong>, <strong>qm_active_store_v1</strong>, <strong>qm_store_margin_pct</strong>.</div>
+  </div>
+</section>
 
-    <div class="nav-group">
-      <p class="nav-label">Start</p>
-      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
-      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
-      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sprzedaż</p>
-      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
-      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
-      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
-      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sklepy</p>
-      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
-      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
-      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
-      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Rozwój</p>
-      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
-      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
-      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
-      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
-      </div>
-    </a>
-    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
-  </header>
-
-  <main class="layout">
-    <section class="content">
-      <section class="hero">
-        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
-        <h1>Zarządzanie sklepami i automatyczną marżą</h1>
-        <p>Tutaj ustawiasz aktywny sklep, dodajesz nowy i podbijasz marżę. Poprawiłem też błąd linku: poprawna strona to sklepy.html, nie sklepy.htm.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="index.html">Strona główna</a>
-          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-        </div>
-      </section>
-
-      <section class="grid stats">
-        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
-        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
-        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
-        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
-      </section>
-
-      
-<section class="grid split-2" data-stores-root>
+<section class="grid grid-2">
   <article class="card">
-    <h2 class="section-title">Aktywne sklepy</h2>
-    <p class="meta">Tutaj ustawiasz aktywny sklep i podbijasz marżę bez grzebania w kodzie.</p>
-    <div class="grid" data-stores-list></div>
+    <h2>Dodaj / edytuj sklep</h2>
+    <div class="form-grid">
+      <input class="input" id="storeName" placeholder="Nazwa sklepu">
+      <input class="input" id="storeSlug" placeholder="Slug sklepu">
+      <input class="input" id="storeMargin" type="number" min="0" max="500" step="1" placeholder="Marża %">
+      <select class="select" id="storePlan">
+        <option value="basic">basic</option>
+        <option value="pro">pro</option>
+        <option value="elite">elite</option>
+      </select>
+    </div>
   </article>
-
   <article class="card">
-    <h2 class="section-title">Dodaj nowy sklep</h2>
-    <form class="form-grid" data-store-form>
-      <div>
-        <label class="label">Nazwa sklepu</label>
-        <input class="small-input" name="name" required placeholder="Mój sklep">
-      </div>
-      <div>
-        <label class="label">Slug</label>
-        <input class="small-input" name="slug" placeholder="moj-sklep">
-      </div>
-      <button class="btn btn-primary" type="submit">Dodaj sklep</button>
-    </form>
-    <div class="notice green" style="margin-top:14px">Uwaga: poprawny link strony to <strong>sklepy.html</strong>. Link <strong>sklepy.htm</strong> jest błędny i dlatego wywala stronę.</div>
+    <h2>Aktywny sklep</h2>
+    <div class="kpis">
+      <div class="kpi"><strong id="activeStoreLabel">default</strong><span>Slug</span></div>
+      <div class="kpi"><strong id="activeStoreMargin">20%</strong><span>Marża</span></div>
+      <div class="kpi"><strong id="storesCount">0</strong><span>Ilość sklepów</span></div>
+      <div class="kpi"><strong id="activeStorePlan">basic</strong><span>Plan</span></div>
+    </div>
   </article>
 </section>
 
-    </section>
-  </main>
+<section class="card">
+  <h2>Lista sklepów</h2>
+  <div id="storesList"></div>
+</section>
 
-  <nav class="footer-nav">
-    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
-    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
-    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
-    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
-    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
-  </nav>
-</div>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Sklepy', subtitle:'Aktywny sklep i marża'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const $ = s => document.querySelector(s);
+  const slugify = QM_APP.slugify;
+  function readStores(){ const x = QM_APP.readJSON('qm_stores_v1', []); return Array.isArray(x) ? x : []; }
+  function writeStores(arr){ QM_APP.writeJSON('qm_stores_v1', arr); }
+  function applyStore(store){
+    localStorage.setItem('qm_active_store_v1', store.slug);
+    localStorage.setItem('qm_store_margin_pct', String(store.marginPct));
+    QM_MARGIN.ensureStoreMargin();
+    QM_MARGIN.refreshProductsStore();
+  }
+  function render(){
+    const stores = readStores();
+    const active = localStorage.getItem('qm_active_store_v1') || 'default';
+    const current = stores.find(s => s.slug === active) || {slug: active, marginPct: Number(localStorage.getItem('qm_store_margin_pct')||20), plan:'basic'};
+    $('#activeStoreLabel').textContent = current.slug || 'default';
+    $('#activeStoreMargin').textContent = String(current.marginPct || 20) + '%';
+    $('#storesCount').textContent = stores.length;
+    $('#activeStorePlan').textContent = current.plan || 'basic';
+    $('#storesList').innerHTML = stores.length ? `
+      <div class="table-wrap"><table><thead><tr><th>Nazwa</th><th>Slug</th><th>Marża</th><th>Plan</th><th>Akcja</th></tr></thead><tbody>
+      ${stores.map(s => `<tr>
+        <td><strong>${s.name}</strong></td>
+        <td>${s.slug}</td>
+        <td>${s.marginPct}%</td>
+        <td>${s.plan || 'basic'}</td>
+        <td><div class="action-row">
+          <button class="btn btn-primary" data-active="${s.slug}">Ustaw aktywny</button>
+          <button class="btn btn-danger" data-delete="${s.slug}">Usuń</button>
+        </div></td>
+      </tr>`).join('')}
+      </tbody></table></div>` : '<div class="empty">Brak sklepów. Dodaj pierwszy sklep.</div>';
+    $('#storesList').querySelectorAll('[data-active]').forEach(btn => btn.addEventListener('click', ()=>{
+      const stores = readStores();
+      const store = stores.find(s => s.slug === btn.dataset.active);
+      if(store){ applyStore(store); render(); }
+    }));
+    $('#storesList').querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', ()=>{
+      const stores = readStores().filter(s => s.slug !== btn.dataset.delete);
+      writeStores(stores); render();
+    }));
+  }
+  $('#saveStoreBtn').addEventListener('click', ()=>{
+    const name = $('#storeName').value.trim();
+    const slug = slugify($('#storeSlug').value.trim() || name);
+    const marginPct = Math.max(0, Math.min(500, Number($('#storeMargin').value || 20) || 20));
+    const plan = $('#storePlan').value;
+    if(!name || !slug){ return; }
+    const stores = readStores();
+    const idx = stores.findIndex(s => s.slug === slug);
+    const record = { id: slug, name, slug, marginPct, plan };
+    if(idx === -1) stores.unshift(record); else stores[idx] = {...stores[idx], ...record};
+    writeStores(stores);
+    applyStore(record);
+    render();
+    $('#storeName').value = ''; $('#storeSlug').value=''; $('#storeMargin').value='';
+  });
+  if(!readStores().length){
+    const demo = [{id:'default',name:'Sklep główny',slug:'default',marginPct:Number(localStorage.getItem('qm_store_margin_pct')||20),plan:'pro'}];
+    writeStores(demo);
+  }
+  render();
+});
+</script>
 
-<script src="auto-margin.js"></script>
-<script src="app-shell.js"></script>
 </body>
 </html>

@@ -6,121 +6,130 @@
   <title>Koszyk — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="koszyk">
-
-<div class="page-shell">
-  <div class="backdrop"></div>
-  <aside class="sidebar">
-    <div class="brand" style="margin-bottom:18px">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Menu główne aplikacji</div>
+<body>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Koszyk</h1>
+      <p>Naprawione przyciski plus, minus, usuń i przejście do checkoutu. Wszystko jest wygodne do kliknięcia na telefonie.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
+        <a class="btn" href="sklep.html">Wróć do sklepu</a>
       </div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Start</p>
-      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
-      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
-      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
+    <div class="kpis">
+      <div class="kpi"><strong id="cartItemsCount">0</strong><span>Ilość sztuk</span></div>
+      <div class="kpi"><strong id="cartSubtotal">0,00 zł</strong><span>Razem</span></div>
+      <div class="kpi"><strong id="cartMargin">20%</strong><span>Marża</span></div>
+      <div class="kpi"><strong id="cartStore">default</strong><span>Sklep</span></div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sprzedaż</p>
-      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
-      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
-      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
-      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sklepy</p>
-      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
-      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
-      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
-      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Rozwój</p>
-      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
-      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
-      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
-      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
-      </div>
-    </a>
-    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
-  </header>
-
-  <main class="layout">
-    <section class="content">
-      <section class="hero">
-        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
-        <h1>Koszyk sprzedażowy gotowy pod telefon</h1>
-        <p>Naprawiłem układ mobilny, duże przyciski i działające akcje koszyka. Ten ekran ma prowadzić prosto do checkoutu i nie rozjeżdżać się na małych ekranach.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="index.html">Strona główna</a>
-          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-        </div>
-      </section>
-
-      <section class="grid stats">
-        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
-        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
-        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
-        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
-      </section>
-
-      
-<section class="grid split-2">
-  <article class="card">
-    <h2 class="section-title">Produkty w koszyku</h2>
-    <p class="meta">Duże klikalne przyciski, wygodne pola ilości i prosty układ na telefonie.</p>
-    <div class="notice red" data-moq-warning style="display:none">Uwaga: część pozycji jest poniżej MOQ. Podbij ilość przed checkoutem.</div>
-    <div class="list" data-cart-list></div>
-  </article>
-
-  <article class="card">
-    <h2 class="section-title">Podsumowanie</h2>
-    <div class="total-box">
-      <div class="total-line"><span>Pozycje</span><strong data-cart-count>0</strong></div>
-      <div class="total-line"><span>Suma netto</span><strong data-subtotal>0,00 zł</strong></div>
-      <div class="total-line"><span>VAT 23%</span><strong data-vat>0,00 zł</strong></div>
-      <div class="total-line"><span>Prowizja platformy</span><strong data-platform-fee>0,00 zł</strong></div>
-      <div class="total-line"><span>Twoja marża</span><strong data-seller-margin>0,00 zł</strong></div>
-      <div class="total-line"><span>Razem brutto</span><strong data-total>0,00 zł</strong></div>
-    </div>
-    <div class="top-actions" style="margin-top:14px">
-      <a class="btn btn-primary" href="checkout.html">Przejdź do checkoutu</a>
-      <a class="btn btn-secondary" href="sklep.html">Wróć do sklepu</a>
-      <button class="btn btn-danger" data-clear-cart>Wyczyść koszyk</button>
-    </div>
-  </article>
+  </div>
 </section>
 
-    </section>
-  </main>
+<section class="card">
+  <div class="toolbar">
+    <div class="toolbar-left"><span class="badge">Koszyk działa w localStorage</span></div>
+    <div class="toolbar-right">
+      <a class="btn" href="sklep.html">Dodaj więcej produktów</a>
+      <button class="btn btn-danger" id="clearCartBtn">Wyczyść koszyk</button>
+      <a class="btn btn-primary" href="checkout.html">Checkout</a>
+    </div>
+  </div>
+</section>
 
-  <nav class="footer-nav">
-    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
-    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
-    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
-    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
-    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
-  </nav>
-</div>
+<section class="card">
+  <h2>Pozycje w koszyku</h2>
+  <div id="cartList"></div>
+  <div class="empty hidden" id="cartEmpty">Koszyk jest pusty. Wejdź do sklepu i dodaj produkty.</div>
+</section>
 
-<script src="auto-margin.js"></script>
-<script src="app-shell.js"></script>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Koszyk', subtitle:'Działające przyciski plus minus usuń'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const slug = QM_APP.activeStore();
+  const CART_KEY = `qm_shop_cart_v1__${slug}`;
+  const $ = s => document.querySelector(s);
+  function readCart(){
+    const current = QM_APP.readJSON(CART_KEY, null);
+    if(current && Array.isArray(current.items)) return current;
+    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
+    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
+  }
+  function writeCart(cart){
+    QM_APP.writeJSON(CART_KEY, cart);
+    QM_APP.writeJSON('qm_cart_v1', cart);
+  }
+  function totals(items){
+    let qty = 0, sum = 0;
+    items.forEach(it => {
+      const q = Number(it.qty || 0) || 0;
+      const p = Number(it.priceRetail || it.price || 0) || 0;
+      qty += q; sum += q * p;
+    });
+    return {qty, sum};
+  }
+  function render(){
+    const wrap = $('#cartList');
+    const empty = $('#cartEmpty');
+    const cart = readCart();
+    const items = Array.isArray(cart.items) ? cart.items : [];
+    const t = totals(items);
+    $('#cartItemsCount').textContent = t.qty;
+    $('#cartSubtotal').textContent = QM_APP.money(t.sum);
+    $('#cartMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+    $('#cartStore').textContent = slug;
+    if(!items.length){
+      wrap.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    wrap.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Produkt</th><th>Cena</th><th>Ilość</th><th>Razem</th><th>Akcja</th></tr></thead>
+          <tbody>
+            ${items.map(it => `
+              <tr>
+                <td><strong>${it.name}</strong><div class="muted">${it.supplier || ''}</div></td>
+                <td>${QM_APP.money(it.priceRetail || it.price || 0)}</td>
+                <td>
+                  <div class="qty">
+                    <button class="btn" data-minus="${it.id}">−</button>
+                    <strong>${Number(it.qty||0)}</strong>
+                    <button class="btn" data-plus="${it.id}">+</button>
+                  </div>
+                </td>
+                <td>${QM_APP.money((Number(it.qty||0)||0) * (Number(it.priceRetail || it.price || 0)||0))}</td>
+                <td><button class="btn btn-danger" data-remove="${it.id}">Usuń</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    wrap.querySelectorAll('[data-plus]').forEach(btn => btn.addEventListener('click', ()=>{
+      const cart = readCart(); const it = cart.items.find(x => String(x.id)===String(btn.dataset.plus));
+      if(it){ it.qty = (Number(it.qty)||0)+1; writeCart(cart); render(); }
+    }));
+    wrap.querySelectorAll('[data-minus]').forEach(btn => btn.addEventListener('click', ()=>{
+      const cart = readCart(); const it = cart.items.find(x => String(x.id)===String(btn.dataset.minus));
+      if(it){ it.qty = Math.max(1,(Number(it.qty)||1)-1); writeCart(cart); render(); }
+    }));
+    wrap.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', ()=>{
+      const cart = readCart(); cart.items = cart.items.filter(x => String(x.id)!==String(btn.dataset.remove)); writeCart(cart); render();
+    }));
+  }
+  $('#clearCartBtn').addEventListener('click', ()=>{ writeCart({items:[]}); render(); });
+  render();
+});
+</script>
+
 </body>
 </html>

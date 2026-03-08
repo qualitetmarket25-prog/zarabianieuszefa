@@ -6,116 +6,53 @@
   <title>Panel zamówień sklepu — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="panel-zamowien-sklepu">
-
-<div class="page-shell">
-  <div class="backdrop"></div>
-  <aside class="sidebar">
-    <div class="brand" style="margin-bottom:18px">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Menu główne aplikacji</div>
+<body>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Panel zamówień sklepu</h1>
+      <p>Panel pod sprzedawcę. Tu masz szybkie statystyki i prostą listę zamówień z aktywnego sklepu.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="zamowienia.html">Wszystkie zamówienia</a>
+        <a class="btn" href="sklepy.html">Sklepy</a>
       </div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Start</p>
-      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
-      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
-      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
+    <div class="kpis">
+      <div class="kpi"><strong id="poNew">0</strong><span>Nowe</span></div>
+      <div class="kpi"><strong id="poPaid">0</strong><span>Opłacone</span></div>
+      <div class="kpi"><strong id="poShipped">0</strong><span>Wysłane</span></div>
+      <div class="kpi"><strong id="poRevenue">0,00 zł</strong><span>Obrót</span></div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sprzedaż</p>
-      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
-      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
-      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
-      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sklepy</p>
-      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
-      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
-      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
-      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Rozwój</p>
-      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
-      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
-      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
-      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
-      </div>
-    </a>
-    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
-  </header>
-
-  <main class="layout">
-    <section class="content">
-      <section class="hero">
-        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
-        <h1>Panel zamówień sklepu do codziennej pracy</h1>
-        <p>To jest operacyjny ekran sklepu. Masz szybkie przejścia, poprawioną klikalność i czytelny widok zamówień również na telefonie.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="index.html">Strona główna</a>
-          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-        </div>
-      </section>
-
-      <section class="grid stats">
-        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
-        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
-        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
-        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
-      </section>
-
-      
-<section class="grid">
-  <article class="card" data-store-orders-root>
-    <h2 class="section-title">Panel zamówień sklepu</h2>
-    <p class="meta" data-store-orders-note>Aktywny sklep: Brak</p>
-    <div class="top-actions" style="margin:14px 0 18px">
-      <a class="btn btn-primary" href="zamowienia.html">Wszystkie zamówienia</a>
-      <a class="btn btn-secondary" href="panel-sklepu.html">Panel sklepu</a>
-      <a class="btn btn-ghost" href="sklepy.html">Zarządzaj sklepami</a>
-    </div>
-    <div class="empty" data-orders-empty>Brak zamówień dla panelu sklepu. Przejdź do checkoutu i wygeneruj pierwsze zamówienie.</div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr><th>ID</th><th>Data</th><th>Klient</th><th>Sklep</th><th>Status</th><th>Wartość</th></tr>
-        </thead>
-        <tbody data-orders-body></tbody>
-      </table>
-    </div>
-  </article>
+  </div>
+</section>
+<section class="card">
+  <h2>Ostatnie zamówienia</h2>
+  <div id="poList"></div>
 </section>
 
-    </section>
-  </main>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Panel zamówień sklepu', subtitle:'Podgląd zamówień sprzedawcy'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const slug = QM_APP.activeStore();
+  const orders = QM_APP.readJSON('qm_orders_v1', []).filter(o => String(o.storeSlug || 'default') === slug);
+  const count = (s) => orders.filter(o => String(o.status || 'new') === s).length;
+  document.getElementById('poNew').textContent = count('new');
+  document.getElementById('poPaid').textContent = count('paid');
+  document.getElementById('poShipped').textContent = count('shipped');
+  document.getElementById('poRevenue').textContent = QM_APP.money(orders.reduce((a,b)=>a+(Number(b.totals?.gross||0)||0),0));
+  document.getElementById('poList').innerHTML = orders.length ? `
+    <div class="table-wrap"><table><thead><tr><th>Numer</th><th>Klient</th><th>Status</th><th>Kwota</th></tr></thead><tbody>
+    ${orders.slice(0,20).map(o=>`<tr><td>${o.orderNo || o.id}</td><td>${o.customer?.name || '-'}</td><td>${o.status || 'new'}</td><td>${QM_APP.money(o.totals?.gross || 0)}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty">Brak zamówień dla aktywnego sklepu.</div>';
+});
+</script>
 
-  <nav class="footer-nav">
-    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
-    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
-    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
-    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
-    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
-  </nav>
-</div>
-
-<script src="auto-margin.js"></script>
-<script src="app-shell.js"></script>
 </body>
 </html>

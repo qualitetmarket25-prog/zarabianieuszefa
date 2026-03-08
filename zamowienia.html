@@ -6,116 +6,109 @@
   <title>Zamówienia — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="zamowienia">
-
-<div class="page-shell">
-  <div class="backdrop"></div>
-  <aside class="sidebar">
-    <div class="brand" style="margin-bottom:18px">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Menu główne aplikacji</div>
+<body>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Zamówienia</h1>
+      <p>Wszystkie zamówienia dla aktywnego sklepu. Działają filtry i statusy, a przejścia nie wywalają się na telefonie.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="sklep.html">Wróć do sklepu</a>
+        <a class="btn" href="panel-zamowien-sklepu.html">Panel zamówień sklepu</a>
       </div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Start</p>
-      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
-      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
-      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
+    <div class="kpis">
+      <div class="kpi"><strong id="ordersCount">0</strong><span>Zamówienia</span></div>
+      <div class="kpi"><strong id="ordersValue">0,00 zł</strong><span>Obrót</span></div>
+      <div class="kpi"><strong id="ordersStore">default</strong><span>Sklep</span></div>
+      <div class="kpi"><strong id="ordersNew">0</strong><span>Nowe</span></div>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sprzedaż</p>
-      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
-      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
-      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
-      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sklepy</p>
-      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
-      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
-      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
-      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Rozwój</p>
-      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
-      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
-      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
-      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
-      </div>
-    </a>
-    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
-  </header>
-
-  <main class="layout">
-    <section class="content">
-      <section class="hero">
-        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
-        <h1>Centrum zamówień użytkownika i sklepu</h1>
-        <p>Widok zamówień dostał prostą, responsywną tabelę z poziomym scrollem tylko tam, gdzie trzeba. Reszta ekranu zostaje wygodna na telefonie.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="index.html">Strona główna</a>
-          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-        </div>
-      </section>
-
-      <section class="grid stats">
-        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
-        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
-        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
-        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
-      </section>
-
-      
-<section class="grid">
-  <section class="kpi-row">
-    <article class="card"><div class="meta">Łączny obrót</div><div class="metric" data-orders-revenue>0,00 zł</div></article>
-    <article class="card"><div class="meta">Liczba zamówień</div><div class="metric" data-orders-count>0</div></article>
-    <article class="card"><div class="meta">Średnia wartość</div><div class="metric" data-orders-avg>0,00 zł</div></article>
-  </section>
-  <article class="card" data-orders-root>
-    <h2 class="section-title">Lista zamówień</h2>
-    <p class="meta">Widok mobilny ma poziomy scroll tylko dla tabeli. Przyciski i menu zostają klikalne.</p>
-    <div class="empty" data-orders-empty>Brak zapisanych zamówień. Złóż zamówienie przez checkout, żeby lista się uzupełniła.</div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr><th>ID</th><th>Data</th><th>Klient</th><th>Sklep</th><th>Status</th><th>Wartość</th></tr>
-        </thead>
-        <tbody data-orders-body></tbody>
-      </table>
-    </div>
-  </article>
+  </div>
 </section>
 
-    </section>
-  </main>
+<section class="card">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input class="search" id="orderSearch" placeholder="Szukaj po numerze, kliencie lub telefonie">
+    </div>
+    <div class="toolbar-right">
+      <select class="select" id="orderStatus">
+        <option value="all">Wszystkie statusy</option>
+        <option value="new">Nowe</option>
+        <option value="paid">Opłacone</option>
+        <option value="shipped">Wysłane</option>
+        <option value="cancelled">Anulowane</option>
+      </select>
+    </div>
+  </div>
+</section>
 
-  <nav class="footer-nav">
-    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
-    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
-    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
-    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
-    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
-  </nav>
-</div>
+<section class="card">
+  <div id="ordersTable"></div>
+  <div class="empty hidden" id="ordersEmpty">Brak zamówień dla tego sklepu.</div>
+</section>
 
-<script src="auto-margin.js"></script>
-<script src="app-shell.js"></script>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Zamówienia', subtitle:'Lista zamówień aktywnego sklepu'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const slug = QM_APP.activeStore();
+  const $ = s => document.querySelector(s);
+  function readOrders(){
+    const all = QM_APP.readJSON('qm_orders_v1', []);
+    return Array.isArray(all) ? all.filter(o => String(o.storeSlug || 'default') === slug) : [];
+  }
+  function writeOrders(next){
+    const all = QM_APP.readJSON('qm_orders_v1', []);
+    const other = Array.isArray(all) ? all.filter(o => String(o.storeSlug || 'default') !== slug) : [];
+    QM_APP.writeJSON('qm_orders_v1', [...next, ...other]);
+  }
+  function render(){
+    const q = ($('#orderSearch').value || '').trim().toLowerCase();
+    const st = $('#orderStatus').value;
+    let arr = readOrders();
+    if(st !== 'all') arr = arr.filter(o => String(o.status || 'new') === st);
+    if(q) arr = arr.filter(o => [o.orderNo, o.customer?.name, o.customer?.phone].join(' ').toLowerCase().includes(q));
+    $('#ordersCount').textContent = arr.length;
+    $('#ordersValue').textContent = QM_APP.money(arr.reduce((a,b)=>a + (Number(b.totals?.gross || 0)||0),0));
+    $('#ordersStore').textContent = slug;
+    $('#ordersNew').textContent = readOrders().filter(o => String(o.status || 'new') === 'new').length;
+    const wrap = $('#ordersTable'); const empty = $('#ordersEmpty');
+    if(!arr.length){
+      wrap.innerHTML = ''; empty.classList.remove('hidden'); return;
+    }
+    empty.classList.add('hidden');
+    wrap.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Numer</th><th>Klient</th><th>Status</th><th>Kwota</th><th>Akcja</th></tr></thead><tbody>
+      ${arr.map(o => `<tr>
+        <td><strong>${o.orderNo || o.id}</strong><div class="muted">${String(o.createdAt || '').slice(0,16).replace('T',' ')}</div></td>
+        <td>${o.customer?.name || '-'}<div class="muted">${o.customer?.phone || ''}</div></td>
+        <td><span class="tag">${o.status || 'new'}</span></td>
+        <td>${QM_APP.money(o.totals?.gross || 0)}</td>
+        <td><div class="action-row">
+          <button class="btn" data-status="${o.id}|paid">Opłacone</button>
+          <button class="btn" data-status="${o.id}|shipped">Wysłane</button>
+          <button class="btn btn-danger" data-status="${o.id}|cancelled">Anuluj</button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+    wrap.querySelectorAll('[data-status]').forEach(btn => btn.addEventListener('click', ()=>{
+      const [id, status] = btn.dataset.status.split('|');
+      const list = readOrders().map(o => String(o.id) === String(id) ? {...o, status, updatedAt:new Date().toISOString()} : o);
+      writeOrders(list);
+      render();
+    }));
+  }
+  $('#orderSearch').addEventListener('input', render);
+  $('#orderStatus').addEventListener('change', render);
+  render();
+});
+</script>
+
 </body>
 </html>

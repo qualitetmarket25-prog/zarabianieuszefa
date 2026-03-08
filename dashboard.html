@@ -2,37 +2,50 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Dashboard — QualitetMarket</title>
-  <meta name="description" content="Panel główny użytkownika">
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="qm-shell"></div>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Wszystkie najważniejsze liczby: produkty, sklepy, zamówienia i aktywny sklep. Prosto, szybko i wygodnie na telefonie.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="sklep.html">Sklep</a>
+        <a class="btn" href="zamowienia.html">Zamówienia</a>
+        <a class="btn" href="sklepy.html">Sklepy</a>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><strong id="dashProducts">0</strong><span>Produkty</span></div>
+      <div class="kpi"><strong id="dashOrders">0</strong><span>Zamówienia</span></div>
+      <div class="kpi"><strong id="dashStores">0</strong><span>Sklepy</span></div>
+      <div class="kpi"><strong id="dashMargin">20%</strong><span>Marża</span></div>
+    </div>
+  </div>
+</section>
+
+  </div>
   <script src="app-shell.js"></script>
-  <script>
-    QualitetShell.buildShell({
-      topSubtitle: "Panel główny użytkownika",
-      primaryHref: "platforma.html",
-      primaryLabel: "Mapa modułów",
-      heroTitle: "Dashboard",
-      heroText: "Dashboard zbiera najważniejsze skróty do sprzedaży, importu, reklam i obsługi sklepu.",
-      notice: "",
-      quickLinks: ["panel-sklepu.html", "hurtownie.html", "zamowienia.html"],
-      body: `
-<section class="metrics">
-  <article class="card"><div class="muted">Sklep</div><div class="metric-number">Aktywny</div></article>
-  <article class="card"><div class="muted">Hurtownie</div><div class="metric-number">Import</div></article>
-  <article class="card"><div class="muted">AI</div><div class="metric-number">Treści</div></article>
-  <article class="card"><div class="muted">Zamówienia</div><div class="metric-number">Obsługa</div></article>
-</section>
-<section class="cards">
-  <article class="card"><h3>Panel zarobku</h3><p>Tu użytkownik ma od razu widzieć najważniejsze akcje: produkty, reklamy, zamówienia i sklep.</p><div class="tag-row"><span class="tag">Produkty</span><span class="tag">Marża</span><span class="tag">Multi-store</span></div></article>
-  <article class="card"><h3>Szybkie akcje</h3><ul class="list"><li><div><strong>Dodaj produkty</strong><span>Import do sklepu z hurtowni</span></div><a class="primary-btn" href="hurtownie.html">Start</a></li><li><div><strong>Uruchom sklep</strong><span>Panel sklepu i generator</span></div><a class="primary-btn" href="panel-sklepu.html">Panel</a></li><li><div><strong>Twórz reklamy</strong><span>Moduł AI i reklama AI</span></div><a class="primary-btn" href="reklama-ai.html">AI</a></li></ul></article>
-</section>
-`
-    });
-  </script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Dashboard', subtitle:'Podgląd sprzedaży i sklepów'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+ const products = QM_APP.readJSON('qm_products_by_supplier_v1', []);
+ const orders = QM_APP.readJSON('qm_orders_v1', []);
+ const stores = QM_APP.readJSON('qm_stores_v1', []);
+ document.getElementById('dashProducts').textContent = Array.isArray(products) ? products.length : 0;
+ document.getElementById('dashOrders').textContent = Array.isArray(orders) ? orders.length : 0;
+ document.getElementById('dashStores').textContent = Array.isArray(stores) ? stores.length : 0;
+ document.getElementById('dashMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+});
+</script>
+
 </body>
 </html>

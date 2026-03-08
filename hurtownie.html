@@ -2,198 +2,119 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QualitetMarket — Hurtownie</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Hurtownie — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="drawer-backdrop" data-menu-close></div>
-<div class="shell">
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="title">QualitetMarket</div>
-        <div class="sub">Import produktów i marża</div>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Hurtownie i import produktów</h1>
+      <p>Wrzucasz produkty do localStorage i od razu możesz je sprzedawać w sklepie. Dodałem też szybkie demo, żeby od razu było co testować na telefonie.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="loadDemoBtn">Załaduj demo produkty</button>
+        <a class="btn" href="sklep.html">Otwórz sklep</a>
       </div>
     </div>
-    <div class="nav-group" data-qm-nav></div>
-  </aside>
+    <div class="notice">Import zapisuje do <strong>qm_products_by_supplier_v1</strong>.</div>
+  </div>
+</section>
 
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="menu-toggle" data-menu-open aria-label="Otwórz menu">☰</button>
-        <input id="csvInput" class="search" placeholder="Wklej CSV: name,price,img,supplier,category">
-      </div>
-      <div class="pillbar">
-        <div class="pill">Dostawcy: <strong id="supplierCount">0</strong></div>
-        <a class="btn primary" href="sklep.html">Otwórz sklep</a>
-      </div>
-    </header>
-
-    <div class="container">
-      <section class="hero">
-        <h1>Hurtownie i import</h1>
-        <p>Tu wrzucasz produkty do sklepu. Przyciski są duże, działają na telefonie i od razu zapisują dane do <strong>qm_products_by_supplier_v1</strong>.</p>
-      </section>
-
-      <section class="grid">
-        <section class="card products-wrap">
-          <h2>Szybki import z gotowych hurtowni</h2>
-          <div class="toolbar">
-            <button class="btn primary" onclick="seedSupplier('AliExpress')">AliExpress</button>
-            <button class="btn alt" onclick="seedSupplier('CJ Dropshipping')">CJ Dropshipping</button>
-            <button class="btn ghost" onclick="seedSupplier('EPROLO')">EPROLO</button>
-            <button class="btn ghost" onclick="seedSupplier('VidaXL')">VidaXL</button>
-            <button class="btn ghost" onclick="seedSupplier('Banggood')">Banggood</button>
-          </div>
-
-          <h3>Import CSV</h3>
-          <div class="toolbar">
-            <textarea id="csvArea" class="field" rows="7" placeholder="name,price,img,supplier,category&#10;Lampka LED,74.90,,VidaXL,Oświetlenie"></textarea>
-          </div>
-          <div class="toolbar">
-            <button class="btn primary" id="importCsvBtn">Importuj CSV</button>
-            <button class="btn danger" id="clearProductsBtn">Wyczyść produkty</button>
-          </div>
-
-          <div id="importNotice" class="notice">Po imporcie ceny będą automatycznie przeliczone wg Twojej marży.</div>
-
-          <div style="height:14px"></div>
-          <h3>Produkty w pamięci</h3>
-          <div id="productsPreview"></div>
-        </section>
-
-        <aside class="card sidepanel">
-          <h2>Twoje ustawienia</h2>
-          <div class="kpi"><span class="small">Automatyczna marża</span><strong id="marginBox">25%</strong></div>
-          <div class="kpi"><span class="small">Łączna liczba produktów</span><strong id="productCountBox">0</strong></div>
-          <div class="kpi"><span class="small">Aktywny sklep</span><strong id="activeStoreBox">Mój sklep</strong></div>
-          <div style="height:14px"></div>
-          <a class="btn alt" href="sklepy.html">Ustaw marże i sklepy</a>
-          <div style="height:14px"></div>
-          <div class="logo-preview">
-            <img src="uszefaqualitet-logo.svg" alt="Logo" style="width:92px;height:92px">
-          </div>
-        </aside>
-      </section>
+<section class="grid grid-2">
+  <article class="card">
+    <h2>Import CSV</h2>
+    <p class="muted">Kolumny: <strong>name,price,img,supplier,category</strong>. Separator przecinek lub średnik.</p>
+    <input class="input" id="csvFile" type="file" accept=".csv,text/csv">
+    <div class="action-row" style="margin-top:12px">
+      <button class="btn btn-primary" id="importCsvBtn">Importuj CSV</button>
+      <button class="btn btn-danger" id="clearProductsBtn">Wyczyść produkty</button>
     </div>
-  </main>
-</div>
+  </article>
+  <article class="card">
+    <h2>Status produktów</h2>
+    <div class="kpis">
+      <div class="kpi"><strong id="supProducts">0</strong><span>Produkty</span></div>
+      <div class="kpi"><strong id="supMargin">20%</strong><span>Marża</span></div>
+      <div class="kpi"><strong id="supStore">default</strong><span>Sklep</span></div>
+      <div class="kpi"><strong id="supSuppliers">0</strong><span>Hurtownie</span></div>
+    </div>
+  </article>
+</section>
 
-<div class="mobile-dock"><nav data-qm-dock></nav></div>
+<section class="card">
+  <h2>Podgląd produktów</h2>
+  <div id="supPreview"></div>
+</section>
 
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Hurtownie', subtitle:'Import produktów do sklepu'});</script>
+  
 <script>
-QMLayout.mount({ active: 'hurtownie.html' });
-
-const KEY = 'qm_products_by_supplier_v1';
-const ACTIVE_STORE_KEY = 'qm_active_store_v1';
-
-function read(key, fallback){
-  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
-  catch(e){ return fallback; }
-}
-function write(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-function money(v){ return `${Number(v || 0).toFixed(2)} zł`; }
-
-const sampleBySupplier = {
-  'AliExpress': [
-    { id:'ali-1', name:'Statyw do telefonu', basePrice:29.9, supplier:'AliExpress', category:'Content', img:'' },
-    { id:'ali-2', name:'Mini mikrofon bezprzewodowy', basePrice:49.0, supplier:'AliExpress', category:'Audio', img:'' }
-  ],
-  'CJ Dropshipping': [
-    { id:'cj-1', name:'Kubek termiczny premium', basePrice:24.0, supplier:'CJ Dropshipping', category:'Lifestyle', img:'' },
-    { id:'cj-2', name:'Plecak miejski slim', basePrice:58.0, supplier:'CJ Dropshipping', category:'Moda', img:'' }
-  ],
-  'EPROLO': [
-    { id:'epro-1', name:'Zestaw organizerów do kabli', basePrice:19.9, supplier:'EPROLO', category:'Biuro', img:'' },
-    { id:'epro-2', name:'Lampka biurkowa LED', basePrice:42.5, supplier:'EPROLO', category:'Biuro', img:'' }
-  ],
-  'VidaXL': [
-    { id:'vida-1', name:'Regał ekspozycyjny', basePrice:149.0, supplier:'VidaXL', category:'Wyposażenie', img:'' },
-    { id:'vida-2', name:'Krzesło biurowe premium', basePrice:259.0, supplier:'VidaXL', category:'Wyposażenie', img:'' }
-  ],
-  'Banggood': [
-    { id:'bang-1', name:'Kamera samochodowa HD', basePrice:115.0, supplier:'Banggood', category:'Auto', img:'' },
-    { id:'bang-2', name:'Mini projektor smart', basePrice:189.0, supplier:'Banggood', category:'Elektronika', img:'' }
-  ]
-};
-
-function refreshView(){
-  const products = QMMargin.getProducts();
-  document.getElementById('marginBox').textContent = QMMargin.getMarginPct() + '%';
-  document.getElementById('productCountBox').textContent = products.length;
-  document.getElementById('supplierCount').textContent = [...new Set(products.map(p => p.supplier))].length;
-  document.getElementById('activeStoreBox').textContent = read(ACTIVE_STORE_KEY, 'Mój sklep');
-  const root = document.getElementById('productsPreview');
-  if(!products.length){
-    root.innerHTML = '<div class="empty">Brak produktów. Zaimportuj dane z hurtowni albo CSV.</div>';
-    return;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const $ = s => document.querySelector(s);
+  function parseCSV(text){
+    const rows = text.trim().split(/\r?\n/).filter(Boolean);
+    if(!rows.length) return [];
+    const delim = rows[0].includes(';') ? ';' : ',';
+    const head = rows[0].split(delim).map(x=>x.trim().toLowerCase());
+    return rows.slice(1).map((row, idx)=>{
+      const cols = row.split(delim).map(x=>x.trim());
+      const get = (name) => cols[head.indexOf(name)] || '';
+      return QM_MARGIN.normalizeProduct({
+        id: 'csv-'+Date.now()+'-'+idx,
+        name: get('name') || get('title') || ('Produkt '+(idx+1)),
+        price: Number(get('price') || 0),
+        img: get('img') || get('image'),
+        image: get('img') || get('image'),
+        supplier: get('supplier') || 'CSV',
+        category: get('category') || 'CSV',
+        buyNet: Number(get('price') || 0)
+      });
+    }).filter(x => x.name);
   }
-  root.innerHTML = `
-    <table class="table">
-      <thead><tr><th>Produkt</th><th>Dostawca</th><th>Baza</th><th>Po marży</th></tr></thead>
-      <tbody>
-        ${products.slice(0,12).map(p => `
-          <tr>
-            <td><strong>${p.name}</strong><div class="small">${p.category || ''}</div></td>
-            <td>${p.supplier || '-'}</td>
-            <td>${money(p.basePrice || p.originalPrice || p.price)}</td>
-            <td>${money(p.price)}</td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>`;
-}
-
-function mergeProducts(newProducts){
-  const existing = read(KEY, []);
-  const map = new Map();
-  [...existing, ...newProducts].forEach(item => map.set(item.id || (item.name + item.supplier), item));
-  write(KEY, [...map.values()]);
-  QMMargin.getProducts();
-  refreshView();
-}
-
-function seedSupplier(name){
-  mergeProducts(sampleBySupplier[name] || []);
-  document.getElementById('importNotice').textContent = `Zaimportowano dostawcę: ${name}`;
-}
-window.seedSupplier = seedSupplier;
-
-document.getElementById('importCsvBtn').addEventListener('click', () => {
-  const raw = document.getElementById('csvArea').value.trim();
-  if(!raw){
-    document.getElementById('importNotice').textContent = 'Wklej CSV przed importem.';
-    return;
+  function demoProducts(){
+    const demo = [
+      {name:'Smartwatch Active', price:119, img:'https://placehold.co/640x640/png?text=Smartwatch', supplier:'CJ Dropshipping', category:'Elektronika'},
+      {name:'Organizer biurkowy', price:29, img:'https://placehold.co/640x640/png?text=Organizer', supplier:'AliExpress', category:'Dom'},
+      {name:'Torba sportowa', price:69, img:'https://placehold.co/640x640/png?text=Torba', supplier:'Banggood', category:'Moda'},
+      {name:'Lampka LED', price:39, img:'https://placehold.co/640x640/png?text=Lampka', supplier:'VidaXL', category:'Dom'},
+      {name:'Mata fitness', price:55, img:'https://placehold.co/640x640/png?text=Mata', supplier:'EPROLO', category:'Sport'},
+      {name:'Powerbank 20k', price:89, img:'https://placehold.co/640x640/png?text=Powerbank', supplier:'CJ Dropshipping', category:'Elektronika'}
+    ].map(QM_MARGIN.normalizeProduct);
+    QM_APP.writeJSON('qm_products_by_supplier_v1', demo);
+    render();
   }
-  const lines = raw.split(/\r?\n/).filter(Boolean);
-  const parsed = lines.slice(1).map((line, idx) => {
-    const [name, price, img, supplier, category] = line.split(',');
-    return {
-      id: 'csv-' + Date.now() + '-' + idx,
-      name: (name || '').trim(),
-      basePrice: Number((price || '0').trim()),
-      img: (img || '').trim(),
-      supplier: (supplier || 'CSV').trim(),
-      category: (category || 'Ogólne').trim()
-    };
-  }).filter(p => p.name);
-  mergeProducts(parsed);
-  document.getElementById('importNotice').textContent = `Zaimportowano ${parsed.length} produktów z CSV.`;
+  function render(){
+    const items = QM_APP.readJSON('qm_products_by_supplier_v1', []);
+    const suppliers = [...new Set((Array.isArray(items)?items:[]).map(x => x.supplier || 'brak'))];
+    $('#supProducts').textContent = Array.isArray(items) ? items.length : 0;
+    $('#supMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+    $('#supStore').textContent = QM_APP.activeStore();
+    $('#supSuppliers').textContent = suppliers.length;
+    $('#supPreview').innerHTML = Array.isArray(items) && items.length ? `
+      <div class="table-wrap"><table><thead><tr><th>Produkt</th><th>Supplier</th><th>Kategoria</th><th>Cena</th></tr></thead><tbody>
+      ${items.slice(0,30).map(p=>`<tr><td>${p.name}</td><td>${p.supplier || '-'}</td><td>${p.category || '-'}</td><td>${QM_APP.money(p.priceRetail || p.price || 0)}</td></tr>`).join('')}
+      </tbody></table></div>` : '<div class="empty">Brak produktów. Załaduj demo albo importuj CSV.</div>';
+  }
+  $('#loadDemoBtn').addEventListener('click', demoProducts);
+  $('#clearProductsBtn').addEventListener('click', ()=>{ localStorage.removeItem('qm_products_by_supplier_v1'); render(); });
+  $('#importCsvBtn').addEventListener('click', async ()=>{
+    const file = $('#csvFile').files?.[0];
+    if(!file) return;
+    const text = await file.text();
+    const products = parseCSV(text);
+    QM_APP.writeJSON('qm_products_by_supplier_v1', products);
+    render();
+  });
+  render();
 });
-
-document.getElementById('clearProductsBtn').addEventListener('click', () => {
-  write(KEY, []);
-  refreshView();
-  document.getElementById('importNotice').textContent = 'Wyczyszczono produkty.';
-});
-
-refreshView();
 </script>
+
 </body>
 </html>

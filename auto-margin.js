@@ -1,115 +1,65 @@
+
 (function(){
-  const KEYS = {
-    products: 'qm_products_by_supplier_v1',
-    stores: 'qm_stores_v1',
-    activeStore: 'qm_active_store_v1',
-    margin: 'qm_store_margin_pct',
-    plan: 'qm_plan_v1'
-  };
-
-  const DEFAULT_BY_PLAN = { basic: 15, pro: 25, elite: 35 };
-
-  function read(key, fallback){
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch (e) {
-      return fallback;
-    }
+  "use strict";
+  const readJSON = (k,f)=>{ try { return JSON.parse(localStorage.getItem(k)||''); } catch { return f; } };
+  const writeJSON = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
+  const slugify = (s) => String(s || "")
+    .trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  const activeStore = () => slugify(localStorage.getItem('qm_active_store_v1') || '') || 'default';
+  function getMargin(){
+    const stores = readJSON('qm_stores_v1', []);
+    const slug = activeStore();
+    const store = Array.isArray(stores) ? stores.find(s => slugify(s.slug || s.name || s.id || '') === slug) : null;
+    const val = Number(store?.marginPct ?? localStorage.getItem('qm_store_margin_pct') ?? 20);
+    return Number.isFinite(val) ? Math.max(0, Math.min(500, val)) : 20;
   }
-
-  function write(key, value){
-    localStorage.setItem(key, JSON.stringify(value));
+  function applyPrice(raw){
+    const base = Number(raw || 0) || 0;
+    return +(base * (1 + getMargin()/100)).toFixed(2);
   }
-
-  function getPlan(){
-    const p = read(KEYS.plan, null);
-    if (typeof p === 'string') return p.toLowerCase();
-    return 'pro';
-  }
-
-  function getMarginPct(){
-    const existing = read(KEYS.margin, null);
-    if (typeof existing === 'number' && !Number.isNaN(existing)) return existing;
-    const planPct = DEFAULT_BY_PLAN[getPlan()] || 25;
-    write(KEYS.margin, planPct);
-    return planPct;
-  }
-
-  function applyMarginValue(price, pct){
-    const num = Number(price || 0);
-    if (!Number.isFinite(num)) return 0;
-    return +(num * (1 + pct / 100)).toFixed(2);
-  }
-
-  function normalizeProduct(product, pct){
-    const base = Number(product.basePrice ?? product.costPrice ?? product.originalPrice ?? product.price ?? 0);
-    const price = applyMarginValue(base, pct);
+  function normalizeProduct(p){
+    const buyNet = Number(p.buyNet ?? p.cost ?? p.purchasePrice ?? p.basePrice ?? p.price ?? 0) || 0;
+    const retail = applyPrice(buyNet || p.price || 0);
+    const b2b = +(retail * 0.92).toFixed(2);
     return {
-      ...product,
-      basePrice: base,
-      originalPrice: base,
-      marginPct: pct,
-      price
+      ...p,
+      buyNet,
+      priceRetail: retail,
+      priceB2B: b2b,
+      price: retail,
+      image: p.image || p.img || 'https://placehold.co/640x640/png?text=Qualitet',
+      sku: p.sku || p.id || 'QM-' + Math.random().toString(36).slice(2,8).toUpperCase(),
+      moq: Number(p.moq || 1) || 1
     };
   }
-
-  function syncProducts(){
-    const pct = getMarginPct();
-    const products = read(KEYS.products, []);
-    if (!Array.isArray(products)) return [];
-    const updated = products.map(p => normalizeProduct(p, pct));
-    write(KEYS.products, updated);
-    return updated;
+  function refreshProductsStore(){
+    const list = readJSON('qm_products_by_supplier_v1', []);
+    if(!Array.isArray(list)) return;
+    const next = list.map(normalizeProduct);
+    writeJSON('qm_products_by_supplier_v1', next);
   }
-
-  function syncStores(){
-    const pct = getMarginPct();
-    const stores = read(KEYS.stores, []);
-    if (!Array.isArray(stores)) return stores;
-    const active = read(KEYS.activeStore, null);
-    const updated = stores.map(store => {
-      const same = active && (store.slug === active || store.id === active || store.name === active);
-      return same ? { ...store, marginPct: pct } : store;
-    });
-    write(KEYS.stores, updated);
-    return updated;
+  function ensureStoreMargin(){
+    const stores = readJSON('qm_stores_v1', []);
+    const slug = activeStore();
+    const margin = getMargin();
+    if(Array.isArray(stores) && stores.length){
+      let changed = false;
+      const next = stores.map(s=>{
+        const sslug = slugify(s.slug || s.name || s.id || '');
+        if(sslug === slug && Number(s.marginPct) !== margin){
+          changed = true;
+          return { ...s, marginPct: margin };
+        }
+        return s;
+      });
+      if(changed) writeJSON('qm_stores_v1', next);
+    }
+    localStorage.setItem('qm_store_margin_pct', String(margin));
   }
-
-  function seedProducts(){
-    const products = read(KEYS.products, null);
-    if (Array.isArray(products) && products.length) return products;
-    const sample = [
-      { id:'p1', supplier:'AliExpress', name:'Mini drukarka etykiet Bluetooth', img:'assets/placeholder-printer.png', basePrice:59.9, category:'Narzędzia sprzedaży' },
-      { id:'p2', supplier:'CJ Dropshipping', name:'Powerbank magnetyczny 10000 mAh', img:'assets/placeholder-powerbank.png', basePrice:89.9, category:'Elektronika' },
-      { id:'p3', supplier:'EPROLO', name:'Organizer biurkowy premium', img:'assets/placeholder-organizer.png', basePrice:34.5, category:'Biuro' },
-      { id:'p4', supplier:'VidaXL', name:'Lampa LED do nagrywania', img:'assets/placeholder-led.png', basePrice:74.0, category:'Content creator' },
-      { id:'p5', supplier:'Banggood', name:'Kamera Wi‑Fi do domu', img:'assets/placeholder-camera.png', basePrice:129.0, category:'Smart home' },
-      { id:'p6', supplier:'BigBuy', name:'Bidon termiczny sport', img:'assets/placeholder-bottle.png', basePrice:28.0, category:'Sport' }
-    ];
-    write(KEYS.products, sample);
-    return sample;
-  }
-
-  window.QMMargin = {
-    keys: KEYS,
-    getMarginPct,
-    setMarginPct: function(pct){
-      const num = Number(pct);
-      if (!Number.isFinite(num)) return getMarginPct();
-      write(KEYS.margin, num);
-      syncProducts();
-      syncStores();
-      return num;
-    },
-    getProducts: function(){
-      seedProducts();
-      return syncProducts();
-    },
-    applyMarginValue
-  };
-
-  seedProducts();
-  syncProducts();
-  syncStores();
+  window.QM_MARGIN = { getMargin, applyPrice, normalizeProduct, refreshProductsStore, ensureStoreMargin };
+  document.addEventListener('DOMContentLoaded', ()=>{
+    ensureStoreMargin();
+  });
 })();

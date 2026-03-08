@@ -2,219 +2,168 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QualitetMarket — Sklep</title>
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Sklep — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-<div class="drawer-backdrop" data-menu-close></div>
-<div class="shell">
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="uszefaqualitet-logo.svg" alt="QualitetMarket logo">
-      <div>
-        <div class="title">QualitetMarket</div>
-        <div class="sub">Sprzedawaj szybciej • mobile first</div>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <span class="badge">Automatyczna marża aktywna</span>
+      <h1>Sklep mobile-first z działającymi przyciskami</h1>
+      <p>Tu sprzedajesz produkty z hurtowni. Ceny liczą się z automatyczną marżą dla aktywnego sklepu. Przyciski dodawania do koszyka i przejścia dalej są ustawione pod telefon.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="koszyk.html">Przejdź do koszyka</a>
+        <a class="btn btn-secondary" href="hurtownie.html">Dodaj produkty</a>
       </div>
     </div>
-    <div class="nav-group" data-qm-nav></div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="menu-toggle" data-menu-open aria-label="Otwórz menu">☰</button>
-        <input id="searchInput" class="search" placeholder="Szukaj produktu, kategorii lub dostawcy">
-      </div>
-      <div class="pillbar">
-        <div class="pill">Automatyczna marża: <strong id="marginPill">25%</strong></div>
-        <a class="btn primary" href="koszyk.html">Przejdź do koszyka</a>
-      </div>
-    </header>
-
-    <div class="container">
-      <section class="hero">
-        <h1>Sklep pod zarabianie</h1>
-        <p>Tu sprzedajesz produkty z hurtowni, z automatyczną marżą i prostym mobile-first układem. Duże przyciski, szybkie karty i czytelne ceny na telefonie.</p>
-      </section>
-
-      <section class="grid">
-        <div class="stats">
-          <div class="stat"><div class="k">Produkty</div><div class="v" id="statProducts">0</div></div>
-          <div class="stat"><div class="k">Średnia marża</div><div class="v" id="statMargin">25%</div></div>
-          <div class="stat"><div class="k">Wartość koszyka</div><div class="v" id="statCart">0 zł</div></div>
-          <div class="stat"><div class="k">Aktywny sklep</div><div class="v" id="statStore">Mój sklep</div></div>
-        </div>
-
-        <section class="card products-wrap">
-          <h2>Produkty</h2>
-          <div class="toolbar">
-            <select id="supplierFilter" class="field">
-              <option value="">Wszyscy dostawcy</option>
-            </select>
-            <select id="sortFilter" class="field">
-              <option value="popular">Sortuj: polecane</option>
-              <option value="priceAsc">Cena rosnąco</option>
-              <option value="priceDesc">Cena malejąco</option>
-              <option value="nameAsc">Nazwa A-Z</option>
-            </select>
-            <button class="btn ghost" id="reloadProducts">Odśwież produkty</button>
-          </div>
-          <div id="productsGrid" class="product-grid"></div>
-        </section>
-
-        <aside class="card sidepanel">
-          <h2>Szybkie działania</h2>
-          <div class="list">
-            <a class="btn primary" href="hurtownie.html">Import z hurtowni</a>
-            <a class="btn alt" href="sklepy.html">Ustaw sklepy i marżę</a>
-            <a class="btn ghost" href="panel-sklepu.html">Panel sklepu</a>
-          </div>
-          <div style="height:14px"></div>
-          <div class="notice">Każdy produkt pokazuje cenę po Twojej marży. Bazowa cena jest zapamiętywana w localStorage.</div>
-          <div style="height:14px"></div>
-          <h3>Koszyk</h3>
-          <div id="cartSummary" class="list"></div>
-        </aside>
-      </section>
+    <div class="kpis">
+      <div class="kpi"><strong id="shopProducts">0</strong><span>Produkty</span></div>
+      <div class="kpi"><strong id="shopMargin">20%</strong><span>Marża</span></div>
+      <div class="kpi"><strong id="shopStore">default</strong><span>Sklep</span></div>
+      <div class="kpi"><strong id="shopCartCount">0</strong><span>Pozycje w koszyku</span></div>
     </div>
-  </main>
-</div>
+  </div>
+</section>
 
-<div class="mobile-dock"><nav data-qm-dock></nav></div>
+<section class="card">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input class="search" id="searchProducts" placeholder="Szukaj produktu, dostawcy lub kategorii">
+    </div>
+    <div class="toolbar-right">
+      <select class="select" id="sortProducts">
+        <option value="default">Sortowanie domyślne</option>
+        <option value="price-asc">Cena rosnąco</option>
+        <option value="price-desc">Cena malejąco</option>
+        <option value="name-asc">Nazwa A-Z</option>
+      </select>
+      <a class="btn btn-primary" href="koszyk.html">Koszyk</a>
+    </div>
+  </div>
+</section>
 
-<script src="app-shell.js"></script>
-<script src="auto-margin.js"></script>
+<section class="card">
+  <h2>Produkty</h2>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty hidden" id="productEmpty">Brak produktów. Wejdź do hurtowni i zaimportuj dane demo albo CSV.</div>
+</section>
+
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Sklep', subtitle:'Sprzedaż produktów z automatyczną marżą'});</script>
+  
 <script>
-QMLayout.mount({ active: 'sklep.html' });
-
-const CART_KEY = 'qm_cart_v1';
-const ACTIVE_STORE_KEY = 'qm_active_store_v1';
-
-function read(key, fallback){
-  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
-  catch(e){ return fallback; }
-}
-function write(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-
-function money(v){ return `${Number(v || 0).toFixed(2)} zł`; }
-
-const state = {
-  products: [],
-  filtered: [],
-  cart: read(CART_KEY, [])
-};
-
-function updateTopStats(){
-  document.getElementById('statProducts').textContent = state.filtered.length;
-  const pct = QMMargin.getMarginPct();
-  document.getElementById('statMargin').textContent = pct + '%';
-  document.getElementById('marginPill').textContent = pct + '%';
-  const total = state.cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
-  document.getElementById('statCart').textContent = money(total);
-  const active = read(ACTIVE_STORE_KEY, null);
-  document.getElementById('statStore').textContent = active || 'Mój sklep';
-}
-
-function renderCartSummary(){
-  const root = document.getElementById('cartSummary');
-  if(!state.cart.length){
-    root.innerHTML = '<div class="empty">Koszyk jest pusty. Dodaj produkt i przejdź do checkoutu.</div>';
-    return;
-  }
-  root.innerHTML = state.cart.slice(0,4).map(item => `
-    <div class="list-item">
-      <div>
-        <strong>${item.name}</strong>
-        <div class="small">${item.qty} szt. • ${money(item.price)}</div>
-      </div>
-      <button class="btn danger" onclick="removeCartItem('${item.id}')">Usuń</button>
-    </div>
-  `).join('') + '<a class="btn primary" href="koszyk.html">Otwórz koszyk</a>';
-}
-
-function removeCartItem(id){
-  state.cart = state.cart.filter(item => item.id !== id);
-  write(CART_KEY, state.cart);
-  renderCartSummary();
-  updateTopStats();
-}
-window.removeCartItem = removeCartItem;
-
-function addToCart(id){
-  const product = state.products.find(p => p.id === id);
-  if(!product) return;
-  const existing = state.cart.find(item => item.id === id);
-  if(existing) existing.qty += 1;
-  else state.cart.push({ id: product.id, name: product.name, price: product.price, qty: 1, img: product.img });
-  write(CART_KEY, state.cart);
-  renderCartSummary();
-  updateTopStats();
-}
-
-function renderProducts(items){
-  const root = document.getElementById('productsGrid');
-  if(!items.length){
-    root.innerHTML = '<div class="empty">Brak produktów dla tego filtra. Odśwież import albo zmień wyszukiwanie.</div>';
-    return;
-  }
-  root.innerHTML = items.map(p => `
-    <article class="product">
-      <div class="product-media">
-        ${p.img ? `<img src="${p.img}" alt="${p.name}">` : '<div style="font-size:42px">📦</div>'}
-      </div>
-      <div class="product-body">
-        <div class="meta">
-          <span class="badge">${p.supplier || 'Supplier'}</span>
-          <span>${p.category || 'Produkt'}</span>
-        </div>
-        <h3>${p.name}</h3>
-        <div class="small">Cena bazowa: ${money(p.basePrice || p.originalPrice || p.price)}</div>
-        <div class="price">${money(p.price)}</div>
-        <div class="list">
-          <button class="btn primary" onclick="addToCart('${p.id}')">Dodaj do koszyka</button>
-        </div>
-      </div>
-    </article>
-  `).join('');
-}
-window.addToCart = addToCart;
-
-function applyFilters(){
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const supplier = document.getElementById('supplierFilter').value;
-  const sort = document.getElementById('sortFilter').value;
-  let items = state.products.filter(p => {
-    const hay = `${p.name} ${p.category || ''} ${p.supplier || ''}`.toLowerCase();
-    const byQ = !q || hay.includes(q);
-    const byS = !supplier || p.supplier === supplier;
-    return byQ && byS;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const CART_BASE = 'qm_shop_cart_v1';
+  const slug = QM_APP.activeStore();
+  const CART_KEY = `${CART_BASE}__${slug}`;
+  const $ = (s)=>document.querySelector(s);
+  const productsRaw = QM_APP.readJSON('qm_products_by_supplier_v1', []);
+  const normalize = (p, idx) => QM_MARGIN.normalizeProduct({
+    id: p.id || p.sku || ('prod-'+idx),
+    name: p.name || p.title || 'Produkt',
+    supplier: p.supplier || 'Supplier',
+    category: p.category || 'Ogólne',
+    img: p.img || p.image,
+    image: p.image || p.img,
+    price: p.price || p.priceRetail || p.buyNet || 0,
+    buyNet: p.buyNet || p.cost || p.price || 0,
+    moq: p.moq || 1
   });
-  if(sort === 'priceAsc') items.sort((a,b) => a.price - b.price);
-  if(sort === 'priceDesc') items.sort((a,b) => b.price - a.price);
-  if(sort === 'nameAsc') items.sort((a,b) => a.name.localeCompare(b.name,'pl'));
-  state.filtered = items;
-  renderProducts(items);
-  updateTopStats();
-}
-
-function boot(){
-  state.products = QMMargin.getProducts();
-  const suppliers = [...new Set(state.products.map(p => p.supplier).filter(Boolean))];
-  document.getElementById('supplierFilter').innerHTML = '<option value="">Wszyscy dostawcy</option>' + suppliers.map(s => `<option value="${s}">${s}</option>`).join('');
-  applyFilters();
-  renderCartSummary();
-
-  document.getElementById('searchInput').addEventListener('input', applyFilters);
-  document.getElementById('supplierFilter').addEventListener('change', applyFilters);
-  document.getElementById('sortFilter').addEventListener('change', applyFilters);
-  document.getElementById('reloadProducts').addEventListener('click', () => {
-    state.products = QMMargin.getProducts();
-    applyFilters();
-  });
-}
-boot();
+  const state = {
+    items: Array.isArray(productsRaw) ? productsRaw.map(normalize) : [],
+    view: []
+  };
+  function readCart(){
+    const current = QM_APP.readJSON(CART_KEY, null);
+    if(current && Array.isArray(current.items)) return current;
+    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
+    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
+  }
+  function writeCart(cart){
+    QM_APP.writeJSON(CART_KEY, cart);
+    QM_APP.writeJSON('qm_cart_v1', cart);
+  }
+  function cartCount(){
+    return readCart().items.reduce((a,b)=>a + (Number(b.qty)||0),0);
+  }
+  function addToCart(item){
+    const cart = readCart();
+    const idx = cart.items.findIndex(x => String(x.id) === String(item.id));
+    if(idx === -1){
+      cart.items.push({
+        id:item.id, sku:item.sku, name:item.name, supplier:item.supplier, category:item.category,
+        image:item.image, moq:item.moq, buyNet:item.buyNet, priceRetail:item.priceRetail, priceB2B:item.priceB2B, qty:1
+      });
+    }else{
+      cart.items[idx].qty = (Number(cart.items[idx].qty)||0) + 1;
+    }
+    writeCart(cart);
+    updateTop();
+  }
+  function updateTop(){
+    $('#shopProducts').textContent = state.items.length;
+    $('#shopMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+    $('#shopStore').textContent = slug;
+    $('#shopCartCount').textContent = cartCount();
+  }
+  function render(){
+    const grid = $('#productGrid');
+    const empty = $('#productEmpty');
+    const q = ($('#searchProducts').value || '').trim().toLowerCase();
+    const sort = $('#sortProducts').value;
+    let arr = state.items.filter(p => !q || [p.name,p.supplier,p.category].join(' ').toLowerCase().includes(q));
+    if(sort === 'price-asc') arr.sort((a,b)=>a.priceRetail-b.priceRetail);
+    if(sort === 'price-desc') arr.sort((a,b)=>b.priceRetail-a.priceRetail);
+    if(sort === 'name-asc') arr.sort((a,b)=>String(a.name).localeCompare(String(b.name),'pl'));
+    state.view = arr;
+    if(!arr.length){
+      grid.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    grid.innerHTML = arr.map(p => `
+      <article class="product-card">
+        <img src="${p.image}" alt="${p.name}">
+        <div>
+          <h3 style="margin:0 0 6px">${p.name}</h3>
+          <div class="tag-row">
+            <span class="tag">${p.supplier}</span>
+            <span class="tag">${p.category}</span>
+            <span class="tag">MOQ ${p.moq}</span>
+          </div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-main">${QM_APP.money(p.priceRetail)}</div>
+            <div class="muted">B2B: ${QM_APP.money(p.priceB2B)}</div>
+          </div>
+          <button class="btn btn-primary" data-add="${p.id}">Dodaj do koszyka</button>
+        </div>
+      </article>
+    `).join('');
+    grid.querySelectorAll('[data-add]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const item = state.items.find(x => String(x.id) === String(btn.dataset.add));
+        if(item) addToCart(item);
+        btn.textContent = 'Dodano';
+        setTimeout(()=>btn.textContent='Dodaj do koszyka', 900);
+      });
+    });
+  }
+  document.getElementById('searchProducts').addEventListener('input', render);
+  document.getElementById('sortProducts').addEventListener('change', render);
+  updateTop();
+  render();
+});
 </script>
+
 </body>
 </html>

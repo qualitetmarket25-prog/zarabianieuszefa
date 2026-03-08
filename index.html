@@ -2,64 +2,57 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Jedno główne menu — QualitetMarket</title>
-  <meta name="description" content="Start do całej aplikacji QualitetMarket">
-  <link rel="icon" href="uszefaqualitet-logo.svg" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Start — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
 <body>
-  <div id="qm-shell"></div>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <span class="badge">Jeden link • jedno menu • cała aplikacja</span>
+      <h1>Platforma do zarabiania online, sklepu, hurtowni i automatycznej marży.</h1>
+      <p>To jest nowa strona główna z pełnym menu. Wszystkie przejścia są ustawione pod GitHub Pages i telefon. Użytkownik ma wejść tutaj i od razu wiedzieć gdzie kliknąć, żeby sprzedawać, importować produkty i obsługiwać zamówienia.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="platforma.html">Wejdź do platformy</a>
+        <a class="btn btn-secondary" href="sklep.html">Otwórz sklep</a>
+        <a class="btn" href="hurtownie.html">Importuj produkty</a>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat"><div class="stat-value" id="homeProducts">0</div><div class="stat-label">Produkty w systemie</div></div>
+      <div class="stat"><div class="stat-value" id="homeOrders">0</div><div class="stat-label">Zamówienia</div></div>
+      <div class="stat"><div class="stat-value" id="homeStores">0</div><div class="stat-label">Sklepy</div></div>
+      <div class="stat"><div class="stat-value" id="homeMargin">20%</div><div class="stat-label">Automatyczna marża</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-3">
+  <article class="card"><h2>Sprzedaż</h2><p class="muted">Sklep, koszyk, checkout i zamówienia.</p><div class="action-row"><a class="btn btn-primary" href="sklep.html">Sklep</a><a class="btn" href="koszyk.html">Koszyk</a><a class="btn" href="checkout.html">Checkout</a></div></article>
+  <article class="card"><h2>Hurtownie i produkty</h2><p class="muted">Import produktów, szybkie dane demo i automatyczne ceny.</p><div class="action-row"><a class="btn btn-primary" href="hurtownie.html">Hurtownie</a><a class="btn" href="sklepy.html">Sklepy</a></div></article>
+  <article class="card"><h2>Rozwój</h2><p class="muted">AI, aplikacje i cennik.</p><div class="action-row"><a class="btn btn-primary" href="ai.html">AI</a><a class="btn" href="aplikacje.html">Aplikacje</a><a class="btn" href="cennik.html">Cennik</a></div></article>
+</section>
+
+  </div>
   <script src="app-shell.js"></script>
-  <script>
-    QualitetShell.buildShell({
-      topSubtitle: "Start do całej aplikacji QualitetMarket",
-      primaryHref: "platforma.html",
-      primaryLabel: "Otwórz pełną platformę",
-      heroTitle: "Jedno główne menu",
-      heroText: "To jest główny link do całej platformy. Użytkownik wchodzi tutaj i od razu widzi jak zarabiać: sklep, hurtownie, AI, reklamy, aplikacje i kolejne moduły.",
-      notice: "Jedna strona startowa, jedno menu i szybkie wejście do wszystkich modułów aplikacji.",
-      quickLinks: ["platforma.html", "sklep.html", "ai.html"],
-      body: `
-<section class="metrics">
-  <article class="card"><div class="muted">Moduły w aplikacji</div><div class="metric-number">18+</div></article>
-  <article class="card"><div class="muted">Kierunki zarabiania</div><div class="metric-number">Sklep • AI • Usługi</div></article>
-  <article class="card"><div class="muted">Tryb działania</div><div class="metric-number">Mobile</div></article>
-  <article class="card"><div class="muted">Start</div><div class="metric-number">1 link</div></article>
-</section>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Start', subtitle:'Główne menu całej aplikacji'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const products = QM_APP.readJSON('qm_products_by_supplier_v1', []);
+  const orders = QM_APP.readJSON('qm_orders_v1', []);
+  const stores = QM_APP.readJSON('qm_stores_v1', []);
+  document.getElementById('homeProducts').textContent = Array.isArray(products) ? products.length : 0;
+  document.getElementById('homeOrders').textContent = Array.isArray(orders) ? orders.length : 0;
+  document.getElementById('homeStores').textContent = Array.isArray(stores) ? stores.length : 0;
+  document.getElementById('homeMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+});
+</script>
 
-<div class="section-head">
-  <div><h2>Jak zarabiać w aplikacji</h2><p>Najkrótsza droga od wejścia do sprzedaży i promocji.</p></div>
-</div>
-
-<section class="cards">
-  <article class="card">
-    <h3>1. Wgraj lub wybierz produkty</h3>
-    <p>Wejdź do hurtowni, przygotuj produkty i od razu buduj własną ofertę sklepową.</p>
-    <div class="module-actions"><a class="primary-btn" href="hurtownie.html">Otwórz hurtownie</a></div>
-  </article>
-  <article class="card">
-    <h3>2. Zbuduj sklep i marżę</h3>
-    <p>Ustaw sklep, własny panel i przejdź do sprzedaży przez prosty marketplace.</p>
-    <div class="module-actions"><a class="primary-btn" href="generator-sklepu.html">Generator sklepu</a></div>
-  </article>
-  <article class="card">
-    <h3>3. Promuj się przez AI</h3>
-    <p>Twórz treści, reklamy i publikacje, żeby zwiększać ruch i zamówienia.</p>
-    <div class="module-actions"><a class="primary-btn" href="reklama-ai.html">Reklama AI</a></div>
-  </article>
-</section>
-
-<div class="section-head">
-  <div><h2>Szybkie wejścia</h2><p>Najważniejsze ścieżki dla użytkownika.</p></div>
-</div>
-<section class="module-grid">
-  <article class="card module-card"><div class="module-top"><div class="module-icon">🧭</div><div class="module-copy"><h3>Pełna platforma</h3><p>Wszystko w jednym miejscu z pełnym menu modułów.</p></div></div><div class="module-actions"><a class="primary-btn" href="platforma.html">Otwórz platformę</a></div></article>
-  <article class="card module-card"><div class="module-top"><div class="module-icon">🛒</div><div class="module-copy"><h3>Sklep</h3><p>Sprzedaż produktów i budowa oferty pod klienta.</p></div></div><div class="module-actions"><a class="primary-btn" href="sklep.html">Przejdź do sklepu</a></div></article>
-  <article class="card module-card"><div class="module-top"><div class="module-icon">🤖</div><div class="module-copy"><h3>AI i reklama</h3><p>Treści, reklamy, promowanie usług i ofert.</p></div></div><div class="module-actions"><a class="primary-btn" href="ai.html">Otwórz AI</a></div></article>
-</section>
-`
-    });
-  </script>
 </body>
 </html>

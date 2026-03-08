@@ -6,150 +6,132 @@
   <title>Checkout — QualitetMarket</title>
   <link rel="stylesheet" href="app-layout.css">
 </head>
-<body data-page="checkout">
-
-<div class="page-shell">
-  <div class="backdrop"></div>
-  <aside class="sidebar">
-    <div class="brand" style="margin-bottom:18px">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Menu główne aplikacji</div>
+<body>
+  <div id="appShell"></div>
+  <div id="pageBody" class="hidden">
+    
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <h1>Checkout</h1>
+      <p>Naprawiony formularz zamówienia. Zapisuje do <strong>qm_orders_v1</strong> i czyści koszyk po zapisaniu.</p>
+      <div class="hero-actions">
+        <a class="btn" href="koszyk.html">Wróć do koszyka</a>
+        <a class="btn btn-secondary" href="zamowienia.html">Zobacz zamówienia</a>
       </div>
     </div>
+    <div class="notice" id="checkoutMsg">Wypełnij dane klienta i kliknij Złóż zamówienie.</div>
+  </div>
+</section>
 
-    <div class="nav-group">
-      <p class="nav-label">Start</p>
-      <a class="nav-link" data-nav="index" data-close-menu href="index.html"><span>Strona główna</span><span>⌂</span></a>
-      <a class="nav-link" data-nav="platforma" data-close-menu href="platforma.html"><span>Platforma</span><span>→</span></a>
-      <a class="nav-link" data-nav="dashboard" data-close-menu href="dashboard.html"><span>Dashboard</span><span>→</span></a>
-    </div>
+<section class="card">
+  <h2>Dane klienta</h2>
+  <div class="form-grid">
+    <input class="input" id="fullName" placeholder="Imię i nazwisko">
+    <input class="input" id="phone" placeholder="Telefon">
+    <input class="input" id="email" placeholder="E-mail">
+    <input class="input" id="city" placeholder="Miasto">
+    <input class="input form-full" id="address" placeholder="Adres dostawy">
+    <textarea class="textarea form-full" id="note" placeholder="Uwagi do zamówienia"></textarea>
+  </div>
+</section>
 
-    <div class="nav-group">
-      <p class="nav-label">Sprzedaż</p>
-      <a class="nav-link" data-nav="sklep" data-close-menu href="sklep.html"><span>Sklep</span><span>🛍️</span></a>
-      <a class="nav-link" data-nav="koszyk" data-close-menu href="koszyk.html"><span>Koszyk</span><span>🛒</span></a>
-      <a class="nav-link" data-nav="checkout" data-close-menu href="checkout.html"><span>Checkout</span><span>💳</span></a>
-      <a class="nav-link" data-nav="zamowienia" data-close-menu href="zamowienia.html"><span>Zamówienia</span><span>📦</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Sklepy</p>
-      <a class="nav-link" data-nav="panel-zamowien-sklepu" data-close-menu href="panel-zamowien-sklepu.html"><span>Panel zamówień sklepu</span><span>🏪</span></a>
-      <a class="nav-link" data-nav="sklepy" data-close-menu href="sklepy.html"><span>Sklepy</span><span>🏬</span></a>
-      <a class="nav-link" data-nav="panel-sklepu" data-close-menu href="panel-sklepu.html"><span>Panel sklepu</span><span>⚙️</span></a>
-      <a class="nav-link" data-nav="generator-sklepu" data-close-menu href="generator-sklepu.html"><span>Generator sklepu</span><span>✨</span></a>
-    </div>
-
-    <div class="nav-group">
-      <p class="nav-label">Rozwój</p>
-      <a class="nav-link" data-nav="hurtownie" data-close-menu href="hurtownie.html"><span>Hurtownie</span><span>📥</span></a>
-      <a class="nav-link" data-nav="ai" data-close-menu href="ai.html"><span>AI</span><span>🤖</span></a>
-      <a class="nav-link" data-nav="aplikacje" data-close-menu href="aplikacje.html"><span>Aplikacje</span><span>📱</span></a>
-      <a class="nav-link" data-nav="cennik" data-close-menu href="cennik.html"><span>Cennik</span><span>💼</span></a>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <a class="brand" href="index.html">
-      <img src="uszefaqualitet-logo.svg" alt="Qualitet logo">
-      <div class="brand-text">
-        <div class="brand-title">QualitetMarket</div>
-        <div class="brand-sub">Pomaga ludziom zarabiać szybciej</div>
-      </div>
-    </a>
-    <button class="menu-toggle" data-menu-toggle>☰ Menu</button>
-  </header>
-
-  <main class="layout">
-    <section class="content">
-      <section class="hero">
-        <div class="badge">Aktywny sklep: <span data-bind="activeStore">Brak</span></div>
-        <h1>Checkout z działającym zapisem zamówienia</h1>
-        <p>Ten ekran zapisuje zamówienie do qm_orders_v1, czyści koszyk po finalizacji i działa na GitHub Pages bez błędnych ścieżek.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="index.html">Strona główna</a>
-          <a class="btn btn-secondary" href="platforma.html">Pełne menu</a>
-        </div>
-      </section>
-
-      <section class="grid stats">
-        <article class="card"><div class="meta">Produkty</div><div class="metric" data-bind="products">0</div></article>
-        <article class="card"><div class="meta">Zamówienia</div><div class="metric" data-bind="orders">0</div></article>
-        <article class="card"><div class="meta">Sklepy</div><div class="metric" data-bind="stores">0</div></article>
-        <article class="card"><div class="meta">Marża</div><div class="metric" data-bind="margin">20%</div></article>
-      </section>
-
-      
-<section class="grid split-2" data-checkout-root>
+<section class="grid grid-2">
   <article class="card">
-    <h2 class="section-title">Dane klienta</h2>
-    <form class="form-grid" data-checkout-form>
-      <div>
-        <label class="label">Imię i nazwisko</label>
-        <input class="small-input" name="customer" required placeholder="Jan Kowalski">
-      </div>
-      <div class="split-2">
-        <div>
-          <label class="label">Email</label>
-          <input class="small-input" name="email" type="email" required placeholder="jan@email.pl">
-        </div>
-        <div>
-          <label class="label">Telefon</label>
-          <input class="small-input" name="phone" required placeholder="+48 500 000 000">
-        </div>
-      </div>
-      <div>
-        <label class="label">Adres</label>
-        <input class="small-input" name="address" required placeholder="ul. Biznesowa 12">
-      </div>
-      <div class="split-2">
-        <div>
-          <label class="label">Kod pocztowy</label>
-          <input class="small-input" name="zip" required placeholder="00-000">
-        </div>
-        <div>
-          <label class="label">Miasto</label>
-          <input class="small-input" name="city" required placeholder="Warszawa">
-        </div>
-      </div>
-      <div>
-        <label class="label">Notatka do zamówienia</label>
-        <textarea class="small-input" name="note" rows="4" placeholder="Opcjonalna notatka"></textarea>
-      </div>
-      <button class="btn btn-primary" type="submit">Finalizuj zamówienie</button>
-    </form>
+    <h2>Podsumowanie</h2>
+    <div class="kpis">
+      <div class="kpi"><strong id="coItems">0</strong><span>Sztuk</span></div>
+      <div class="kpi"><strong id="coValue">0,00 zł</strong><span>Wartość</span></div>
+      <div class="kpi"><strong id="coStore">default</strong><span>Sklep</span></div>
+      <div class="kpi"><strong id="coMargin">20%</strong><span>Marża</span></div>
+    </div>
+    <div class="action-row" style="margin-top:12px">
+      <button class="btn btn-primary" id="placeOrderBtn">Złóż zamówienie</button>
+      <a class="btn" href="koszyk.html">Edytuj koszyk</a>
+    </div>
   </article>
-
   <article class="card">
-    <h2 class="section-title">Twoje zamówienie</h2>
-    <div class="list" data-checkout-summary></div>
-    <div class="total-box" style="margin-top:14px">
-      <div class="total-line"><span>Suma netto</span><strong data-checkout-subtotal>0,00 zł</strong></div>
-      <div class="total-line"><span>VAT 23%</span><strong data-checkout-vat>0,00 zł</strong></div>
-      <div class="total-line"><span>Razem brutto</span><strong data-checkout-total>0,00 zł</strong></div>
-    </div>
-    <div class="top-actions" style="margin-top:14px">
-      <a class="btn btn-secondary" href="koszyk.html">Wróć do koszyka</a>
-      <a class="btn btn-ghost" href="zamowienia.html">Historia zamówień</a>
-    </div>
+    <h2>Produkty w zamówieniu</h2>
+    <div id="checkoutItems"></div>
   </article>
 </section>
 
-    </section>
-  </main>
+  </div>
+  <script src="app-shell.js"></script>
+  <script src="auto-margin.js"></script>
+  <script>window.QM_APP.mount({title:'Checkout', subtitle:'Zapis zamówienia do localStorage'});</script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const slug = QM_APP.activeStore();
+  const CART_KEY = `qm_shop_cart_v1__${slug}`;
+  const $ = s => document.querySelector(s);
+  const readCart = () => {
+    const current = QM_APP.readJSON(CART_KEY, null);
+    if(current && Array.isArray(current.items)) return current;
+    const fallback = QM_APP.readJSON('qm_cart_v1', {items:[]});
+    return fallback && Array.isArray(fallback.items) ? fallback : {items:[]};
+  };
+  const writeCart = (cart) => { QM_APP.writeJSON(CART_KEY, cart); QM_APP.writeJSON('qm_cart_v1', cart); };
+  function render(){
+    const items = readCart().items || [];
+    const qty = items.reduce((a,b)=>a + (Number(b.qty)||0),0);
+    const sum = items.reduce((a,b)=>a + ((Number(b.qty)||0) * (Number(b.priceRetail || b.price || 0)||0)),0);
+    $('#coItems').textContent = qty;
+    $('#coValue').textContent = QM_APP.money(sum);
+    $('#coStore').textContent = slug;
+    $('#coMargin').textContent = (localStorage.getItem('qm_store_margin_pct') || '20') + '%';
+    $('#checkoutItems').innerHTML = items.length ? `
+      <div class="table-wrap"><table><thead><tr><th>Produkt</th><th>Ilość</th><th>Cena</th></tr></thead><tbody>
+      ${items.map(it => `<tr><td><strong>${it.name}</strong><div class="muted">${it.supplier || ''}</div></td><td>${it.qty}</td><td>${QM_APP.money((Number(it.qty)||0)*(Number(it.priceRetail || it.price || 0)||0))}</td></tr>`).join('')}
+      </tbody></table></div>` : '<div class="empty">Koszyk jest pusty. Wróć do sklepu.</div>';
+  }
+  $('#placeOrderBtn').addEventListener('click', ()=>{
+    const cart = readCart();
+    if(!cart.items || !cart.items.length){
+      $('#checkoutMsg').className = 'notice warn';
+      $('#checkoutMsg').textContent = 'Koszyk jest pusty.';
+      return;
+    }
+    const name = $('#fullName').value.trim();
+    const phone = $('#phone').value.trim();
+    if(!name || !phone){
+      $('#checkoutMsg').className = 'notice warn';
+      $('#checkoutMsg').textContent = 'Uzupełnij imię i telefon.';
+      return;
+    }
+    const orders = QM_APP.readJSON('qm_orders_v1', []);
+    const totalGross = cart.items.reduce((a,b)=>a + ((Number(b.qty)||0)*(Number(b.priceRetail || b.price || 0)||0)),0);
+    const order = {
+      id: 'QM-' + Date.now(),
+      orderNo: 'QM-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + String((orders.length||0)+1).padStart(4,'0'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: 'new',
+      storeSlug: slug,
+      customer: {
+        name, phone,
+        email: $('#email').value.trim(),
+        city: $('#city').value.trim(),
+        address: $('#address').value.trim(),
+        note: $('#note').value.trim()
+      },
+      totals: {
+        items: cart.items.reduce((a,b)=>a + (Number(b.qty)||0),0),
+        gross: +totalGross.toFixed(2)
+      },
+      items: cart.items
+    };
+    orders.unshift(order);
+    QM_APP.writeJSON('qm_orders_v1', orders);
+    writeCart({items:[]});
+    $('#checkoutMsg').className = 'notice';
+    $('#checkoutMsg').textContent = 'Zamówienie zapisane. Przechodzę do listy zamówień.';
+    setTimeout(()=>location.href = QM_APP.withStore('zamowienia.html'), 500);
+  });
+  render();
+});
+</script>
 
-  <nav class="footer-nav">
-    <a data-nav="index" href="index.html"><span>⌂</span><span>Start</span></a>
-    <a data-nav="koszyk" href="koszyk.html"><span>🛒</span><span>Koszyk</span></a>
-    <a data-nav="zamowienia" href="zamowienia.html"><span>📦</span><span>Zamówienia</span></a>
-    <a data-nav="sklepy" href="sklepy.html"><span>🏬</span><span>Sklepy</span></a>
-    <a data-nav="dashboard" href="dashboard.html"><span>⚙️</span><span>Panel</span></a>
-  </nav>
-</div>
-
-<script src="auto-margin.js"></script>
-<script src="app-shell.js"></script>
 </body>
 </html>
