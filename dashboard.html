@@ -1,116 +1,76 @@
-    <!doctype html>
-    <html lang="pl">
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>QualitetMarket — Checkout</title>
-      <meta name="theme-color" content="#08111f">
-      <link rel="stylesheet" href="app-layout.css">
-    </head>
-    <body data-page="checkout">
-      <div class="shell">
-        <div id="shell-start"></div>
-        <main class="main">
-          <header id="topbar" class="topbar"></header>
-          <div id="mobileDrawer" class="mobile-drawer"></div>
-          <div class="page">
-            <div class="container">
+document.addEventListener('DOMContentLoaded', () => {
+  if(!window.QM) return;
 
-<section class="grid grid-2">
-  <div class="card card-pad">
-    <div class="eyebrow">💳 Checkout</div>
-    <h1>Zamówienie klienta</h1>
-    <p class="muted">Tu zapisujesz sprzedaż do aplikacji. Prawdziwą płatność Stripe podepniemy osobno.</p>
-    <form id="checkoutForm" class="grid" style="margin-top:16px">
-      <div class="form-grid">
-        <label class="field"><span>Imię i nazwisko</span><input name="customerName" required></label>
-        <label class="field"><span>Email</span><input type="email" name="email" required></label>
-      </div>
-      <div class="form-grid">
-        <label class="field"><span>Telefon</span><input name="phone"></label>
-        <label class="field"><span>Miasto</span><input name="city"></label>
-      </div>
-      <label class="field"><span>Adres</span><input name="address"></label>
-      <button class="btn btn-primary" type="submit">Złóż zamówienie</button>
-    </form>
-  </div>
-  <div class="card card-pad">
-    <h2>Podsumowanie koszyka</h2>
-    <div id="checkoutSummary" class="list"></div>
-  </div>
-</section>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const CART_KEY='qm_cart_v1', ORDERS_KEY='qm_orders_v1';
-  const get=(k,f=[])=>{ try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f));}catch(e){return f;} };
-  const cart=get(CART_KEY,[]);
-  const total=cart.reduce((a,b)=>a+Number(b.price||0)*Number(b.qty||0),0);
-  const sum=document.getElementById('checkoutSummary');
-  sum.innerHTML=(cart.length?cart.map(i=>`<div class="list-row"><span>${i.name} × ${i.qty}</span><strong>${(Number(i.price||0)*Number(i.qty||0)).toFixed(2)} PLN</strong></div>`).join(''):'<div class="empty">Koszyk jest pusty.</div>') + `<div class="list-row"><strong>Razem</strong><strong>${total.toFixed(2)} PLN</strong></div>`;
-  document.getElementById('checkoutForm').addEventListener('submit', function(ev){
-    ev.preventDefault();
-    if(!cart.length) return alert('Koszyk jest pusty.');
-    const fd=Object.fromEntries(new FormData(ev.target).entries());
-    const orders=get(ORDERS_KEY,[]);
-    orders.unshift({
-      id:'ORD-'+Date.now(),
-      createdAt:new Date().toISOString(),
-      status:'nowe',
-      items:cart,
-      total:Number(total.toFixed(2)),
-      customer:fd
+  const grid = document.getElementById('products-grid');
+  const q = document.getElementById('search-q');
+  const cat = document.getElementById('filter-category');
+  const sort = document.getElementById('sort-by');
+  const marginBadge = document.getElementById('margin-badge');
+  const storeBadge = document.getElementById('active-store-badge');
+
+  function render(){
+    const items = QM.getProducts().slice();
+    const margin = QM.getStoreMargin();
+    if(marginBadge) marginBadge.textContent = 'Marża: ' + margin + '%';
+    if(storeBadge) storeBadge.textContent = 'Sklep: ' + QM.getActiveStoreSlug();
+
+    let filtered = items.filter(item => {
+      const byText = !q?.value || item.name.toLowerCase().includes(q.value.toLowerCase());
+      const byCat = !cat?.value || cat.value === 'all' || item.category === cat.value;
+      return byText && byCat;
     });
-    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-    localStorage.setItem(CART_KEY, JSON.stringify([]));
-    location.href='zamowienia.html';
-  });
-});
-</script>
 
+    if(sort?.value === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
+    if(sort?.value === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
+    if(sort?.value === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+
+    if(!filtered.length){
+      grid.innerHTML = '<div class="card pad center">Brak produktów. Wejdź do hurtownie.html i zaimportuj produkty.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(item => {
+      const finalPrice = QM.marginPrice(item.price, margin);
+      return `
+        <article class="product-card">
+          <div class="product-media">${item.img || '📦'}</div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="badge">${item.supplier || 'Supplier'}</span>
+              <span class="store-pill">${item.category || 'Produkt'}</span>
+            </div>
+            <h3>${item.name}</h3>
+            <div class="muted">Cena bazowa: ${QM.money(item.price)}</div>
+            <div class="product-price">${QM.money(finalPrice)}</div>
+            <div class="product-actions">
+              <button class="btn primary" data-add-cart="${item.id}">Dodaj do koszyka</button>
+              <a class="btn" href="koszyk.html">Koszyk</a>
             </div>
           </div>
-          <footer class="footer">
-            <div class="container footer-grid">
-              <div class="card card-pad">
-                <div class="brand" style="background:none;border:none;padding:0">
-                  <img class="brand-logo" src="uszefaqualitet-logo.svg" alt="QualitetMarket">
-                  <div>
-                    <div class="brand-name">QualitetMarket</div>
-                    <div class="brand-sub">Nowoczesna aplikacja do zarabiania przez własny sklep i dropshipping.</div>
-                  </div>
-                </div>
-                <p class="muted" style="margin-top:12px">Uruchamiasz sklep, importujesz produkty z hurtowni, ustawiasz marżę i zbierasz zamówienia w jednym miejscu.</p>
-              </div>
-              <div>
-                <h4>Produkt</h4>
-                <a href="platforma.html">Platforma</a>
-                <a href="sklep.html">Sklep</a>
-                <a href="hurtownie.html">Hurtownie</a>
-                <a href="cennik.html">Cennik</a>
-              </div>
-              <div>
-                <h4>Pomoc</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="regulamin.html">Regulamin</a>
-                <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-                <a href="polityka-cookies.html">Polityka cookies</a>
-                <a href="rodo.html">RODO</a>
-              </div>
-              <div>
-                <h4>Start</h4>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="zamowienia.html">Zamówienia</a>
-                <a href="sklepy.html">Sklepy</a>
-                <a href="success.html">Aktywacja</a>
-              </div>
-            </div>
-            <div class="container" style="padding-top:16px;color:#94a3b8">© <span data-year></span> QualitetMarket. Wszystkie prawa zastrzeżone.</div>
-          </footer>
-        </main>
-      </div>
-      <nav id="bottomNav" class="bottom-nav"></nav>
-      <script src="auto-margin.js"></script>
-      <script src="app-shell.js"></script>
+        </article>
+      `;
+    }).join('');
 
-    </body>
-    </html>
+    grid.querySelectorAll('[data-add-cart]').forEach(btn => {
+      btn.addEventListener('click', () => addToCart(btn.getAttribute('data-add-cart')));
+    });
+  }
+
+  function addToCart(id){
+    const product = QM.getProducts().find(p => p.id === id);
+    if(!product) return;
+    const margin = QM.getStoreMargin();
+    const cart = QM.getCart();
+    const existing = cart.find(i => i.id === id);
+    if(existing){
+      existing.qty += 1;
+    } else {
+      cart.push({...product, qty:1, finalPrice: QM.marginPrice(product.price, margin)});
+    }
+    QM.setCart(cart);
+    alert('Dodano do koszyka');
+  }
+
+  [q, cat, sort].forEach(el => el && el.addEventListener('input', render));
+  render();
+});
