@@ -1,1 +1,0 @@
-window.QM_SUBS = window.QM_SUBS || {openCheckout:function(plan){ localStorage.setItem('qm_plan_v1',plan); location.href='success.html?plan='+encodeURIComponent(plan); }};
