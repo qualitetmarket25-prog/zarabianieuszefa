@@ -1,0 +1,12 @@
+blueprints.html
+suppliers.html
+sklepy.html
+panel-zamowien-sklepu.html
+qualitetmarket.html
+intelligence.html
+manifest.webmanifest
+sw.js
+js/blueprints.js
+js/catalog.js
+js/intelligence.js
+js/suppliers.js

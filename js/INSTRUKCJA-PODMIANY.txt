@@ -1,0 +1,30 @@
+INSTRUKCJA PODMIANY — CLEANUP
+
+1. Rozpakuj ZIP lokalnie.
+2. Otwórz repo:
+   https://github.com/qualitetmarket25-prog/zarabianieuszefa
+3. Usuń pliki z listy DELETE_THESE_FILES.txt
+4. Zostaw pliki i foldery z listy KEEP_THESE_FILES.txt
+5. Zrób commit:
+   cleanup: remove unstable files and keep clean core
+6. Zrób push do głównej gałęzi
+7. Odśwież GitHub Pages na twardo
+
+TEST PO WGRANIU
+- index.html działa
+- login.html działa
+- dashboard.html działa
+- hurtownie.html działa
+- sklep.html działa
+- koszyk.html działa
+- checkout.html działa
+- zamowienia.html działa
+- brak 404
+- brak "Unexpected token <"
+- mobile działa
+
+UWAGA
+Jeżeli kiedyś był service worker lub stary cache:
+- zrób Ctrl+F5
+- sprawdź stronę w trybie prywatnym
+- na telefonie wyczyść cache przeglądarki
