@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="pl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sklep | QualitetMarket</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="shop.css"></head>
+<body>
+<header class="topbar"><div class="container topbar-inner"><a class="brand" href="platforma.html"><span class="brand-badge">QM</span><span>QualitetMarket Store</span></a><nav class="nav"><a href="platforma.html">Platforma</a><a href="dashboard.html">Dashboard</a><a class="active" href="sklep.html">Sklep</a></nav><div class="top-actions"><span class="store-pill" id="active-store-badge">Sklep: demo</span><span class="glow-pill" id="margin-badge">Marża: 20%</span></div></div></header>
+<main><section class="hero"><div class="container hero-grid"><div class="card pad"><span class="badge">POPRAWNY HTML</span><h1 class="hero-title">To jest <span class="gradient-text">sklep.html</span>.</h1><p class="hero-text">W tej paczce plik shop.js siedzi już w folderze js i nie trzeba go ręcznie rozkładać.</p><div class="filters"><input id="search-q" class="input" placeholder="Szukaj produktu..."><select id="filter-category"><option value="all">Wszystkie kategorie</option><option>Elektronika</option><option>Dom</option></select><select id="sort-by"><option value="name-asc">Nazwa A-Z</option><option value="price-asc">Cena rosnąco</option><option value="price-desc">Cena malejąco</option></select></div></div><div class="image-card"><img src="assets/store-showcase.svg" alt=""></div></div></section><section class="section"><div class="container"><div id="products-grid" class="products-grid"></div></div></section></main>
+<footer class="footer"><div class="container">Sklep hotfix</div></footer>
+<script src="js/config.js"></script><script src="js/planGuard.js"></script><script src="js/shop.js"></script>
+</body></html>
