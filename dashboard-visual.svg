@@ -1,0 +1,67 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#081426"/>
+  <circle cx="188" cy="120" r="170" fill="url(#g1)" fill-opacity="0.55"/>
+  <circle cx="1040" cy="120" r="160" fill="url(#g2)" fill-opacity="0.45"/>
+  <circle cx="1000" cy="650" r="220" fill="url(#g3)" fill-opacity="0.35"/>
+  <rect x="120" y="128" width="960" height="560" rx="28" fill="#0E1D37" stroke="#2B426D"/>
+  <rect x="160" y="172" width="280" height="470" rx="24" fill="#101F3B" stroke="#304972"/>
+  <rect x="190" y="210" width="220" height="18" rx="9" fill="#324D7B"/>
+  <rect x="190" y="254" width="180" height="72" rx="20" fill="url(#panel1)"/>
+  <rect x="190" y="344" width="220" height="72" rx="20" fill="url(#panel2)"/>
+  <rect x="190" y="434" width="220" height="72" rx="20" fill="url(#panel3)"/>
+  <rect x="190" y="524" width="220" height="72" rx="20" fill="url(#panel4)"/>
+  <rect x="480" y="172" width="560" height="120" rx="26" fill="url(#hero)"/>
+  <rect x="510" y="208" width="210" height="24" rx="12" fill="#D9F7FF" fill-opacity="0.9"/>
+  <rect x="510" y="248" width="320" height="16" rx="8" fill="#9FD4E7" fill-opacity="0.65"/>
+  <rect x="480" y="318" width="268" height="144" rx="24" fill="url(#cardA)"/>
+  <rect x="772" y="318" width="268" height="144" rx="24" fill="url(#cardB)"/>
+  <rect x="480" y="486" width="560" height="156" rx="24" fill="#112244" stroke="#324E7B"/>
+  <rect x="514" y="526" width="160" height="18" rx="9" fill="#D4EEFF"/>
+  <rect x="514" y="566" width="470" height="16" rx="8" fill="#83A0D1"/>
+  <rect x="514" y="598" width="390" height="16" rx="8" fill="#6787C0"/>
+  <circle cx="1030" cy="90" r="28" fill="#22C55E"/>
+  <path d="M1014 90L1024 102L1046 78" stroke="#04111D" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="g1" x1="18" y1="-10" x2="286" y2="264" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="890" y1="-20" x2="1160" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="840" y1="470" x2="1140" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="panel1" x1="190" y1="254" x2="410" y2="326" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="panel2" x1="190" y1="344" x2="410" y2="416" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="panel3" x1="190" y1="434" x2="410" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="panel4" x1="190" y1="524" x2="410" y2="596" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="480" y1="172" x2="1040" y2="292" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C55E"/>
+      <stop offset="0.5" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="cardA" x1="480" y1="318" x2="748" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#102A4D"/>
+      <stop offset="1" stop-color="#173A69"/>
+    </linearGradient>
+    <linearGradient id="cardB" x1="772" y1="318" x2="1040" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B244D"/>
+      <stop offset="1" stop-color="#3B2A77"/>
+    </linearGradient>
+  </defs>
+</svg>
