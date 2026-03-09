@@ -1,12 +1,3 @@
-PACZKA CLEANUP REPO
-
-1. Rozpakuj ZIP
-2. Otwórz DELETE_LIST.txt
-3. Usuń z repo wszystkie pliki z tej listy
-4. Zrób commit i push
-5. Po czyszczeniu zostaw tylko core build
-
-CORE BUILD:
 assets/
 data/
 js/
