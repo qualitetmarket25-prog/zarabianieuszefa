@@ -1,75 +1,95 @@
-document.addEventListener('DOMContentLoaded', () => {
-  if(!window.QM) return;
-  const grid = document.getElementById('products-grid');
-  const q = document.getElementById('search-q');
-  const cat = document.getElementById('filter-category');
-  const sort = document.getElementById('sort-by');
-  const marginBadge = document.getElementById('margin-badge');
-  const storeBadge = document.getElementById('active-store-badge');
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Platforma | QualitetMarket</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="platforma.html"><span class="brand-badge">QM</span><span>QualitetMarket Kingdom</span></a>
+    <nav class="nav">
+      <a class="active" href="platforma.html">Platforma</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="hurtownie.html" data-require="pro">Hurtownie</a>
+      <a href="cennik.html">Cennik</a>
+    </nav>
+    <div class="top-actions">
+      <span class="plan-pill">Plan: <strong data-current-plan>BASIC</strong></span>
+      <a class="btn mobile-menu-btn" href="dashboard.html">Menu</a>
+    </div>
+  </div>
+</header>
 
-  function render(){
-    const items = QM.getProducts().slice();
-    const margin = QM.getStoreMargin();
-    if(marginBadge) marginBadge.textContent = 'Marża: ' + margin + '%';
-    if(storeBadge) storeBadge.textContent = 'Sklep: ' + QM.getActiveStoreSlug();
+<main class="kingdom-bg">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="card pad">
+        <span class="badge">Królestwo sprzedaży • mobile first • premium image</span>
+        <h1 class="hero-title">Twoja <span class="gradient-text">platforma</span> ma wyglądać jak królewska wizytówka marki.</h1>
+        <p class="hero-text">To jest poprawny plik HTML platformy. Jeśli wcześniej widziałeś surowy kod JavaScript na stronie, to znaczy że przez pomyłkę do platforma.html został wgrany plik JS zamiast HTML.</p>
+        <div class="btns" style="margin-top:18px">
+          <a class="btn primary" href="sklep.html">Wejdź do sklepu</a>
+          <a class="btn secondary" href="dashboard.html">Otwórz dashboard</a>
+          <a class="btn pink" href="cennik.html">Ustaw plan</a>
+        </div>
+        <div class="grid cols-3 section" style="padding-bottom:0">
+          <div class="kpi color-card-green"><span class="label">Produkty</span><span class="value" id="hero-products">0</span></div>
+          <div class="kpi color-card-violet"><span class="label">Zamówienia</span><span class="value" id="hero-orders">0</span></div>
+          <div class="kpi color-card-pink"><span class="label">Sklepy</span><span class="value" id="hero-stores">0</span></div>
+        </div>
+      </div>
 
-    let filtered = items.filter(item => {
-      const byText = !q?.value || item.name.toLowerCase().includes(q.value.toLowerCase());
-      const byCat = !cat?.value || cat.value === 'all' || item.category === cat.value;
-      return byText && byCat;
-    });
-
-    if(sort?.value === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
-    if(sort?.value === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
-    if(sort?.value === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
-
-    if(!filtered.length){
-      grid.innerHTML = '<div class="card pad center">Brak produktów. Wejdź do hurtownie.html i zaimportuj produkty.</div>';
-      return;
-    }
-
-    grid.innerHTML = filtered.map(item => {
-      const finalPrice = QM.marginPrice(item.price, margin);
-      return `
-        <article class="product-card">
-          <div class="product-media">${item.img || '📦'}</div>
-          <div class="product-body">
-            <div class="product-top">
-              <span class="badge">${item.supplier || 'Supplier'}</span>
-              <span class="store-pill">${item.category || 'Produkt'}</span>
-            </div>
-            <h3>${item.name}</h3>
-            <div class="muted">Cena bazowa: ${QM.money(item.price)}</div>
-            <div class="product-price">${QM.money(finalPrice)}</div>
-            <div class="product-actions">
-              <button class="btn primary" data-add-cart="${item.id}">Dodaj do koszyka</button>
-              <a class="btn" href="koszyk.html">Koszyk</a>
-            </div>
+      <div class="image-stack">
+        <div class="hero-art">
+          <img src="assets/kingdom-hero.svg" alt="Ilustracja platformy QualitetMarket">
+        </div>
+        <div class="card pad">
+          <h3>Efekt premium</h3>
+          <div class="orb-grid">
+            <div class="orb green"><span class="muted">Wizual</span><strong>Mocny</strong></div>
+            <div class="orb violet"><span class="muted">Telefon</span><strong>Gotowy</strong></div>
+            <div class="orb pink"><span class="muted">Sklep</span><strong>Wizytówka</strong></div>
+            <div class="orb amber"><span class="muted">Pages</span><strong>Safe</strong></div>
           </div>
-        </article>
-      `;
-    }).join('');
+        </div>
+      </div>
+    </div>
+  </section>
 
-    grid.querySelectorAll('[data-add-cart]').forEach(btn => {
-      btn.addEventListener('click', () => addToCart(btn.getAttribute('data-add-cart')));
-    });
-  }
+  <section class="section">
+    <div class="container grid cols-3">
+      <a class="card pad" href="sklep.html">
+        <h3>Sklep premium</h3>
+        <p class="muted">Kolorowy, nowoczesny, z obrazkami i mocną ekspozycją produktów.</p>
+      </a>
+      <a class="card pad" href="dashboard.html">
+        <h3>Dashboard operatora</h3>
+        <p class="muted">Kolorowe statystyki, szybkie akcje i czytelny panel.</p>
+      </a>
+      <a class="card pad" href="hurtownie.html" data-require="pro">
+        <h3>Hurtownie i import</h3>
+        <p class="muted">Produkty z CSV i supplierów wchodzą od razu do sklepu.</p>
+      </a>
+    </div>
+  </section>
+</main>
 
-  function addToCart(id){
-    const product = QM.getProducts().find(p => p.id === id);
-    if(!product) return;
-    const margin = QM.getStoreMargin();
-    const cart = QM.getCart();
-    const existing = cart.find(i => i.id === id);
-    if(existing){
-      existing.qty += 1;
-    } else {
-      cart.push({...product, qty:1, finalPrice: QM.marginPrice(product.price, margin)});
-    }
-    QM.setCart(cart);
-    alert('Dodano do koszyka');
-  }
+<footer class="footer">
+  <div class="container">QualitetMarket Kingdom • nowa platforma z ilustracjami • mobile first</div>
+</footer>
 
-  [q, cat, sort].forEach(el => el && el.addEventListener('input', render));
-  render();
+<script src="js/config.js"></script>
+<script src="js/planGuard.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('hero-products').textContent = (window.QM?.getProducts()||[]).length;
+  document.getElementById('hero-orders').textContent = (window.QM?.getOrders()||[]).length;
+  document.getElementById('hero-stores').textContent = (window.QM?.getStores()||[]).length;
 });
+</script>
+</body>
+</html>

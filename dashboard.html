@@ -1,76 +1,97 @@
-document.addEventListener('DOMContentLoaded', () => {
-  if(!window.QM) return;
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard | QualitetMarket</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="platforma.html"><span class="brand-badge">QM</span><span>QualitetMarket Dashboard</span></a>
+    <nav class="nav">
+      <a href="platforma.html">Platforma</a>
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="koszyk.html">Koszyk</a>
+      <a href="zamowienia.html">Zamówienia</a>
+      <a href="panel-sklepu.html">Panel sklepu</a>
+    </nav>
+    <div class="top-actions"><span class="glow-pill">Aktywny plan: <strong data-current-plan>BASIC</strong></span></div>
+  </div>
+</header>
 
-  const grid = document.getElementById('products-grid');
-  const q = document.getElementById('search-q');
-  const cat = document.getElementById('filter-category');
-  const sort = document.getElementById('sort-by');
-  const marginBadge = document.getElementById('margin-badge');
-  const storeBadge = document.getElementById('active-store-badge');
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="card pad">
+        <span class="badge">Dashboard premium z ilustracją</span>
+        <h1 class="hero-title">Steruj swoim <span class="gradient-text">królestwem sprzedaży</span> z jednego miejsca.</h1>
+        <p class="hero-text">To jest poprawny plik HTML dashboardu. Jeśli wcześniej widziałeś surowy kod JS, to dashboard.html został nadpisany nie tym plikiem co trzeba.</p>
+        <div class="btns" style="margin-top:18px">
+          <a class="btn primary" href="sklep.html">Zobacz sklep</a>
+          <a class="btn secondary" href="hurtownie.html" data-require="pro">Import hurtowni</a>
+          <a class="btn pink" href="generator-sklepu.html">Generator sklepu</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="assets/dashboard-visual.svg" alt="Ilustracja dashboardu">
+      </div>
+    </div>
+  </section>
 
-  function render(){
-    const items = QM.getProducts().slice();
-    const margin = QM.getStoreMargin();
-    if(marginBadge) marginBadge.textContent = 'Marża: ' + margin + '%';
-    if(storeBadge) storeBadge.textContent = 'Sklep: ' + QM.getActiveStoreSlug();
+  <section class="section">
+    <div class="container grid cols-4">
+      <div class="kpi color-card-green"><span class="label">Produkty</span><span class="value" id="kpi-products">0</span></div>
+      <div class="kpi color-card-violet"><span class="label">Zamówienia</span><span class="value" id="kpi-orders">0</span></div>
+      <div class="kpi color-card-pink"><span class="label">Sklepy</span><span class="value" id="kpi-stores">0</span></div>
+      <div class="kpi color-card-amber"><span class="label">Plan</span><span class="value" id="kpi-plan">BASIC</span></div>
+    </div>
+  </section>
 
-    let filtered = items.filter(item => {
-      const byText = !q?.value || item.name.toLowerCase().includes(q.value.toLowerCase());
-      const byCat = !cat?.value || cat.value === 'all' || item.category === cat.value;
-      return byText && byCat;
-    });
+  <section class="section">
+    <div class="container grid cols-2">
+      <div class="card pad">
+        <h2>Status systemu</h2>
+        <div class="crown-box">
+          <div class="crown-row"><span>Aktywny sklep</span><strong id="dash-store">demo</strong></div>
+          <div class="crown-row"><span>Marża sklepu</span><strong id="dash-margin">20%</strong></div>
+          <div class="crown-row"><span>Produkty</span><strong id="dash-products">0</strong></div>
+          <div class="crown-row"><span>Zamówienia</span><strong id="dash-orders">0</strong></div>
+        </div>
+      </div>
+      <div class="card pad">
+        <h2>Szybkie akcje</h2>
+        <div class="btns">
+          <a class="btn primary" href="sklep.html">Wejdź do sklepu</a>
+          <a class="btn" href="koszyk.html">Koszyk</a>
+          <a class="btn" href="checkout.html">Checkout</a>
+          <a class="btn" href="zamowienia.html">Zamówienia</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-    if(sort?.value === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
-    if(sort?.value === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
-    if(sort?.value === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+<footer class="footer">
+  <div class="container">Nowy dashboard • z ilustracją • responsywny • premium UI</div>
+</footer>
 
-    if(!filtered.length){
-      grid.innerHTML = '<div class="card pad center">Brak produktów. Wejdź do hurtownie.html i zaimportuj produkty.</div>';
-      return;
-    }
-
-    grid.innerHTML = filtered.map(item => {
-      const finalPrice = QM.marginPrice(item.price, margin);
-      return `
-        <article class="product-card">
-          <div class="product-media">${item.img || '📦'}</div>
-          <div class="product-body">
-            <div class="product-top">
-              <span class="badge">${item.supplier || 'Supplier'}</span>
-              <span class="store-pill">${item.category || 'Produkt'}</span>
-            </div>
-            <h3>${item.name}</h3>
-            <div class="muted">Cena bazowa: ${QM.money(item.price)}</div>
-            <div class="product-price">${QM.money(finalPrice)}</div>
-            <div class="product-actions">
-              <button class="btn primary" data-add-cart="${item.id}">Dodaj do koszyka</button>
-              <a class="btn" href="koszyk.html">Koszyk</a>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join('');
-
-    grid.querySelectorAll('[data-add-cart]').forEach(btn => {
-      btn.addEventListener('click', () => addToCart(btn.getAttribute('data-add-cart')));
-    });
-  }
-
-  function addToCart(id){
-    const product = QM.getProducts().find(p => p.id === id);
-    if(!product) return;
-    const margin = QM.getStoreMargin();
-    const cart = QM.getCart();
-    const existing = cart.find(i => i.id === id);
-    if(existing){
-      existing.qty += 1;
-    } else {
-      cart.push({...product, qty:1, finalPrice: QM.marginPrice(product.price, margin)});
-    }
-    QM.setCart(cart);
-    alert('Dodano do koszyka');
-  }
-
-  [q, cat, sort].forEach(el => el && el.addEventListener('input', render));
-  render();
+<script src="js/config.js"></script>
+<script src="js/planGuard.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const plan = window.QM?.getPlan?.() || 'basic';
+  document.getElementById('dash-store').textContent = window.QM?.getActiveStoreSlug?.() || 'demo';
+  document.getElementById('dash-margin').textContent = (window.QM?.getStoreMargin?.() || 20) + '%';
+  document.getElementById('dash-products').textContent = (window.QM?.getProducts?.() || []).length;
+  document.getElementById('dash-orders').textContent = (window.QM?.getOrders?.() || []).length;
+  document.getElementById('kpi-products').textContent = (window.QM?.getProducts?.() || []).length;
+  document.getElementById('kpi-orders').textContent = (window.QM?.getOrders?.() || []).length;
+  document.getElementById('kpi-stores').textContent = (window.QM?.getStores?.() || []).length;
+  document.getElementById('kpi-plan').textContent = String(plan).toUpperCase();
 });
+</script>
+</body>
+</html>
